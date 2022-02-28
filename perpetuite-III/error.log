@@ -1,0 +1,3 @@
+(-311) Non valide en cas de tâche de programme active: 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 18, 19
+   at Ace.Adept.Server.Controls.AdeptController.ZeroMemory(EventHandler`1 progressHandler)
+   at Ace.AdeptSight.Client.WizardFramework.Sequencer.AdeptSightPickPlaceRobotSequencer.<>c__DisplayClass20_0.<ZeroMemory>b__0()
