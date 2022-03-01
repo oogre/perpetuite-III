@@ -23,15 +23,47 @@ class HexaGrid{
 		 		}	
 			}
 		}
-		oldSrc = createImage(ceil(diameter), ceil(diameter), RGB);
+		Collections.shuffle(cells);
+		
+		oldSrc = createImage(ceil(diameter), ceil(diameter), ARGB);
 	}
 	boolean isInside(HexaCell cell){
 		return PVector.dist(pos, cell.pos) + cell.diameter/2 <= diameter/2;
 	}
 	void display(PImage src){
 		PImage resized = src.copy();
+		
 		resized.resize(oldSrc.width, oldSrc.height);
-		oldSrc = src.copy();
+		oldSrc.loadPixels();
+		resized.loadPixels();
+		int moveCount = 0;
+		for(HexaCell cell : cells){
+			int index = (int)(cell.pos.x + ((int)cell.pos.y) * width);
+			// println(cell.pos.x, cell.pos.y, resized.width, index);
+			
+			color colOld = oldSrc.pixels[index];
+			color colTarget = resized.pixels[index];
+			color colCurrent= cell.getColor();
+			// 
+			if(colOld != colTarget && colTarget != colCurrent && (channels.contains(colTarget)||colTarget==color(0))){
+				HexaCell otherCell = getRandomCellByColor(colTarget);
+				Pill pillTmp = otherCell.pill;
+				otherCell.pill = cell.pill;
+				cell.pill = pillTmp;
+				moveCount ++;
+			}
+		}
+		oldSrc = resized.copy();
+		println(moveCount);
+	}
+
+	HexaCell getRandomCellByColor(color col){
+		while(true){
+			HexaCell randCell = cells.get((int)random(cells.size()));
+			if(randCell.getColor() == col){
+				return randCell;
+			}
+		}
 	}
 	void draw(){
 		for(HexaCell cell : cells){
@@ -66,6 +98,9 @@ class HexaCell{
 	HexaCell(float x, float y, float diameter){
 		this.pos = new PVector(x, y);
 		this.diameter = diameter;
+	}
+	color getColor(){
+		return pill == null ? color(0) : pill.col;
 	}
 	void draw(){
 		if(pill == null)return;
