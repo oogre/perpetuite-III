@@ -50,15 +50,6 @@ void draw(){
 		}
 	}
 	src.updatePixels();
-	// pg.beginDraw();
-	// pg.background(0);
-	// pg.fill(color(255, 150, 200));
-	// pg.noStroke();
-	// pg.rectMode(CENTER);
-	// pg.translate(width/2, height/2);
-	// pg.rotate(frameCount * 0.1);
-	// pg.rect(0, 0, 100, 100);
-	// pg.endDraw();
 
 	grid.display(src);
 	grid.draw();
@@ -70,26 +61,3 @@ void draw(){
 	stroke(255);
 	rect(0, 0, 100, 100);
 }
-
-
-/*
-pillCount = cells.size()/10;
-
-		Collections.shuffle(cells);
-		for(int i = 0 ; i < pillCount ; i++){
-			cells.get(i).pill = new Pill(cellSize, color(255, 0, 0));
-		}
-
-		Collections.shuffle(cells);	
-		for(int i = 0 ; i < pillCount ; i++){
-			while(true){
-				HexaCell randomCell = cells.get((int)random(cells.size()));
-				if(randomCell.pill == null){
-					randomCell.pill = new Pill(cellSize, color(255));
-					break;
-				}
-			}
-		}
-
-
-		*/
