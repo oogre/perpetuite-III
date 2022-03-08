@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">anycpu</Platform>
+    <ProjectGuid>{FE3088BB-BF30-477C-A585-BB7D1795CDBC}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>perpetuiteIII_driver</RootNamespace>
+    <AssemblyName>perpetuiteIII_driver</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|anycpu' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|anycpu' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="websocket-sharp">
+      <HintPath>..\packages\WebSocketSharp-NonPreRelease.1.0.0\lib\net35\websocket-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleThreadMonitor">
+      <HintPath>..\packages\SimpleThreadMonitor.1.0.2.1\lib\net45\SimpleThreadMonitor.dll</HintPath>
+    </Reference>
+    <Reference Include="EmitterSharp">
+      <HintPath>..\packages\EmitterSharp.1.1.1.1\lib\net45\EmitterSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocketSharp.CustomHeaders.CustomHttpServer">
+      <HintPath>..\packages\WebSocketSharp.CustomHeaders.CustomHttpServer.1.0.2.3\lib\net45\WebSocketSharp.CustomHeaders.CustomHttpServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EngineIOSharp">
+      <HintPath>..\packages\EngineIOSharp.2.0.0.1\lib\net45\EngineIOSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SocketIOSharp">
+      <HintPath>..\packages\SocketIOSharp.2.0.3\lib\net45\SocketIOSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.Common">
+      <HintPath>..\packages\SuperWebSocketNETServer.0.8\lib\net45\SuperSocket.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.Facility">
+      <HintPath>..\packages\SuperWebSocketNETServer.0.8\lib\net45\SuperSocket.Facility.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketBase">
+      <HintPath>..\packages\SuperWebSocketNETServer.0.8\lib\net45\SuperSocket.SocketBase.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketEngine">
+      <HintPath>..\packages\SuperWebSocketNETServer.0.8\lib\net45\SuperSocket.SocketEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperWebSocket">
+      <HintPath>..\packages\SuperWebSocketNETServer.0.8\lib\net45\SuperWebSocket.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WSServer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
