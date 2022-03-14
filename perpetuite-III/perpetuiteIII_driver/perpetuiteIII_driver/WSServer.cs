@@ -1,20 +1,26 @@
 ﻿using System;
 using SuperWebSocket;
+using System.Text.Json;
 
 namespace perpetuiteIII_driver
 {
+    public delegate void GotoHandler(Vector3 pos);
+
     public class WSServer
     {
         private WebSocketServer wsServer;
+
         
-        public WSServer()
+        public event GotoHandler onGoto;
+
+
+        public WSServer(int port = 6969)
         {
             wsServer = new WebSocketServer();
-            int port = 6969;
             wsServer.Setup(port);
             wsServer.NewSessionConnected += WsServer_NewSession;
             wsServer.NewMessageReceived += WsServer_NewMessageRecieved;
-            wsServer.SessionClosed += WsServer_SessionClosed;  
+            wsServer.SessionClosed += WsServer_SessionClosed;
         }
 
         public void run() {
@@ -34,12 +40,18 @@ namespace perpetuiteIII_driver
         private void WsServer_NewMessageRecieved(WebSocketSession session, string value)
         {
             Console.WriteLine("New Message : " + value);
-            session.Send(value);
-            foreach (WebSocketSession s in wsServer.GetAllSessions())
+
+            Request m = JsonSerializer.Deserialize<Request>(value);
+
+            switch (m.Action)
             {
-                s.Send(value);
+                case "Goto":
+                    Vector3 pos = JsonSerializer.Deserialize<Vector3>(m.Data);
+                    onGoto(pos);
+                   break;   
             }
-        }
+            session.Send("ok");
+        }   
 
         private void WsServer_SessionClosed(WebSocketSession session, SuperSocket.SocketBase.CloseReason value)
         {

@@ -8,7 +8,7 @@ namespace perpetuiteIII_driver
 
         public static void Main(string[] args)
         {
-            wsServer = new WSServer();
+            wsServer = new WSServer(6969);
             /*
             omron.onError((error) => {
                 killAll();
@@ -24,6 +24,10 @@ namespace perpetuiteIII_driver
                 });
             });
             */
+
+            wsServer.onGoto += (Vector3 pos) => {
+                Console.WriteLine(pos.ToString());
+            };
             wsServer.run();
         }
     }

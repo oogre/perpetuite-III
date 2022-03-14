@@ -2,7 +2,7 @@
   oogre_21_22_AN1_clipWeb - client.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-03-08 22:02:44
-  @Last Modified time: 2022-03-09 00:00:41
+  @Last Modified time: 2022-03-14 14:28:49
 \*----------------------------------------*/
 var WebSocketClient = require('websocket').client;
 
@@ -25,7 +25,14 @@ client.on('connect', (connection) => {
             console.log("Received: '" + message.utf8Data + "'");
         }
     });
-    connection.sendUTF("Hello World");
+
+    const data = JSON.stringify({
+        Data : JSON.stringify({ X : Math.random()*100, Y : Math.random()*100, Z: Math.random()*100 }),
+        Action : "Goto"
+    });
+
+    console.log(data);
+    connection.sendUTF(data);
 });
 
 client.connect('ws://localhost:6969/' );
