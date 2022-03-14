@@ -1,0 +1,3 @@
+[submodule "softwares/ACE-RESTful"]
+	path = softwares/ACE-RESTful
+	url = git@github.com:damianj/ACE-RESTful.git
