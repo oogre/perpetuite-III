@@ -33,4 +33,12 @@ namespace QuattroDriver
         public int Acc { get; set; }//acceleration
         public int Dcc { get; set; }//decceleration
     };
+
+    public class WalkData
+    {
+        public Vector3 [] Position { get; set; }
+        public int Speed { get; set; }
+        public int Acc { get; set; }//acceleration
+        public int Dcc { get; set; }//decceleration
+    };
 }

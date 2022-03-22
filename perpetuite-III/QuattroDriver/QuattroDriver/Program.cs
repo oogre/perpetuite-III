@@ -31,6 +31,7 @@ namespace QuattroDriver
                 Console.WriteLine("\t Acc : " + param.Acc);
                 Console.WriteLine("\t Dcc : " + param.Dcc);
 
+
                 quattro.GoTo(param.Position, param.Speed, () => {
                     Console.WriteLine("Done");
                     wsServer.SendTo(sessionId, "ok");
