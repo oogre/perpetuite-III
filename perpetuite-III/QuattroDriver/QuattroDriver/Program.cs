@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Text.Json;
+using Ace.Quattro.Adapter;
+using Ace.Core.Server;
 
 namespace QuattroDriver
 {
@@ -11,17 +13,42 @@ namespace QuattroDriver
         {
             wsServer = new WSServer(6969);
             quattro = new QuattroAdapter();
+ 
+            wsServer.OnGetPosition += (string sessionId) => {
+                wsServer.SendTo(sessionId, JsonSerializer.Serialize<Vector3D>(quattro.GetPosition()));
+            };
+
+            wsServer.OnSetPosition += (MoveParam param, string sessionId) => {
+                quattro.SetPosition(param, (String error) => {
+                    wsServer.SendTo(sessionId, "ok");
+                });
+            };
+            wsServer.OnGetToolOffset += (string sessionId) => {
+                wsServer.SendTo(sessionId, JsonSerializer.Serialize<Vector3D>(quattro.GetToolOffset()));
+            };
+
+            wsServer.OnSetToolOffset += (Vector3D pos, string sessionId) => {
+                quattro.SetToolOffset(pos, (String error) => {
+                    wsServer.SendTo(sessionId, "ok");
+                });
+            };
+            wsServer.OnGetToolPosition += (string sessionId) => {
+                wsServer.SendTo(sessionId, JsonSerializer.Serialize<Vector3D>(quattro.GetToolPosition()));
+            };
+
+            wsServer.OnSetToolPosition += (MoveParam param, string sessionId) => { };
+            wsServer.OnStop += (string sessionId) => { };
+            wsServer.OnGrab += (string sessionId) => { };
+            wsServer.OnRelease += (string sessionId) => { };
+            wsServer.OnHighPower += (bool isOn, string sessionId) => { };
+            wsServer.OnRoute += (RouteParam param, string sessionId) => { };
+            wsServer.OnError += (string error, string sessionId) => {
+                Console.WriteLine("ERROR");
+                Console.WriteLine(error);
+                wsServer.SendTo(sessionId, error);
+            };
+
             /*
-            omron.onError((error) => {
-                killAll();
-            });
-
-            wsServer.OnError((error) => {
-                killAll();
-            });
-
-            */
-
             wsServer.onGoto += (GoToData param, string sessionId) => {
                 Console.WriteLine("GOTO :");
                 Console.WriteLine("\t X : " + param.Position.X);
@@ -41,11 +68,17 @@ namespace QuattroDriver
                 });
             };
 
+            wsServer.onGetPosition+= (string sessionId) => {
+                Vector3 position = new Vector3 (quattro.getPosition());
+                wsServer.SendTo(sessionId, JsonSerializer.Serialize<Vector3>(position));
+            };
+
             wsServer.onMalformed += (String value, String sessionId) => {
                 Console.WriteLine("ERROR with");
                 Console.WriteLine(value);
                 wsServer.SendTo(sessionId, "ko");
             };
+            */
             wsServer.run();
         }
     }

@@ -41,6 +41,9 @@
     <Reference Include="Ace.Adept.Server.Common">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Omron\ACE 3.8\bin\Ace.Adept.Server.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Ace.AdeptSight.Server.Common">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Omron\ACE 3.8\bin\Ace.AdeptSight.Server.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Ace.Core.Client.Common">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Omron\ACE 3.8\bin\Ace.Core.Client.Common.dll</HintPath>
     </Reference>
