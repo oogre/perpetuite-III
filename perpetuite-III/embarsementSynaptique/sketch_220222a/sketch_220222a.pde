@@ -2,16 +2,20 @@
 //ArrayList<Pill> pills;
 HexaGrid grid;
 PImage src;
+PGraphics pg;
+color [] colors = {color(255, 216, 248), color(216, 248, 255), color(245, 255, 216)}; 
+
 
 void setup(){
 	size(1000, 1000);
 	src = createImage(width/3, height/3, ARGB);
-
-	grid = new HexaGrid(width/2, height/2, width, width/260);
-	grid.addChannel(color(255, 150, 200), grid.cells.size()/20);
-	grid.addChannel(color(200, 255, 255), grid.cells.size()/20);
-	grid.addChannel(color(255, 200, 150), grid.cells.size()/20);
-	
+  
+  pg = createGraphics(3000, 3000);
+  
+	grid = new HexaGrid(pg.width/2, pg.height/2, pg.width, pg.width/260);
+  for(color c : colors){
+    grid.addChannel(c, grid.cells.size()/20);
+  }
 }
 
 float curve(float x){
@@ -39,11 +43,11 @@ void draw(){
 			float c4 = noise(3 + x*m4, 3 + y*m4, frameCount * 0.005);
 			float c = max(c1,max(c2, max(c3, c4))); 
 			if(c1 == c){
-				src.pixels[index] = color(255, 150, 200);
+				src.pixels[index] = colors[0];
 			}else if(c2 == c){
-				src.pixels[index] = color(200, 255, 255);
+				src.pixels[index] = colors[1];
 			}else if(c3 == c){
-				src.pixels[index] = color(255, 200, 150);
+				src.pixels[index] = colors[2];
 			}else{
 				src.pixels[index] = color(0);
 			}
@@ -60,15 +64,17 @@ void draw(){
 	// pg.rect(0, 0, 100, 100);
 	// pg.endDraw();
 
+  pg.beginDraw();
+  pg.background(0);
 	grid.display(src);
 	grid.draw();
+  pg.endDraw();
 
 
-
-	image(src, 0, 0, 100, 100);
-	noFill();
-	stroke(255);
-	rect(0, 0, 100, 100);
+	image(pg, 0, 0, width, height);
+	//noFill();
+	//stroke(255);
+	//rect(0, 0, 100, 100);
 }
 
 

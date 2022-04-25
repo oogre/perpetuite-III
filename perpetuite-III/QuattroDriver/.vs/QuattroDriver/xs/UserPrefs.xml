@@ -1,10 +1,10 @@
 ﻿<Properties StartupConfiguration="{8DA1CF1A-6815-47BA-A1AB-F9D3FD2681E0}|Default">
   <MonoDevelop.Ide.ItemProperties.QuattroDriver PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="QuattroDriver/QuattroAdapter.cs">
     <Files>
       <File FileName="QuattroDriver/Program.cs" Line="25" Column="28" />
-      <File FileName="QuattroDriver/QuattroAdapter.cs" Line="67" Column="65" />
-      <File FileName="QuattroDriver/Request.cs" Line="42" Column="36" />
+      <File FileName="QuattroDriver/QuattroAdapter.cs" Line="29" Column="1" />
+      <File FileName="QuattroDriver/Request.cs" Line="28" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
