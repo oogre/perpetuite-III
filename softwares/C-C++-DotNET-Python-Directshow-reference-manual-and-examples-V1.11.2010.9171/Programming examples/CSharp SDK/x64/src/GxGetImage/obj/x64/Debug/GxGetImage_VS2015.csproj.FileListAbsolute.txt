@@ -1,0 +1,10 @@
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\bin\GxGetImage.exe
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\bin\GxGetImage.pdb
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxGetImage\obj\x64\Debug\GxGetImage_VS2015.csproj.AssemblyReference.cache
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxGetImage\obj\x64\Debug\GxGetImage.GxGetImage.resources
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxGetImage\obj\x64\Debug\GxGetImage.Properties.Resources.resources
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxGetImage\obj\x64\Debug\GxGetImage_VS2015.csproj.GenerateResource.cache
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxGetImage\obj\x64\Debug\GxGetImage_VS2015.csproj.CoreCompileInputs.cache
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxGetImage\obj\x64\Debug\GxGetImage_VS2015.csproj.CopyComplete
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxGetImage\obj\x64\Debug\GxGetImage.exe
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxGetImage\obj\x64\Debug\GxGetImage.pdb
