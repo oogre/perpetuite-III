@@ -1,5 +1,7 @@
 ﻿using System;
 
+using System.Threading.Tasks;
+
 namespace perpetuiteIII_driver
 {
     class MainClass
@@ -18,15 +20,30 @@ namespace perpetuiteIII_driver
                 killAll();
             });
 
-            wsServer.OnNewTarget((session, position, speed) => {
-                omron.goTo(position, speed, () => {
-                    session.send("ok");
-                });
-            });
             */
 
-            wsServer.onGoto += (Vector3 pos) => {
-                Console.WriteLine(pos.ToString());
+            wsServer.onGoto += (GoToData param, string sessionId) => {
+                Console.WriteLine("GOTO :");
+                Console.WriteLine("\t X : " + param.Position.X);
+                Console.WriteLine("\t Y : " + param.Position.Y);
+                Console.WriteLine("\t Z : " + param.Position.Z);
+                Console.WriteLine("\t Speed : " + param.Speed);
+                Console.WriteLine("\t Acc : " + param.Acc);
+                Console.WriteLine("\t Dcc : " + param.Dcc);
+
+                Task.Delay(1000).Wait();
+
+                Console.WriteLine("Done");
+                wsServer.SendTo(sessionId, "ok");
+                //aceServer.goTo(param.Position, param.speed, () => {
+                //    wsServer.SendTo(sessionId, "ok");
+                //});
+            };
+
+            wsServer.onMalformed += (String value, String sessionId) => {
+                Console.WriteLine("ERROR with");
+                Console.WriteLine(value);
+                wsServer.SendTo(sessionId, "ko");
             };
             wsServer.run();
         }

@@ -1,0 +1,31 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="CustomACEApi/generate-docs/__init__.py">
+    <Files>
+      <File FileName="CustomACEAPI/AdeptAce.cs" Line="1" Column="1" />
+      <File FileName="CustomACEAPI/APPConfig.cs" Line="1" Column="1" />
+      <File FileName="CustomACEAPI/App.config" Line="1" Column="1" />
+      <File FileName="CustomACEAPI/generate-docs/templates/docs-content-template.html" Line="1" Column="1" />
+      <File FileName="CustomACEAPI/generate-docs/__init__.py" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="CustomACEApi" expanded="True">
+            <Node name="CustomACEAPI" expanded="True">
+              <Node name="generate-docs" expanded="True">
+                <Node name="templates" expanded="True" />
+                <Node name="__init__.py" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

@@ -1,0 +1,27 @@
+﻿<Properties StartupConfiguration="{8DA1CF1A-6815-47BA-A1AB-F9D3FD2681E0}|Default">
+  <MonoDevelop.Ide.ItemProperties.QuattroDriver PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="QuattroDriver/QuattroAdapter.cs">
+    <Files>
+      <File FileName="QuattroDriver/Program.cs" Line="25" Column="28" />
+      <File FileName="QuattroDriver/QuattroAdapter.cs" Line="29" Column="1" />
+      <File FileName="QuattroDriver/Request.cs" Line="28" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="QuattroDriver" expanded="True">
+            <Node name="QuattroDriver" expanded="True">
+              <Node name="QuattroAdapter.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

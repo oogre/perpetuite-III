@@ -1,0 +1,10 @@
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\bin\GxSingleCam.exe
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\bin\GxSingleCam.pdb
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxSingleCam\obj\x64\Debug\GxSingleCam_VS2015.csproj.AssemblyReference.cache
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxSingleCam\obj\x64\Debug\GxSingleCam.GxSingleCam.resources
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxSingleCam\obj\x64\Debug\GxSingleCam.Properties.Resources.resources
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxSingleCam\obj\x64\Debug\GxSingleCam_VS2015.csproj.GenerateResource.cache
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxSingleCam\obj\x64\Debug\GxSingleCam_VS2015.csproj.CoreCompileInputs.cache
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxSingleCam\obj\x64\Debug\GxSingleCam_VS2015.csproj.CopyComplete
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxSingleCam\obj\x64\Debug\GxSingleCam.exe
+C:\Users\vince\felix\perpetuite-III\softwares\C-C++-DotNET-Python-Directshow-reference-manual-and-examples-V1.11.2010.9171\Programming examples\CSharp SDK\x64\src\GxSingleCam\obj\x64\Debug\GxSingleCam.pdb
