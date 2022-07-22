@@ -4,7 +4,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 15:28:58
+  @Last Modified time: 2022-07-22 15:33:43
 \*----------------------------------------*/
 "use strict";
 
@@ -46,6 +46,8 @@ program.command('HighPower').argument('<flag>', 'boolean argument', _Tools.strin
   launchRequest(_Request.default.HighPower, flag).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
 });
 program.command('Go').argument('<x>', 'float argument', parseFloat).argument('<y>', 'float argument', parseFloat).argument('<z>', 'float argument', parseFloat).argument('<w>', 'float argument', parseFloat).description('Tell the robot to go at a position x y z with a orientation of w').action((x, y, z, w) => {
+  ç;
+  console.log(x, y, z, w);
   launchRequest(_Request.default.Go, new _Position.default(x, y, z, w)).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
 });
 /*

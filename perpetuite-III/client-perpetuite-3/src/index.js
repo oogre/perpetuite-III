@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 15:28:58
+  @Last Modified time: 2022-07-22 15:33:43
 \*----------------------------------------*/
 
 
@@ -51,7 +51,8 @@ program
 	.argument('<z>', 'float argument', parseFloat)
 	.argument('<w>', 'float argument', parseFloat)
 	.description('Tell the robot to go at a position x y z with a orientation of w')
-	.action( (x, y, z, w) => {
+	.action( (x, y, z, w) => {ç
+		console.log(x, y, z, w);
 		launchRequest(Request.Go, new Position(x, y, z, w))
 			.then( data => console.log(data) )
 			.catch( error => console.log("Error : " + error.getErrorMessage()))
