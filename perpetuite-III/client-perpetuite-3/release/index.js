@@ -4,15 +4,16 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 15:52:21
+  @Last Modified time: 2022-07-22 16:20:55
 \*----------------------------------------*/
 
 /*
 
 		./release/index.js HighPower 1
 		./release/index.js HighPower 0
-		./release/index.js Go -- 0 0 0 0
 		./release/index.js Go -- -100 0 0 0
+		./release/index.js Speed -- 100
+		./release/index.js Acc -- 10
 */
 "use strict";
 
@@ -51,6 +52,9 @@ const launchRequest = async (RequestBuilder, ...parameters) => {
 };
 
 program.command('HighPower').argument('<flag>', 'boolean argument', _Tools.stringToBoolean).description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off').action(flag => {
+  launchRequest(_Request.default.HighPower, flag).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
+});
+program.command('Break').argument('<flag>', 'boolean argument', _Tools.stringToBoolean).description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off').action(flag => {
   launchRequest(_Request.default.HighPower, flag).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
 });
 program.command('Go') // double -- to authorize negative value

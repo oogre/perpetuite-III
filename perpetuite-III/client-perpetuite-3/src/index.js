@@ -3,14 +3,15 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 15:52:21
+  @Last Modified time: 2022-07-22 16:20:55
 \*----------------------------------------*/
 /*
 
 		./release/index.js HighPower 1
 		./release/index.js HighPower 0
-		./release/index.js Go -- 0 0 0 0
 		./release/index.js Go -- -100 0 0 0
+		./release/index.js Speed -- 100
+		./release/index.js Acc -- 10
 */
 import Request from './Request.js';
 import Parameter from './Parameter.js';
@@ -43,6 +44,16 @@ program
 	.command('HighPower')
 	.argument('<flag>', 'boolean argument', stringToBoolean)
 	.description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off')
+	.action( flag => {
+		launchRequest(Request.HighPower, flag)
+			.then( data => console.log(data) )
+			.catch( error => console.log("Error : " + error.getErrorMessage()))
+	});
+
+program
+	.command('Break')
+	.argument('<flag>', 'boolean argument', stringToBoolean)
+	.description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off')
 	.action( flag => {
 		launchRequest(Request.HighPower, flag)
 			.then( data => console.log(data) )
