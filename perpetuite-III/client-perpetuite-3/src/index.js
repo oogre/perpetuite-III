@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 17:13:08
+  @Last Modified time: 2022-07-22 17:18:41
 \*----------------------------------------*/
 /*
 
@@ -92,29 +92,30 @@ program
 	.command('Follow')
 	// double -- to authorize negative value
 	.description('Tell the robot to go at a position x y z with a orientation of w')
-	.action( () => {
-		launchRequest(Request.Follow, new Position(
-			300 * (Math.random() * 2 -1), 
-			300 * (Math.random() * 2 -1), 
-			300 * (Math.random() * 2 -1), 
-			300 * (Math.random() * 2 -1)
-		)).then( data => {
-			launchRequest(Request.Follow, new Position(
+	.action( async () => {
+		try{
+			await launchRequest(Request.Follow, new Position(
 				300 * (Math.random() * 2 -1), 
 				300 * (Math.random() * 2 -1), 
 				300 * (Math.random() * 2 -1), 
 				300 * (Math.random() * 2 -1)
-			)).then( data => {
-				launchRequest(Request.Follow, new Position(
+			));
+			await launchRequest(Request.Follow, new Position(
 					300 * (Math.random() * 2 -1), 
 					300 * (Math.random() * 2 -1), 
 					300 * (Math.random() * 2 -1), 
 					300 * (Math.random() * 2 -1)
-				)).then( data => {
-					console.log("YO");
-				}).catch( error => console.log("Error : " + error.getErrorMessage()))
-			}).catch( error => console.log("Error : " + error.getErrorMessage()))
-		}).catch( error => console.log("Error : " + error.getErrorMessage()))
+			));
+			await launchRequest(Request.Follow, new Position(
+						300 * (Math.random() * 2 -1), 
+						300 * (Math.random() * 2 -1), 
+						300 * (Math.random() * 2 -1), 
+						300 * (Math.random() * 2 -1)
+			));
+			console.log("YO");
+		}catch(error){
+			console.log("Error : " + error.getErrorMessage())
+		}
 	});
 
 
