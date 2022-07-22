@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 15:12:17
+  @Last Modified time: 2022-07-22 15:17:14
 \*----------------------------------------*/
 
 
@@ -29,11 +29,8 @@ function myParseInt(value, dummyPrevious) {
 const launchRequest = async (RequestBuilder, ...parameters) => {
 	let res = await call(RequestBuilder(...parameters));
 		res = Request.fromRaw(res);
-		if(res.isFail()) {
-			console.log("Error : " + res.getErrorMessage());
-			throw res;
-		}
-		return res;
+		if(res.isFail()) throw res;
+		return res.toString();
 }
 
 program
@@ -51,7 +48,7 @@ program
 
 		launchRequest(Request.HighPower, flag)
 			.then( data => console.log(data) )
-			.catch( error => console.log(error) )
+			.catch( error => console.log("Error : " + error.getErrorMessage()))
 	});
 
 
@@ -63,9 +60,9 @@ program
 	.argument('[w]', 'float argument', 0, parseFloat)
 	.description('Tell the robot to go at a position x y z with a orientation of w')
 	.action( (x, y, z, w) => {
-		launchRequest(Request.Go, x, y, z, w)
+		launchRequest(Request.Go, new Position(x, y, z, w))
 			.then( data => console.log(data) )
-			.catch( error => console.log(error) )
+			.catch( error => console.log("Error : " + error.getErrorMessage()))
 	});
 /*
 
