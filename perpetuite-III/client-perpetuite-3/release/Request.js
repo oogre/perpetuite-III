@@ -46,6 +46,8 @@ class Request {
 
   static fromRaw(rawData) {
     // true for HighPower false for LowPower
+    if ((0, _Tools.isBuffer)(rawData)) rawData = rawData.toString('utf8');
+    console.log("fromRaw", rawData);
     let splitedData = rawData.split(" ");
     if (splitedData.length <= 0) throw Error(`Raw Data to build a request is wrong formatted`);
     const [typeName, typeValue] = Object.entries(REQUEST_TYPE).find(([key, value]) => value.description == splitedData[0]);

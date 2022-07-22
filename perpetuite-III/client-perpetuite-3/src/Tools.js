@@ -2,7 +2,7 @@
   easyPlayer - Tools.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:52:19
-  @Last Modified time: 2022-07-22 11:09:32
+  @Last Modified time: 2022-07-22 14:24:32
 \*----------------------------------------*/
 
 import Position from './Position.js';
@@ -16,6 +16,7 @@ export const isInteger = (n) => n === +n && n === (n|0);
 export const isNumber = (n) => isFloat(n) || isInteger(n);
 export const isPosition = (obj) => obj instanceof Position;
 export const isRequest = (obj) => obj instanceof Request;
+export const isBuffer = (n) => Buffer.isBuffer(n);
 
 export const uniqId = () => Math.floor(Math.random() * Date.now()).toString(16);
 
