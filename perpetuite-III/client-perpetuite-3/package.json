@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "./scripts/build.sh"
+    "build": "node ./node_modules/.bin/babel --verbose --out-dir release src"
   },
   "author": "",
   "license": "ISC",
