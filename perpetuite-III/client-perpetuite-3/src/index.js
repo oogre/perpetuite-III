@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 14:47:48
+  @Last Modified time: 2022-07-22 15:12:17
 \*----------------------------------------*/
 
 
@@ -26,27 +26,46 @@ function myParseInt(value, dummyPrevious) {
   return parsedValue;
 }
 
-// program
-//   .command('add')
-//   .argument('<first>', 'integer argument', myParseInt)
-//   .argument('[second]', 'integer argument', myParseInt, 1000)
-//   .action((first, second) => {
-//     console.log(`${first} + ${second} = ${first + second}`);
-//   })
-// ;
+const launchRequest = async (RequestBuilder, ...parameters) => {
+	let res = await call(RequestBuilder(...parameters));
+		res = Request.fromRaw(res);
+		if(res.isFail()) {
+			console.log("Error : " + res.getErrorMessage());
+			throw res;
+		}
+		return res;
+}
 
 program
 	.command('HighPower')
 	.argument('<flag>', 'boolean argument', stringToBoolean)
 	.description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off')
-	.action( async flag => {
-		let res = await call(Request.HighPower(flag));
-		res = Request.fromRaw(res);
-		if(res.isFail()) {
-			console.log("Error : " + res.getErrorMessage());
-			return;
-		}
-		console.log(res.toString());
+	.action( flag => {
+		// let res = await call(Request.HighPower(flag));
+		// res = Request.fromRaw(res);
+		// if(res.isFail()) {
+		// 	console.log("Error : " + res.getErrorMessage());
+		// 	return;
+		// }
+		// console.log(res.toString());
+
+		launchRequest(Request.HighPower, flag)
+			.then( data => console.log(data) )
+			.catch( error => console.log(error) )
+	});
+
+
+program
+	.command('Go')
+	.argument('<x>', 'float argument', parseFloat)
+	.argument('<y>', 'float argument', parseFloat)
+	.argument('<z>', 'float argument', parseFloat)
+	.argument('[w]', 'float argument', 0, parseFloat)
+	.description('Tell the robot to go at a position x y z with a orientation of w')
+	.action( (x, y, z, w) => {
+		launchRequest(Request.Go, x, y, z, w)
+			.then( data => console.log(data) )
+			.catch( error => console.log(error) )
 	});
 /*
 

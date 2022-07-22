@@ -2,7 +2,7 @@
   client-perpetuite-3 - Communication.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-07-21 15:58:08
-  @Last Modified time: 2022-07-22 14:29:46
+  @Last Modified time: 2022-07-22 15:00:40
 \*----------------------------------------*/
 
 import _config_ from './_config_.js';
@@ -30,7 +30,7 @@ export default async (req) => { // Request object
 		});
 
 		client.on('end', () => {
-			console.log('CLIENT : closed');
+			// console.log('CLIENT : closed');
 		});
 	});
 }
