@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 16:23:12
+  @Last Modified time: 2022-07-22 16:37:37
 \*----------------------------------------*/
 /*
 
@@ -50,12 +50,24 @@ program
 			.catch( error => console.log("Error : " + error.getErrorMessage()))
 	});
 
+
 program
 	.command('Break')
 	.argument('<flag>', 'boolean argument', stringToBoolean)
 	.description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off')
 	.action( flag => {
 		launchRequest(Request.Break, flag)
+			.then( data => console.log(data) )
+			.catch( error => console.log("Error : " + error.getErrorMessage()))
+	});
+
+
+program
+	.command('Gripper')
+	.argument('<flag>', 'boolean argument', stringToBoolean)
+	.description('Enable/Disable Gripper. true turns the Gripper On & false turns the Gripper Off')
+	.action( flag => {
+		launchRequest(Request.Gripper, flag)
 			.then( data => console.log(data) )
 			.catch( error => console.log("Error : " + error.getErrorMessage()))
 	});

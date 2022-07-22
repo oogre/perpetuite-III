@@ -2,13 +2,12 @@
   client-perpetuite-3 - ErrorDictionnary.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-07-22 14:50:06
-  @Last Modified time: 2022-07-22 15:22:19
+  @Last Modified time: 2022-07-22 16:36:20
 \*----------------------------------------*/
 export default Object.freeze({
 	unknown : `Unknown error : `,
-	"(-908):" :  "e-Stop - big red button is pressed",
-	"(-908)" :  "e-Stop - big red button is pressed",
-	"(-604)" :  "HighPower is not On",
-	"(-901)" :  "Out of range Target",
-
+	"(-908)" :  "E-STOP from front panel button",
+	"(-604)" :  "Robot power off",
+	"(-901)" :  "Obstacle collision detected",
+	"(-530)" :  "Protection error",
 });

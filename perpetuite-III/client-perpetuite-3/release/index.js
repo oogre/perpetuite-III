@@ -4,7 +4,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 16:23:12
+  @Last Modified time: 2022-07-22 16:37:37
 \*----------------------------------------*/
 
 /*
@@ -56,6 +56,9 @@ program.command('HighPower').argument('<flag>', 'boolean argument', _Tools.strin
 });
 program.command('Break').argument('<flag>', 'boolean argument', _Tools.stringToBoolean).description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off').action(flag => {
   launchRequest(_Request.default.Break, flag).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
+});
+program.command('Gripper').argument('<flag>', 'boolean argument', _Tools.stringToBoolean).description('Enable/Disable Gripper. true turns the Gripper On & false turns the Gripper Off').action(flag => {
+  launchRequest(_Request.default.Gripper, flag).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
 });
 program.command('Go') // double -- to authorize negative value
 .argument('<x>', 'float argument', parseFloat).argument('<y>', 'float argument', parseFloat).argument('<z>', 'float argument', parseFloat).argument('<w>', 'float argument', parseFloat).description('Tell the robot to go at a position x y z with a orientation of w').action((x, y, z, w) => {
