@@ -4,7 +4,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 16:37:37
+  @Last Modified time: 2022-07-22 17:13:08
 \*----------------------------------------*/
 
 /*
@@ -63,6 +63,16 @@ program.command('Gripper').argument('<flag>', 'boolean argument', _Tools.stringT
 program.command('Go') // double -- to authorize negative value
 .argument('<x>', 'float argument', parseFloat).argument('<y>', 'float argument', parseFloat).argument('<z>', 'float argument', parseFloat).argument('<w>', 'float argument', parseFloat).description('Tell the robot to go at a position x y z with a orientation of w').action((x, y, z, w) => {
   launchRequest(_Request.default.Go, new _Position.default(x, y, z, w)).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
+});
+program.command('Follow') // double -- to authorize negative value
+.description('Tell the robot to go at a position x y z with a orientation of w').action(() => {
+  launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1))).then(data => {
+    launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1))).then(data => {
+      launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1))).then(data => {
+        console.log("YO");
+      }).catch(error => console.log("Error : " + error.getErrorMessage()));
+    }).catch(error => console.log("Error : " + error.getErrorMessage()));
+  }).catch(error => console.log("Error : " + error.getErrorMessage()));
 });
 program.command('Speed').argument('<speed>', 'int argument', parseInt).description('set the speed, 0 is minimum 100 is maximum').action(speed => {
   launchRequest(_Request.default.Speed, speed).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
