@@ -1,6 +1,6 @@
 import {isNumber, isInteger, isBool, isPosition, isArray} from './Tools.js';
 import Parameter from './Parameter.js';
-
+import ErrorDict from './ErrorDictionnary.js';
 const REQUEST_TYPE = Object.freeze({
   Nothing :    Symbol("Nothing"),
   ok :         Symbol("ok"),
@@ -31,7 +31,7 @@ export default class Request{
     return this.type == REQUEST_TYPE.ko;
   }
   getErrorMessage(){
-    return this.parameters[0]?.value;
+    return ErrorDict[""+this.parameters[0]?.value] || (`${ErrorDict.unknown} : ${this.parameters[0]?.value}`);
   }
   static fromRaw(rawData){// true for HighPower false for LowPower
       let splitedData = rawData.split(" ");

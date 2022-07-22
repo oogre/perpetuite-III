@@ -9,6 +9,8 @@ var _Tools = require("./Tools.js");
 
 var _Parameter = _interopRequireDefault(require("./Parameter.js"));
 
+var _ErrorDictionnary = _interopRequireDefault(require("./ErrorDictionnary.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const REQUEST_TYPE = Object.freeze({
@@ -54,9 +56,9 @@ class Request {
   }
 
   getErrorMessage() {
-    var _this$parameters$;
+    var _this$parameters$, _this$parameters$2;
 
-    return (_this$parameters$ = this.parameters[0]) === null || _this$parameters$ === void 0 ? void 0 : _this$parameters$.value;
+    return _ErrorDictionnary.default["" + ((_this$parameters$ = this.parameters[0]) === null || _this$parameters$ === void 0 ? void 0 : _this$parameters$.value)] || `${_ErrorDictionnary.default.unknown} : ${(_this$parameters$2 = this.parameters[0]) === null || _this$parameters$2 === void 0 ? void 0 : _this$parameters$2.value}`;
   }
 
   static fromRaw(rawData) {
