@@ -13,8 +13,8 @@ exports.default = void 0;
 \*----------------------------------------*/
 var _default = Object.freeze({
   connection: {
-    //host: "localhost", 
-    host: "DESKTOP-8KD5D4K.local",
+    host: "localhost", 
+    //host: "DESKTOP-8KD5D4K.local",
     port: 9090,
     timeout: 1000
   }
