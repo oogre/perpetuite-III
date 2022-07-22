@@ -4,7 +4,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 17:21:19
+  @Last Modified time: 2022-07-22 17:24:38
 \*----------------------------------------*/
 
 /*
@@ -67,9 +67,9 @@ program.command('Go') // double -- to authorize negative value
 program.command('Follow') // double -- to authorize negative value
 .description('Tell the robot to go at a position x y z with a orientation of w').action(async () => {
   try {
-    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 0));
-    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 0));
-    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 0));
+    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (-1 * Math.random()), 0));
+    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (-1 * Math.random()), 0));
+    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (-1 * Math.random()), 0));
     console.log("YO");
   } catch (error) {
     console.log("Error : ", error);
