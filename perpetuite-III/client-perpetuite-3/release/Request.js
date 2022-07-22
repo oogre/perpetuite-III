@@ -19,8 +19,6 @@ const REQUEST_TYPE = Object.freeze({
   ko: Symbol("ko"),
   HighPower: Symbol("HighPower"),
   // param ON-OFF
-  Break: Symbol("Break"),
-  // param ON-OFF
   Gripper: Symbol("Gripper"),
   // param ON-OFF
   Speed: Symbol("Speed"),
@@ -87,12 +85,6 @@ class Request {
     return new Request(REQUEST_TYPE.HighPower, [_Parameter.default.fromBool(bool)]);
   }
 
-  static Break(bool) {
-    // true for Break false for Release
-    if (!(0, _Tools.isBool)(bool)) throw Error(`Break Request Constructor takes one argument and it has to be boolean value (true > Break and false > Release)`);
-    return new Request(REQUEST_TYPE.Break, [_Parameter.default.fromBool(bool)]);
-  }
-
   static Gripper(bool) {
     // true for Grab false for Release
     if (!(0, _Tools.isBool)(bool)) throw Error(`Gripper Request Constructor takes one argument and it has to be boolean value (true > Grab and false > Release)`);
@@ -119,11 +111,14 @@ class Request {
   }
 
   static Follow(positions) {
-    if (!(0, _Tools.isArray)(positions)) throw Error(`Follow Request Constructor takes one argument and it has to be an array`);
-    positions.forEach(position => {
-      if (!(0, _Tools.isPosition)(position)) throw Error(`Follow Request Constructor takes one argument and it has to be an array of Postion value`);
-    });
-    return new Request(REQUEST_TYPE.Follow, positions.map(position => _Parameter.default.fromPosition(position)).flat());
+    if (!(0, _Tools.isPosition)(position)) throw Error(`Go Request Constructor takes a argument and it has to be a Postion value`);
+    return new Request(REQUEST_TYPE.Follow, [..._Parameter.default.fromPosition(position)]); // if(!isArray(positions))
+    //   throw Error(`Follow Request Constructor takes one argument and it has to be an array`);
+    // positions.forEach(position => {
+    //    if (!isPosition(position))
+    //       throw Error(`Follow Request Constructor takes one argument and it has to be an array of Postion value`);
+    // });
+    // return new Request(REQUEST_TYPE.Follow, positions.map(position=>Parameter.fromPosition(position)).flat());
   }
 
   toString() {

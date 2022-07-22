@@ -6,7 +6,6 @@ const REQUEST_TYPE = Object.freeze({
   ok :         Symbol("ok"),
   ko :         Symbol("ko"),
   HighPower :  Symbol("HighPower"),    // param ON-OFF
-  Break :      Symbol("Break"),        // param ON-OFF
   Gripper :    Symbol("Gripper"),      // param ON-OFF
   Speed :      Symbol("Speed"),        // param int[0-100]
   Acc :        Symbol("Acc"),          // param int[0-100]
@@ -52,11 +51,6 @@ export default class Request{
          throw Error(`HighPower Request Constructor takes one argument and it has to be boolean value (true > High and false > Low)`);
       return new Request(REQUEST_TYPE.HighPower, [Parameter.fromBool(bool)]);
    }
-   static Break(bool){// true for Break false for Release
-      if (!isBool(bool))
-         throw Error(`Break Request Constructor takes one argument and it has to be boolean value (true > Break and false > Release)`);
-      return new Request(REQUEST_TYPE.Break, [Parameter.fromBool(bool)]);
-   }
    static Gripper(bool){// true for Grab false for Release
       if (!isBool(bool))
          throw Error(`Gripper Request Constructor takes one argument and it has to be boolean value (true > Grab and false > Release)`);
@@ -82,13 +76,16 @@ export default class Request{
       return new Request(REQUEST_TYPE.Go, [...Parameter.fromPosition(position)]);
    }
    static Follow(positions){
-      if(!isArray(positions))
-        throw Error(`Follow Request Constructor takes one argument and it has to be an array`);
-      positions.forEach(position => {
-         if (!isPosition(position))
-            throw Error(`Follow Request Constructor takes one argument and it has to be an array of Postion value`);
-      });
-      return new Request(REQUEST_TYPE.Follow, positions.map(position=>Parameter.fromPosition(position)).flat());
+    if (!isPosition(position))
+         throw Error(`Go Request Constructor takes a argument and it has to be a Postion value`);
+      return new Request(REQUEST_TYPE.Follow, [...Parameter.fromPosition(position)]);
+      // if(!isArray(positions))
+      //   throw Error(`Follow Request Constructor takes one argument and it has to be an array`);
+      // positions.forEach(position => {
+      //    if (!isPosition(position))
+      //       throw Error(`Follow Request Constructor takes one argument and it has to be an array of Postion value`);
+      // });
+      // return new Request(REQUEST_TYPE.Follow, positions.map(position=>Parameter.fromPosition(position)).flat());
    }
    toString(){
       return `${this.type.description} ${this.parameters.length} ${this.parameters.map(parameter=>parameter.toString()).join(" ")}`
