@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 16:20:55
+  @Last Modified time: 2022-07-22 16:23:12
 \*----------------------------------------*/
 /*
 
@@ -55,7 +55,7 @@ program
 	.argument('<flag>', 'boolean argument', stringToBoolean)
 	.description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off')
 	.action( flag => {
-		launchRequest(Request.HighPower, flag)
+		launchRequest(Request.Break, flag)
 			.then( data => console.log(data) )
 			.catch( error => console.log("Error : " + error.getErrorMessage()))
 	});
