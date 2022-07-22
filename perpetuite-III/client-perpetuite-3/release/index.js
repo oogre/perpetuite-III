@@ -4,7 +4,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 15:17:14
+  @Last Modified time: 2022-07-22 15:28:58
 \*----------------------------------------*/
 "use strict";
 
@@ -43,16 +43,9 @@ const launchRequest = async (RequestBuilder, ...parameters) => {
 };
 
 program.command('HighPower').argument('<flag>', 'boolean argument', _Tools.stringToBoolean).description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off').action(flag => {
-  // let res = await call(Request.HighPower(flag));
-  // res = Request.fromRaw(res);
-  // if(res.isFail()) {
-  // 	console.log("Error : " + res.getErrorMessage());
-  // 	return;
-  // }
-  // console.log(res.toString());
   launchRequest(_Request.default.HighPower, flag).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
 });
-program.command('Go').argument('<x>', 'float argument', parseFloat).argument('<y>', 'float argument', parseFloat).argument('<z>', 'float argument', parseFloat).argument('[w]', 'float argument', 0, parseFloat).description('Tell the robot to go at a position x y z with a orientation of w').action((x, y, z, w) => {
+program.command('Go').argument('<x>', 'float argument', parseFloat).argument('<y>', 'float argument', parseFloat).argument('<z>', 'float argument', parseFloat).argument('<w>', 'float argument', parseFloat).description('Tell the robot to go at a position x y z with a orientation of w').action((x, y, z, w) => {
   launchRequest(_Request.default.Go, new _Position.default(x, y, z, w)).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
 });
 /*

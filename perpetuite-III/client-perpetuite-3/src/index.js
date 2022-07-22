@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 15:17:14
+  @Last Modified time: 2022-07-22 15:28:58
 \*----------------------------------------*/
 
 
@@ -38,14 +38,6 @@ program
 	.argument('<flag>', 'boolean argument', stringToBoolean)
 	.description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off')
 	.action( flag => {
-		// let res = await call(Request.HighPower(flag));
-		// res = Request.fromRaw(res);
-		// if(res.isFail()) {
-		// 	console.log("Error : " + res.getErrorMessage());
-		// 	return;
-		// }
-		// console.log(res.toString());
-
 		launchRequest(Request.HighPower, flag)
 			.then( data => console.log(data) )
 			.catch( error => console.log("Error : " + error.getErrorMessage()))
@@ -57,7 +49,7 @@ program
 	.argument('<x>', 'float argument', parseFloat)
 	.argument('<y>', 'float argument', parseFloat)
 	.argument('<z>', 'float argument', parseFloat)
-	.argument('[w]', 'float argument', 0, parseFloat)
+	.argument('<w>', 'float argument', parseFloat)
 	.description('Tell the robot to go at a position x y z with a orientation of w')
 	.action( (x, y, z, w) => {
 		launchRequest(Request.Go, new Position(x, y, z, w))
