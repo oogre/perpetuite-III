@@ -2,35 +2,35 @@
   client-perpetuite-3 - Communication.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-07-21 15:58:08
-  @Last Modified time: 2022-07-22 14:12:07
+  @Last Modified time: 2022-07-22 14:29:46
 \*----------------------------------------*/
 
 import _config_ from './_config_.js';
-import {isRequest} from './Tools.js';
+import {isRequest, isBuffer} from './Tools.js';
 const net = require('net');
 
 
 export default async (req) => { // Request object
-	console.log("call ", req.toString());
-    return new Promise((resolve, reject)=>{
+	return new Promise((resolve, reject)=>{
 		if(!isRequest(req))return reject("Call communication takes only Request Object as parameter ");
 		const client = net.createConnection(_config_.connection, () => {
-			console.log("send : ", req.toString());
 			client.write(req.toString());
 		});
 
 		client.on('data', (data) => {
-			console.log("received : ", data);
-			resolve(data);
 			client.end();
+			if(isBuffer(data)) data = data.toString('utf8');
+			resolve(data);
 		});
 
 		client.on("error", e => {
+			client.end();
 			reject(`${e && e.message}`);
+
 		});
 
 		client.on('end', () => {
-			console.log('CLIENT: I disconnected from the server.');
+			console.log('CLIENT : closed');
 		});
 	});
 }

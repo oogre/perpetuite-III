@@ -1,9 +1,10 @@
-import {isNumber, isInteger, isBool, isPosition, isArray, isBuffer} from './Tools.js';
+import {isNumber, isInteger, isBool, isPosition, isArray} from './Tools.js';
 import Parameter from './Parameter.js';
 
 const REQUEST_TYPE = Object.freeze({
   Nothing :    Symbol("Nothing"),
   ok :         Symbol("ok"),
+  ko :         Symbol("ko"),
   HighPower :  Symbol("HighPower"),    // param ON-OFF
   Break :      Symbol("Break"),        // param ON-OFF
   Gripper :    Symbol("Gripper"),      // param ON-OFF
@@ -24,8 +25,6 @@ export default class Request{
     this.parameters = parameters;
   }
   static fromRaw(rawData){// true for HighPower false for LowPower
-      if(isBuffer(rawData))rawData = rawData.toString('utf8');
-      console.log("fromRaw", rawData);
       let splitedData = rawData.split(" ");
       if(splitedData.length <=0)throw Error(`Raw Data to build a request is wrong formatted`);
       const [typeName, typeValue] = Object.entries(REQUEST_TYPE).find(([key, value]) => value.description == splitedData[0]);
