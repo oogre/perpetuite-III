@@ -24,6 +24,15 @@ export default class Request{
     this.type = type;
     this.parameters = parameters;
   }
+  isSuccess(){
+    return this.type == REQUEST_TYPE.ok;
+  }
+  isFail(){
+    return this.type == REQUEST_TYPE.ko;
+  }
+  getErrorMessage(){
+    return this.parameters[0]?.value;
+  }
   static fromRaw(rawData){// true for HighPower false for LowPower
       let splitedData = rawData.split(" ");
       if(splitedData.length <=0)throw Error(`Raw Data to build a request is wrong formatted`);

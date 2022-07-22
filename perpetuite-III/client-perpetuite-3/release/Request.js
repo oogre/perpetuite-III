@@ -45,6 +45,20 @@ class Request {
     this.parameters = parameters;
   }
 
+  isSuccess() {
+    return this.type == REQUEST_TYPE.ok;
+  }
+
+  isFail() {
+    return this.type == REQUEST_TYPE.ko;
+  }
+
+  getErrorMessage() {
+    var _this$parameters$;
+
+    return (_this$parameters$ = this.parameters[0]) === null || _this$parameters$ === void 0 ? void 0 : _this$parameters$.value;
+  }
+
   static fromRaw(rawData) {
     // true for HighPower false for LowPower
     let splitedData = rawData.split(" ");

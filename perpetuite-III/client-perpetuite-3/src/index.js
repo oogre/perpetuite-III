@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 11:57:01
+  @Last Modified time: 2022-07-22 14:47:48
 \*----------------------------------------*/
 
 
@@ -39,11 +39,14 @@ program
 	.command('HighPower')
 	.argument('<flag>', 'boolean argument', stringToBoolean)
 	.description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off')
-	.action( (flag) => {
-		console.log(flag);
-		call(Request.HighPower(flag))
-			.then(res => Request.fromRaw(res))
-			.then(res => console.log(res.toString()));
+	.action( async flag => {
+		let res = await call(Request.HighPower(flag));
+		res = Request.fromRaw(res);
+		if(res.isFail()) {
+			console.log("Error : " + res.getErrorMessage());
+			return;
+		}
+		console.log(res.toString());
 	});
 /*
 
