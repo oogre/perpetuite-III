@@ -4,7 +4,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 17:27:20
+  @Last Modified time: 2022-07-22 17:41:44
 \*----------------------------------------*/
 
 /*
@@ -66,13 +66,44 @@ program.command('Go') // double -- to authorize negative value
 });
 program.command('Follow') // double -- to authorize negative value
 .description('Tell the robot to go at a position x y z with a orientation of w').action(async () => {
-  try {
-    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (-1 * Math.random()), 45 * (Math.random() * 2 - 1)));
-    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (-1 * Math.random()), 45 * (Math.random() * 2 - 1)));
-    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (-1 * Math.random()), 45 * (Math.random() * 2 - 1)));
-  } catch (error) {
-    console.log("Error : ", error);
-  }
+  const readline = require('readline');
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
+  });
+  rl.on('line', line => {
+    const coord = line.trim().split(" ").map(v => parseFloat(v));
+    console.log(coord);
+
+    try {
+      launchRequest(_Request.default.Follow, new _Position.default(...coord));
+    } catch (error) {
+      console.log("Error : ", error);
+    }
+  }); // try{
+  // 	await launchRequest(Request.Follow, new Position(
+  // 		300 * (Math.random() * 2 -1), 
+  // 		300 * (Math.random() * 2 -1), 
+  // 		300 * (-1 * Math.random()), 
+  // 		45 * (Math.random() * 2 -1)
+  // 	));
+  // 	await launchRequest(Request.Follow, new Position(
+  // 		300 * (Math.random() * 2 -1), 
+  // 		300 * (Math.random() * 2 -1), 
+  // 		300 * (-1 * Math.random()), 
+  // 		45 * (Math.random() * 2 -1)
+  // 	));
+  // 	await launchRequest(Request.Follow, new Position(
+  // 		300 * (Math.random() * 2 -1), 
+  // 		300 * (Math.random() * 2 -1), 
+  // 		300 * (-1 * Math.random()), 
+  // 		45 * (Math.random() * 2 -1)
+  // 	));
+  // }catch(error){
+  // 	console.log("Error : ", error)
+  // }
 });
 program.command('Speed').argument('<speed>', 'int argument', parseInt).description('set the speed, 0 is minimum 100 is maximum').action(speed => {
   launchRequest(_Request.default.Speed, speed).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
