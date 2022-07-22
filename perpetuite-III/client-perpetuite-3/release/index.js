@@ -1,32 +1,39 @@
 #!/usr/bin/env node
+
 /*----------------------------------------*\
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
   @Last Modified time: 2022-07-22 11:57:01
 \*----------------------------------------*/
+"use strict";
 
+var _Request = _interopRequireDefault(require("./Request.js"));
 
-import Request from './Request.js';
-import Parameter from './Parameter.js';
-import Position from './Position.js';
-import call from './Communication.js';
-import { Command } from 'commander';
-const program = new Command();
+var _Parameter = _interopRequireDefault(require("./Parameter.js"));
 
-import {stringToBoolean, isBool} from './Tools.js'
+var _Position = _interopRequireDefault(require("./Position.js"));
 
+var _Communication = _interopRequireDefault(require("./Communication.js"));
+
+var _commander = require("commander");
+
+var _Tools = require("./Tools.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const program = new _commander.Command();
 
 function myParseInt(value, dummyPrevious) {
   // parseInt takes a string and a radix
   const parsedValue = parseInt(value, 10);
+
   if (isNaN(parsedValue)) {
     throw new commander.InvalidArgumentError('Not a number.');
   }
-  return parsedValue;
-}
 
-// program
+  return parsedValue;
+} // program
 //   .command('add')
 //   .argument('<first>', 'integer argument', myParseInt)
 //   .argument('[second]', 'integer argument', myParseInt, 1000)
@@ -35,16 +42,11 @@ function myParseInt(value, dummyPrevious) {
 //   })
 // ;
 
-program
-	.command('HighPower')
-	.argument('<flag>', 'boolean argument', stringToBoolean)
-	.description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off')
-	.action( (flag) => {
-		console.log(flag);
-		call(Request.HighPower(flag))
-			.then(res => Request.fromRaw(res))
-			.then(res => console.log(res.toString()));
-	});
+
+program.command('HighPower').argument('<flag>', 'boolean argument', _Tools.stringToBoolean).description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off').action(flag => {
+  console.log(flag);
+  (0, _Communication.default)(_Request.default.HighPower(flag)).then(res => _Request.default.fromRaw(res)).then(res => console.log(res.toString()));
+});
 /*
 
 const main = async () => {
@@ -67,6 +69,5 @@ main()
 .then(data=>console.log(data))
 .catch(error => console.log(error));
 */
-
 
 program.parse();

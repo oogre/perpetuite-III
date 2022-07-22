@@ -2,14 +2,7 @@
 # @Author: Evrard Vincent
 # @Date:   2020-12-23 22:10:56
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-04-04 22:35:07
+# @Last Modified time: 2022-07-22 11:32:02
 
-
-rollup -c
-
-./node_modules/.bin/babel --verbose --out-dir release tmp
-
-
-
-rm tmp/*
-rm -r tmp
+./node_modules/.bin/babel --verbose --out-dir release src
+chmod 777 ./release/index.js
