@@ -4,8 +4,16 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 15:33:43
+  @Last Modified time: 2022-07-22 15:52:21
 \*----------------------------------------*/
+
+/*
+
+		./release/index.js HighPower 1
+		./release/index.js HighPower 0
+		./release/index.js Go -- 0 0 0 0
+		./release/index.js Go -- -100 0 0 0
+*/
 "use strict";
 
 var _Request = _interopRequireDefault(require("./Request.js"));
@@ -45,32 +53,14 @@ const launchRequest = async (RequestBuilder, ...parameters) => {
 program.command('HighPower').argument('<flag>', 'boolean argument', _Tools.stringToBoolean).description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off').action(flag => {
   launchRequest(_Request.default.HighPower, flag).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
 });
-program.command('Go').argument('<x>', 'float argument', parseFloat).argument('<y>', 'float argument', parseFloat).argument('<z>', 'float argument', parseFloat).argument('<w>', 'float argument', parseFloat).description('Tell the robot to go at a position x y z with a orientation of w').action((x, y, z, w) => {
-  ç;
-  console.log(x, y, z, w);
+program.command('Go') // double -- to authorize negative value
+.argument('<x>', 'float argument', parseFloat).argument('<y>', 'float argument', parseFloat).argument('<z>', 'float argument', parseFloat).argument('<w>', 'float argument', parseFloat).description('Tell the robot to go at a position x y z with a orientation of w').action((x, y, z, w) => {
   launchRequest(_Request.default.Go, new _Position.default(x, y, z, w)).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
 });
-/*
-
-const main = async () => {
-
-
-
-   // const res = await call(Request.Nothing());
-   // Request.fromRaw(res);
-   
- 		
-   // await call(Request.Break(false));
-   // await call(Request.Gripper(true));
-   // await call(Request.Speed(10));
-   // await call(Request.Acc(50));
-   // await call(Request.Go(new Position(1, 2, 3, 4)));
-   // await call(Request.Follow([new Position(1, 2, 3), new Position(4, 5, 63)]));
-}
-
-main()
-.then(data=>console.log(data))
-.catch(error => console.log(error));
-*/
-
+program.command('Speed').argument('<speed>', 'int argument', parseInt).description('set the speed, 0 is minimum 100 is maximum').action(speed => {
+  launchRequest(_Request.default.Speed, speed).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
+});
+program.command('Acc').argument('<acc>', 'int argument', parseInt).description('set the acceleration/deceleration, 0 is minimum 100 is maximum').action(acc => {
+  launchRequest(_Request.default.Acc, acc).then(data => console.log(data)).catch(error => console.log("Error : " + error.getErrorMessage()));
+});
 program.parse();
