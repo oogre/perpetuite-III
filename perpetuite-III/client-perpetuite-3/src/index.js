@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 17:18:41
+  @Last Modified time: 2022-07-22 17:21:19
 \*----------------------------------------*/
 /*
 
@@ -98,23 +98,23 @@ program
 				300 * (Math.random() * 2 -1), 
 				300 * (Math.random() * 2 -1), 
 				300 * (Math.random() * 2 -1), 
-				300 * (Math.random() * 2 -1)
+				0
 			));
 			await launchRequest(Request.Follow, new Position(
-					300 * (Math.random() * 2 -1), 
-					300 * (Math.random() * 2 -1), 
-					300 * (Math.random() * 2 -1), 
-					300 * (Math.random() * 2 -1)
+				300 * (Math.random() * 2 -1), 
+				300 * (Math.random() * 2 -1), 
+				300 * (Math.random() * 2 -1), 
+				0
 			));
 			await launchRequest(Request.Follow, new Position(
-						300 * (Math.random() * 2 -1), 
-						300 * (Math.random() * 2 -1), 
-						300 * (Math.random() * 2 -1), 
-						300 * (Math.random() * 2 -1)
+				300 * (Math.random() * 2 -1), 
+				300 * (Math.random() * 2 -1), 
+				300 * (Math.random() * 2 -1), 
+				0
 			));
 			console.log("YO");
 		}catch(error){
-			console.log("Error : " + error.getErrorMessage())
+			console.log("Error : ", error)
 		}
 	});
 

@@ -4,7 +4,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 17:18:41
+  @Last Modified time: 2022-07-22 17:21:19
 \*----------------------------------------*/
 
 /*
@@ -67,12 +67,12 @@ program.command('Go') // double -- to authorize negative value
 program.command('Follow') // double -- to authorize negative value
 .description('Tell the robot to go at a position x y z with a orientation of w').action(async () => {
   try {
-    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1)));
-    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1)));
-    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1)));
+    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 0));
+    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 0));
+    await launchRequest(_Request.default.Follow, new _Position.default(300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 300 * (Math.random() * 2 - 1), 0));
     console.log("YO");
   } catch (error) {
-    console.log("Error : " + error.getErrorMessage());
+    console.log("Error : ", error);
   }
 });
 program.command('Speed').argument('<speed>', 'int argument', parseInt).description('set the speed, 0 is minimum 100 is maximum').action(speed => {

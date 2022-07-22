@@ -76,9 +76,9 @@ export default class Request{
       return new Request(REQUEST_TYPE.Go, [...Parameter.fromPosition(position)]);
    }
    static Follow(positions){
-    if (!isPosition(position))
+    if (!isPosition(positions))
          throw Error(`Go Request Constructor takes a argument and it has to be a Postion value`);
-      return new Request(REQUEST_TYPE.Follow, [...Parameter.fromPosition(position)]);
+      return new Request(REQUEST_TYPE.Follow, [...Parameter.fromPosition(positions)]);
       // if(!isArray(positions))
       //   throw Error(`Follow Request Constructor takes one argument and it has to be an array`);
       // positions.forEach(position => {
