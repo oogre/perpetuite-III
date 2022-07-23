@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-22 17:41:44
+  @Last Modified time: 2022-07-23 03:00:11
 \*----------------------------------------*/
 /*
 
@@ -12,90 +12,81 @@
 		./release/index.js Go -- -100 0 0 0
 		./release/index.js Speed -- 100
 		./release/index.js Acc -- 10
+
+		../randomPositionGenerator/release/index.js -t 1000 -- -600 600 -600 600 -200 0 -45 45 | ./release/index.js Follow -
 */
 import Request from './Request.js';
 import Parameter from './Parameter.js';
 import Position from './Position.js';
 import call from './Communication.js';
 import { Command } from 'commander';
+import {stringToBoolean} from './Tools.js';
+
 const program = new Command();
 
-import {stringToBoolean, isBool} from './Tools.js'
-
-
-function myParseInt(value, dummyPrevious) {
-  // parseInt takes a string and a radix
-  const parsedValue = parseInt(value, 10);
-  if (isNaN(parsedValue)) {
-    throw new commander.InvalidArgumentError('Not a number.');
-  }
-  return parsedValue;
-}
-
-const launchRequest = async (RequestBuilder, ...parameters) => {
-	let res = await call(RequestBuilder(...parameters));
-		res = Request.fromRaw(res);
+const main = async (RequestBuilder, parameters, debug = false) => {
+	try{
+		const req = RequestBuilder(parameters);
+		if(debug) return console.log(req.toString());
+		const res = Request.fromRaw( await call(req) );
 		if(res.isFail()) throw res;
 		return res.toString();
+	}
+	catch(error){
+			console.log(`Error : ${error?.getErrorMessage ? error.getErrorMessage() : error}`);
+	}
 }
 
 
 program
 	.command('HighPower')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
 	.argument('<flag>', 'boolean argument', stringToBoolean)
 	.description('Set HighPower to motors. true turns the HighPower On & false turns the HighPower Off')
-	.action( flag => {
-		launchRequest(Request.HighPower, flag)
-			.then( data => console.log(data) )
-			.catch( error => console.log("Error : " + error.getErrorMessage()))
+	.action( (flag, {debug}) => {
+		main(Request.HighPower, flag, debug)
 	});
 
 
-program
-	.command('Break')
-	.argument('<flag>', 'boolean argument', stringToBoolean)
-	.description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off')
-	.action( flag => {
-		launchRequest(Request.Break, flag)
-			.then( data => console.log(data) )
-			.catch( error => console.log("Error : " + error.getErrorMessage()))
-	});
+// program
+// 	.command('Break')
+// 	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+// 	.argument('<flag>', 'boolean argument', stringToBoolean)
+// 	.description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off')
+// 	.action( (flag, {debug}) => {
+// 		main(Request.Break, flag, debug)
+// 	});
 
 
 program
 	.command('Gripper')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
 	.argument('<flag>', 'boolean argument', stringToBoolean)
 	.description('Enable/Disable Gripper. true turns the Gripper On & false turns the Gripper Off')
-	.action( flag => {
-		launchRequest(Request.Gripper, flag)
-			.then( data => console.log(data) )
-			.catch( error => console.log("Error : " + error.getErrorMessage()))
+	.action( (flag, {debug}) => {
+		main(Request.Gripper, flag, debug)
 	});
 
 
 program
 	.command('Go')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
 	// double -- to authorize negative value
 	.argument('<x>', 'float argument', parseFloat)
 	.argument('<y>', 'float argument', parseFloat)
 	.argument('<z>', 'float argument', parseFloat)
 	.argument('<w>', 'float argument', parseFloat)
 	.description('Tell the robot to go at a position x y z with a orientation of w')
-	.action( (x, y, z, w) => {
-		launchRequest(Request.Go, new Position(x, y, z, w))
-			.then( data => console.log(data) )
-			.catch( error => console.log("Error : " + error.getErrorMessage()))
+	.action( (x, y, z, w, {debug}) => {
+		main(Request.Go, new Position(x, y, z, w), debug)
 	});
-
-
-
 
 
 program
 	.command('Follow')
-	// double -- to authorize negative value
-	.description('Tell the robot to go at a position x y z with a orientation of w')
-	.action( async () => {
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	.description('pipe values (x y z w\\n) into this command')
+	.action( ({debug}) => {
 		const readline = require('readline');
 		const rl = readline.createInterface({
 		  input: process.stdin,
@@ -105,59 +96,28 @@ program
 
 		rl.on('line', (line) => {
 				const coord = line.trim().split(" ").map(v=>parseFloat(v));
-				console.log(coord);
-				try{
-		  		launchRequest(Request.Follow, new Position( ...coord));
-		  	}catch(error){
-					console.log("Error : ", error)
-				}
-		})
-
-		
-		// try{
-		// 	await launchRequest(Request.Follow, new Position(
-		// 		300 * (Math.random() * 2 -1), 
-		// 		300 * (Math.random() * 2 -1), 
-		// 		300 * (-1 * Math.random()), 
-		// 		45 * (Math.random() * 2 -1)
-		// 	));
-		// 	await launchRequest(Request.Follow, new Position(
-		// 		300 * (Math.random() * 2 -1), 
-		// 		300 * (Math.random() * 2 -1), 
-		// 		300 * (-1 * Math.random()), 
-		// 		45 * (Math.random() * 2 -1)
-		// 	));
-		// 	await launchRequest(Request.Follow, new Position(
-		// 		300 * (Math.random() * 2 -1), 
-		// 		300 * (Math.random() * 2 -1), 
-		// 		300 * (-1 * Math.random()), 
-		// 		45 * (Math.random() * 2 -1)
-		// 	));
-		// }catch(error){
-		// 	console.log("Error : ", error)
-		// }
+				main(Request.Follow, new Position(...coord), debug)
+		});
 	});
 
 
 program
 	.command('Speed')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
 	.argument('<speed>', 'int argument', parseInt)
 	.description('set the speed, 0 is minimum 100 is maximum')
-	.action( (speed) => {
-		launchRequest(Request.Speed, speed)
-			.then( data => console.log(data) )
-			.catch( error => console.log("Error : " + error.getErrorMessage()))
+	.action( (speed, {debug}) => {
+		main(Request.Speed, speed, debug)
 	});
 
 
 program
 	.command('Acc')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
 	.argument('<acc>', 'int argument', parseInt)
 	.description('set the acceleration/deceleration, 0 is minimum 100 is maximum')
-	.action( (acc) => {
-		launchRequest(Request.Acc, acc)
-			.then( data => console.log(data) )
-			.catch( error => console.log("Error : " + error.getErrorMessage()))
+	.action( (acc, {debug}) => {
+		main(Request.Acc, acc, debug)
 	});
 
 

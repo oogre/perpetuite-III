@@ -1,0 +1,19 @@
+{
+  "name": "randompositiongenerator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./node_modules/.bin/babel --verbose --out-dir release src"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.18.9"
+  },
+  "dependencies": {
+    "commander": "^9.4.0"
+  }
+}
