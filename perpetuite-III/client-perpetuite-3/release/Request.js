@@ -54,7 +54,9 @@ class Request {
   }
 
   getErrorMessage() {
-    return _ErrorDictionnary.default["" + this.parameters[0]?.value] || `${_ErrorDictionnary.default.unknown} : ${this.parameters[0]?.value}`;
+    var _this$parameters$, _this$parameters$2;
+
+    return _ErrorDictionnary.default["" + ((_this$parameters$ = this.parameters[0]) === null || _this$parameters$ === void 0 ? void 0 : _this$parameters$.value)] || `${_ErrorDictionnary.default.unknown} : ${(_this$parameters$2 = this.parameters[0]) === null || _this$parameters$2 === void 0 ? void 0 : _this$parameters$2.value}`;
   }
 
   static fromRaw(rawData) {

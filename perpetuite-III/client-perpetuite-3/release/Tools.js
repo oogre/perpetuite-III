@@ -58,9 +58,11 @@ const uniqId = () => Math.floor(Math.random() * Date.now()).toString(16);
 exports.uniqId = uniqId;
 
 const stringToBoolean = n => {
+  var _n$toLowerCase;
+
   if (isBool(n)) return n;
 
-  switch (n?.toLowerCase()?.trim()) {
+  switch (n === null || n === void 0 ? void 0 : (_n$toLowerCase = n.toLowerCase()) === null || _n$toLowerCase === void 0 ? void 0 : _n$toLowerCase.trim()) {
     case "true":
     case "1":
     case "yes":
