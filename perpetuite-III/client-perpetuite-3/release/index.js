@@ -4,18 +4,22 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-23 02:57:11
+  @Last Modified time: 2022-07-23 03:04:06
 \*----------------------------------------*/
 
 /*
 
-		./release/index.js HighPower 1
-		./release/index.js HighPower 0
-		./release/index.js Go -- -100 0 0 0
+		./release/index.js HighPower -d -- 1
+		./release/index.js HighPower -d -- 0
+		./release/index.js HighPower -- 0
+		./release/index.js HighPower -- 1
+		./release/index.js Go -d -- -100 0 0 0
+		./release/index.js Go -d -- -100 0 0 0
 		./release/index.js Speed -- 100
 		./release/index.js Acc -- 10
 
 		../randomPositionGenerator/release/index.js -t 1000 -- -600 600 -600 600 -200 0 -45 45 | ./release/index.js Follow -
+		../randomPositionGenerator/release/index.js -t 1000 -- -600 600 -600 600 -200 0 -45 45 | ./release/index.js Follow -d -
 */
 "use strict";
 
@@ -43,7 +47,7 @@ const main = async (RequestBuilder, parameters, debug = false) => {
     const res = _Request.default.fromRaw(await (0, _Communication.default)(req));
 
     if (res.isFail()) throw res;
-    console.log(res.toString());
+    return res.toString();
   } catch (error) {
     console.log(`Error : ${error !== null && error !== void 0 && error.getErrorMessage ? error.getErrorMessage() : error}`);
   }
@@ -59,10 +63,7 @@ program.command('HighPower').option('-d, --debug [debug]', 'debug', false, _Tool
 // 	.argument('<flag>', 'boolean argument', stringToBoolean)
 // 	.description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off')
 // 	.action( (flag, {debug}) => {
-// 		if(debug) return console.log(Request.Break(flag).toString());
-// 		main(Request.Break, flag)
-// 			.then( data => console.log(data) )
-// 		.catch( error => console.log(`Error : ${error?.getErrorMessage ? error.getErrorMessage() : error}`))
+// 		main(Request.Break, flag, debug)
 // 	});
 
 program.command('Gripper').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean).argument('<flag>', 'boolean argument', _Tools.stringToBoolean).description('Enable/Disable Gripper. true turns the Gripper On & false turns the Gripper Off').action((flag, {

@@ -3,17 +3,21 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-23 03:00:11
+  @Last Modified time: 2022-07-23 03:04:06
 \*----------------------------------------*/
 /*
 
-		./release/index.js HighPower 1
-		./release/index.js HighPower 0
-		./release/index.js Go -- -100 0 0 0
+		./release/index.js HighPower -d -- 1
+		./release/index.js HighPower -d -- 0
+		./release/index.js HighPower -- 0
+		./release/index.js HighPower -- 1
+		./release/index.js Go -d -- -100 0 0 0
+		./release/index.js Go -d -- -100 0 0 0
 		./release/index.js Speed -- 100
 		./release/index.js Acc -- 10
 
 		../randomPositionGenerator/release/index.js -t 1000 -- -600 600 -600 600 -200 0 -45 45 | ./release/index.js Follow -
+		../randomPositionGenerator/release/index.js -t 1000 -- -600 600 -600 600 -200 0 -45 45 | ./release/index.js Follow -d -
 */
 import Request from './Request.js';
 import Parameter from './Parameter.js';
