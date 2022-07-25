@@ -49,7 +49,7 @@ const main = async (RequestBuilder, parameters, debug = false) => {
     if (res.isFail()) throw res;
     return res.toString();
   } catch (error) {
-    console.log(`Error : ${error !== null && error !== void 0 && error.getErrorMessage ? error.getErrorMessage() : error}`);
+    console.log(`Error : ${error?.getErrorMessage ? error.getErrorMessage() : error}`);
   }
 };
 
