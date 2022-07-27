@@ -136,6 +136,8 @@ void draw() {
         endShape();
       }
     }
+    save("data/rectified.jpg");
+    exit();
   }
 
   //textSize(24);
