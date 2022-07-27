@@ -1,7 +1,7 @@
 <annotation>
 	<folder>data</folder>
 	<filename>rectified.jpg</filename>
-	<path>/data/rectified.jpg</path>
+	<path>rectified.jpg</path>
 	<source>
 		<database>Unspecified</database>
 	</source>
