@@ -4,7 +4,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-23 03:04:06
+  @Last Modified time: 2022-07-25 17:01:09
 \*----------------------------------------*/
 
 /*
@@ -57,15 +57,7 @@ program.command('HighPower').option('-d, --debug [debug]', 'debug', false, _Tool
   debug
 }) => {
   main(_Request.default.HighPower, flag, debug);
-}); // program
-// 	.command('Break')
-// 	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
-// 	.argument('<flag>', 'boolean argument', stringToBoolean)
-// 	.description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off')
-// 	.action( (flag, {debug}) => {
-// 		main(Request.Break, flag, debug)
-// 	});
-
+});
 program.command('Gripper').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean).argument('<flag>', 'boolean argument', _Tools.stringToBoolean).description('Enable/Disable Gripper. true turns the Gripper On & false turns the Gripper Off').action((flag, {
   debug
 }) => {
@@ -76,6 +68,12 @@ program.command('Go').option('-d, --debug [debug]', 'debug', false, _Tools.strin
   debug
 }) => {
   main(_Request.default.Go, new _Position.default(x, y, z, w), debug);
+});
+program.command('ZProbe').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean) // double -- to authorize negative value
+.argument('<x>', 'float argument', parseFloat).argument('<y>', 'float argument', parseFloat).description('Tell the robot to go at max z for the position x y').action((x, y, {
+  debug
+}) => {
+  main(_Request.default.ZProbe, new _Position.default(x, y, 0, 0), debug).then(data => console.log(data)).catch(error => console.log(error));
 });
 program.command('Follow').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean).description('pipe values (x y z w\\n) into this command').action(({
   debug
