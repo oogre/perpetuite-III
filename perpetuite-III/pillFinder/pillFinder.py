@@ -1,20 +1,23 @@
-# Standard imports
-import cv2
-import numpy as np;
+from detecto import core, utils, visualize
+from detecto.visualize import show_labeled_image, plot_prediction_grid
+from torchvision import transforms
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Read image
-im = cv2.imread("./data/rectified.jpg", cv2.IMREAD_GRAYSCALE)
+custom_transforms = transforms.Compose([
+	transforms.ToPILImage(),
+	transforms.Resize(900),
+	transforms.RandomHorizontalFlip(0.5),
+	transforms.ColorJitter(saturation=0.2),
+	transforms.ToTensor(),
+	utils.normalize_transform(),
+])
 
-# Set up the detector with default parameters.
-detector = cv2.SimpleBlobDetector()
+Train_dataset=core.Dataset(‘Train/’,transform=custom_transforms)#L1
+Test_dataset = core.Dataset(‘Test/’)#L2
+loader=core.DataLoader(Train_dataset, batch_size=2, shuffle=True)#L3
+model = core.Model([‘Pill’])#L4
+losses = model.fit(loader, Test_dataset, epochs=25, lr_step_size=5, learning_rate=0.001, verbose=True)#L5
 
-# Detect blobs.
-keypoints = detector.detect(im)
-
-# Draw detected blobs as red circles.
-# cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
-im_with_keypoints = cv2.drawKeypoints(im, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-
-# Show keypoints
-cv2.imshow("Keypoints", im_with_keypoints)
-cv2.waitKey(0)
+plt.plot(losses)
+plt.show()
