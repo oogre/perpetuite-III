@@ -7,8 +7,8 @@ import numpy as np
 model = core.Model.load('model_weights.pth', ['Pill'])
 
 image = utils.read_image('Test/rectified.jpg')
-prediction = model.predict(image)
-labels, boxes, scores = prediction
+predictions = model.predict(image)
+labels, boxes, scores = predictions
 
 thresh=0.6
 filtered_indices=np.where(scores>thresh)
