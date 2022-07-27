@@ -1,15 +1,16 @@
-<annotation>
-	<folder>my-project-name</folder>
+<annotation verified="yes">
+	<folder>pillFinder</folder>
 	<filename>rectified.jpg</filename>
-	<path>/my-project-name/rectified.jpg</path>
+	<path>/home/perpetuite3/perpetuite-III/perpetuite-III/pillFinder/rectified.jpg</path>
 	<source>
-		<database>Unspecified</database>
+		<database>Unknown</database>
 	</source>
 	<size>
 		<width>760</width>
 		<height>760</height>
 		<depth>3</depth>
 	</size>
+	<segmented>0</segmented>
 	<object>
 		<name>Pill</name>
 		<pose>Unspecified</pose>
