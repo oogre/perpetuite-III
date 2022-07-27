@@ -10,11 +10,11 @@ image = utils.read_image('Test/rectified.jpg')
 prediction = model.predict(image)
 labels, boxes, scores = prediction
 
-# thresh=0.6
-# filtered_indices=np.where(scores>thresh)
-# filtered_scores=scores[filtered_indices]
-# filtered_boxes=boxes[filtered_indices]
-# num_list=filtered_indices[0].toList()
-# filtered_labels=[labels[i] for i in num_list]
+thresh=0.6
+filtered_indices=np.where(scores>thresh)
+filtered_scores=scores[filtered_indices]
+filtered_boxes=boxes[filtered_indices]
+num_list = filtered_indices[0].tolist()
+filtered_labels = [labels[i] for i in num_list]
 
-show_labeled_image(image, boxes, labels)
+show_labeled_image(image, filtered_boxes, filtered_labels)
