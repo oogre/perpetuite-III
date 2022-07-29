@@ -16,13 +16,13 @@ custom_transforms = transforms.Compose([
 Train_dataset=core.Dataset('Train/',transform=custom_transforms)#L1
 Test_dataset = core.Dataset('Test/')#L2
 loader=core.DataLoader(Train_dataset, batch_size=2, shuffle=True)#L3
-model = core.Model(['Pill'])#L4
-losses = model.fit(loader, Test_dataset, epochs=5, lr_step_size=5, learning_rate=0.001, verbose=True)#L5
+model = core.Model(['0xFF0000FF'])#L4
+losses = model.fit(loader, Test_dataset, epochs=10, lr_step_size=5, learning_rate=0.001, verbose=True)#L5
 
 plt.plot(losses)
 plt.show()
 
 
-model.save('model_weights.pth')
+model.save('model_bluePill.pth')
 
 
