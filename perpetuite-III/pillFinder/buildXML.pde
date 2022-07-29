@@ -16,9 +16,9 @@ void buildXml(){
   
   XML size = xml.addChild("size");
   XML width = size.addChild("width");
-  width.setContent(""+canvas.getImgSize().x);
+  width.setContent(""+(int)canvas.getImgSize().x);
   XML height = size.addChild("height");
-  height.setContent(""+canvas.getImgSize().y);
+  height.setContent(""+(int)canvas.getImgSize().y);
   XML depth = size.addChild("depth");
   depth.setContent("3");
 
@@ -43,17 +43,17 @@ void buildXml(){
     XML bndbox = object.addChild("bndbox");
 
     XML xmin = bndbox.addChild("xmin");
-    xmin.setContent(""+(tag.pos.x - PILL_SIZE ));
+    xmin.setContent(""+(tag.pos.x - PILL_SIZE * 0.5 ));
 
     XML ymin = bndbox.addChild("ymin");
-    ymin.setContent(""+(tag.pos.y - PILL_SIZE ));
+    ymin.setContent(""+(tag.pos.y - PILL_SIZE * 0.5));
 
     XML xmax = bndbox.addChild("xmax");
-    xmax.setContent(""+(tag.pos.x + PILL_SIZE ));
+    xmax.setContent(""+(tag.pos.x + PILL_SIZE * 0.5));
 
     XML ymax = bndbox.addChild("ymax");
-    ymax.setContent(""+(tag.pos.y + PILL_SIZE ));
+    ymax.setContent(""+(tag.pos.y + PILL_SIZE * 0.5));
     
   }
-  saveXML(xml, "/"+FilenameUtils.getPath(dataPath(FILE_PATH))+"labels.xml");
+  saveXML(xml, "/"+FilenameUtils.getPath(dataPath(FILE_PATH))+FilenameUtils.getBaseName(dataPath(FILE_PATH))+".xml");
 }
