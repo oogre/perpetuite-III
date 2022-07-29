@@ -1,93 +1,78 @@
-import blobDetection.*;
-BlobDetection theBlobDetection;
+import org.apache.commons.io.FilenameUtils;
+final String FILE_PATH = "rectified.jpg";
+final float rWidth = 182; // millimetre
+final float rHeight = 182; // millimetre
+final float PIX_TO_MM = rWidth / 760.0;
+final float MM_TO_PIX = 760.0 / rWidth;
+final float PILL_SIZE = 9 * MM_TO_PIX;
 
-PImage src;
-
-float rWidth = 182; // millimetre
-float rHeight = 182; // millimetre
-float ratio = rWidth / 760.0;
-
-ArrayList <PVector> centers;
-
+ArrayList<Tag> tags;
+PILL_TYPE currentType = PILL_TYPE.BLUE_PILL;
+Canvas canvas;
+File sourceFile;
 void setup() {
   size(760, 760, P3D);
-  src = loadImage("./data/rectified.jpg");
-
-  centers = new ArrayList <PVector>();
-  
-  theBlobDetection = new BlobDetection(src.width, src.height);
-  theBlobDetection.setPosDiscrimination(false);
-  theBlobDetection.setThreshold(0.75f);
-  theBlobDetection.computeBlobs(src.pixels);
-
-  for (int n=0; n<theBlobDetection.getBlobNb(); n++){
-    Blob b=theBlobDetection.getBlob(n);
-    if (b==null)continue;
-    PVector center = new PVector(0, 0, 0); 
-    float rX = width/(float)b.getEdgeNb();
-    float rY = height/(float)b.getEdgeNb();
-    for (int m=0; m<b.getEdgeNb(); m++){
-      EdgeVertex eA = b.getEdgeVertexA(m);
-      EdgeVertex eB = b.getEdgeVertexB(m);
-      if (eA ==null || eB ==null)continue;
-      center.add(eA.x * rX, eA.y * rY, 0);
-    }
-    centers.add(center);
-  }
-  
-}
-void draw() {
-  image(src, 0, 0);
-  drawBlobsAndEdges(true, true);
-}
-void drawBlobsAndEdges(boolean drawBlobs, boolean drawEdges)
-{
-  noFill();
-  Blob b;
-  EdgeVertex eA, eB;
-
-  for (int n=0; n<theBlobDetection.getBlobNb(); n++)
-  {
-    b=theBlobDetection.getBlob(n);
-
-    PVector center = new PVector(0, 0, 0); 
-
-    if (b!=null)
-    {
-      // Edges
-      if (drawEdges)
-      {
-        strokeWeight(2);
-        stroke(0, 255, 0);
-        for (int m=0; m<b.getEdgeNb(); m++)
-        {
-
-          eA = b.getEdgeVertexA(m);
-          eB = b.getEdgeVertexB(m);
-
-          center.add(eA.x/b.getEdgeNb(), eA.y/b.getEdgeNb(), 0);
-
-          if (eA !=null && eB !=null)
-            line(
-              eA.x*width, eA.y*height, 
-              eB.x*width, eB.y*height
-              );
+  sourceFile = new File(dataPath(FILE_PATH));
+  canvas = new Canvas(loadImage(sourceFile.getAbsolutePath()), new PVector(width, height));
+  tags = new ArrayList<Tag>();
+  canvas.toDrawAfter(
+    new Runnable() {
+      public void run() {
+        for(Tag tag : tags){
+          drawPillShape(tag.pos.x, tag.pos.y, PILL_SIZE, tag.type.getValue());
         }
-        stroke(255, 0, 0);
-        println(center);
-        point(center.x*width, center.y*height);
       }
-
-      //// Blobs
-      //if (drawBlobs)
-      //{
-      //  strokeWeight(1);
-      //  stroke(255, 0, 0);
-      //  rect(
-      //  b.xMin*width, b.yMin*height, 
-      //  b.w*width, b.h*height
-      //    );
-      //}
     }
+  );
+}
+
+void draw() {
+  background(0);
+  canvas.draw();
+  
+  drawRuler(mouseX, mouseY, currentType.getValue());
+  drawPillShape(mouseX, mouseY, PILL_SIZE * canvas.getScale(), currentType.getValue());
+}
+
+public void drawRuler(float x, float y, int _color){
+  noFill();
+  stroke(_color);
+  line(x, 0, x, mouseY - PILL_SIZE * canvas.getScale());
+  line(x, width, x, mouseY + PILL_SIZE * canvas.getScale());
+
+  line(0, y, mouseX - PILL_SIZE * canvas.getScale() , y);
+  line(width, y, mouseX + PILL_SIZE * canvas.getScale() , y);
+}
+public void drawPillShape(float x, float y, float s, int _color){
+  noFill();
+  stroke(_color);
+  ellipse(x, y, s, s);
+  stroke(255, 255, 255, 128);
+  ellipse(x, y, s*2, s*2);
+
+
+}
+
+public void mouseWheel(MouseEvent me){
+  if(me.isControlDown())
+    canvas.moveScale(me.getCount());
+  else 
+    canvas.moveOffset(me.isShiftDown()?me.getCount():0, me.isShiftDown()?0:me.getCount());
+}
+
+public void mouseReleased(MouseEvent me){
+  tags.add(new Tag(currentType, canvas.toContex(new PVector(mouseX, mouseY))));
+}
+
+public void keyReleased(){
+  switch (key){
+    case '1': currentType = PILL_TYPE.BLUE_PILL ; break;
+    case '2': currentType = PILL_TYPE.RED_PILL ; break;
+    case '3': currentType = PILL_TYPE.YELLOW_PILL ; break;
+    case 's': buildXml() ; break;
   }
 }
+
+
+
+
