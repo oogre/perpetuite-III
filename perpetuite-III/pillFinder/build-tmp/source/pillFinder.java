@@ -65,8 +65,8 @@ public void drawPillShape(float x, float y, float s, int _color){
   noFill();
   stroke(_color);
   ellipse(x, y, s, s);
-  // stroke(255, 255, 255, 128);
-  // ellipse(x, y, s, s*2);
+  stroke(255, 255, 255, 128);
+  ellipse(x, y, s*2, s*2);
 
 
 }
@@ -242,16 +242,16 @@ public void buildXml(){
     XML bndbox = object.addChild("bndbox");
 
     XML xmin = bndbox.addChild("xmin");
-    xmin.setContent(""+(tag.pos.x - PILL_SIZE * 0.5f ));
+    xmin.setContent(""+(tag.pos.x - PILL_SIZE * 1.5f ));
 
     XML ymin = bndbox.addChild("ymin");
-    ymin.setContent(""+(tag.pos.y - PILL_SIZE * 0.5f));
+    ymin.setContent(""+(tag.pos.y - PILL_SIZE * 1.5f));
 
     XML xmax = bndbox.addChild("xmax");
-    xmax.setContent(""+(tag.pos.x + PILL_SIZE * 0.5f));
+    xmax.setContent(""+(tag.pos.x + PILL_SIZE * 1.5f));
 
     XML ymax = bndbox.addChild("ymax");
-    ymax.setContent(""+(tag.pos.y + PILL_SIZE * 0.5f));
+    ymax.setContent(""+(tag.pos.y + PILL_SIZE * 1.5f));
     
   }
   saveXML(xml, "/"+FilenameUtils.getPath(dataPath(FILE_PATH))+FilenameUtils.getBaseName(dataPath(FILE_PATH))+".labels.xml");

@@ -47,8 +47,8 @@ public void drawPillShape(float x, float y, float s, int _color){
   noFill();
   stroke(_color);
   ellipse(x, y, s, s);
-  // stroke(255, 255, 255, 128);
-  // ellipse(x, y, s, s*2);
+  stroke(255, 255, 255, 128);
+  ellipse(x, y, s*2, s*2);
 
 
 }

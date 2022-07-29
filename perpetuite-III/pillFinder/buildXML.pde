@@ -43,17 +43,17 @@ void buildXml(){
     XML bndbox = object.addChild("bndbox");
 
     XML xmin = bndbox.addChild("xmin");
-    xmin.setContent(""+(tag.pos.x - PILL_SIZE * 0.5 ));
+    xmin.setContent(""+(tag.pos.x - PILL_SIZE * 1.5 ));
 
     XML ymin = bndbox.addChild("ymin");
-    ymin.setContent(""+(tag.pos.y - PILL_SIZE * 0.5));
+    ymin.setContent(""+(tag.pos.y - PILL_SIZE * 1.5));
 
     XML xmax = bndbox.addChild("xmax");
-    xmax.setContent(""+(tag.pos.x + PILL_SIZE * 0.5));
+    xmax.setContent(""+(tag.pos.x + PILL_SIZE * 1.5));
 
     XML ymax = bndbox.addChild("ymax");
-    ymax.setContent(""+(tag.pos.y + PILL_SIZE * 0.5));
+    ymax.setContent(""+(tag.pos.y + PILL_SIZE * 1.5));
     
   }
-  saveXML(xml, "/"+FilenameUtils.getPath(dataPath(FILE_PATH))+FilenameUtils.getBaseName(dataPath(FILE_PATH))+".xml");
+  saveXML(xml, "/"+FilenameUtils.getPath(dataPath(FILE_PATH))+FilenameUtils.getBaseName(dataPath(FILE_PATH))+".labels.xml");
 }
