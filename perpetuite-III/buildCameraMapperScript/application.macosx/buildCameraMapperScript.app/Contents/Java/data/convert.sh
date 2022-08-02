@@ -1,1 +1,0 @@
-convert camera.jpg -matte -verbose -virtual-pixel transparent -distort Perspective '1699,378 1000,600   1257,1556 1000,2100   3529, 1807 2500,2100   3244,627 2500,600' tmp.png ; convert tmp.png -crop 2650x2650+450+50 out.png ; rm tmp.png

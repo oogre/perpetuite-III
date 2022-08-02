@@ -5,7 +5,6 @@ ArrayList<Tag> tags;
 
 void setup() {
   size(760, 760, P3D);
-  
   tags = new ArrayList<Tag>();
   
   sourceFile = new File(dataPath(FILE_PATH));
@@ -46,10 +45,13 @@ public void drawRuler(float x, float y, int _color){
 }
 
 public void mouseWheel(MouseEvent me){
+  
+  int value = (me.isAltDown() ? 10 : 1) * me.getCount();
+  
   if(me.isControlDown())
-    canvas.moveScale(me.getCount());
+    canvas.moveScale(value);
   else 
-    canvas.moveOffset(me.isShiftDown()?me.getCount():0, me.isShiftDown()?0:me.getCount());
+    canvas.moveOffset(me.isShiftDown()?value:0, me.isShiftDown()?0:value);
 }
 
 public void mouseReleased(MouseEvent me){
@@ -58,6 +60,9 @@ public void mouseReleased(MouseEvent me){
 
 public void keyReleased(){
   switch (key){
-    case 's': buildScript() ; break;
+    case 's': 
+      buildScript() ; 
+      exit();
+      break;
   }
 }
