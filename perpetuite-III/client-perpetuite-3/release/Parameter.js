@@ -11,7 +11,7 @@ var _Tools = require("./Tools.js");
   client-perpetuite-3 - Parameter.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-07-22 09:03:30
-  @Last Modified time: 2022-07-25 17:11:34
+  @Last Modified time: 2022-07-25 17:34:54
 \*----------------------------------------*/
 const PARAMETER_TYPE = Object.freeze({
   Float: Symbol("Float"),
@@ -55,7 +55,7 @@ class Parameter {
   }
 
   static fromDouble(value) {
-    return Parameter.fromFloat(value);
+    return new Parameter(PARAMETER_TYPE.Double, parseFloat(value.replace(",", ".")));
   }
 
   static fromBool(value) {

@@ -15,6 +15,8 @@ const REQUEST_TYPE = Object.freeze({
   GetPosition: Symbol("GetPosition"),  // param /
   GetSpeed :   Symbol("GetSpeed"),     // param /
   GetAcc :     Symbol("GetAcc"),       // param /
+  Reset :      Symbol("Reset"),       // param / 
+  Stop :       Symbol("Stop"),       // param / 
 });
 
 
@@ -81,6 +83,15 @@ export default class Request{
          throw Error(`ZProbe Request Constructor takes a argument and it has to be a Postion value`);
       return new Request(REQUEST_TYPE.ZProbe, [...Parameter.fromPosition(position)]);
    
+   }
+
+   static Reset(){
+      return new Request(REQUEST_TYPE.Reset);
+   
+   }
+
+   static Stop(){
+      return new Request(REQUEST_TYPE.Stop);
    }
 
    static Follow(positions){

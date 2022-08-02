@@ -4,7 +4,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-25 17:01:09
+  @Last Modified time: 2022-07-28 16:33:10
 \*----------------------------------------*/
 
 /*
@@ -99,5 +99,15 @@ program.command('Acc').option('-d, --debug [debug]', 'debug', false, _Tools.stri
   debug
 }) => {
   main(_Request.default.Acc, acc, debug);
+});
+program.command('Reset').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean).description('reset default Speed/Acc').action(({
+  debug
+}) => {
+  main(_Request.default.Reset, null, debug);
+});
+program.command('Stop').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean).description('Stop current move').action(({
+  debug
+}) => {
+  main(_Request.default.Stop, null, debug);
 });
 program.parse();
