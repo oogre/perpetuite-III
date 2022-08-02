@@ -1,4 +1,0 @@
-*.zip
-bin/*
-node_modules/*
-build-tmp/*

@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-25 17:01:09
+  @Last Modified time: 2022-07-28 16:33:10
 \*----------------------------------------*/
 /*
 
@@ -126,6 +126,24 @@ program
 	.description('set the acceleration/deceleration, 0 is minimum 100 is maximum')
 	.action( (acc, {debug}) => {
 		main(Request.Acc, acc, debug)
+	});
+
+
+program
+	.command('Reset')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	.description('reset default Speed/Acc')
+	.action( ({debug}) => {
+		main(Request.Reset, null, debug)
+	});
+
+
+program
+	.command('Stop')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	.description('Stop current move')
+	.action( ({debug}) => {
+		main(Request.Stop, null, debug)
 	});
 
 
