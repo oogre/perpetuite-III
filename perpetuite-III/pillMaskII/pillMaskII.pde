@@ -27,6 +27,7 @@ void setup() {
   PILL_SIZE = 9 * MM_TO_PIX;
 
   PImage _mask = mask(IMG, BLACK);
+  _mask.save("./../data/pill.mask.jpg");
   OpenCV opencv = new OpenCV(this, _mask);
   opencv.gray();
 

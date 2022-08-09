@@ -1,6 +1,6 @@
 #!/usr/bin/env zx
 
-// ./mapping.mjs -i ./../data/camera.jpg -n ./../data/empty.jpg -t ./../data/data.json -o ./../data/rectified.png
+// ./mapping.mjs -i ./../data/camera.jpg -n ./../data/empty.jpg -t ./../data/data.json -o ./../data/rectified2.png
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
