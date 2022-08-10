@@ -74,9 +74,18 @@ static class Blob extends Contour {
         cPX.x, 
         cPX.y-PILL_SIZE
         );
+
+      if (!isMouseDown && wasMouseDown) {
+
+        println("client-perpetuite3 Go -- "+cMM.x+" " + cMM.y+" -295 0");
+        String myString = "client-perpetuite3 Go -- "+cMM.x+" " + cMM.y+" -295 0";
+        StringSelection stringSelection = new StringSelection(myString);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+      }
     }
   }
-  
+
   public void setType(int value) {
     type = value;
   }

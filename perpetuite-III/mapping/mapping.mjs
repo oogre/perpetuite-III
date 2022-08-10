@@ -12,11 +12,14 @@ const RULES = !!(argv.rules || argv.r);
 
 const maskPath = "./../data/mask.png";
 const composedPath = "./../data/compose.jpg";
-
+const inPath = !!IMG_EMPTY_FILE ? composedPath : IMG_INPUT_FILE;
 const ROTATION = 0;
 const SIZE = 1705;
-const X_CORRECTION = 15;
-const Y_CORRECTION = 0;
+const X_CORRECTION = 5;
+const Y_CORRECTION = 5;
+
+const WIDTH_MM = 1400; // millimetre
+const HEIGHT_MM = 1400; // millimetre
 
 const getImageSize = async (path) => {
 	const w = parseInt((await $`convert ${path} -print "%w" /dev/null`).stdout);
@@ -25,6 +28,10 @@ const getImageSize = async (path) => {
 }
 
 const [width, height] = await getImageSize(IMG_INPUT_FILE);
+
+const PIX_TO_MM = HEIGHT_MM / height;
+const MM_TO_PIX = height / HEIGHT_MM;
+
 const TAGS = await fs.readJson(TAG_DATA_FILE);
 const topLeft = TAGS.find(({id}) => id == 0).topLeft;
 const bottomLeft = TAGS.find(({id}) => id == 1).bottomLeft;
@@ -33,9 +40,17 @@ const topRight = TAGS.find(({id}) => id == 3).topRight;
 
 const ruleCmd = (x, y, w, h) => {
 	return	RULES ? 
-				`\\( -stroke red -draw "line 0,${y} ${w},${y}" \\) \
-				 \\( -stroke red -fill none -draw "circle ${x},${y} ${x+h/2} ${y}" \\) \
-				 \\( -stroke red -draw "line ${x},0 ${x},${h}" \\)`
+				`\\( -stroke green -draw "line 0,${y} ${w},${y}" \\) \
+				 \\( -stroke green -fill none -draw "circle ${x},${y} ${x+h/2} ${y}" \\) \
+				 \\( -stroke green -draw "line ${x},0 ${x},${h}" \\) \
+				 \\( -stroke blue -draw "line 0,${h/2 - 250*MM_TO_PIX} ${w},${h/2 - 250*MM_TO_PIX}" \\) \
+				 \\( -stroke blue -draw "line 0,${h/2 + 250*MM_TO_PIX} ${w},${h/2 + 250*MM_TO_PIX}" \\) \
+				 \\( -stroke blue -draw "line 0,${h/2 - 550*MM_TO_PIX} ${w},${h/2 - 550*MM_TO_PIX}" \\) \
+				 \\( -stroke blue -draw "line 0,${h/2 + 550*MM_TO_PIX} ${w},${h/2 + 550*MM_TO_PIX}" \\) \
+				 \\( -stroke blue -draw "line ${w/2 - 250*MM_TO_PIX},0 ${w/2 - 250*MM_TO_PIX},${h}" \\) \
+				 \\( -stroke blue -draw "line ${w/2 + 250*MM_TO_PIX},0 ${w/2 + 250*MM_TO_PIX},${h}" \\) \
+				 \\( -stroke blue -draw "line ${w/2 - 550*MM_TO_PIX},0 ${w/2 - 550*MM_TO_PIX},${h}" \\) \
+				 \\( -stroke blue -draw "line ${w/2 + 550*MM_TO_PIX},0 ${w/2 + 550*MM_TO_PIX},${h}" \\)`
 			: 
 				``;
 }
@@ -45,6 +60,7 @@ const genMaskCmd = (x, y, size, filePath) => {
 }
 
 const maskCmd = (maskPath) => {
+	if(!IMG_EMPTY_FILE) return ``;
 	return `-gravity Center ${maskPath} -compose CopyOpacity -composite -trim`
 }
 
@@ -74,6 +90,7 @@ const rotationCmd = (angle) => {
 }
 
 const genDiffCmd = (path) => {
+	if(!IMG_EMPTY_FILE) return ``;
 	return `convert ${IMG_EMPTY_FILE} ${IMG_INPUT_FILE} -compose difference -composite ${path};`;
 }
 
@@ -82,7 +99,7 @@ const main = () => {
 	return `\
 		${ genMaskCmd(height/2, height/2, height, maskPath) } \
 		${ genDiffCmd(composedPath) } \
-		convert ${composedPath} \
+		convert ${inPath} \
 		${ perspectiveCmd(topLeft, bottomLeft, bottomRight, topRight, width/2, height/2, SIZE/2 + X_CORRECTION, SIZE/2 + Y_CORRECTION) } \
 		${ rotationCmd(ROTATION) } \
 		${ ruleCmd(width /2, height/2, width, height) } \
