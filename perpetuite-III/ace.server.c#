@@ -111,6 +111,9 @@ namespace Ace.Custom{
 			GetPosition,// param / rep ok x y z w
 			GetSpeed,	// param / rep ok speed
 			GetAcc,		// param / rep ok acc
+			Reset,		// param / rep ok acc
+			Stop,		// param / rep ok acc
+			ZProbe,		//       / rep ok acc
 		}
 		
 		private Type _type;
@@ -162,6 +165,16 @@ namespace Ace.Custom{
 				case "ZProbe":
 					_type = Type.ZProbe;
 					break;
+				case "Reset":
+					_type = Type.Reset;
+					break;
+				case "Stop":
+					_type = Type.Stop;
+					break;
+				case "IdleZ":
+					_type = Type.IdleZ;
+					break;
+
 				default :
 					_type = Type.Nothing;
 					break;
@@ -305,7 +318,8 @@ namespace Ace.Custom{
 	public class RobotController{
 		private AceServer ace;
 		public IQuattro650 robot;
-		private int _speed = 50;
+		private static int default_speed = 50;
+		private int _speed = default_speed;
 		public int speed{
 			set{
 				_speed = value;
@@ -314,7 +328,8 @@ namespace Ace.Custom{
 				return _speed;
 			}
 		}
-		private int _acc = 50;
+		private static int default_acc = 50;
+		private int _acc = default_acc;
 		public int acc{
 			set{
 				_acc= value;
@@ -363,6 +378,25 @@ namespace Ace.Custom{
 			robot.Move(cartesianMove);
 		}
 		
+		public void IdleZ(){
+			int oldSpeed = speed;
+			int oldAcc = acc;
+			speed = 50;
+			acc = 50;
+			float alpha = 0;
+			while(true){
+				Go(robot.WorldLocation.DX, robot.WorldLocation.DY, 0, Math.Sin(alpha += 0.01) * 45);
+				if(robot.GetDigitalIO(1001)){
+					robot.Halt();
+					speed = oldSpeed;
+					acc = oldAcc;
+					Go(robot.WorldLocation.DX, robot.WorldLocation.DY, 0, 0);
+					robot.WaitMoveDone();
+					break;
+				}
+			}
+		}
+		
 		public Transform3D ZProbe(double x, double y){
 			int oldSpeed = speed;
 			int oldAcc = acc;
@@ -391,10 +425,26 @@ namespace Ace.Custom{
 			acc = oldAcc;
 			Transform3D res = robot.WorldLocation;
 			Go(0, 0, 0, 0);
+			robot.WaitMoveDone();
 			return res;
 		}
 		
+		public void Reset(){
+			speed = default_speed;
+			acc = default_acc;
+		}
+		
+		//public void Gripper(bool value){
+		//	System.Threading.Thread.Sleep(250);
+		//	robot.SetDigitalIO(value ? 1 : -1);
+		//	System.Threading.Thread.Sleep(500);
+		//}
+		
 		public void Stop(){
+			robot.Halt();
+		}
+		
+		public void Kill(){
 			robot.Power = false;
 		}
 	}
@@ -425,6 +475,9 @@ namespace Ace.Custom{
 								res.parameters.Add(new Parameter(pos.DX));
 								res.parameters.Add(new Parameter(pos.DY));
 								res.parameters.Add(new Parameter(pos.DZ));
+							break;
+							case Request.Type.IdleZ :
+								robotController.IdleZ();
 							break;
 							case Request.Type.HighPower :
 								robotController.HighPower(req.parameters[0].bValue);				
@@ -460,7 +513,7 @@ namespace Ace.Custom{
 				}
 			}
 			server.Stop();
-			robotController.Stop();
+			robotController.Kill();
 		}
 	}
 }

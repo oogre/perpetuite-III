@@ -6,7 +6,14 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.lang.Runtime;
+import java.io.InputStreamReader;
 
+import java.awt.datatransfer.StringSelection;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+
+static final boolean DEBUG = false;
 static final float WIDTH_MM = 1400; // millimetre
 static final float HEIGHT_MM = 1400; // millimetre
 static final float[] BLACK = rgb2lab(new float[]{2, 2, 2, 255.0});
@@ -15,13 +22,14 @@ static float PIX_TO_MM;
 static float MM_TO_PIX;
 static float PILL_SIZE;
 static PImage IMG;
-
+static boolean isMouseDown = false;
+static boolean wasMouseDown = false;
 ArrayList<ArrayList<Blob>> famillies;
 
 void setup() {
   size(1200, 1200);
 
-  IMG = loadImage("/Users/ogre/works/2202/Felix/perpetuite-III/perpetuite-III/data/rectified.png");
+  IMG = loadImage("./../data/rectified2.png");
   PIX_TO_MM = WIDTH_MM / (float)IMG.width;
   MM_TO_PIX = IMG.width / (float)WIDTH_MM;
   PILL_SIZE = 9 * MM_TO_PIX;
@@ -75,13 +83,46 @@ void draw() {
       blob.draw(mX, mY, Blob.MATE);
     }
   }
+
+  if(DEBUG){
+    drawMousePos(mX, mY);
+  }
+
+  wasMouseDown = isMouseDown;
 }
 
+void drawMousePos(float mX, float mY) {
+  PVector mouse = new PVector(mX, mY);
+  mouse.sub(IMG.width/2, IMG.height/2);
+  mouse.y *= -1;
+  mouse.mult(PIX_TO_MM);
+  fill(255);
+  rectMode(CENTER);
+  rect(
+    mX, 
+    mY-PILL_SIZE - 100, 300, 130);
+
+  fill(0);
+  text(
+    "X : " + mouse.x  + "\n" +
+    "Y : " + mouse.y  + "\n", 
+    mX, 
+    mY-PILL_SIZE
+    );
+}
+
+void mousePressed() {
+  isMouseDown = true;
+}
+void mouseReleased() {
+  isMouseDown = false;
+}
 void drawBackground() {
-  background(0);
-  stroke(255);
-  noFill();
-  ellipse(width/2, height/2, height, height);
+  //background(0);
+  //stroke(255);
+  //noFill();
+  //ellipse(width/2, height/2, height, height);
+  image(IMG, 0, 0, height, height);
 }
 
 void drawRules() {
