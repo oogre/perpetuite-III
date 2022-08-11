@@ -21,14 +21,14 @@ void draw() {
     wsc.sendMessage( 
       Requests.GetToolPosition()
     );
-    wsc.sendMessage( 
+   /* wsc.sendMessage( 
       Requests.GetToolOffset()
     );
      wsc.sendMessage( 
       Requests.SetToolOffset(
         new PVector(random(-100, 100), random(-100, 100), random(-100, 100))
       ) 
-    );
+    );*/
   }catch(IOException e){
     println(e);
   }
@@ -37,17 +37,22 @@ void draw() {
 }
 
 void mouseReleased() {
-  /*
+ 
    try {
+     
+     
+      println(Requests.SetPosition(
+        new PVector(random(-400, 400), random(-400, 400)), 100, 100, 100
+      ));
     wsc.sendMessage( 
-      Requests.goTo(
-        new PVector(2*mouseX-width, 2*mouseY-height)
+      Requests.SetPosition(
+        new PVector(random(-400, 400), random(-400, 400)), 100, 100, 100
       ) 
     );
   }catch(IOException e){
     println(e);
   }
-  */
+  
 }
 
 void webSocketEvent(String msg) {

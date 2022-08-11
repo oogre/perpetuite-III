@@ -1,6 +1,6 @@
 ﻿using System;
 using Ace.Core.Server;
-
+/*
 namespace QuattroDriver
 {
     class Request
@@ -9,9 +9,17 @@ namespace QuattroDriver
         public String Data { get; set; }
     }
 
+    public class Vec3
+    {
+        public float DX{ get; set; }
+        public float DY { get; set; }
+        public float DZ { get; set; }//acceleration
+        public int Dcc { get; set; }//decceleration
+    };
+
     public class MoveParam
     {
-        public Vector3D Position { get; set; }
+        public Vec3 Position { get; set; }
         public int Speed { get; set; }
         public int Acc { get; set; }//acceleration
         public int Dcc { get; set; }//decceleration
@@ -25,3 +33,4 @@ namespace QuattroDriver
         public int Dcc { get; set; }//decceleration
     };
 }
+*/

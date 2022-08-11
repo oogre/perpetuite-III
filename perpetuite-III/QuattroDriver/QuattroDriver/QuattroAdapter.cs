@@ -2,10 +2,11 @@
 using Ace.Adept.Server.Controls;
 using Ace.Adept.Server.Motion;
 using Ace.AdeptSight.Server;
+using Ace.Core.Server.Motion;
 using Ace.Core.Server;
 using Ace.Core.Util;
 using QuattroDriver;
-
+/*
 namespace Ace.Quattro.Adapter
 {
 	public delegate void CallbackHandler(String error);
@@ -28,7 +29,7 @@ namespace Ace.Quattro.Adapter
 			// Connect to ACE.
 			ace = (IAceServer)RemotingUtil.GetRemoteServerObject(typeof(IAceServer), RemotingName, "localhost", RemotingPort);
 			ace.Clear();
-			ace.LoadLocalWorkspace("C:/Users/vince/felix/test.awp", true);
+			ace.LoadLocalWorkspace("C:/Users/felix/Desktop/perpetuité III/ACE.3.8/perpetuite3.ace.awp", true);
 
 			// Get a list of all the controllers in the system, and enable power on all of them.
 			foreach (IAdeptController controller in ace.Root.Filter(new ObjectTypeFilter(typeof(IAdeptController)), true))
@@ -60,22 +61,34 @@ namespace Ace.Quattro.Adapter
 		}
 		public void SetPosition(MoveParam param, CallbackHandler callback)
 		{
+
+			Transform3D currentPosition = robot.WorldLocationWithTool;
+			int inRange = robot.InRange(currentPosition);
+			Console.WriteLine(currentPosition + " inrange check = " + robot.InRange(currentPosition));
+			currentPosition = currentPosition * new Transform3D(100, 100, 0);
+
+			Console.WriteLine(currentPosition + " inrange check = " + robot.InRange(currentPosition));
+
 			CartesianMove cartesianMove = ace.CreateObject(typeof(CartesianMove)) as CartesianMove;
-			cartesianMove.WorldLocation = (new Transform3D(param.Position.DX, param.Position.DY, param.Position.DZ + 504, 0, 180, -180));
-			cartesianMove.Param.Accel = param.Acc;
-			cartesianMove.Param.Decel = param.Dcc;
-			cartesianMove.Param.Speed = param.Speed;
+			cartesianMove.WorldLocation = currentPosition;
+			cartesianMove.Param.Accel = 50;
+			cartesianMove.Param.Decel = 50;
+			cartesianMove.Param.Speed = 50;
 			cartesianMove.Param.SCurveProfile = 0;
-			cartesianMove.Param.MotionEnd = MotionEnd.SettleFine;
+			cartesianMove.Param.MotionEnd = MotionEnd.Blend;
 			cartesianMove.Param.Straight = true;
 			try
 			{
+				Console.WriteLine("bim");
 				robot.Move(cartesianMove);
+				Console.WriteLine("bam");
 				robot.WaitMoveDone();
+				Console.WriteLine("bom");
 				callback(null);
 			}
 			catch (Exception ex)
 			{
+				Console.WriteLine(ex.Message);
 				callback(ex.Message);
 			}
 		}
@@ -85,7 +98,7 @@ namespace Ace.Quattro.Adapter
 		}
 		public void SetToolOffset(Vector3D position, CallbackHandler callback)
 		{
-
+			/*
 			var offsetTables = ace.Root.Filter(new ObjectTypeFilter(typeof(IGripperOffsetTable)), true);
 			IGripperOffsetTable offsetTable = offsetTables[0] as IGripperOffsetTable;
 		
@@ -93,10 +106,11 @@ namespace Ace.Quattro.Adapter
 			{
 
 			}
-
+			
 			Console.WriteLine(position.ToString());
 			// Create a gripper offset table and associate it with the robot
-			IGripperOffsetTable offsetTables = ace.Root.AddObjectOfType(typeof(IGripperOffsetTable), "Gripper Offset Table") as IGripperOffsetTable;
+			//IGripperOffsetTable offsetTable = ace.Root.AddObjectOfType(typeof(IGripperOffsetTable), "Gripper Offset Table") as IGripperOffsetTable;
+			//IGripperOffsetTable offsetTable = offsetTables[0] as IGripperOffsetTable;
 			offsetTable.Robot = robot;
 
 			// Create an offset and add it to the table
@@ -105,6 +119,7 @@ namespace Ace.Quattro.Adapter
 			offset1.Offset = new Transform3D(position.DX, position.DY, position.DZ, 0, 0, 0);
 			offset1.Description = "This is a gripper offset";
 			offsetTable.AddOffset(offset1);
+			
 		}
 		public Vector3D GetToolPosition()
 		{
@@ -143,13 +158,96 @@ namespace Ace.Quattro.Adapter
 
 
 
-        public void GoTo(Vector3D Position, int Speed, CbHandler cb, ErrorHandler errorCb)
+        public void GoTo(MoveParam param, CbHandler cb, ErrorHandler errorCb)
 		{
+			// Check if the current location is inrange
+
+
+			double[] jointPositions = robot.JointPosition;
+			for (int i = 0; i < robot.JointCount; i++)
+			{
+				Console.WriteLine("Joint " + i + " " + jointPositions[i]);
+			}
+
+			// Transform the current joint position to a world location
+			try
+			{
+				Transform3D loc = robot.JointToWorld(jointPositions);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+
 			// Check if the current location is inrange            
 			Transform3D currentPosition = robot.WorldLocationWithTool;
 			int inRange = robot.InRange(currentPosition);
 			Console.WriteLine(currentPosition + " inrange check = " + inRange);
 
+			// Get the current robot configuration
+			IMoveConfiguration moveConfig = robot.GetMoveConfiguration(jointPositions);
+
+			// Create a motion object and command the robot to move
+			CartesianMove cartesianMove = ace.CreateObject(typeof(CartesianMove)) as CartesianMove;
+			cartesianMove.MoveConfiguration = moveConfig;
+			cartesianMove.WorldLocation = (new Transform3D(0, 0,-1229, 0, 180, 0));
+
+			try
+			{
+				Console.WriteLine("bim");
+				// Issue the move and wait until it is done
+				robot.Move(cartesianMove);
+				Console.WriteLine("bam");
+				robot.WaitMoveDone();
+				Console.WriteLine("boum");
+				// Force the robot to issue a DETACH
+				robot.AutomaticControlActive = false;
+
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("ouitch");
+				Console.WriteLine(ex.Message);
+			}
+
+			cb();
+
+			return;
+			/*
+			Transform3D currentPosition = robot.WorldLocationWithTool;
+			Transform3D targetPosition = new Transform3D(param.Position.DX, param.Position.DY, param.Position.DZ + 504, 0, 180, -180);
+
+			Console.WriteLine(currentPosition + " current pos check = " + robot.InRange(currentPosition));
+			Console.WriteLine(targetPosition + " target in range check = " + robot.InRange(targetPosition));
+
+
+			CartesianMove cartesianMove = ace.CreateObject(typeof(CartesianMove)) as CartesianMove;
+			cartesianMove.WorldLocation = targetPosition;
+			cartesianMove.Param.Accel = param.Acc;
+			cartesianMove.Param.Decel = param.Dcc;
+			cartesianMove.Param.Speed = param.Speed;
+			cartesianMove.Param.SCurveProfile = 0;
+			cartesianMove.Param.MotionEnd = MotionEnd.SettleFine;
+			cartesianMove.Param.Straight = true;
+			try
+			{
+				Console.WriteLine("bim");
+				robot.Move(cartesianMove);
+				Console.WriteLine("bam");
+				robot.WaitMoveDone();
+				Console.WriteLine("bum");
+				cb();
+				Console.WriteLine("bem");
+			}
+			catch (Exception ex)
+			{
+
+				Console.WriteLine("ouitch");
+				errorCb(ex.Message);
+			}
+
+			return;
+			/*
 			//double[] jointPositions = robot.JointPosition;
 			// Get the current robot configuration
 			//IMoveConfiguration moveConfig = robot.GetMoveConfiguration(jointPositions);
@@ -160,11 +258,11 @@ namespace Ace.Quattro.Adapter
 			//Transform3D loc = robot.JointToWorld(jointPositions);
 
 			//cartesianMove.WorldLocation = Position;
-			cartesianMove.WorldLocation = (new Transform3D(Position.DX, Position.DY, Position.DZ+504, 0, 180, -180));
+			cartesianMove.WorldLocation = targetPosition;
 			Console.WriteLine(cartesianMove.WorldLocation);
-			cartesianMove.Param.Accel = 2;
-			cartesianMove.Param.Decel = 2;
-			cartesianMove.Param.Speed = Speed;
+			cartesianMove.Param.Accel = param.Acc;
+			cartesianMove.Param.Decel = param.Dcc;
+			cartesianMove.Param.Speed = param.Speed;
 			cartesianMove.Param.SCurveProfile = 0;
 			cartesianMove.Param.MotionEnd = MotionEnd.Blend;
 			cartesianMove.Param.Straight = true;
@@ -182,8 +280,10 @@ namespace Ace.Quattro.Adapter
 				//Console.WriteLine(ex.Message);
 				errorCb(ex.Message);
 			}
+			
 		}
 
 
 	}
 }
+*/

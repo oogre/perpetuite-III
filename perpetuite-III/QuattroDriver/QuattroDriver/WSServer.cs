@@ -2,7 +2,7 @@
 using SuperWebSocket;
 using System.Text.Json;
 using Ace.Core.Server;
-
+/*
 namespace QuattroDriver
 {
     public delegate void GetPositionHandler(string sessionId);
@@ -11,6 +11,7 @@ namespace QuattroDriver
     public delegate void SetToolOffsetHandler(Vector3D offset, string sessionId);
     public delegate void GetToolPositionHandler(string sessionId);
     public delegate void SetToolPositionHandler(MoveParam param, string sessionId);
+    public delegate void GoToHandler(MoveParam param, string sessionId);
     public delegate void StopHandler(string sessionId);
     public delegate void GrabHandler(string sessionId);
     public delegate void ReleaseHandler(string sessionId);
@@ -28,6 +29,7 @@ namespace QuattroDriver
         public event SetToolOffsetHandler OnSetToolOffset;
         public event GetToolPositionHandler OnGetToolPosition;
         public event SetToolPositionHandler OnSetToolPosition;
+        public event GoToHandler OnGoTo;
         public event StopHandler OnStop;
         public event GrabHandler OnGrab;
         public event ReleaseHandler OnRelease;
@@ -79,6 +81,16 @@ namespace QuattroDriver
                         OnSetPosition(param, session.SessionID);
                     }
                     break;
+                case "Goto":
+                    {
+
+                        Console.WriteLine("New Goto message");
+                        Console.WriteLine(m.Data);
+                        MoveParam param = JsonSerializer.Deserialize<MoveParam>(m.Data);
+                        Console.WriteLine(param);
+                        OnGoTo(param, session.SessionID);
+                    }
+                    break;
                 case "GetToolOffset":
                     OnGetToolOffset(session.SessionID);
                     break;
@@ -128,3 +140,4 @@ namespace QuattroDriver
         }
     }
 }
+*/

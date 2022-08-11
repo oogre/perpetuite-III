@@ -16,9 +16,9 @@ static class Requests {
   }
   public static String goTo(PVector dest, int speed, int acc, int dcc) throws IOException {
     JSONObject Position = new JSONObject();
-    Position.put("X", dest.x);
-    Position.put("Y", dest.y);
-    Position.put("Z", dest.z);
+    Position.put("DX", dest.x);
+    Position.put("DY", dest.y);
+    Position.put("DZ", dest.z);
     JSONObject Data = new JSONObject();
     Data.put("Speed", speed);
     Data.put("Acc", acc);
