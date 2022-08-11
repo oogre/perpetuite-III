@@ -113,6 +113,7 @@ namespace Ace.Custom{
 			GetAcc,		// param / rep ok acc
 			Reset,		// param / rep ok acc
 			Stop,		// param / rep ok acc
+			ZProbe,		//       / rep ok acc
 		}
 		
 		private Type _type;
@@ -170,6 +171,10 @@ namespace Ace.Custom{
 				case "Stop":
 					_type = Type.Stop;
 					break;
+				case "IdleZ":
+					_type = Type.IdleZ;
+					break;
+
 				default :
 					_type = Type.Nothing;
 					break;
@@ -373,6 +378,25 @@ namespace Ace.Custom{
 			robot.Move(cartesianMove);
 		}
 		
+		public void IdleZ(){
+			int oldSpeed = speed;
+			int oldAcc = acc;
+			speed = 50;
+			acc = 50;
+			float alpha = 0;
+			while(true){
+				Go(robot.WorldLocation.DX, robot.WorldLocation.DY, 0, Math.Sin(alpha += 0.01) * 45);
+				if(robot.GetDigitalIO(1001)){
+					robot.Halt();
+					speed = oldSpeed;
+					acc = oldAcc;
+					Go(robot.WorldLocation.DX, robot.WorldLocation.DY, 0, 0);
+					robot.WaitMoveDone();
+					break;
+				}
+			}
+		}
+		
 		public Transform3D ZProbe(double x, double y){
 			int oldSpeed = speed;
 			int oldAcc = acc;
@@ -401,6 +425,7 @@ namespace Ace.Custom{
 			acc = oldAcc;
 			Transform3D res = robot.WorldLocation;
 			Go(0, 0, 0, 0);
+			robot.WaitMoveDone();
 			return res;
 		}
 		
@@ -450,6 +475,9 @@ namespace Ace.Custom{
 								res.parameters.Add(new Parameter(pos.DX));
 								res.parameters.Add(new Parameter(pos.DY));
 								res.parameters.Add(new Parameter(pos.DZ));
+							break;
+							case Request.Type.IdleZ :
+								robotController.IdleZ();
 							break;
 							case Request.Type.HighPower :
 								robotController.HighPower(req.parameters[0].bValue);				

@@ -30,3 +30,16 @@ for(let [x, y] of probePoints){
 	measures.push((await $`client-perpetuite3 ZProbe ${DEBUG} -- ${x} ${y}`));
 }
 
+
+
+const calcZforXY = (x, y) => {
+
+
+	probePoints.reduce(( [_x, _y])=>{
+		let dX = _x - x;
+		let dY = _y - y;
+		let dist = Math.sqrt(dX * dX + dY * dY);
+	});
+
+
+}
