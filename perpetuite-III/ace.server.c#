@@ -111,6 +111,8 @@ namespace Ace.Custom{
 			GetPosition,// param / rep ok x y z w
 			GetSpeed,	// param / rep ok speed
 			GetAcc,		// param / rep ok acc
+			Reset,		// param / rep ok acc
+			Stop,		// param / rep ok acc
 		}
 		
 		private Type _type;
@@ -161,6 +163,12 @@ namespace Ace.Custom{
 					break;
 				case "ZProbe":
 					_type = Type.ZProbe;
+					break;
+				case "Reset":
+					_type = Type.Reset;
+					break;
+				case "Stop":
+					_type = Type.Stop;
 					break;
 				default :
 					_type = Type.Nothing;
@@ -305,7 +313,8 @@ namespace Ace.Custom{
 	public class RobotController{
 		private AceServer ace;
 		public IQuattro650 robot;
-		private int _speed = 50;
+		private static int default_speed = 50;
+		private int _speed = default_speed;
 		public int speed{
 			set{
 				_speed = value;
@@ -314,7 +323,8 @@ namespace Ace.Custom{
 				return _speed;
 			}
 		}
-		private int _acc = 50;
+		private static int default_acc = 50;
+		private int _acc = default_acc;
 		public int acc{
 			set{
 				_acc= value;
@@ -394,7 +404,22 @@ namespace Ace.Custom{
 			return res;
 		}
 		
+		public void Reset(){
+			speed = default_speed;
+			acc = default_acc;
+		}
+		
+		//public void Gripper(bool value){
+		//	System.Threading.Thread.Sleep(250);
+		//	robot.SetDigitalIO(value ? 1 : -1);
+		//	System.Threading.Thread.Sleep(500);
+		//}
+		
 		public void Stop(){
+			robot.Halt();
+		}
+		
+		public void Kill(){
 			robot.Power = false;
 		}
 	}
@@ -460,7 +485,7 @@ namespace Ace.Custom{
 				}
 			}
 			server.Stop();
-			robotController.Stop();
+			robotController.Kill();
 		}
 	}
 }
