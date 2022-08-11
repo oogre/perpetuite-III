@@ -11,10 +11,12 @@ const REQUEST_TYPE = Object.freeze({
   Acc :        Symbol("Acc"),          // param int[0-100]
   Go :         Symbol("Go"),           // param x y z w
   Follow :     Symbol("Follow"),       // param x1 y1 z1 w1 x2 y2 z2 w2 ... xn yn zn wn
-  GetZforXY :  Symbol("GetZforXY"),    // param x y
+  ZProbe :     Symbol("ZProbe"),    // param x y -- replay z
   GetPosition: Symbol("GetPosition"),  // param /
   GetSpeed :   Symbol("GetSpeed"),     // param /
   GetAcc :     Symbol("GetAcc"),       // param /
+  Reset :      Symbol("Reset"),       // param / 
+  Stop :       Symbol("Stop"),       // param / 
 });
 
 
@@ -75,6 +77,23 @@ export default class Request{
          throw Error(`Go Request Constructor takes a argument and it has to be a Postion value`);
       return new Request(REQUEST_TYPE.Go, [...Parameter.fromPosition(position)]);
    }
+
+   static ZProbe(position){
+      if (!isPosition(position))
+         throw Error(`ZProbe Request Constructor takes a argument and it has to be a Postion value`);
+      return new Request(REQUEST_TYPE.ZProbe, [...Parameter.fromPosition(position)]);
+   
+   }
+
+   static Reset(){
+      return new Request(REQUEST_TYPE.Reset);
+   
+   }
+
+   static Stop(){
+      return new Request(REQUEST_TYPE.Stop);
+   }
+
    static Follow(positions){
     if (!isPosition(positions))
          throw Error(`Go Request Constructor takes a argument and it has to be a Postion value`);

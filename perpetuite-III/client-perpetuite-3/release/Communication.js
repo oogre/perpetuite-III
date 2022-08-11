@@ -15,7 +15,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
   client-perpetuite-3 - Communication.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-07-21 15:58:08
-  @Last Modified time: 2022-07-22 15:00:40
+  @Last Modified time: 2022-07-25 17:05:11
 \*----------------------------------------*/
 const net = require('net');
 

@@ -3,7 +3,7 @@
   easyPlayer - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-23 03:04:06
+  @Last Modified time: 2022-07-28 16:33:10
 \*----------------------------------------*/
 /*
 
@@ -52,16 +52,6 @@ program
 	});
 
 
-// program
-// 	.command('Break')
-// 	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
-// 	.argument('<flag>', 'boolean argument', stringToBoolean)
-// 	.description('Enable/Disable Break motors. true turns the Break On & false turns the Break Off')
-// 	.action( (flag, {debug}) => {
-// 		main(Request.Break, flag, debug)
-// 	});
-
-
 program
 	.command('Gripper')
 	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
@@ -83,6 +73,20 @@ program
 	.description('Tell the robot to go at a position x y z with a orientation of w')
 	.action( (x, y, z, w, {debug}) => {
 		main(Request.Go, new Position(x, y, z, w), debug)
+	});
+
+
+program
+	.command('ZProbe')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	// double -- to authorize negative value
+	.argument('<x>', 'float argument', parseFloat)
+	.argument('<y>', 'float argument', parseFloat)
+	.description('Tell the robot to go at max z for the position x y')
+	.action( (x, y, {debug}) => {
+		main(Request.ZProbe, new Position(x, y, 0, 0), debug)
+		.then(data => console.log(data))
+		.catch(error => console.log(error));
 	});
 
 
@@ -122,6 +126,24 @@ program
 	.description('set the acceleration/deceleration, 0 is minimum 100 is maximum')
 	.action( (acc, {debug}) => {
 		main(Request.Acc, acc, debug)
+	});
+
+
+program
+	.command('Reset')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	.description('reset default Speed/Acc')
+	.action( ({debug}) => {
+		main(Request.Reset, null, debug)
+	});
+
+
+program
+	.command('Stop')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	.description('Stop current move')
+	.action( ({debug}) => {
+		main(Request.Stop, null, debug)
 	});
 
 
