@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /*----------------------------------------*\
-  easyPlayer - index.js
+  client-perpetuite-3 - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-28 16:33:10
+  @Last Modified time: 2022-08-11 09:45:54
 \*----------------------------------------*/
 
 /*
@@ -39,10 +39,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const program = new _commander.Command();
 
+const wait = time => {
+  return new Promise(resolve => {
+    setTimeout(resolve, time);
+  });
+};
+
 const main = async (RequestBuilder, parameters, debug = false) => {
   try {
     const req = RequestBuilder(parameters);
-    if (debug) return console.log(req.toString());
+
+    if (debug) {
+      await wait(1000);
+      return console.log(req.toString());
+    }
 
     const res = _Request.default.fromRaw(await (0, _Communication.default)(req));
 
@@ -73,7 +83,13 @@ program.command('ZProbe').option('-d, --debug [debug]', 'debug', false, _Tools.s
 .argument('<x>', 'float argument', parseFloat).argument('<y>', 'float argument', parseFloat).description('Tell the robot to go at max z for the position x y').action((x, y, {
   debug
 }) => {
-  main(_Request.default.ZProbe, new _Position.default(x, y, 0, 0), debug).then(data => console.log(data)).catch(error => console.log(error));
+  main(_Request.default.ZProbe, new _Position.default(x, y, 0, 0), debug).then(data => console.log(data)).catch(error => console.error(error));
+});
+program.command('IdleZ').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean) // double -- to authorize negative value
+.description('Tell the robot to wait before ZProbe').action(({
+  debug
+}) => {
+  main(_Request.default.IdleZ, null, debug);
 });
 program.command('Follow').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean).description('pipe values (x y z w\\n) into this command').action(({
   debug

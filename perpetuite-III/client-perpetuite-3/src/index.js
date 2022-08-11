@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /*----------------------------------------*\
-  easyPlayer - index.js
+  client-perpetuite-3 - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-07-28 16:33:10
+  @Last Modified time: 2022-08-11 09:45:54
 \*----------------------------------------*/
 /*
 
@@ -28,10 +28,19 @@ import {stringToBoolean} from './Tools.js';
 
 const program = new Command();
 
+const wait = (time) => {
+	return new Promise(resolve => {
+		setTimeout(resolve, time);
+	});
+}
+
 const main = async (RequestBuilder, parameters, debug = false) => {
 	try{
 		const req = RequestBuilder(parameters);
-		if(debug) return console.log(req.toString());
+		if(debug){
+			await wait(1000);
+			return console.log(req.toString());
+		}
 		const res = Request.fromRaw( await call(req) );
 		if(res.isFail()) throw res;
 		return res.toString();
@@ -86,7 +95,17 @@ program
 	.action( (x, y, {debug}) => {
 		main(Request.ZProbe, new Position(x, y, 0, 0), debug)
 		.then(data => console.log(data))
-		.catch(error => console.log(error));
+		.catch(error => console.error(error));
+	});
+
+
+program
+	.command('IdleZ')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	// double -- to authorize negative value
+	.description('Tell the robot to wait before ZProbe')
+	.action( ({debug}) => {
+		main(Request.IdleZ, null, debug)
 	});
 
 

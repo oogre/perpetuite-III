@@ -39,7 +39,9 @@ const REQUEST_TYPE = Object.freeze({
   // param /
   Reset: Symbol("Reset"),
   // param / 
-  Stop: Symbol("Stop") // param / 
+  Stop: Symbol("Stop"),
+  // param / 
+  IdleZ: Symbol("IdleZ") // param / 
 
 });
 
@@ -117,6 +119,10 @@ class Request {
   static ZProbe(position) {
     if (!(0, _Tools.isPosition)(position)) throw Error(`ZProbe Request Constructor takes a argument and it has to be a Postion value`);
     return new Request(REQUEST_TYPE.ZProbe, [..._Parameter.default.fromPosition(position)]);
+  }
+
+  static IdleZ() {
+    return new Request(REQUEST_TYPE.IdleZ);
   }
 
   static Reset() {

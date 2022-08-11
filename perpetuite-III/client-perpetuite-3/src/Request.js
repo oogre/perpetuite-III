@@ -17,6 +17,7 @@ const REQUEST_TYPE = Object.freeze({
   GetAcc :     Symbol("GetAcc"),       // param /
   Reset :      Symbol("Reset"),       // param / 
   Stop :       Symbol("Stop"),       // param / 
+  IdleZ:       Symbol("IdleZ"),       // param / 
 });
 
 
@@ -85,14 +86,19 @@ export default class Request{
    
    }
 
+   static IdleZ(){
+      return new Request(REQUEST_TYPE.IdleZ);
+   }
+
    static Reset(){
       return new Request(REQUEST_TYPE.Reset);
-   
    }
 
    static Stop(){
       return new Request(REQUEST_TYPE.Stop);
    }
+
+
 
    static Follow(positions){
     if (!isPosition(positions))
