@@ -2,14 +2,15 @@
   easyPlayer - Tools.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:52:19
-  @Last Modified time: 2022-07-22 14:24:32
+  @Last Modified time: 2022-08-17 11:12:36
 \*----------------------------------------*/
 
 import Position from './Position.js';
 import Request from './Request.js';
 
 export const isFnc = (n) => n instanceof Function;
-export const isBool = (n) => typeof n == "boolean"
+export const isBool = (n) => typeof n == "boolean";
+export const isString = (n) => typeof n == "string";
 export const isArray = (n) => Array.isArray(n);
 export const isFloat = (n) => n === +n && n !== (n|0);
 export const isInteger = (n) => n === +n && n === (n|0);
@@ -19,6 +20,7 @@ export const isRequest = (obj) => obj instanceof Request;
 export const isBuffer = (n) => Buffer.isBuffer(n);
 
 export const uniqId = () => Math.floor(Math.random() * Date.now()).toString(16);
+
 
 export const stringToBoolean = (n) => {
   if(isBool(n))return n;

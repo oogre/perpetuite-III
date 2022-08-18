@@ -3,7 +3,7 @@
   client-perpetuite-3 - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-08-11 09:45:54
+  @Last Modified time: 2022-08-17 15:24:34
 \*----------------------------------------*/
 /*
 
@@ -43,7 +43,7 @@ const main = async (RequestBuilder, parameters, debug = false) => {
 		}
 		const res = Request.fromRaw( await call(req) );
 		if(res.isFail()) throw res;
-		return res.toString();
+		return res;
 	}
 	catch(error){
 			console.log(`Error : ${error?.getErrorMessage ? error.getErrorMessage() : error}`);
@@ -94,8 +94,18 @@ program
 	.description('Tell the robot to go at max z for the position x y')
 	.action( (x, y, {debug}) => {
 		main(Request.ZProbe, new Position(x, y, 0, 0), debug)
-		.then(data => console.log(data))
+		.then(res => console.log(res.toJson()))
 		.catch(error => console.error(error));
+	});
+
+
+program
+	.command('WaitProbe')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	// double -- to authorize negative value
+	.description('Tell the robot to wait z probe clicked')
+	.action( ({debug}) => {
+		main(Request.WaitProbe, null, debug);
 	});
 
 
@@ -142,9 +152,19 @@ program
 	.command('Acc')
 	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
 	.argument('<acc>', 'int argument', parseInt)
-	.description('set the acceleration/deceleration, 0 is minimum 100 is maximum')
+	.description('set the acceleration, 0 is minimum 100 is maximum')
 	.action( (acc, {debug}) => {
 		main(Request.Acc, acc, debug)
+	});
+
+
+program
+	.command('Dcc')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	.argument('<dcc>', 'int argument', parseInt)
+	.description('set the deceleration, 0 is minimum 100 is maximum')
+	.action( (dcc, {debug}) => {
+		main(Request.Dcc, dcc, debug)
 	});
 
 

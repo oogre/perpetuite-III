@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.uniqId = exports.stringToBoolean = exports.isRequest = exports.isPosition = exports.isNumber = exports.isInteger = exports.isFnc = exports.isFloat = exports.isBuffer = exports.isBool = exports.isArray = void 0;
+exports.uniqId = exports.stringToBoolean = exports.isString = exports.isRequest = exports.isPosition = exports.isNumber = exports.isInteger = exports.isFnc = exports.isFloat = exports.isBuffer = exports.isBool = exports.isArray = void 0;
 
 var _Position = _interopRequireDefault(require("./Position.js"));
 
@@ -15,7 +15,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
   easyPlayer - Tools.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:52:19
-  @Last Modified time: 2022-07-22 14:24:32
+  @Last Modified time: 2022-08-17 11:12:36
 \*----------------------------------------*/
 const isFnc = n => n instanceof Function;
 
@@ -24,6 +24,10 @@ exports.isFnc = isFnc;
 const isBool = n => typeof n == "boolean";
 
 exports.isBool = isBool;
+
+const isString = n => typeof n == "string";
+
+exports.isString = isString;
 
 const isArray = n => Array.isArray(n);
 

@@ -25,6 +25,8 @@ const REQUEST_TYPE = Object.freeze({
   // param int[0-100]
   Acc: Symbol("Acc"),
   // param int[0-100]
+  Dcc: Symbol("Dcc"),
+  // param int[0-100]
   Go: Symbol("Go"),
   // param x y z w
   Follow: Symbol("Follow"),
@@ -41,7 +43,9 @@ const REQUEST_TYPE = Object.freeze({
   // param / 
   Stop: Symbol("Stop"),
   // param / 
-  IdleZ: Symbol("IdleZ") // param / 
+  IdleZ: Symbol("IdleZ"),
+  // param /
+  WaitProbe: Symbol("WaitProbe") // param /
 
 });
 
@@ -106,9 +110,16 @@ class Request {
 
   static Acc(int) {
     // [0-100] [slowest-fastest]
-    if (!(0, _Tools.isInteger)(int)) throw Error(`Acc Request Constructor takes one argument and it has to be an integer value (0 is the low acceleration speed 100 is high acceleration)`);
+    if (!(0, _Tools.isInteger)(int)) throw Error(`Acc Request Constructor takes one argument and it has to be an integer value (0 is the low acceleration 100 is high acceleration)`);
     if (int < 0 || int > 100) throw Error(`Acc Request Constructor argument must be int the interval [0 - 100]`);
     return new Request(REQUEST_TYPE.Acc, [_Parameter.default.fromInt(int)]);
+  }
+
+  static Dcc(int) {
+    // [0-100] [slowest-fastest]
+    if (!(0, _Tools.isInteger)(int)) throw Error(`Dcc Request Constructor takes one argument and it has to be an integer value (0 is the low decceleration 100 is high decceleration)`);
+    if (int < 0 || int > 100) throw Error(`Dcc Request Constructor argument must be int the interval [0 - 100]`);
+    return new Request(REQUEST_TYPE.Dcc, [_Parameter.default.fromInt(int)]);
   }
 
   static Go(position) {
@@ -119,6 +130,10 @@ class Request {
   static ZProbe(position) {
     if (!(0, _Tools.isPosition)(position)) throw Error(`ZProbe Request Constructor takes a argument and it has to be a Postion value`);
     return new Request(REQUEST_TYPE.ZProbe, [..._Parameter.default.fromPosition(position)]);
+  }
+
+  static WaitProbe() {
+    return new Request(REQUEST_TYPE.WaitProbe);
   }
 
   static IdleZ() {
@@ -146,6 +161,12 @@ class Request {
 
   toString() {
     return `${this.type.description} ${this.parameters.length} ${this.parameters.map(parameter => parameter.toString()).join(" ")}`;
+  }
+
+  toJson() {
+    return JSON.stringify(this.parameters.map(({
+      value
+    }) => value));
   }
 
 }
