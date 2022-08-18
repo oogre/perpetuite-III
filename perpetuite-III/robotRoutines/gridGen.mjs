@@ -3,7 +3,7 @@
 const {lerp, isNumber} = require("./tools.js");
 
 const PILL_SIZE = 9; // mm
-const RAYON = 650;   // mm
+const RAYON = 550;   // mm
 const DIAMETER = RAYON * 2;  // mm
 
 const density = (isNumber(argv.d) ? argv.d : 8) * 0.01;
@@ -52,17 +52,14 @@ const genGrid = (x0=0, y0=0, w=hCount, h=vCount) => {
 }
 
 const grid = genGrid(x, y, w, h)
-for(let i = 0 ; i < 1352 ; i++){
-	grid.splice(Math.floor(grid.length * Math.random()), 1);
-}
+// for(let i = 0 ; i < 1352 ; i++){
+// 	grid.splice(Math.floor(grid.length * Math.random()), 1);
+// }
 
 let data = JSON.stringify(grid).replace(/\"/g, "");
 console.log(data);
 
-fs.writeFile("./../data/grid.json", data, (err) => {
-    if (err) throw err;
-    console.log('Data written to file');
-});
+fs.writeFile("./../data/grid.json", data);
 
 
 

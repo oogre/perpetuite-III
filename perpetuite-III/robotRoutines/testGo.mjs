@@ -7,48 +7,27 @@ const getZ = async (_x, _y) => {
 	const [, , z] = rawLocation.stdout.replace("\n", "").split(" ");
 	return parseInt(z);
 }
-
-const GO_CEIL = async (x, y, w = 0) => {
-	await $`client-perpetuite3 Go -- ${x} ${y} 0 ${w}`;
-}
-
 const GO = async (x, y, z = 0, w = 0) => {
 	await $`client-perpetuite3 Go -- ${x} ${y} ${z} ${w}`;
 }
-
-
-
-const V_UP = async () => {
-	await $`client-perpetuite3 Speed -- 60`;
-	await $`client-perpetuite3 Acc -- 50`;
-	await $`client-perpetuite3 Dcc -- 50`;
-}
-
 const SLOW = async () => {
 	await $`client-perpetuite3 Speed -- 1`;
 	await $`client-perpetuite3 Acc -- 1`;
 	await $`client-perpetuite3 Dcc -- 60`;
 }
-
-
 const V = async () => {
 	await $`client-perpetuite3 Speed -- 60`;
 	await $`client-perpetuite3 Acc -- 60`;
 	await $`client-perpetuite3 Dcc -- 50`;
 }
-
 const H = async () => {
 	await $`client-perpetuite3 Speed -- 50`;
 	await $`client-perpetuite3 Acc -- 50`;
 	await $`client-perpetuite3 Dcc -- 50`;
 }
-
 const Gripper = async (flag) => {
-	await $`client-perpetuite3 Gripper -- ${1-flag}`;
-	
+	await $`client-perpetuite3 Gripper -- ${1-flag}`;	
 }
-
-
 const WAIT = async (time) => {
 	if(isNumber(time)){
 		return new Promise(s => setTimeout(()=>s(), time));	
@@ -107,14 +86,12 @@ const inject = (A, B)=>{
 }
 
 
-const p = JSON.parse((await $`./gridGen.mjs -d 5.5 -x 20 -y 40 -w 5 -h 5`).stdout);
+const p = JSON.parse((await $`./gridGen.mjs -d 5.5 -x 15 -y 78 -w 40 -h 3`).stdout);
 
 const points = inject(p, [-550, -250])
 
 await Gripper(0);
-
 await goHome();
-
 let flag = true;
 for(const [x, y] of points){
 	const z = await getZ(x, y);
