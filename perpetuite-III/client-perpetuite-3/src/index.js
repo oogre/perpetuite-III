@@ -3,7 +3,7 @@
   client-perpetuite-3 - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-08-17 15:24:34
+  @Last Modified time: 2022-08-19 14:36:26
 \*----------------------------------------*/
 /*
 
@@ -94,6 +94,18 @@ program
 	.description('Tell the robot to go at max z for the position x y')
 	.action( (x, y, {debug}) => {
 		main(Request.ZProbe, new Position(x, y, 0, 0), debug)
+		.then(res => console.log(res.toJson()))
+		.catch(error => console.error(error));
+	});
+
+
+program
+	.command('GetPosition')
+	.option('-d, --debug [debug]', 'debug', false, stringToBoolean)
+	// double -- to authorize negative value
+	.description('Ask the robot its position x y z w')
+	.action( ({debug}) => {
+		main(Request.GetPosition, null, debug)
 		.then(res => console.log(res.toJson()))
 		.catch(error => console.error(error));
 	});

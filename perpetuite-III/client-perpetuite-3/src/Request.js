@@ -92,7 +92,10 @@ export default class Request{
       if (!isPosition(position))
          throw Error(`ZProbe Request Constructor takes a argument and it has to be a Postion value`);
       return new Request(REQUEST_TYPE.ZProbe, [...Parameter.fromPosition(position)]);
-   
+   }
+
+   static GetPosition(){
+      return new Request(REQUEST_TYPE.GetPosition);
    }
 
    static WaitProbe(){

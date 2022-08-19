@@ -4,7 +4,7 @@
   client-perpetuite-3 - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-08-17 15:24:34
+  @Last Modified time: 2022-08-19 14:36:26
 \*----------------------------------------*/
 
 /*
@@ -84,6 +84,12 @@ program.command('ZProbe').option('-d, --debug [debug]', 'debug', false, _Tools.s
   debug
 }) => {
   main(_Request.default.ZProbe, new _Position.default(x, y, 0, 0), debug).then(res => console.log(res.toJson())).catch(error => console.error(error));
+});
+program.command('GetPosition').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean) // double -- to authorize negative value
+.description('Ask the robot its position x y z w').action(({
+  debug
+}) => {
+  main(_Request.default.GetPosition, null, debug).then(res => console.log(res.toJson())).catch(error => console.error(error));
 });
 program.command('WaitProbe').option('-d, --debug [debug]', 'debug', false, _Tools.stringToBoolean) // double -- to authorize negative value
 .description('Tell the robot to wait z probe clicked').action(({

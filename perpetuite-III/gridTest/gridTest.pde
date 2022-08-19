@@ -1,5 +1,5 @@
 
-
+final float DIAMETER = 1400;// mm
 void setup() {
   size(1000, 1000);
 }
@@ -12,7 +12,7 @@ void draw() {
 
     background(0);
     translate(width/2, height/2);
-    scale(width/1300.0, -1 * width/1300.0);
+    scale(width/DIAMETER, -1 * width/DIAMETER);
 
     noStroke();
     int count = 0;
@@ -27,6 +27,7 @@ void draw() {
       count++;
     }
     println(count);
+    delay(1000);
   }
   catch(RuntimeException e) {
   }

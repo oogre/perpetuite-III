@@ -132,6 +132,10 @@ class Request {
     return new Request(REQUEST_TYPE.ZProbe, [..._Parameter.default.fromPosition(position)]);
   }
 
+  static GetPosition() {
+    return new Request(REQUEST_TYPE.GetPosition);
+  }
+
   static WaitProbe() {
     return new Request(REQUEST_TYPE.WaitProbe);
   }

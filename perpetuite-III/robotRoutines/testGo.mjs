@@ -1,6 +1,6 @@
 #!/usr/bin/env zx
 
-const {lerp, isNumber} = require("./tools.js");
+const {lerp, isNumber, isArray, wait} = require("./tools.js");
 
 const getZ = async (_x, _y) => {
 	const rawLocation = (await $`./getZfoXY.mjs -x=${_x} -y=${_y}`);
@@ -53,9 +53,9 @@ const pickUp = async (x, y, z) => {
 	await GO(x, y, z+5);
 	await SLOW();
 	await GO(x, y, z);
-	await WAIT();
+	await WAIT(200);
 	await Gripper(1);
-	await WAIT(500);
+	await WAIT(200);
 	await GO(x, y, z+5);
 	await V();
 	await GO(x, y);
@@ -70,7 +70,7 @@ const dropDown = async (x, y, z) => {
 	await GO(x, y, z);
 	await WAIT(200);
 	await Gripper(0);
-	await WAIT(500);
+	await WAIT(200);
 	await GO(x, y, z+5);
 	await V();
 	await GO(x, y);
@@ -82,25 +82,38 @@ const goHome = async ()=>{
 
 
 const inject = (A, B)=>{
-	return (new Array(A.length + A.length-2)).fill(0).map((e,i) => i%2==1?A[Math.floor(i/2)]: B);
+	if(isArray(A)&&isArray(B)){
+		A.length = B.length = Math.min(A.length, B.length);
+
+		return (new Array(A.length * 2))
+		.fill(0)
+		.map((e,i) => i % 2 == 0 ? A[Math.floor(i/2)] : B[Math.floor(i/2)])
+	}
+	// return (new Array(A.length + A.length-2)).fill(0).map((e,i) => i%2==1?A[Math.floor(i/2)]: B);
 }
 
+// const origins = JSON.parse((await $`./gridGen.mjs -d 5 -r 600 -x 16 -y 0 -w 15 -h 5`).stdout);
+// const destinations = JSON.parse((await $`./gridGen.mjs -d 5 -r 600 -x 16 -y 75 -w 15 -h 5`).stdout);
 
-const p = JSON.parse((await $`./gridGen.mjs -d 5.5 -x 15 -y 78 -w 40 -h 3`).stdout);
+// const points = inject(origins, destinations)
 
-const points = inject(p, [-550, -250])
+// await Gripper(0);
+// await goHome();
+// let flag = true;
+// for(const [x, y] of points){
+// 	const z = await getZ(x, y);
+// 	if(flag) await pickUp(x, y, z);
+// 	else await dropDown(x, y, z);
+// 	flag = !flag;
+// }
+// await Gripper(0);
+// await goHome();
 
-await Gripper(0);
-await goHome();
-let flag = true;
-for(const [x, y] of points){
-	const z = await getZ(x, y);
-	if(flag) await pickUp(x, y, z);
-	else await dropDown(x, y, z);
-	flag = !flag;
+for(let i = 0 ; i < 25 ; i ++){
+	console.log(i);
+	await $`./moves/arc.mjs -x=${lerp(-550, 550, Math.random())} -y=${lerp(-550, 550, Math.random())} -o=${lerp(0, 200, Math.random())}`
 }
-await Gripper(0);
-await goHome();
+
 
 
 

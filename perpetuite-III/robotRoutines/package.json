@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mathjs": "^11.0.1"
+    "mathjs": "^11.0.1",
+    "quaternion": "^1.4.0",
+    "zx": "^7.0.8"
   }
 }
