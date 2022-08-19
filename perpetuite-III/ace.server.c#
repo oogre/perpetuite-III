@@ -104,6 +104,7 @@ namespace Ace.Custom{
 			Break,		// param ON-OFF -- rep OK
 			Speed,		// param 0 to 100 -- rep OK
 			Acc,		// param 0 to 100 -- rep OK
+			Dcc,		// param 0 to 100 -- rep OK
 			Go,			// param x y z w -- rep OK
 			Follow, 	// param x1 y1 z1 w1 x2 y2 z2 w2 x3 y3 z3 w3... xn yn zn wn -- rep OK
 			Gripper,	// param ON-OFF -- rep ok
@@ -113,7 +114,8 @@ namespace Ace.Custom{
 			GetAcc,		// param / rep ok acc
 			Reset,		// param / rep ok acc
 			Stop,		// param / rep ok acc
-			ZProbe,		//       / rep ok acc
+			IdleZ,		//       / rep ok acc,
+			WaitProbe,	//       / rep ok acc
 		}
 		
 		private Type _type;
@@ -153,6 +155,9 @@ namespace Ace.Custom{
 				case "Acc":
 					_type = Type.Acc;
 					break;
+				case "Dcc":
+					_type = Type.Dcc;
+					break;
 				case "Go":
 					_type = Type.Go;
 					break;
@@ -174,7 +179,12 @@ namespace Ace.Custom{
 				case "IdleZ":
 					_type = Type.IdleZ;
 					break;
-
+				case "WaitProbe":
+					_type = Type.WaitProbe;
+					break;
+				case "GetPosition":
+					_type = Type.GetPosition;
+					break;
 				default :
 					_type = Type.Nothing;
 					break;
@@ -338,6 +348,16 @@ namespace Ace.Custom{
 				return _acc;
 			}
 		}
+		private static int default_dcc = 50;
+		private int _dcc = default_dcc;
+		public int dcc{
+			set{
+				_dcc= value;
+			}
+			get{
+				return _dcc;
+			}
+		}
 		
 		public RobotController(AceServer ace) {
 			this.ace = ace;
@@ -370,7 +390,7 @@ namespace Ace.Custom{
 			cartesianMove.Robot = robot;
 			cartesianMove.WorldLocation = new Transform3D(x, y, z, 0, 180, w );
 			cartesianMove.Param.Accel = _acc;
-			cartesianMove.Param.Decel = _acc;
+			cartesianMove.Param.Decel = _dcc;
 			cartesianMove.Param.Speed = _speed;
 			cartesianMove.Param.Straight = true;
 			cartesianMove.Param.MotionEnd = MotionEnd.Blend;
@@ -385,7 +405,7 @@ namespace Ace.Custom{
 			acc = 50;
 			float alpha = 0;
 			while(true){
-				Go(robot.WorldLocation.DX, robot.WorldLocation.DY, 0, Math.Sin(alpha += 0.01) * 45);
+				Go(robot.WorldLocation.DX, robot.WorldLocation.DY, 0, Math.Sin(alpha += 0.01f) * 45);
 				if(robot.GetDigitalIO(1001)){
 					robot.Halt();
 					speed = oldSpeed;
@@ -397,16 +417,33 @@ namespace Ace.Custom{
 			}
 		}
 		
+		
+		public void WaitProbe(){
+			while(true){
+				if(robot.GetDigitalIO(1001)){
+					break;
+				}
+			}
+			while(robot.GetDigitalIO(1001)){}
+			
+		}
+		
+		public Transform3D GetPosition(){
+			return robot.WorldLocation;
+		}
+		
 		public Transform3D ZProbe(double x, double y){
 			int oldSpeed = speed;
 			int oldAcc = acc;
+			int oldDcc = dcc;
 			
 			Go(x, y, 0, 0);
 			robot.WaitMoveDone();
 			
 			speed = 1;
 			acc = 1;
-			Go(x, y, -320, 0);
+			dcc = 1;
+			Go(x, y, -290, 0);
 			while(true){
 				if(robot.GetDigitalIO(1001)){
 					robot.Halt();
@@ -416,6 +453,7 @@ namespace Ace.Custom{
 			double z = robot.WorldLocation.DZ;
 			speed = 1;
 			acc = 100;
+			dcc = 100;
 			while(robot.GetDigitalIO(1001)){
 				z += 0.1;
 				Go(x, y, z, 0);
@@ -423,6 +461,7 @@ namespace Ace.Custom{
 			}
 			speed = oldSpeed;
 			acc = oldAcc;
+			dcc = oldDcc;
 			Transform3D res = robot.WorldLocation;
 			Go(0, 0, 0, 0);
 			robot.WaitMoveDone();
@@ -432,6 +471,7 @@ namespace Ace.Custom{
 		public void Reset(){
 			speed = default_speed;
 			acc = default_acc;
+			dcc = default_dcc;
 		}
 		
 		//public void Gripper(bool value){
@@ -448,7 +488,6 @@ namespace Ace.Custom{
 			robot.Power = false;
 		}
 	}
-	
 	public class Program {
 		public AceServer ace;
 
@@ -470,17 +509,30 @@ namespace Ace.Custom{
 					try{
 						Request res = new Request("ok");
 						switch(req.type){
-							case Request.Type.ZProbe : 
+							case Request.Type.ZProbe : {
 								Transform3D pos = robotController.ZProbe(req.parameters[0].dValue, req.parameters[1].dValue);
 								res.parameters.Add(new Parameter(pos.DX));
 								res.parameters.Add(new Parameter(pos.DY));
 								res.parameters.Add(new Parameter(pos.DZ));
+								res.parameters.Add(new Parameter(pos.Roll));
+							}
 							break;
 							case Request.Type.IdleZ :
 								robotController.IdleZ();
 							break;
+							case Request.Type.WaitProbe :
+								robotController.WaitProbe();
+							break;
 							case Request.Type.HighPower :
 								robotController.HighPower(req.parameters[0].bValue);				
+							break;
+							case Request.Type.GetPosition : {
+								Transform3D pos = robotController.GetPosition();
+								res.parameters.Add(new Parameter(pos.DX));
+								res.parameters.Add(new Parameter(pos.DY));
+								res.parameters.Add(new Parameter(pos.DZ));
+								res.parameters.Add(new Parameter(pos.Roll));
+							}
 							break;
 							case Request.Type.Break :
 								robotController.Break(req.parameters[0].bValue);				
@@ -493,6 +545,9 @@ namespace Ace.Custom{
 							break;
 							case Request.Type.Acc :
 								robotController.acc = req.parameters[0].iValue;				
+							break;
+							case Request.Type.Dcc :
+								robotController.dcc = req.parameters[0].iValue;				
 							break;
 							case Request.Type.Go :
 								robotController.Go(req.parameters[0].dValue, req.parameters[1].dValue, req.parameters[2].dValue, req.parameters[3].dValue);			
