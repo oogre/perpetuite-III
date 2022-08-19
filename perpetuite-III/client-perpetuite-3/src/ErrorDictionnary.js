@@ -2,7 +2,7 @@
   client-perpetuite-3 - ErrorDictionnary.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-07-22 14:50:06
-  @Last Modified time: 2022-07-25 11:47:47
+  @Last Modified time: 2022-08-19 15:13:38
 \*----------------------------------------*/
 export default Object.freeze({
 	unknown : `Unknown error : `,
@@ -11,5 +11,6 @@ export default Object.freeze({
 	"(-604)" : "Robot power off",
 	"(-901)" : "Obstacle collision detected",
 	"(-530)" : "Protection error",
-	"(-1002)": "Position out of range"
+	"(-1002)": "Position out of range",
+	"(-10018)" : "ERROR -10018"
 });
