@@ -1,0 +1,4 @@
+*.zip
+data/*
+release/*
+node_modules/*
