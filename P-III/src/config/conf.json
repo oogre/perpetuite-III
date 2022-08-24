@@ -20,29 +20,45 @@
         [-550,  250],
         [   0,    0]
       ]
+    },
+    "physical" : {
+      "probe_height" : 23,
+      "pill_HEIGHT" : 5,
+      "table_radius" : 700
+    },
+    "robot" : {
+      "default" : {
+        "speed" : 50,
+        "max_speed" : 100,
+        "min_speed" : 1,
+        "acceleration" : 50,
+        "max_acceleration" : 100,
+        "min_acceleration" : 1,
+        "decceleration" : 50,
+        "max_decceleration" : 100,
+        "min_decceleration" : 1,
+        "home" : [0, 0, 0, 0],
+        "radius" : 650,
+        "max_depth" : 0,
+        "min_depth" : -310,
+        "min_roll" : -45,
+        "max_roll" : 45
+      }
     }
   },
-  "PHYSICAL_CONF" : {
-    "probe_height" : 23,
-    "pill_HEIGHT" : 5
-  },
-  "ROBOT_CONF" : {
-    "deault" : {
-      "home" : [0, 0, 0, 0],
-      "speed" : 50,
-      "acceleration" : 50,
-      "decceleration" : 50,
-      "max_speed" : 100,
-      "min_speed" : 1,
-      "max_acceleration" : 100,
-      "min_acceleration" : 1,
-      "max_decceleration" : 100,
-      "min_decceleration" : 1,
-      "radius" : 550,
-      "max_depth" : 0,
-      "min_depth" : -310,
-      "min_roll" : -45,
-      "max_roll" : 45
-    }
+  "CAMERA_CONF" : {
+    "img_file_path" : "[PIII_PATH]/data/camera.jpg",
+    "empty_img_file_path" : "[PIII_PATH]/data/empty.jpg",
+    "diff_img_file_path" : "[PIII_PATH]/data/diff.jpg",
+    "mask_img_file_path" : "[PIII_PATH]/data/mask.png",
+    "rectified_img_file_path" : "[PIII_PATH]/data/r_camera.png",
+    "tag_file_path" : "[PIII_PATH]/data/tags.json",
+    "output_color_space" : "sRGB",
+    "projected_size" : 1740,
+    "horizontal_scale_correction" : -12,
+    "vertical_scale_correction" : -15,
+    "horizontal_offset_correction" : 1,
+    "vertical_offset_correction" : 3
+
   }
 }

@@ -3,18 +3,20 @@
   perpetuite-III - getZforXY.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-22 17:40:34
-  @Last Modified time: 2022-08-22 19:35:58
+  @Last Modified time: 2022-08-24 14:18:06
 \*----------------------------------------*/
 
 
 import fs from 'fs-extra';
 const math = require("mathjs");
 import _conf_ from './../../common/config.js';
-import {Call} from './../../common/CoreApiHelper.js';
+import Call from './../../common/CoreApiHelper.js';
 import Command from './../../common/CommandHelper.js';
 
-const { probe_height:probeHeight, pill_HEIGHT:pillHeight,  } = _conf_.PHYSICAL_CONF;
-const { zProbe:{save_path:savePath} } = _conf_.HIGH_LEVEL_API_CONF;
+const { 
+  physical : { probe_height : probeHeight, pill_HEIGHT : pillHeight },
+  zProbe : { save_path : savePath }
+ } = _conf_.HIGH_LEVEL_API_CONF;
 const offset = pillHeight - probeHeight;
 
 Command({
@@ -30,16 +32,8 @@ This script is used to calculate z altitude of a given 2D point
   .requiredOption('-y, --ypos <ypos>', 'y component of the 2D point to find altitude', parseFloat)
   .option('-p, --path <path>', 'destination of measured probes points', savePath)
   .action( async ({debug, xpos, ypos, path}) => {
-    const getProbesMeasures = async () => {
-      try{
-        return await fs.readJson(path);
-      }catch(error){
-        throw `z probes data file not Found. Run 'P-III.zProbe' to generate file.`;
-      } 
-    }
-
     try{
-      const probePoints = await getProbesMeasures();
+      const probePoints = await fs.readJson(path);
       
       const closestPoints = probePoints.map(([_x, _y, _z]) => {
         let dX = xpos - _x;
@@ -55,7 +49,7 @@ This script is used to calculate z altitude of a given 2D point
       const fit = math.chain(maAt).multiply(matA).inv().multiply(maAt).multiply(matB).done()
       const [[a, b, c]] = math.transpose(fit).valueOf();
       const z = a * xpos + b * ypos + c;
-      process.stdout.write(`${xpos} ${ypos} ${z + offset}`); 
+      process.stdout.write(`-x ${xpos} -y ${ypos} -z ${z + offset}`); 
     }catch(error){
       console.error(error);
     }
