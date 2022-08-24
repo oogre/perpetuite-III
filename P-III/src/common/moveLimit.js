@@ -2,9 +2,11 @@
   perpetuite-III - moveLimit.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-23 08:51:09
-  @Last Modified time: 2022-08-24 13:45:54
+  @Last Modified time: 2022-08-24 17:08:45
 \*----------------------------------------*/
 
+import fs from 'fs-extra';
+const math = require("mathjs");
 import {constrain} from './tools.js';
 import _conf_ from './config.js';
 import Vector from './Vector.js';
@@ -28,8 +30,20 @@ const {
 			min_roll:minRoll,
 			max_roll:maxRoll
 		}
-	}
+	},
+	physical : { 
+		probe_height:probeHeight, 
+		pill_HEIGHT:pillHeight, 
+		approche:{
+			height:approche
+		}
+	},
+  zProbe : { 
+  	save_path : probesPath 
+  }
 } = _conf_.HIGH_LEVEL_API_CONF;
+
+
 
 export const limitters = {
 	speed : {
@@ -69,13 +83,14 @@ export const limitters = {
 	}
 }
 
-export const moveLimit = ({xpos=limitters.x.value, ypos=limitters.y.value, zpos=limitters.depth.value, wpos=limitters.roll.value, speed=limitters.speed.value, acc=limitters.acc.value, dcc=limitters.dcc.value}) => {
+export const moveLimit = async ({xpos=limitters.x.value, ypos=limitters.y.value, zpos=limitters.depth.value, wpos=limitters.roll.value, speed=limitters.speed.value, acc=limitters.acc.value, dcc=limitters.dcc.value}) => {
 	const vh = new Vector(xpos, ypos, 0);
 	if(vh.length() > radius){
 		const [x, y] = vh.unit().multiply(radius).toArray();
 		xpos = x;
 		ypos = y;
 	}
+	const minDepth = await getDepthForXY(xpos, ypos);
 	return {
 		s : constrain(limitters.speed.min, limitters.speed.max, speed),
 		a : constrain(limitters.acc.min, limitters.acc.max, acc),
@@ -83,8 +98,27 @@ export const moveLimit = ({xpos=limitters.x.value, ypos=limitters.y.value, zpos=
 		pos : [ 
 			xpos, 
 			ypos, 
-			constrain(limitters.depth.min, limitters.depth.max, zpos), 
+			constrain(minDepth, limitters.depth.max, zpos), 
 			constrain(limitters.roll.min, limitters.roll.max, wpos)
 		],
 	};
 };
+
+export const getDepthForXY = async (x, y) => {
+	const probePoints = await fs.readJson(probesPath);
+  const closestPoints = probePoints.map(([_x, _y, _z]) => {
+    let dX = x - _x;
+    let dY = y - _y;
+    let dist = Math.sqrt(dX * dX + dY * dY);
+    return [ _x, _y, _z, dist ];
+  }).sort((a, b) => a[3] - b[3]);
+  closestPoints.length = 3;
+
+  const matB = math.matrix(closestPoints.map(([x, y, z]) => [z]))
+  const matA = math.matrix(closestPoints.map(([x, y]) => [x, y, 1]))
+  const maAt = math.transpose(matA);
+  const fit = math.chain(maAt).multiply(matA).inv().multiply(maAt).multiply(matB).done()
+  const [[a, b, c]] = math.transpose(fit).valueOf();
+  const z = a * x + b * y + c;
+  return z + approche + pillHeight - probeHeight;
+}

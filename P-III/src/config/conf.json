@@ -24,7 +24,13 @@
     "physical" : {
       "probe_height" : 23,
       "pill_HEIGHT" : 5,
-      "table_radius" : 700
+      "table_radius" : 700,
+      "approche" : {
+        "height" : 10,
+        "speed" : 1,
+        "acc" : 1,
+        "dcc" : 60
+      }
     },
     "robot" : {
       "default" : {

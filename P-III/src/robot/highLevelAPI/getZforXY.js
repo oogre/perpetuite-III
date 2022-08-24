@@ -3,14 +3,13 @@
   perpetuite-III - getZforXY.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-22 17:40:34
-  @Last Modified time: 2022-08-24 14:18:06
+  @Last Modified time: 2022-08-24 17:21:08
 \*----------------------------------------*/
 
 
 import fs from 'fs-extra';
 const math = require("mathjs");
 import _conf_ from './../../common/config.js';
-import Call from './../../common/CoreApiHelper.js';
 import Command from './../../common/CommandHelper.js';
 
 const { 

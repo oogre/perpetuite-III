@@ -3,7 +3,7 @@
   perpetuite-III - goArc.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-23 08:38:53
-  @Last Modified time: 2022-08-24 13:17:24
+  @Last Modified time: 2022-08-24 18:07:42
 \*----------------------------------------*/
 
 import {isNumber, constrain, lerp3, lerp} from './../../common/tools.js';
@@ -30,15 +30,13 @@ This script is used to move robot in straight line to destination
 	.option(`-a, --acc <acc>`, `acceleration of the move [${limitters.acc.min}, ${limitters.acc.max}]`, parseFloat, limitters.acc.value)
 	.option(`-f, --dcc <dcc>`, `decceleration of the move [${limitters.dcc.min}, ${limitters.dcc.max}]`, parseFloat, limitters.dcc.value)
 	.action( async ({ debug, xpos, ypos, zpos, wpos, speed, acc, dcc }) => {
-		// const $ = Call({debug});
-
 		const [x0, y0, z0, w0] = await RobotHelper.GetPosition(debug);
 		const p0 = new Vector(x0, y0, z0);
 		if(!isNumber(xpos))xpos = x0;
 		if(!isNumber(ypos))ypos = y0;
 		if(!isNumber(zpos))zpos = z0;
 		if(!isNumber(wpos))wpos = w0;
-		const { pos:[x1, y1, z1, w1], s, a, d } = moveLimit({xpos, ypos, zpos, wpos, speed, acc, dcc});
+		const { pos:[x1, y1, z1, w1], s, a, d } = await moveLimit({xpos, ypos, zpos, wpos, speed, acc, dcc});
 		const p1 = new Vector(x1, y1, z1);
 	
 		const _p = p1.subtract(p0);

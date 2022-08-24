@@ -3,7 +3,7 @@
   perpetuite-III - goHome.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-22 19:39:14
-  @Last Modified time: 2022-08-24 13:45:24
+  @Last Modified time: 2022-08-24 18:06:12
 \*----------------------------------------*/
 import {isNumber} from './../../common/tools.js';
 import {limitters} from './../../common/moveLimit.js';
@@ -17,7 +17,8 @@ Command({
 	description : `
 This script is developped for Perpetuité III, an art installation 
 made by Felix Luque, Damien Gernay & Vincent Evrard.
-This script is used to move robot in straight line to destination
+This script is used to move robot in straight line to destination,
+contact with pills or table is theorically impossible thanks to z limittation of probes
 `,
 	})
 	.option(`-x, --xpos <xpos>`, `x component of the 3D point of destination [${limitters.x.min}, ${limitters.x.max}]`, parseFloat, "current xpos")
