@@ -29,8 +29,14 @@ ln -s $(pwd)/release/robot/highLevelAPI/P-III.go /usr/local/bin/P-III.go
 echo "create symLink /usr/local/bin/P-III.grab"
 ln -s $(pwd)/release/robot/highLevelAPI/P-III.grab /usr/local/bin/P-III.grab
 
-echo "create symLink /usr/local/computerVision/P-III.cv"
+echo "create symLink /usr/local/bin/P-III.cv.raw"
+ln -s $(pwd)/release/computerVision/P-III.cv.raw /usr/local/bin/P-III.cv.raw
+
+echo "create symLink /usr/local/bin/P-III.cv"
 ln -s $(pwd)/release/computerVision/P-III.cv /usr/local/bin/P-III.cv
+
+echo "create symLink /usr/local/bin/P-III"
+ln -s $(pwd)/release/App/P-III /usr/local/bin/P-III
 
 
 echo 'export PIII_PATH='$(pwd) >> ~/.profile

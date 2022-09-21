@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*----------------------------------------*\
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
@@ -5,40 +6,31 @@
   @Last Modified time: 2022-09-21 16:23:59
 \*----------------------------------------*/
 
-import {promisify, deltaE, lab2rgb} from './../common/tools.js';
+import {deltaE, rgb2lab, $} from './../common/tools.js';
 import _conf_ from './../common/config.js';
-import  { spawn } from "child_process";
 
-const ls = spawn("P-III.cv");
+const { 
+  physical : {
+    pill_colors
+  }
+} = _conf_.HIGH_LEVEL_API_CONF;
 
-ls.stdout.on("data", data => {
-    console.log(`stdout: ${data}`);
-});
-
-ls.stderr.on("data", data => {
-    console.log(`stderr: ${data}`);
-});
-
-ls.on('error', (error) => {
-    console.log(`error: ${error.message}`);
-});
-
-ls.on("close", code => {
-    console.log(`child process exited with code ${code}`);
-});
-
-// const { 
-//   physical : {
-//     pill_colors
-//   }
-// } = _conf_.HIGH_LEVEL_API_CONF;
-
-
-// class PillsModel{
-//   constructor(){
-//     this.pills = [];
-//   }
-//   update(){
-
-//   }
-// }
+(async () =>{
+    const res = await $("P-III.cv.raw");
+    const rawPills = JSON.parse(res);
+    const cPills = rawPills.map(rPill => {
+        const avgLAB = rgb2lab(rPill.avgRGB)
+        const [, color] = pill_colors.reduce((acc, color) => {
+            const d = deltaE(avgLAB, color.lab);
+            if(acc==undefined)return [d, color];
+            if(d>acc[0])return acc;
+            return [d, color];
+        }, []);
+        return {
+            avgLAB,
+            label : color.name,
+            ...rPill
+        }
+    });
+    console.log(JSON.stringify(cPills))
+})();

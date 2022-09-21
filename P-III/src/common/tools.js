@@ -1,4 +1,5 @@
 import fs from 'fs';
+import  { spawn } from "child_process";
 
 // VALIDATIONS
 export const isFnc = (n) => n instanceof Function;
@@ -31,7 +32,7 @@ export const stringToBoolean = (n) => {
       JSON.parse(n);
   }
 }
-export const rgb2lab = ({x:R, y:G, z:B}) => {
+export const rgb2lab = ([R, G, B]) => {
   let r = R / 255.0, 
     g = G / 255.0, 
     b = B / 255.0, 
@@ -146,4 +147,30 @@ export const promisify = (f) => {
       f.call(this, ...args); // call the original function
     });
   };
+}
+
+export const $ = (cmd) => {
+    return new Promise((res, rej)=>{
+        const proc = spawn(cmd);
+        let r = "";
+        let e = "";
+
+        proc.stdout.on("data", data => {
+            r += data;
+        });
+
+        proc.stderr.on("data", data => {
+            e += data;
+        });
+
+        proc.on('error', (error) => {
+            e += error.message;
+        });
+
+        proc.on("close", code => {
+            if(code == 0) return res(r);
+            return rej(e);
+        });
+
+    });
 }

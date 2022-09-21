@@ -5,3 +5,4 @@
 
 ./scripts/build.core.api.sh;
 ./scripts/build.highLevel.api.sh;
+./scripts/build.app.sh;
