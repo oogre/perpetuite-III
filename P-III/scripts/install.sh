@@ -9,7 +9,7 @@ if [ $EUID != 0 ]; then
 	exit $?
 fi
 
-$(pwd)/uninstall.sh
+$(pwd)/scripts/uninstall.sh
 
 echo "create symLink /usr/local/bin/P-III.core.api"
 ln -s $(pwd)/release/robot/coreAPI/P-III.core.api /usr/local/bin/P-III.core.api

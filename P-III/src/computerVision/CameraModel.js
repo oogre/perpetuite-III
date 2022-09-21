@@ -4,8 +4,6 @@
   @Date:   2022-09-08 10:30:27
   @Last Modified time: 2022-09-20 14:11:11
 \*----------------------------------------*/
-const cv = require('opencv4nodejs');
-
 
 class CameraModel{
 	constructor(){

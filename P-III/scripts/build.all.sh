@@ -4,4 +4,4 @@
 # @Last Modified time: 2022-08-19 19:45:52
 
 ./scripts/build.core.api.sh;
-./scripts/build.highLevelAPI.api.sh;
+./scripts/build.highLevel.api.sh;
