@@ -2,13 +2,11 @@
 # @Author: Evrard Vincent
 # @Date:   2020-12-23 22:10:56
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-08-24 17:16:34
+# @Last Modified time: 2022-09-08 12:03:51
 
 ./node_modules/.bin/babel --verbose --out-dir ./release/robot/highLevelAPI ./src/robot/highLevelAPI
 ./node_modules/.bin/babel --verbose --out-dir ./release/computerVision ./src/computerVision
 ./node_modules/.bin/babel --verbose --out-dir ./release/common ./src/common
-
-cp -R ./src/config/ ./release/config/
 
 echo "remove symLink ./release/robot/highLevelAPI/P-III.*"
 rm ./release/robot/highLevelAPI/P-III.*
@@ -36,6 +34,6 @@ echo "create symLink ./release/robot/highLevelAPI/P-III.grab"
 ln -s ./grab.js ./release/robot/highLevelAPI/P-III.grab
 chmod +x ./release/robot/highLevelAPI/grab.js
 
-echo "create symLink ./release/computerVision/P-III.cv.rectify"
-ln -s ./cameraRectifier.js ./release/computerVision/P-III.cv.rectify
-chmod +x ./release/computerVision/cameraRectifier.js
+echo "create symLink ./release/computerVision/P-III.cv"
+ln -s ./index.js ./release/computerVision/P-III.cv
+chmod +x ./release/computerVision/index.js
