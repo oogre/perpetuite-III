@@ -3,7 +3,7 @@
   perpetuite-III - goHome.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-22 19:39:14
-  @Last Modified time: 2022-08-24 18:06:12
+  @Last Modified time: 2022-08-24 18:14:49
 \*----------------------------------------*/
 import {isNumber} from './../../common/tools.js';
 import {limitters} from './../../common/moveLimit.js';
