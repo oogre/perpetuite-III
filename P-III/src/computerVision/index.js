@@ -1,42 +1,44 @@
-#!/usr/bin/env node
-const cv = require('opencv4nodejs');
+/*----------------------------------------*\
+  P-III - PillsModel.js
+  @author Evrard Vincent (vincent@ogre.be)
+  @Date:   2022-09-21 16:19:31
+  @Last Modified time: 2022-09-21 16:23:59
+\*----------------------------------------*/
 
-const {RobotPosition_mm} = require('./RobotModel.js');
-const {PillsModel} = require('./PillsModel.js');
-const {CameraModel} = require('./CameraModel.js');
-const red = new cv.Vec(0, 0, 255);
+import {promisify, deltaE, lab2rgb} from './../common/tools.js';
+import _conf_ from './../common/config.js';
+import  { spawn } from "child_process";
+
+const ls = spawn("P-III.cv");
+
+ls.stdout.on("data", data => {
+    console.log(`stdout: ${data}`);
+});
+
+ls.stderr.on("data", data => {
+    console.log(`stderr: ${data}`);
+});
+
+ls.on('error', (error) => {
+    console.log(`error: ${error.message}`);
+});
+
+ls.on("close", code => {
+    console.log(`child process exited with code ${code}`);
+});
+
+// const { 
+//   physical : {
+//     pill_colors
+//   }
+// } = _conf_.HIGH_LEVEL_API_CONF;
 
 
-const main = async ([xOff=0, yOff=0]=[])=>{
-	await CameraModel.init(xOff, yOff);
-	const mode = cv.RETR_LIST;
-	const method = cv.CHAIN_APPROX_SIMPLE;
-	const contours = CameraModel.mask.findContours(mode, method);
-	for(const contour of contours){
-		PillsModel.contourToPill(contour);
-	}
-	await PillsModel.draw(CameraModel.image);
-	// console.log(PillsModel.pills.length);
+// class PillsModel{
+//   constructor(){
+//     this.pills = [];
+//   }
+//   update(){
 
-	// console.log(PillsModel.toObject());
-	cv.imshow('a window croppedImg', CameraModel.image);
-};
-
-
-(async ()=>{
-
-	while(1){
-
-		// RobotPosition_mm[0]++;
-		await main(RobotPosition_mm);
-		// while(1){
-			const key = cv.waitKey(10)
-			const done = key !== -1 && key !== 255;
-	    	if (done) {
-				break;
-			}
-		// }
-	}
-	// cv.destroyAllWindows()
-})();
-
+//   }
+// }
