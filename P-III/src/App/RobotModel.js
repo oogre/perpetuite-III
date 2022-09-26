@@ -11,6 +11,8 @@ import PillsModel from "./PillsModel.js"
 import {$, wait} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 
+const D = _conf_.DEBUG ? "-d 1" : "";
+
 class RobotModel extends EventHandler{
   constructor(){
     super();
@@ -23,8 +25,13 @@ class RobotModel extends EventHandler{
     return PillsModel.getPillByColor(colorToFind);
   }
 
+  async init(){
+    await $(`P-III.core.api HighPower ${D} -- 1`);
+    await $(`P-III.goHome ${D} `);
+  }
+
   async grabPillTarget(pill){
-    const D = _conf_.DEBUG ? "-d 1" : "";
+    
     console.log("GOTO @ FLY ALTITUDE");
     await $(`P-III.go -x ${pill.center.x} -y ${pill.center.y} -z 0 ${D}`);
     console.log("GOTO @ WORK ALTITUDE");

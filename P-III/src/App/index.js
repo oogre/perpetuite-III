@@ -47,7 +47,8 @@ const updateMove = async (loop = false) => {
 
 
 
-(() => {
+(async () => {
+  await RobotModel.init();
   updateCV(true);  
   updateMove(true);
 })()

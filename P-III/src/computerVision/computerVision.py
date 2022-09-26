@@ -4,6 +4,7 @@ import cv2
 import gxipy as gx
 import numpy
 import json
+import sys
 from Pill import Pill
 
 def getCameraView() :
