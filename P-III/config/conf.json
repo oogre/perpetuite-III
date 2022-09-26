@@ -1,0 +1,98 @@
+{
+  "BASE_API_CONF": {
+    "network": {
+      "host": "DESKTOP-8KD5D4K.local",
+      "port": 9090,
+      "timeout": 1000
+    }
+  },
+  "HIGH_LEVEL_API_CONF" : {
+    "zProbe" : {
+      "save_path" : "[PIII_PATH]/data/zProbes.json",
+      "probe_points" : [
+        [-550, -250],
+        [-250, -550],
+        [ 250, -550],
+        [ 550, -250],
+        [ 550,  250],
+        [ 250,  550],
+        [-250,  550],
+        [-550,  250],
+        [   0,    0]
+      ]
+    },
+    "physical" : {
+      "camera" : {
+        "size" : [2592, 1944],
+        "offset" : [564, 86],
+        "rotate" : -1.2
+      },
+      "probe_height" : 23,
+      "pill_size_mm" : 9,
+      "pill_size_px" : 75.611,
+      "pill_HEIGHT" : 2,
+      "pill_colors" : [
+        {
+          "name" : "blue",
+          "lab" : [ 29.707629297369948, 0.7891125633257001, -6.536832484487554 ],
+          "rgb" : [ 66, 70, 80 ]
+        },{
+          "name" : "yellow",
+          "lab" : [ 44.085691624181024, 8.604735103509176, 26.120338942343167 ],
+          "rgb" : [ 131, 98, 61]
+        },{
+          "name" : "red",
+          "lab" : [ 37.1406123877132, 21.619761798817695, 17.07103621675765 ],
+          "rgb" : [ 127, 73, 61]
+        }
+      ],
+      "oldPill_HEIGHT" : 5,
+      "table_radius" : 700,
+      "approche" : {
+        "height" : 1,
+        "oldHeight" : 10,
+        "speed" : 1,
+        "acc" : 1,
+        "dcc" : 60
+      }
+    },
+    "robot" : {
+      "default" : {
+        "speed" : 50,
+        "max_speed" : 100,
+        "min_speed" : 1,
+        "acceleration" : 50,
+        "max_acceleration" : 100,
+        "min_acceleration" : 1,
+        "decceleration" : 50,
+        "max_decceleration" : 100,
+        "min_decceleration" : 1,
+        "home" : [450, 450, 0, 0],
+        "radius" : 650,
+        "max_depth" : 0,
+        "min_depth" : -310,
+        "min_roll" : -45,
+        "max_roll" : 45
+      }
+    }
+  },
+  "CAMERA_CONF" : {
+    "img_file_path" : "[PIII_PATH]/data/camera.jpg",
+    "empty_img_file_path" : "[PIII_PATH]/data/empty.jpg",
+    "diff_img_file_path" : "[PIII_PATH]/data/diff.jpg",
+    "mask_img_file_path" : "[PIII_PATH]/data/mask.png",
+    "rectified_img_file_path" : "[PIII_PATH]/data/r_camera.png",
+    "tag_file_path" : "[PIII_PATH]/data/tags.json",
+    "output_color_space" : "sRGB",
+    "projected_size" : 1710,
+    "Right": 250,
+    "Left":  250,
+    "Up":    249,
+    "Down":  249,
+    "OUp":    448.75,
+    "ODown":  448.75,
+    "horizontal_offset_correction" : 2,
+    "vertical_offset_correction" : -1
+
+  }
+}
