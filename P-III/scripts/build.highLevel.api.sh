@@ -4,9 +4,9 @@
 # @Last Modified by:   vincent evrard
 # @Last Modified time: 2022-09-08 12:03:51
 
-./node_modules/.bin/babel --verbose --out-dir ./release/robot/highLevelAPI ./src/robot/highLevelAPI
-./node_modules/.bin/babel --verbose --out-dir ./release/computerVision ./src/computerVision
-./node_modules/.bin/babel --verbose --out-dir ./release/common ./src/common
+npx babel --verbose --out-dir ./release/robot/highLevelAPI ./src/robot/highLevelAPI
+npx babel --verbose --out-dir ./release/computerVision ./src/computerVision
+npx babel --verbose --out-dir ./release/common ./src/common
 
 echo "remove symLink ./release/robot/highLevelAPI/P-III.*"
 rm ./release/robot/highLevelAPI/P-III.*
