@@ -3,7 +3,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-09-21 16:23:59
+  @Last Modified time: 2022-09-21 19:03:14
 \*----------------------------------------*/
 
 import {deltaE, rgb2lab, $} from './../common/tools.js';

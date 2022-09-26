@@ -22,9 +22,14 @@
       ]
     },
     "physical" : {
+      "camera" : {
+        "size" : [2592, 1944],
+        "offset" : [564, 86],
+        "rotate" : -1.2
+      },
       "probe_height" : 23,
       "pill_size_mm" : 9,
-      "pill_size_px" : 32,
+      "pill_size_px" : 75.611,
       "pill_HEIGHT" : 2,
       "pill_colors" : [
         {

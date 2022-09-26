@@ -2,7 +2,7 @@
   perpetuite-III - Vector.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-23 09:06:37
-  @Last Modified time: 2022-08-23 09:07:15
+  @Last Modified time: 2022-09-23 21:12:00
 \*----------------------------------------*/
 
 import Quaternion from "quaternion";
@@ -48,6 +48,9 @@ export default class Vector {
   }
   length() {
     return Math.sqrt(this.dot(this));
+  }
+  magSq() {
+    return this.dot(this);
   }
   unit() {
     return this.divide(this.length());
@@ -123,6 +126,7 @@ Vector.unit = function(a, b) {
   b.z = a.z / length;
   return b;
 };
+
 Vector.fromAngles = function(theta, phi) {
   return new Vector(Math.cos(theta) * Math.cos(phi), Math.sin(phi), Math.sin(theta) * Math.cos(phi));
 };
@@ -144,7 +148,9 @@ Vector.fromArray = function(a) {
 Vector.angleBetween = function(a, b) {
   return a.angleTo(b);
 };
-
+Vector.Random2D = () => {
+  return Vector.Right().rotate(Vector.Up(), Math.random()*Math.PI*2);
+}
 Vector.Right = ()=>{
   return new Vector(1, 0, 0);
 }

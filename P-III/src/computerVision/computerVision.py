@@ -6,7 +6,7 @@ import numpy
 import json
 from Pill import Pill
 
-def getDahengCameraView() :
+def getCameraView() :
     # create a device manager
     device_manager = gx.DeviceManager()
 
@@ -66,13 +66,12 @@ def getDahengCameraView() :
 
         return pimg
 
-cvImg = getDahengCameraView()
-
-imLab = cv2.cvtColor(cvImg, cv2.COLOR_BGR2LAB)
+cvImg = getCameraView()
+# imLab = cv2.cvtColor(cvImg, cv2.COLOR_BGR2LAB)
 gray = cv2.cvtColor(cvImg, cv2.COLOR_BGR2GRAY)
 blur = cv2.GaussianBlur(gray,(11, 11),0)
-ret,thresh1 = cv2.threshold(blur,48,255,cv2.THRESH_BINARY)
-contours, hierarchy = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+_, thresh1 = cv2.threshold(blur,48,255,cv2.THRESH_BINARY)
+contours, _ = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 pills = []
 for cnt in contours :
