@@ -4,8 +4,8 @@
 # @Last Modified by:   vincent evrard
 # @Last Modified time: 2022-08-30 13:28:30
 
-./node_modules/.bin/babel --verbose --out-dir ./release/robot/coreAPI ./src/robot/coreAPI
-./node_modules/.bin/babel --verbose --out-dir ./release/common ./src/common
+npx babel --verbose --out-dir ./release/robot/coreAPI ./src/robot/coreAPI
+npx babel --verbose --out-dir ./release/common ./src/common
 
 rm ./release/robot/coreAPI/P-III.core.api
 ln -s ./index.js ./release/robot/coreAPI/P-III.core.api 
