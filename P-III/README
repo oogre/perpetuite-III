@@ -1,0 +1,4 @@
+attach camera to Ubuntu
+
+usbipd wsl list
+usbipd wsl attach --busid 1-12

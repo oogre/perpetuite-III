@@ -4,6 +4,12 @@
 # @Last Modified by:   vincent evrard
 # @Last Modified time: 2022-09-08 12:02:32
 
+
+#echo 'export PIII_PATH='$(pwd) >> ~/.zshrc
+touch ~/.zshenv
+echo 'export PIII_PATH='$(pwd) >> ~/.zshenv
+source ~/.zshenv
+
 if [ $EUID != 0 ]; then
 	sudo "$0" "$@"
 	exit $?
@@ -38,5 +44,3 @@ ln -s $(pwd)/release/computerVision/P-III.cv /usr/local/bin/P-III.cv
 echo "create symLink /usr/local/bin/P-III"
 ln -s $(pwd)/release/App/P-III /usr/local/bin/P-III
 
-
-echo 'export PIII_PATH='$(pwd) >> ~/.profile
