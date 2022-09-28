@@ -1,5 +1,8 @@
 import fs from 'fs';
 import  { spawn } from "child_process";
+import _conf_ from './config.js';
+
+const DEBUG = _conf_.DEBUG ? "-d 1" : "";
 
 // VALIDATIONS
 export const isFnc = (n) => n instanceof Function;
@@ -149,9 +152,10 @@ export const promisify = (f) => {
   };
 }
 
-export const $ = (cmd) => {
+export const $ = (cmd, ...other) => {
+  other = [DEBUG, ...other];
     return new Promise((res, rej)=>{
-        const proc = spawn(cmd);
+        const proc = spawn(cmd, other);
         let r = "";
         let e = "";
 
