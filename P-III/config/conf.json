@@ -1,8 +1,7 @@
 {
   "BASE_API_CONF": {
     "network": {
-      "host": "localhost",
-      "host.old": "DESKTOP-8KD5D4K.local",
+      "host": "DESKTOP-8KD5D4K.local",
       "port": 9090,
       "timeout": 1000
     }
@@ -25,13 +24,15 @@
     "physical" : {
       "camera" : {
         "size" : [2592, 1944],
-        "offset" : [564, 86],
-        "rotate" : -1.2
+        "size_px" : [2592, 1944],
+        "size_mm" : [319.5, 236.5],
+        "offset" : [ 729.5179554744772, 975.7845005236309],
+        "rotate" : -1.83
       },
       "probe_height" : 23,
       "pill_size_mm" : 9,
       "pill_size_px" : 75.611,
-      "pill_HEIGHT" : 2,
+      "pill_HEIGHT" : 5,
       "pill_colors" : [
         {
           "name" : "blue",
@@ -68,7 +69,7 @@
         "decceleration" : 50,
         "max_decceleration" : 100,
         "min_decceleration" : 1,
-        "home" : [450, 450, 0, 0],
+        "home" : [0, 0, 0, 1.83],
         "radius" : 650,
         "max_depth" : 0,
         "min_depth" : -310,

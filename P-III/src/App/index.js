@@ -24,11 +24,11 @@ const {
 const colors = pill_colors.map(({name})=>name);
 
 PillsModel.onPillDiscovered((event)=>{
-  // console.log(event);
+  console.log(event);
 });
 
 const updateCV = async (loop = false)=>{
-  CameraModel.getFieldOfView();
+  // CameraModel.getFieldOfView();
 
   const cPills = await CameraModel.getPillPos();
   PillsModel.update(cPills);
@@ -48,9 +48,9 @@ const updateMove = async (loop = false) => {
 
 
 (async () => {
-  await RobotModel.init();
+  // await RobotModel.init();
   updateCV(true);  
-  updateMove(true);
+  // updateMove(true);
 })()
 
 

@@ -41,6 +41,9 @@ ln -s $(pwd)/release/computerVision/P-III.cv.raw /usr/local/bin/P-III.cv.raw
 echo "create symLink /usr/local/bin/P-III.cv"
 ln -s $(pwd)/release/computerVision/P-III.cv /usr/local/bin/P-III.cv
 
+echo "create symLink /usr/local/bin/P-III.cv.wrapper"
+ln -s $(pwd)/release/computerVision/P-III.cv.wrapper /usr/local/bin/P-III.cv.wrapper
+
 echo "create symLink /usr/local/bin/P-III"
 ln -s $(pwd)/release/App/P-III /usr/local/bin/P-III
 

@@ -149,9 +149,9 @@ export const promisify = (f) => {
   };
 }
 
-export const $ = (cmd) => {
+export const $ = (cmd, ...args) => {
     return new Promise((res, rej)=>{
-        const proc = spawn(cmd);
+        const proc = spawn(cmd, args);
         let r = "";
         let e = "";
 

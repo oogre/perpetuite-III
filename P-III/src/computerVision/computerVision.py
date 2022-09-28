@@ -63,7 +63,7 @@ def getCameraView() :
         # stop data acquisition
         cam.stream_off()
         # close device
-        cam.close_device()
+        #cam.close_device()
 
         return pimg
 
