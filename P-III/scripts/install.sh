@@ -47,3 +47,8 @@ ln -s $(pwd)/release/computerVision/P-III.cv.wrapper /usr/local/bin/P-III.cv.wra
 echo "create symLink /usr/local/bin/P-III"
 ln -s $(pwd)/release/App/P-III /usr/local/bin/P-III
 
+echo "create symLink /usr/local/bin/P-III.gen"
+ln -s $(pwd)/release/Generator/P-III.gen /usr/local/bin/P-III.gen;
+
+pip3 install noise;
+pip3 install screeninfo;

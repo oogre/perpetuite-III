@@ -12,3 +12,10 @@ rm ./release/App/P-III*
 echo "create symLink ./release/App/P-III"
 ln -s ./index.js ./release/App/P-III
 chmod +x ./release/App/index.js
+
+
+mkdir -p ./release/Generator
+cp -r ./src/Generator/*.py ./release/Generator/
+echo "create symLink ./release/Generator/P-III.gen"
+ln -s ./main.py ./release/Generator/P-III.gen
+chmod +x ./release/Generator/main.py

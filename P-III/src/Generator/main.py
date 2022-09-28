@@ -19,8 +19,6 @@ width = 200
 height = 200
 colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
 
-monitor, *_ =  get_monitors()
-
 def lerp (A, B, C) :
 	return (C * A) + (1-C)*B
 
@@ -55,6 +53,9 @@ def genImage(w=75, h=75, offset=0) :
 	return image
 
 def display(img, w=400, h=400, winname="generator") : 
+
+	monitor, *_ =  get_monitors()
+
 	dim = (w, h)
 	x = int((monitor.width - w) * 0.5)
 	y = int((monitor.height - h)* 0.5)
