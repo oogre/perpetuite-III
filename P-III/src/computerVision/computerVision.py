@@ -5,7 +5,11 @@ import gxipy as gx
 import numpy
 import json
 import sys
+import os
 from Pill import Pill
+
+
+dataPath=os.environ['PIII_PATH']+"/data/"
 
 def getCameraView() :
     # create a device manager
@@ -75,8 +79,8 @@ _, thresh1 = cv2.threshold(blur,48,255,cv2.THRESH_BINARY)
 contours, _ = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 
-cv2.imwrite('C:\\Users\\felix\\Desktop\\perpetuite-III\\P-III\\data/camera.jpg', cvImg)
-cv2.imwrite('C:\\Users\\felix\\Desktop\\perpetuite-III\\P-III\\data/mask.jpg', thresh1)
+cv2.imwrite(dataPath+'camera.jpg', cvImg)
+cv2.imwrite(dataPath+'mask.jpg', thresh1)
 
 pills = []
 for cnt in contours :
