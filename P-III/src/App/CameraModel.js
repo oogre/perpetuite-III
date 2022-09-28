@@ -2,7 +2,7 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2022-09-26 12:42:55
+  @Last Modified time: 2022-09-28 16:49:28
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -23,15 +23,12 @@ const {
         rotate:camRotation,
         size_px,
         size_mm,
-      },
-    pill_size_mm,
-    pill_size_px
+      }
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
 
 class CameraModel extends EventHandler {
 	static DEG_TO_RAD = Math.PI * 2 / 360.0
-	// static PIX_TO_MM = pill_size_mm / pill_size_px;
 	static PIX_TO_MM = (new Vector(...size_mm)).divide(new Vector(...size_px)).toArray().reduce((acc, v)=>acc+=v, 0)/2 
 
 	static CAM_SIZE_PX = new Vector(...camSize);
@@ -72,7 +69,7 @@ class CameraModel extends EventHandler {
 		const grabber = async () => {
 			if(_conf_.DEBUG){
 				await wait(2000);
-				return await fs.readFile(`${__dirname}/../../data/rawPill.json`, "utf8");
+				return await fs.readFile(`${process.env.PIII_PATH}/data/rawPill.json`, "utf8");
 			}else{
 				return await $("P-III.cv");
 			}  

@@ -2,7 +2,7 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-09-26 17:27:45
+  @Last Modified time: 2022-09-28 21:11:45
 \*----------------------------------------*/
 
 import Vector from './../common/Vector.js';
@@ -29,32 +29,29 @@ class RobotModel extends EventHandler{
     await $(`P-III.core.api`, `HighPower`, "1");
     await $(`P-III.goHome`);
   }
-
-  async grabPillTarget(pill){
-    
-    console.log("GOTO @ FLY ALTITUDE");
-    await $(`P-III.go -x ${pill.center.x} -y ${pill.center.y} -z 0`);
-    console.log("GOTO @ WORK ALTITUDE");
-    await $(`P-III.go -x ${pill.center.x} -y ${pill.center.y} -z -1000`);
-    console.log("GRAB");
-    await $(`P-III.P-III.grab -f 1`);
-    pill.locked = true;
-    console.log("GOBACK TO FLY ALTITUDE");
-    await $(`P-III.go -x ${pill.center.x} -y ${pill.center.y} -z 0`);
+  async go([x, y]){
+    await $(`P-III.go`, "-x", x+"", "-y", y+"", '-z', "0");
+    this.location.x = x;
+    this.location.y = y;
+    this.location.z = 0;
   }
 
-  async dropPillTarget(dest, pill){
-
-    const D = _conf_.DEBUG ? "-d 1" : "";
-    console.log("GOTO @ FLY ALTITUDE");
-    await $(`P-III.go -x ${dest.x} -y ${dest.y} -z 0`);
+  async grab([x, y]){
     console.log("GOTO @ WORK ALTITUDE");
-    await $(`P-III.go -x ${dest.x} -y ${dest.y} -z -1000`);
-    console.log("DROP");
-    await $(`P-III.P-III.grab -f 0`);
-    pill.center = dest;
+    await $(`P-III.go`, "-x", x+"", "-y", y+"", '-z', "-1000");
+    console.log("GRAB");
+    await $(`P-III.grab`, "-f", "1");
     console.log("GOBACK TO FLY ALTITUDE");
-    await $(`P-III.go -x ${dest.x} -y ${dest.y} -z 0`);
+    await $(`P-III.go`, "-x", x+"", "-y", y+"", '-z', "0");
+  }
+
+  async drop([x, y]){
+    console.log("GOTO @ WORK ALTITUDE");
+    await $(`P-III.go`, "-x", x+"", "-y", y+"", '-z', "-1000");
+    console.log("DROP");
+    await $(`P-III.grab`, "-f", "0");
+    console.log("GOBACK TO FLY ALTITUDE");
+    await $(`P-III.go`, "-x", x+"", "-y", y+"", '-z', "0");
   }
 }
 

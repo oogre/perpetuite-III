@@ -155,29 +155,37 @@ export const promisify = (f) => {
 
 
 export const $ = (cmd, ...args) => {
+  let NO_DEBUG = false;
+  if(args.length > 0){
+    NO_DEBUG = args[args.length-1]?.NO_DEBUG != undefined
+  }
+  if(NO_DEBUG){
+    args.pop();
+  }else{
     args = [DEBUG, ...args];
     args = _.compact(args);
-    return new Promise((res, rej)=>{
-        const proc = spawn(cmd, args);
-        let r = "";
-        let e = "";
+  }
+  return new Promise((res, rej)=>{
+      const proc = spawn(cmd, args);
+      let r = "";
+      let e = "";
 
-        proc.stdout.on("data", data => {
-            r += data;
-        });
+      proc.stdout.on("data", data => {
+          r += data;
+      });
 
-        proc.stderr.on("data", data => {
-            e += data;
-        });
+      proc.stderr.on("data", data => {
+          e += data;
+      });
 
-        proc.on('error', (error) => {
-            e += error.message;
-        });
+      proc.on('error', (error) => {
+          e += error.message;
+      });
 
-        proc.on("close", code => {
-            if(code == 0) return res(r);
-            return rej(e);
-        });
+      proc.on("close", code => {
+          if(code == 0) return res(r);
+          return rej(e);
+      });
 
-    });
+  });
 }

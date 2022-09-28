@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-09-28 11:14:50
+  @Last Modified time: 2022-09-28 22:21:56
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -43,7 +43,7 @@ const updateCV = async (loop = false)=>{
 
 
 const updateDraw = async (loop = false)=>{
-  await DrawModel.draw();
+  await DrawModel.next();
   await wait(1000);
   updateDraw(loop);
 }
@@ -58,10 +58,32 @@ const updateMove = async (loop = false) => {
   updateMove(loop);
 }
 
+const update = async (loop = false) => {
+  const [{point:[x, y], color:[r, g, b]}, len] = await DrawModel.next();
+  console.log(`still : ${len} move`);
+  console.log(`RobotModel.go([${x}, ${y}])`);
+  // await RobotModel.go([x, y])
+  // console.log(`\tif !empty`)
+  // console.log(`\t\tif color != col(${r},${g},${b})`)
+  // console.log(`\t\t\tGrab`)
+  // console.log(`\t\t\tMove to empty place`)
+  // console.log(`\t\t\tDrop`)
+  // console.log(`\t\telse`)
+  // console.log(`\t\t\tNEXT`)
+  // console.log(`\tMove to !empty && color == col(${r},${g},${b})`)
+  // await RobotModel.grab([x, y])
+  // await RobotModel.go([x, y])
+  // await RobotModel.drop([x, y])
+  // console.log(`NEXT`)
+  await wait(10);
+  update(loop);
+}
+
 (async () => {
+  await DrawModel.init();
   // await RobotModel.init();
-  updateCV(true);  
-  updateDraw(true)
+  // updateCV(true);  
+  update(true)
   // updateMove(true);
 })()
 

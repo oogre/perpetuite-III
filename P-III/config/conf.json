@@ -99,6 +99,7 @@
   },
 
   "DRAW_CONF" : {
-    "step_incrementation" : 10
+    "step_incrementation" : 1,
+    "density" : 0.055
   }
 }
