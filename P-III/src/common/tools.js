@@ -133,7 +133,7 @@ export const pointInPoly = ({x, y}, vert) => {
 // HELPERS
 export const wait = async (time) => {
   if(isNumber(time)){
-    return new Promise(s => setTimeout(()=>s(), time)); 
+    return new Promise(s => setTimeout(s, time)); 
   }
 }
 
