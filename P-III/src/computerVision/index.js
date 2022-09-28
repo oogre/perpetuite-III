@@ -3,7 +3,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-09-21 19:03:14
+  @Last Modified time: 2022-09-28 11:23:32
 \*----------------------------------------*/
 
 import {deltaE, rgb2lab, $} from './../common/tools.js';
@@ -18,7 +18,7 @@ const {
 (async () =>{
 
     try{
-        const res = await $('zx', '/home/perpetuite3/perpetuite-III/P-III/release/computerVision/P-III.cv.wrapper');
+        const res = await $('zx', `${process.env.PIII_PATH}/release/computerVision/P-III.cv.wrapper`);
         const rawPills = JSON.parse(res);
         const cPills = rawPills.map(rPill => {
             const avgLAB = rgb2lab(rPill.avgRGB)

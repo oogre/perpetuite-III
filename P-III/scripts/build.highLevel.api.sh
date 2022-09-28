@@ -2,7 +2,7 @@
 # @Author: Evrard Vincent
 # @Date:   2020-12-23 22:10:56
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-09-08 12:03:51
+# @Last Modified time: 2022-09-28 11:25:28
 
 npx babel --verbose --out-dir ./release/robot/highLevelAPI ./src/robot/highLevelAPI
 npx babel --verbose --out-dir ./release/computerVision ./src/computerVision
@@ -47,5 +47,5 @@ ln -s ./index.js ./release/computerVision/P-III.cv
 chmod +x ./release/computerVision/index.js
 
 echo "create symLink ./release/computerVision/P-III.cv.wrapper"
-ln -s ./test.mjs ./release/computerVision/P-III.cv.wrapper
-chmod +x ./release/computerVision/test.mjs
+ln -s ./computerVision.mjs ./release/computerVision/P-III.cv.wrapper
+chmod +x ./release/computerVision/computerVision.mjs
