@@ -30,7 +30,7 @@ def getCameraView() :
 
     # set exposure gain and white balance to auto
     cam.ExposureAuto.set(False)
-    cam.ExposureTime.set(7500.0)
+    cam.ExposureTime.set(15000.0)
     cam.GainAuto.set(False)
     cam.Gain.set(24.0)
     # cam.LightSourcePreset.set(2)
@@ -74,13 +74,15 @@ blur = cv2.GaussianBlur(gray,(11, 11),0)
 _, thresh1 = cv2.threshold(blur,48,255,cv2.THRESH_BINARY)
 contours, _ = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+
+cv2.imwrite('C:\\Users\\felix\\Desktop\\perpetuite-III\\P-III\\data/camera.jpg', cvImg)
+cv2.imwrite('C:\\Users\\felix\\Desktop\\perpetuite-III\\P-III\\data/mask.jpg', thresh1)
+
 pills = []
 for cnt in contours :
     pill = Pill(cnt, cvImg)
     if hasattr(pill, 'bBox'): 
         pills.append(pill.toObj())
-
-cv2.imwrite('/home/perpetuite3/perpetuite-III/P-III/data/camera.jpg', cvImg)
 
 
 print(json.dumps(pills))
