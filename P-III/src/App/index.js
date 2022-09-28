@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-09-28 22:21:56
+  @Last Modified time: 2022-09-28 22:50:53
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -32,20 +32,11 @@ PillsModel.onPillDiscovered((event)=>{
   console.log(event);
 });
 
-
 const updateCV = async (loop = false)=>{
   // CameraModel.getFieldOfView();
   const cPills = await CameraModel.getPillPos();
   PillsModel.update(cPills);
   updateCV(loop);
-}
-
-
-
-const updateDraw = async (loop = false)=>{
-  await DrawModel.next();
-  await wait(1000);
-  updateDraw(loop);
 }
 
 const updateMove = async (loop = false) => {
@@ -80,7 +71,6 @@ const update = async (loop = false) => {
 }
 
 (async () => {
-  await DrawModel.init();
   // await RobotModel.init();
   // updateCV(true);  
   update(true)

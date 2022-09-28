@@ -2,7 +2,7 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-09-28 22:22:43
+  @Last Modified time: 2022-09-28 22:50:16
 \*----------------------------------------*/
 
 import EventHandler from "./../common/EventHandler.js";
@@ -61,15 +61,20 @@ new Jimp(DIAMETER, DIAMETER, (err, image) => {
 class DrawModel extends EventHandler{
   constructor(){
     super();
+    this.isInit = false;
     this.offset = 1;
     this.commands = [];
   }
   async init(){
+    if(this.isInit)return;
+    this.isInit = true;
     if(await fs.exists(drawOffsetPath)){
       this.offset = parseInt(await fs.readFile(drawOffsetPath, "utf8"));  
     }
   }
+  
   async next(){
+    if(!this.isInit) await init();
     if(this.commands.length > 0){
       return [this.commands.pop(), this.commands.length];
     }
@@ -82,11 +87,12 @@ class DrawModel extends EventHandler{
       const iPoint = [Math.round(x*img.bitmap.width*_DIAMETER), Math.round(y*img.bitmap.height*_DIAMETER)];
       const color = img.getPixelColor(...iPoint);
       const [r, g, b, a] = [color >> 24 & 0xFF, color >> 16 & 0xFF, color >> 8 & 0xFF, color >> 0 & 0xFF]
-      if(a == 0) return acc;
-      acc.push({
-        point : [x, y],
-        color : [r, g, b]
-      })
+      if(a != 0){
+        acc.push({
+          point : [x, y],
+          color : [r, g, b]
+        })
+      }
       return acc;
     }, []).sort(()=>Math.random()>0.5);
     return this.next();
