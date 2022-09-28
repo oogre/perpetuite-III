@@ -10,6 +10,11 @@ touch ~/.zshenv
 echo 'export PIII_PATH='$(pwd) >> ~/.zshenv
 source ~/.zshenv
 
+
+pip3 install noise;
+pip3 install screeninfo;
+
+
 if [ $EUID != 0 ]; then
 	sudo "$0" "$@"
 	exit $?
@@ -49,6 +54,3 @@ ln -s $(pwd)/release/App/P-III /usr/local/bin/P-III
 
 echo "create symLink /usr/local/bin/P-III.gen"
 ln -s $(pwd)/release/Generator/P-III.gen /usr/local/bin/P-III.gen;
-
-pip3 install noise;
-pip3 install screeninfo;

@@ -7,8 +7,9 @@
 \*----------------------------------------*/
 
 import _ from "underscore";
-import PillsModel from "./PillsModel.js"
-import RobotModel from "./RobotModel.js"
+import PillsModel from "./PillsModel.js";
+import RobotModel from "./RobotModel.js";
+import DrawModel from "./DrawModel.js";
 import {wait} from "./../common/tools.js";
 import CameraModel from "./CameraModel.js";
 import _conf_ from "./../common/config.js";
@@ -31,12 +32,20 @@ PillsModel.onPillDiscovered((event)=>{
   console.log(event);
 });
 
-const updateCV = async (loop = false)=>{
 
+const updateCV = async (loop = false)=>{
   // CameraModel.getFieldOfView();
   const cPills = await CameraModel.getPillPos();
   PillsModel.update(cPills);
   updateCV(loop);
+}
+
+
+
+const updateDraw = async (loop = false)=>{
+  await DrawModel.draw();
+  await wait(1000);
+  updateDraw(loop);
 }
 
 const updateMove = async (loop = false) => {
@@ -49,11 +58,10 @@ const updateMove = async (loop = false) => {
   updateMove(loop);
 }
 
-
-
 (async () => {
   // await RobotModel.init();
   updateCV(true);  
+  updateDraw(true)
   // updateMove(true);
 })()
 

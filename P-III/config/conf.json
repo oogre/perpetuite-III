@@ -96,5 +96,9 @@
     "horizontal_offset_correction" : 2,
     "vertical_offset_correction" : -1
 
+  },
+
+  "DRAW_CONF" : {
+    "step_incrementation" : 10
   }
 }
