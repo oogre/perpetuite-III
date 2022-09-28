@@ -6,7 +6,10 @@ import numpy as np
 PI_TIME_4 = 4 * math.pi
 
 def getCircularity (A, P) :
-    return PI_TIME_4 *A/(P*P)
+    try :
+        return PI_TIME_4 *A/(P*P)
+    except :
+        return 0
 
 class Pill:
     def __init__(self, contour, imBGR):

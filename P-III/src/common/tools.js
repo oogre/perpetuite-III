@@ -1,4 +1,5 @@
 import fs from 'fs';
+import _ from 'underscore';
 import  { spawn } from "child_process";
 import _conf_ from './config.js';
 
@@ -155,6 +156,7 @@ export const promisify = (f) => {
 
 export const $ = (cmd, ...args) => {
     args = [DEBUG, ...args];
+    args = _.compact(args);
     return new Promise((res, rej)=>{
         const proc = spawn(cmd, args);
         let r = "";
