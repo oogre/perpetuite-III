@@ -152,10 +152,11 @@ export const promisify = (f) => {
   };
 }
 
-export const $ = (cmd, ...other) => {
-  other = [DEBUG, ...other];
+
+export const $ = (cmd, ...args) => {
+    other = [DEBUG, ...args];
     return new Promise((res, rej)=>{
-        const proc = spawn(cmd, other);
+        const proc = spawn(cmd, args);
         let r = "";
         let e = "";
 

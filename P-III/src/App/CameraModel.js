@@ -20,7 +20,9 @@ const {
     camera : {
         size:camSize,
         offset:camOffset,
-        rotate:camRotation
+        rotate:camRotation,
+        size_px,
+        size_mm,
       },
     pill_size_mm,
     pill_size_px
@@ -29,7 +31,9 @@ const {
 
 class CameraModel extends EventHandler {
 	static DEG_TO_RAD = Math.PI * 2 / 360.0
-	static PIX_TO_MM = pill_size_mm / pill_size_px;
+	// static PIX_TO_MM = pill_size_mm / pill_size_px;
+	static PIX_TO_MM = (new Vector(...size_mm)).divide(new Vector(...size_px)).toArray().reduce((acc, v)=>acc+=v, 0)/2 
+
 	static CAM_SIZE_PX = new Vector(...camSize);
 	static CAM_OFFSET_PX = new Vector(...camOffset);
 
@@ -41,12 +45,20 @@ class CameraModel extends EventHandler {
 		super();
 	}
 	camToWorld(point){
+		// 732  886 >>> 0 0
+
+		console.log(
+			(new Vector(...point)), 
+			(new Vector(...point))
+				.subtract(CameraModel.CAM_OFFSET_PX)
+		);
+
   		return (new Vector(...point))
-			.subtract(CameraModel.OFFSET_PX)
-			.rotate(Vector.Up(), CameraModel.ROTATION)
-			.multiply(new Vector(1, -1, 1))
+			.subtract(CameraModel.CAM_OFFSET_PX)
+			// .rotate(Vector.Up(), CameraModel.ROTATION)
+			.multiply(new Vector(-1, 1, 1))
 			.multiply(CameraModel.PIX_TO_MM)
-			.subtract(RobotModel.location);
+			.add(RobotModel.location);
 	}
 	getFieldOfView(){
 		const fov =  new Rect([
