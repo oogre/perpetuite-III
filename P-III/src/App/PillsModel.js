@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-09-23 20:56:34
+  @Last Modified time: 2022-09-29 12:00:59
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -28,7 +28,6 @@ class PillsModel extends EventHandler{
   update(cPills=[]/* box in px */){
     cPills.map(cPill => {
       const tPill = new PillModel(cPill);
-      
       const pillId = this.findIndex( pill => pill.center.subtract(tPill.center).magSq() < pill_size_mm_sq);
       if(pillId < 0){
         this.pills.push(tPill);

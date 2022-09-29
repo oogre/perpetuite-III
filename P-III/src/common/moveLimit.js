@@ -2,7 +2,7 @@
   perpetuite-III - moveLimit.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-23 08:51:09
-  @Last Modified time: 2022-08-24 17:08:45
+  @Last Modified time: 2022-09-29 11:35:28
 \*----------------------------------------*/
 
 import fs from 'fs-extra';
@@ -46,6 +46,9 @@ const {
 
 
 export const limitters = {
+	radius : {
+		value : radius,
+	},
 	speed : {
 		value: speed,
 		min : minSpeed,
@@ -86,9 +89,7 @@ export const limitters = {
 export const moveLimit = async ({xpos=limitters.x.value, ypos=limitters.y.value, zpos=limitters.depth.value, wpos=limitters.roll.value, speed=limitters.speed.value, acc=limitters.acc.value, dcc=limitters.dcc.value}) => {
 	const vh = new Vector(xpos, ypos, 0);
 	if(vh.length() > radius){
-		const [x, y] = vh.unit().multiply(radius).toArray();
-		xpos = x;
-		ypos = y;
+		[xpos, ypos] = vh.unit().multiply(radius).toArray();
 	}
 	const minDepth = await getDepthForXY(xpos, ypos);
 	return {

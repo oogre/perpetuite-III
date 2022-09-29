@@ -2,7 +2,7 @@
   perpetuite-III - Vector.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-23 09:06:37
-  @Last Modified time: 2022-09-23 21:12:00
+  @Last Modified time: 2022-09-29 12:05:59
 \*----------------------------------------*/
 
 import Quaternion from "quaternion";
@@ -34,7 +34,7 @@ export default class Vector {
     else return new Vector(this.x / v, this.y / v, this.z / v);
   }
   equals(v) {
-    return this.x == v.x && this.y == v.y && this.z == v.z;
+    return v && this.x == v.x && this.y == v.y && this.z == v.z;
   }
   dot(v) {
     return this.x * v.x + this.y * v.y + this.z * v.z;

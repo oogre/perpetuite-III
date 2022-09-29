@@ -2,6 +2,11 @@ import fs from 'fs';
 import _ from 'underscore';
 import  { spawn } from "child_process";
 import _conf_ from './config.js';
+import util from 'util';
+import {exec} from 'child_process';
+const _exec = util.promisify(exec)
+
+
 
 const DEBUG = _conf_.DEBUG ? "-d 1" : "";
 
@@ -153,6 +158,25 @@ export const promisify = (f) => {
   };
 }
 
+
+export const Call = (cmd, {debug = false, JsonFlag = true, ErrorFlag = true}={})=>{
+  return async (args) => {
+    const command = `${cmd} ${args}`;
+    if(debug) return console.log(command);
+    const {stdout, stderr} = await _exec(command);
+    if(ErrorFlag && stderr != '')throw new Error(stderr);
+    try{
+      if(JsonFlag){
+        if(stdout == '')return stdout;
+        return JSON.parse(stdout);    
+      }else{
+        return stdout;
+      }
+    }catch(e){
+      throw new Error(stdout);
+    }
+  }
+};
 
 export const $ = (cmd, ...args) => {
   let NO_DEBUG = false;

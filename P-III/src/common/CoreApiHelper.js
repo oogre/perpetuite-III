@@ -2,13 +2,14 @@
   perpetuite-III - CoreApiHelper.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-22 15:21:12
-  @Last Modified time: 2022-08-24 18:07:23
+  @Last Modified time: 2022-09-29 11:48:31
 \*----------------------------------------*/
-import util from 'util';
+
 import _conf_ from './config.js';
 import {isBool} from './tools.js';
-import {exec} from 'child_process';
 import {moveLimit} from './moveLimit.js';
+import util from 'util';
+import {exec} from 'child_process';
 const _exec = util.promisify(exec)
 
 export const Call = ({debug = false, JsonFlag = true, ErrorFlag = true}={})=>{

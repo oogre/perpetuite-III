@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-09-28 22:50:53
+  @Last Modified time: 2022-09-29 12:18:21
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -32,27 +32,20 @@ PillsModel.onPillDiscovered((event)=>{
   console.log(event);
 });
 
-const updateCV = async (loop = false)=>{
-  // CameraModel.getFieldOfView();
+const updateCV = async ()=>{
   const cPills = await CameraModel.getPillPos();
   PillsModel.update(cPills);
-  updateCV(loop);
-}
-
-const updateMove = async (loop = false) => {
-  const pillTarget = await RobotModel.findPillByColor(_.sample(colors))
-  if(pillTarget){
-    RobotModel.grabPillTarget(pillTarget);
-    const dest = Vector.Random2D().multiply(Math.random()*radius);
-    RobotModel.dropPillTarget(dest, pillTarget)
-  }
-  updateMove(loop);
 }
 
 const update = async (loop = false) => {
   const [{point:[x, y], color:[r, g, b]}, len] = await DrawModel.next();
   console.log(`still : ${len} move`);
-  console.log(`RobotModel.go([${x}, ${y}])`);
+  await RobotModel.go(x, y);
+  await RobotModel.grab();
+  await RobotModel.go(x+100, y);
+  await RobotModel.drop();
+  // await updateCV();
+
   // await RobotModel.go([x, y])
   // console.log(`\tif !empty`)
   // console.log(`\t\tif color != col(${r},${g},${b})`)
@@ -66,16 +59,24 @@ const update = async (loop = false) => {
   // await RobotModel.go([x, y])
   // await RobotModel.drop([x, y])
   // console.log(`NEXT`)
-  await wait(10);
+  await wait(100);
   update(loop);
 }
 
 (async () => {
-  // await RobotModel.init();
-  // updateCV(true);  
+  await DrawModel.init();
+  await RobotModel.init();
   update(true)
-  // updateMove(true);
 })()
 
 
 
+// const updateMove = async (loop = false) => {
+//   const pillTarget = await RobotModel.findPillByColor(_.sample(colors))
+//   if(pillTarget){
+//     RobotModel.grabPillTarget(pillTarget);
+//     const dest = Vector.Random2D().multiply(Math.random()*radius);
+//     RobotModel.dropPillTarget(dest, pillTarget)
+//   }
+//   updateMove(loop);
+// }
