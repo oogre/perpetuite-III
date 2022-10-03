@@ -2,7 +2,7 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-03 11:28:58
+  @Last Modified time: 2022-10-03 14:20:13
 \*----------------------------------------*/
 
 import EventHandler from "./../common/EventHandler.js";
@@ -50,7 +50,7 @@ const pts = (new Array(vCount * hCount)).fill(0)
 .filter(point => isValid(point))
 .map(point=>point.map(c=>c+RADIUS));
 
-pts.map(pt => pt.map(console.log));
+
 
 new Jimp(DIAMETER, DIAMETER, (err, image) => {
   const rSize = 9; 

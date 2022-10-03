@@ -3,14 +3,14 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-03 10:57:52
+  @Last Modified time: 2022-10-03 14:23:52
 \*----------------------------------------*/
 
 import _ from "underscore";
 import PillsModel from "./PillsModel.js";
 import RobotModel from "./RobotModel.js";
 import DrawModel from "./DrawModel.js";
-import {wait} from "./../common/tools.js";
+import {wait, lerp} from "./../common/tools.js";
 import CameraModel from "./CameraModel.js";
 import _conf_ from "./../common/config.js";
 import Vector from "./../common/Vector.js";
@@ -29,7 +29,7 @@ const {
 const colors = pill_colors.map(({name})=>name);
 
 PillsModel.onPillDiscovered((event)=>{
-  // console.log("-");
+  console.log(event);
 });
 
 const updateCV = async ()=>{
@@ -72,8 +72,16 @@ const update = async (loop = false) => {
 (async () => {
   await DrawModel.init();
   await RobotModel.init();
-  update(true)
+  testMove(true)
+
 })()
+
+
+const testMove = async (loop = false)=>{
+  await updateCV();
+  await RobotModel.go(lerp(-100, 100, Math.random()), lerp(-100, 100, Math.random()));
+  testMove(loop);
+}
 
 
 
