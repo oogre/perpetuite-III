@@ -88,6 +88,26 @@ class RobotModel extends EventHandler{
   async drop(){
     await this.gripper(0);
   }
+
+  async touch(x, y){
+    const { 
+      physical : {
+        approche :{
+          height,
+          speed,
+          acc,
+          dcc
+        }
+      }
+    } = _conf_.HIGH_LEVEL_API_CONF;
+
+    
+    const depth = await getDepthForXY(x, y);  
+    await this.go(x, y);
+    await this.go(x, y, depth);
+    await this.go(x, y);
+  }
+
   async gripper(flag = 1){
     const { 
       physical : {

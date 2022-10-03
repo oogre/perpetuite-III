@@ -29,7 +29,7 @@ const {
 const colors = pill_colors.map(({name})=>name);
 
 PillsModel.onPillDiscovered((event)=>{
-  console.log(event);
+  console.log("pills", PillsModel.pills.length);
 });
 
 const updateCV = async ()=>{
@@ -72,14 +72,18 @@ const update = async (loop = false) => {
 (async () => {
   await DrawModel.init();
   await RobotModel.init();
+  await updateCV();
   testMove(true)
 
 })()
 
 
 const testMove = async (loop = false)=>{
-  await updateCV();
-  await RobotModel.go(lerp(-100, 100, Math.random()), lerp(-100, 100, Math.random()));
+  const pill = _.sample(PillsModel.pills);
+  if(pill){
+    await pill.update();
+    await RobotModel.touch(...pill.center.toArray());
+  }
   testMove(loop);
 }
 

@@ -42,20 +42,13 @@ class CameraModel extends EventHandler {
 		super();
 	}
 	camToWorld(point){
-		// 732  886 >>> 0 0
-
-		// console.log(
-		// 	(new Vector(...point)), 
-		// 	(new Vector(...point))
-		// 		.subtract(CameraModel.CAM_OFFSET_PX)
-		// );
-
   		return (new Vector(...point))
 			.subtract(CameraModel.CAM_OFFSET_PX)
 			// .rotate(Vector.Up(), CameraModel.ROTATION)
 			.multiply(new Vector(-1, 1, 1))
 			.multiply(CameraModel.PIX_TO_MM)
-			.add(RobotModel.location);
+			.subtract(RobotModel.location)
+			.multiply(new Vector(-1, -1, 1));
 	}
 	getFieldOfView(){
 		const fov =  new Rect([

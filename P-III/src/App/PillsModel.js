@@ -7,6 +7,7 @@
 
 import _conf_ from './../common/config.js';
 import CameraModel from "./CameraModel.js";
+import RobotModel from "./RobotModel.js";
 import EventHandler from "./../common/EventHandler.js";
 import {deltaE} from './../common/tools.js';
 import Color from './../common/Color.js';
@@ -34,8 +35,6 @@ class PillsModel extends EventHandler{
       if(pillId < 0){
         this.pills.push(tPill);
         super.trig("PillDiscovered", tPill);
-      }else{
-        this.pills[pillId].update(tPill);
       }
     });
   }
@@ -82,6 +81,7 @@ class PillsModel extends EventHandler{
   }
 }
 
+const pModel = new PillsModel()
 
 class PillModel{
   constructor(pill){
@@ -91,9 +91,27 @@ class PillModel{
     this.color = new Color(...pill.color);
     this.center = CameraModel.camToWorld(pill.center);
     this.avgRGB = pill.avgRGB;
+    this.accuracy = 10;
   }
-  update(p){
-
+  async update(){
+    const from = this.center.clone();
+    console.log("need precision for", from);
+    while(this.accuracy>0.15){
+      await RobotModel.go(...this.center.toArray());
+      const cPills = await CameraModel.getPillPos();
+      const [dist, closest] = cPills.reduce(([dist, closest], cPill)=>{
+        const tPill = new PillModel(cPill);
+        const d = tPill.center.subtract(this.center).magSq();
+        if(d < dist || !closest) return [d, tPill];
+        return [dist, closest];
+      }, [Number.MAX_VALUE, null]);
+      pModel.update(cPills);
+      this.accuracy = this.center.subtract(closest.center).length();
+      this.center = closest.center;
+    }
+    const to = this.center.clone();
+    console.log("corrected", to);
+    console.log("correction", to.subtract(from));
   }
 
   compare(other){
@@ -104,4 +122,4 @@ class PillModel{
   }
 }
 
-export default (new PillsModel());
+export default pModel;
