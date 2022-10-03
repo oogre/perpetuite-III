@@ -2,7 +2,7 @@
   perpetuite-III - Vector.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-23 09:06:37
-  @Last Modified time: 2022-09-29 12:05:59
+  @Last Modified time: 2022-09-29 17:24:56
 \*----------------------------------------*/
 
 import Quaternion from "quaternion";
@@ -71,8 +71,8 @@ export default class Vector {
   angleTo(a) {
     return Math.acos(this.dot(a) / (this.length() * a.length()));
   }
-  toArray(n) {
-    return [this.x, this.y, this.z].slice(0, n || 3);
+  toArray(n=3) {
+    return [this.x, this.y, this.z].slice(0, n);
   }
   clone() {
     return new Vector(this.x, this.y, this.z);
@@ -83,9 +83,6 @@ export default class Vector {
   }
   rotate  (axis, angle){
     return  new Vector(...Quaternion.fromAxisAngle(axis.toArray(), angle).rotateVector(this.toArray()));
-  }
-  toArray (){
-    return [this.x, this.y, this.z];
   }
 };
 

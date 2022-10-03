@@ -3,7 +3,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-09-28 11:23:32
+  @Last Modified time: 2022-09-30 09:12:54
 \*----------------------------------------*/
 
 import {deltaE, rgb2lab, $} from './../common/tools.js';
@@ -31,6 +31,7 @@ const {
             return {
                 avgLAB,
                 label : color.name,
+                color : color.color,
                 ...rPill
             }
         });

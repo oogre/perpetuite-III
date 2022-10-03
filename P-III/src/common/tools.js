@@ -162,7 +162,10 @@ export const promisify = (f) => {
 export const Call = (cmd, {debug = false, JsonFlag = true, ErrorFlag = true}={})=>{
   return async (args) => {
     const command = `${cmd} ${args}`;
-    if(debug) return console.log(command);
+    if(debug){
+      await wait(300);
+      return console.log(command);
+    } 
     const {stdout, stderr} = await _exec(command);
     if(ErrorFlag && stderr != '')throw new Error(stderr);
     try{

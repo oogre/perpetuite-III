@@ -2,7 +2,7 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2022-09-28 16:49:28
+  @Last Modified time: 2022-10-03 10:51:20
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -44,11 +44,11 @@ class CameraModel extends EventHandler {
 	camToWorld(point){
 		// 732  886 >>> 0 0
 
-		console.log(
-			(new Vector(...point)), 
-			(new Vector(...point))
-				.subtract(CameraModel.CAM_OFFSET_PX)
-		);
+		// console.log(
+		// 	(new Vector(...point)), 
+		// 	(new Vector(...point))
+		// 		.subtract(CameraModel.CAM_OFFSET_PX)
+		// );
 
   		return (new Vector(...point))
 			.subtract(CameraModel.CAM_OFFSET_PX)
@@ -62,7 +62,7 @@ class CameraModel extends EventHandler {
 			...RobotModel.location.subtract(CameraModel.CAM_SIZE_MM.multiply(0.5)).toArray(), 
 			...CameraModel.CAM_SIZE_MM.toArray()
 		]);
-		console.log(fov, RobotModel.location, CameraModel.CAM_SIZE_MM)
+		// console.log(fov, RobotModel.location, CameraModel.CAM_SIZE_MM)
 	}
 	
 	async getPillPos(){

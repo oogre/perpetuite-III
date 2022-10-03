@@ -2,13 +2,15 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-09-29 12:00:59
+  @Last Modified time: 2022-10-03 11:21:13
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
 import CameraModel from "./CameraModel.js";
 import EventHandler from "./../common/EventHandler.js";
 import {deltaE} from './../common/tools.js';
+import Color from './../common/Color.js';
+import Vector from './../common/Vector.js';
 
 const { 
   physical : {
@@ -39,11 +41,40 @@ class PillsModel extends EventHandler{
   }
 
   getPillByColor(color){
-    return this.pills.find((pill)=> !pill.locked && pill.label == color);
+    // console.log("getPillByColor", color.toArray());
+    let pill = this.pills.find( pill => !pill.locked && pill.color.equals(color));
+    if(!pill){
+      pill = this.pills.find( pill => pill.color.equals(color));
+    }
+    if(!pill){
+      pill = this.pills[Math.floor(Math.random()*this.pills.length)];
+    }
+    return pill;
   }
 
   findIndex(request){
-    return this.pills.findIndex((pill)=> request(pill));
+    return this.pills.findIndex( pill => request(pill));
+  }
+
+  async getPillByLocation(x, y){
+    const loc = new Vector(x, y);
+    const [dist, closest] = this.pills.reduce(([dist, closest], pill)=>{
+      const d = pill.center.subtract(loc).magSq();
+      if(d < dist) return [d, pill];
+      return [dist, closest]
+    }, [Number.MAX_VALUE, null])
+
+    // console.log("closest",  Math.sqrt(dist));
+
+
+    // return pill at location or null
+    if(Math.random()<0.5){
+      // console.log("getPillByLocation null ");
+      return null; 
+    }else{
+      // console.log("getPillByLocation first");
+      return this.pills[0];  
+    }
   }
 
   onPillDiscovered(fnc){
@@ -57,6 +88,7 @@ class PillModel{
     this.locked = false;
     this.avgLAB = pill.avgLAB;
     this.label = pill.label;
+    this.color = new Color(...pill.color);
     this.center = CameraModel.camToWorld(pill.center);
     this.avgRGB = pill.avgRGB;
   }

@@ -2,12 +2,13 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-09-28 22:50:16
+  @Last Modified time: 2022-10-03 11:28:58
 \*----------------------------------------*/
 
 import EventHandler from "./../common/EventHandler.js";
 import {$, wait} from './../common/tools.js';
 import _conf_ from './../common/config.js';
+import Color from './../common/Color.js';
 import Jimp from 'jimp';
 import fs from 'fs-extra';
 
@@ -49,6 +50,8 @@ const pts = (new Array(vCount * hCount)).fill(0)
 .filter(point => isValid(point))
 .map(point=>point.map(c=>c+RADIUS));
 
+pts.map(pt => pt.map(console.log));
+
 new Jimp(DIAMETER, DIAMETER, (err, image) => {
   const rSize = 9; 
   const pt = (new Array(rSize * rSize)).fill(0).map((_, k)=> [(k%rSize) - rSize/2, Math.floor(k / rSize)-rSize/2])
@@ -57,6 +60,9 @@ new Jimp(DIAMETER, DIAMETER, (err, image) => {
   })
   image.write(`${process.env.PIII_PATH}/data/grid.png`)
 });
+
+
+
 
 class DrawModel extends EventHandler{
   constructor(){
@@ -90,7 +96,7 @@ class DrawModel extends EventHandler{
       if(a != 0){
         acc.push({
           point : [x, y],
-          color : [r, g, b]
+          color : new Color(r, g, b)
         })
       }
       return acc;

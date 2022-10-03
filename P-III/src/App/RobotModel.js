@@ -2,7 +2,7 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-09-29 12:19:00
+  @Last Modified time: 2022-10-03 11:22:20
 \*----------------------------------------*/
 
 import Vector from './../common/Vector.js';
@@ -99,24 +99,47 @@ class RobotModel extends EventHandler{
         }
       }
     } = _conf_.HIGH_LEVEL_API_CONF;
+
+    
+    const depth = await getDepthForXY(this.location.x, this.location.y);  
+    await this.go(this.location.x, this.location.y);
+    await this.go(this.location.x, this.location.y, depth);
+    
     await this.setSpeed(speed);
     await this.setAcceleration(acc);
     await this.setDecceleration(dcc);
-    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${this.location.z - height} ${this.roll}`);
+    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - height} ${this.roll}`);
     await this.CoreAPI(`Gripper -- ${flag}`);
-    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${this.location.z} ${this.roll}`);
+    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth} ${this.roll}`);
+
+    await this.go(this.location.x, this.location.y);
   }
 
-  async go(x, y){
+  async go(x, y, z = 0){
     await this.setSpeed();
     await this.setAcceleration();
     await this.setDecceleration();
-    await this.setLocation();
-    await this.setRoll();
-    return await this.setLocation(new Vector(x, y, 0));
+    return await this.setLocation(new Vector(x, y, z));
+  }
+
+  async goRandom(){
+    let dest = this.location.add(Vector.Random2D().multiply(limitters.radius.value * Math.random()));
+    let vh = new Vector(...dest.toArray(2));
+    if(vh.length() > limitters.radius.value){
+      vh = vh.unit().multiply(limitters.radius.value);
+      if(Math.abs(dest.x) > Math.abs(vh.x)){
+        dest.x - vh.x * 2
+      }
+      if(Math.abs(dest.y) > Math.abs(vh.y)){
+        dest.y - vh.y * 2
+      } 
+    }
+    this.go(...dest.toArray(2))
   }
 
   async goHome(){
+    console.log("goHome");
+
     await this.setSpeed();
     await this.setAcceleration();
     await this.setDecceleration();
