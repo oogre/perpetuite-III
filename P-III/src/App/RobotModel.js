@@ -2,7 +2,7 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-04 09:57:43
+  @Last Modified time: 2022-10-04 11:31:11
 \*----------------------------------------*/
 
 import Vector from './../common/Vector.js';
@@ -148,27 +148,28 @@ class RobotModel extends EventHandler{
       console.log(...data);
       stdin.write(`${data.join(' ')}\n`);
     }
+    const amp = lerp(1, 100, Math.random());
     const animations = [
       {
         waitBetween:230,
         action : async (cnt)=>{
-          send([...this.location.toArray(2), this.location.z+lerp(-10, 0, Math.cos(cnt)*0.5+0.5) ,this.roll])
+          send([...this.location.toArray(2), this.location.z+lerp(-amp, 0, Math.cos(cnt)*0.5+0.5) ,this.roll])
         }
       },
       {
         waitBetween:230,
         action : async (cnt)=>{
-          send([...this.location.toArray(3), lerp(-5, 5, Math.cos(cnt)*0.5+0.5)]);
+          send([...this.location.toArray(3), lerp(-amp*0.5, amp*0.5, Math.cos(cnt)*0.5+0.5)]);
         }
       },
       {
         waitBetween:230,
         action : async (cnt)=>{
           send([
-            this.location.x+lerp(-10, 10, Math.random()), 
-            this.location.y+lerp(-10, 10, Math.random()), 
-            this.location.z+lerp(-20, 0, Math.random()), 
-            this.roll+lerp(-10, 10, Math.random())
+            this.location.x+lerp(-amp*0.5, amp*0.5, Math.random()), 
+            this.location.y+lerp(-amp*0.5, amp*0.5, Math.random()), 
+            this.location.z+lerp(-amp*0.5, 0, Math.random()), 
+            this.roll+lerp(-amp*0.5, amp*0.5, Math.random())
           ]);
         }
       }
