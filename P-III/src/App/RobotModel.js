@@ -2,15 +2,16 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-03 11:22:20
+  @Last Modified time: 2022-10-04 09:57:43
 \*----------------------------------------*/
 
 import Vector from './../common/Vector.js';
 import EventHandler from "./../common/EventHandler.js";
 import PillsModel from "./PillsModel.js"
-import {$, wait, Call, constrain} from './../common/tools.js';
+import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import {getDepthForXY, limitters} from './../common/moveLimit.js';
+import _ from "underscore";
 
 const D = _conf_.DEBUG ? "-d 1" : "";
 
@@ -100,7 +101,6 @@ class RobotModel extends EventHandler{
         }
       }
     } = _conf_.HIGH_LEVEL_API_CONF;
-
     
     const depth = await getDepthForXY(x, y);  
     await this.go(x, y);
@@ -140,6 +140,42 @@ class RobotModel extends EventHandler{
     await this.setAcceleration();
     await this.setDecceleration();
     return await this.setLocation(new Vector(x, y, z));
+  }
+
+  Follow(){
+    const {stdin, kill:killFnc, promise} = $pipe('P-III.core.api', 'Follow');
+    const send = (data) => {
+      console.log(...data);
+      stdin.write(`${data.join(' ')}\n`);
+    }
+    const animations = [
+      {
+        waitBefore:100, 
+        waitBetween:130,
+        action : async (cnt)=>{
+          send([...this.location.toArray(2), this.location.z+lerp(-100, 0, Math.cos(cnt*0.5)*0.5+0.5) ,this.roll])
+        }
+      },
+      {
+        waitBefore:0, 
+        waitBetween:250,
+        action : async (cnt)=>{
+          send([...this.location.toArray(3), lerp(-45, 45, Math.cos(cnt)*0.5+0.5)]);
+        }
+      }
+    ];
+
+    return {
+      waitBefore : 0, 
+      waitBetween : 50,
+      action : async (cnt)=>{},
+      ...(_.sample(animations)),
+      kill : () => {
+        send([...this.location.toArray(3), this.roll]);
+        killFnc();
+      },
+      promise
+    };
   }
 
   async goRandom(){

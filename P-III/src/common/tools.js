@@ -213,6 +213,60 @@ export const $ = (cmd, ...args) => {
           if(code == 0) return res(r);
           return rej(e);
       });
-
   });
 }
+
+export const $pipe = (cmd, ...args) => {
+  let child;
+  const promise = new Promise((res, rej)=>{
+    child = spawn(cmd, args);
+    child.stdin.setEncoding('utf-8');
+    let r = "";
+    let e = "";
+
+    child.stdout.on("data", data => {
+        r += data;
+    });
+
+    child.stderr.on("data", data => {
+        e += data;
+    });
+
+    child.on('error', (error) => {
+        e += error.message;
+    });
+
+    child.on("close", code => {
+      return res(r);
+    });
+  });
+  
+  return {
+    stdin : child.stdin,
+    kill : () => {
+      // child.stdin.end();
+      child.kill("SIGINT");
+    },
+    promise
+  }
+}
+
+export const waiter = async (promise, action, waitBefore = 0, waitBetween = 0) => {
+      let running = true;
+      promise.finally(()=>{
+        running = false
+      })
+      let i = 0;
+
+      if(waitBefore > 10){
+        await wait(waitBefore)  
+      }
+      while(running){
+        await action(i++);
+        if(waitBetween > 10){
+          await wait(waitBetween) 
+        }
+      }
+      return promise;
+    }
+

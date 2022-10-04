@@ -3,14 +3,14 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-03 14:23:52
+  @Last Modified time: 2022-10-04 09:40:09
 \*----------------------------------------*/
 
 import _ from "underscore";
 import PillsModel from "./PillsModel.js";
 import RobotModel from "./RobotModel.js";
 import DrawModel from "./DrawModel.js";
-import {wait, lerp} from "./../common/tools.js";
+import {wait} from "./../common/tools.js";
 import CameraModel from "./CameraModel.js";
 import _conf_ from "./../common/config.js";
 import Vector from "./../common/Vector.js";
@@ -66,15 +66,16 @@ const update = async (loop = false) => {
   }
 
   await wait(100);
-  update(loop);
+
+  loop && update(loop);
 }
 
 (async () => {
   await DrawModel.init();
   await RobotModel.init();
-  await updateCV();
-  testMove(true)
-
+  // await updateCV();
+  // testMove(true)
+  await testdynamicGetPillPos(true);
 })()
 
 
@@ -83,8 +84,14 @@ const testMove = async (loop = false)=>{
   if(pill){
     await pill.update();
     await RobotModel.touch(...pill.center.toArray());
-  }
-  testMove(loop);
+  }  
+  loop && testMove(loop);
+}
+
+const testdynamicGetPillPos = async (loop = false) => {
+  const res = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
+  console.log("")  
+  loop && testdynamicGetPillPos(loop);  
 }
 
 

@@ -2,17 +2,18 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2022-10-03 10:51:20
+  @Last Modified time: 2022-10-04 09:43:28
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
 import RobotModel from "./RobotModel.js"
 import Vector from './../common/Vector.js';
 import Rect from './../common/Rect.js';
-import {$, wait} from './../common/tools.js';
+import {$, wait, waiter} from './../common/tools.js';
 import fs from 'fs-extra';
 import EventHandler from "./../common/EventHandler.js";
 
+const util = require("util")
 
 
 const { 
@@ -57,6 +58,30 @@ class CameraModel extends EventHandler {
 		]);
 		// console.log(fov, RobotModel.location, CameraModel.CAM_SIZE_MM)
 	}
+
+	dynamicGetPillPos = async ({action=()=>{}, waitBefore, waitBetween, kill=()=>{}, promise}) => {
+		const grabber = async () => {
+			if(_conf_.DEBUG){
+				await wait(2000);
+				return await fs.readFile(`${process.env.PIII_PATH}/data/rawPill.json`, "utf8");
+			}else{
+				return await $("P-III.cv");
+			}  
+		}
+
+		const rawData = await waiter(
+			grabber(), 
+			async (counter) => {
+				await action(counter);
+			}, 
+			waitBefore, 
+			waitBetween
+		);
+
+		kill()
+  	await promise;
+		return JSON.parse(rawData);
+	}
 	
 	async getPillPos(){
 		const grabber = async () => {
@@ -67,6 +92,7 @@ class CameraModel extends EventHandler {
 				return await $("P-III.cv");
 			}  
 		}
+
 		const t = await grabber();
 		return JSON.parse(t);
 	}
