@@ -98,7 +98,7 @@ class PillModel{
     console.log("need precision for", from);
     while(this.accuracy>0.15){
       await RobotModel.go(...this.center.toArray());
-      const cPills = await CameraModel.getPillPos();
+      const cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
       const [dist, closest] = cPills.reduce(([dist, closest], cPill)=>{
         const tPill = new PillModel(cPill);
         const d = tPill.center.subtract(this.center).magSq();

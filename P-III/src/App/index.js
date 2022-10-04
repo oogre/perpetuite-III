@@ -33,7 +33,7 @@ PillsModel.onPillDiscovered((event)=>{
 });
 
 const updateCV = async ()=>{
-  const cPills = await CameraModel.getPillPos();
+  const cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
   PillsModel.update(cPills);
 }
 
@@ -73,9 +73,9 @@ const update = async (loop = false) => {
 (async () => {
   await DrawModel.init();
   await RobotModel.init();
-  // await updateCV();
-  // testMove(true)
-  await testdynamicGetPillPos(true);
+  await updateCV();
+  testMove(true)
+  // await testdynamicGetPillPos(true);
 })()
 
 

@@ -150,29 +150,39 @@ class RobotModel extends EventHandler{
     }
     const animations = [
       {
-        waitBefore:100, 
-        waitBetween:130,
+        waitBetween:230,
         action : async (cnt)=>{
-          send([...this.location.toArray(2), this.location.z+lerp(-100, 0, Math.cos(cnt*0.5)*0.5+0.5) ,this.roll])
+          send([...this.location.toArray(2), this.location.z+lerp(-10, 0, Math.cos(cnt)*0.5+0.5) ,this.roll])
         }
       },
       {
-        waitBefore:0, 
-        waitBetween:250,
+        waitBetween:230,
         action : async (cnt)=>{
-          send([...this.location.toArray(3), lerp(-45, 45, Math.cos(cnt)*0.5+0.5)]);
+          send([...this.location.toArray(3), lerp(-5, 5, Math.cos(cnt)*0.5+0.5)]);
+        }
+      },
+      {
+        waitBetween:230,
+        action : async (cnt)=>{
+          send([
+            this.location.x+lerp(-10, 10, Math.random()), 
+            this.location.y+lerp(-10, 10, Math.random()), 
+            this.location.z+lerp(-20, 0, Math.random()), 
+            this.roll+lerp(-10, 10, Math.random())
+          ]);
         }
       }
     ];
 
     return {
+      stopAfter : 2000,
       waitBefore : 0, 
       waitBetween : 50,
       action : async (cnt)=>{},
       ...(_.sample(animations)),
-      kill : () => {
-        send([...this.location.toArray(3), this.roll]);
+      kill : async () => {
         killFnc();
+        await this.CoreAPI(`Go -- ${this.location.toArray(3).join(" ")} ${this.roll}`);
       },
       promise
     };

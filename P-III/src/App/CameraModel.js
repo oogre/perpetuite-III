@@ -59,7 +59,7 @@ class CameraModel extends EventHandler {
 		// console.log(fov, RobotModel.location, CameraModel.CAM_SIZE_MM)
 	}
 
-	dynamicGetPillPos = async ({action=()=>{}, waitBefore, waitBetween, kill=()=>{}, promise}) => {
+	dynamicGetPillPos = async ({action=()=>{}, stopAfter, waitBefore, waitBetween, kill=()=>{}, promise}) => {
 		const grabber = async () => {
 			if(_conf_.DEBUG){
 				await wait(2000);
@@ -74,11 +74,11 @@ class CameraModel extends EventHandler {
 			async (counter) => {
 				await action(counter);
 			}, 
+			async () => await kill(),
+			stopAfter,
 			waitBefore, 
 			waitBetween
 		);
-
-		kill()
   	await promise;
 		return JSON.parse(rawData);
 	}
