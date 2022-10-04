@@ -2,7 +2,7 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-04 11:31:11
+  @Last Modified time: 2022-10-04 11:34:10
 \*----------------------------------------*/
 
 import Vector from './../common/Vector.js';
@@ -148,7 +148,7 @@ class RobotModel extends EventHandler{
       console.log(...data);
       stdin.write(`${data.join(' ')}\n`);
     }
-    const amp = lerp(1, 100, Math.random());
+    const amp = lerp(1, 90, Math.random());
     const animations = [
       {
         waitBetween:230,
