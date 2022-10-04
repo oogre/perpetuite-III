@@ -7,7 +7,6 @@
 
 import Vector from './../common/Vector.js';
 import EventHandler from "./../common/EventHandler.js";
-import PillsModel from "./PillsModel.js"
 import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import {getDepthForXY, limitters} from './../common/moveLimit.js';
@@ -26,12 +25,6 @@ class RobotModel extends EventHandler{
     this.dcc = undefined;
     this.CoreAPI = Call(`P-III.core.api`, {debug:_conf_.DEBUG});
   }
-
-  // async findPillByColor(colorToFind){
-  //   await wait(500);
-  //   // move around until discover an unlocked pill colored as needed 
-  //   return PillsModel.getPillByColor(colorToFind);
-  // }
 
   async init(){
     await this.CoreAPI(`HighPower -- 1`);
@@ -208,10 +201,10 @@ class RobotModel extends EventHandler{
     if(vh.length() > limitters.radius.value){
       vh = vh.unit().multiply(limitters.radius.value);
       if(Math.abs(dest.x) > Math.abs(vh.x)){
-        dest.x - vh.x * 2
+        dest.x -= vh.x * 2
       }
       if(Math.abs(dest.y) > Math.abs(vh.y)){
-        dest.y - vh.y * 2
+        dest.y -= vh.y * 2
       } 
     }
     this.go(...dest.toArray(2))

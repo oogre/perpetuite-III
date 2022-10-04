@@ -29,11 +29,18 @@ const {
 const colors = pill_colors.map(({name})=>name);
 
 PillsModel.onPillDiscovered((event)=>{
-  console.log("pills", PillsModel.pills.length);
+   // console.log(event.target.color);
 });
 
-const updateCV = async ()=>{
-  const cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
+const updateCV = async (flag = false)=>{
+  let cPills = [];
+  if(flag){
+    cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
+  }else{
+    cPills = await CameraModel.getPillPos();
+  }
+  cPills = cPills.map(pill => PillsModel.createPill(pill));
+  cPills = cPills.filter(pill => pill.valid);
   PillsModel.update(cPills);
 }
 
@@ -44,28 +51,38 @@ const update = async (loop = false) => {
 
   await RobotModel.go(...request.point);
   await updateCV();
+  
+  let [pillTarget, id] = await PillsModel.getPillByLocation(...request.point);
 
-  let pillTarget = PillsModel.getPillByLocation(...request.point);
-
-  if(pillTarget && !request.color.equals(pillTarget.color)){
+  if(pillTarget && !request.color.equals(pillTarget.color)){ 
+    console.log("remove the wrong colored pill at requested point");
+    await pillTarget.update();
+    await RobotModel.go(...pillTarget.center.toArray(2));
     await RobotModel.grab();
+    PillsModel.pills.splice(id, 1);
     while(pillTarget){
+      console.log("move random");
       await RobotModel.goRandom();
       await updateCV();
-      pillTarget = await PillsModel.getPillByLocation(RobotModel.location.toArray(2));  
+      [pillTarget, id] = await PillsModel.getPillByLocation(...RobotModel.location.toArray(2));  
+      console.log("found : ", pillTarget);
+      console.log("@", RobotModel.location.toArray(2));
     }
     await RobotModel.drop();
   }
   if(!pillTarget && !request.color.isBlack()){
-    const pill = PillsModel.getPillByColor(request.color);
-    await RobotModel.go(...pill.center.toArray());
-    await updateCV();
+    console.log("put the good colored pill at requested point");
+    let [pill, id] = await PillsModel.getPillByColor(request.color, async () => {
+      console.log("move random");
+      await RobotModel.goRandom();
+      await updateCV(true);
+    });
+    await pill.update();
     await RobotModel.grab();
+    pill.locked = true;
     await RobotModel.go(...request.point);
     await RobotModel.drop();
   }
-
-  await wait(100);
 
   loop && update(loop);
 }
@@ -73,8 +90,8 @@ const update = async (loop = false) => {
 (async () => {
   await DrawModel.init();
   await RobotModel.init();
-  await updateCV();
-  testGrab(true)
+  // await updateCV();
+  await update(true);
   // await testdynamicGetPillPos(true);
 })()
 

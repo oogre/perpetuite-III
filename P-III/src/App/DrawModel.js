@@ -51,7 +51,6 @@ const pts = (new Array(vCount * hCount)).fill(0)
 .map(point=>point.map(c=>c+RADIUS));
 
 
-
 new Jimp(DIAMETER, DIAMETER, (err, image) => {
   const rSize = 9; 
   const pt = (new Array(rSize * rSize)).fill(0).map((_, k)=> [(k%rSize) - rSize/2, Math.floor(k / rSize)-rSize/2])
@@ -95,12 +94,12 @@ class DrawModel extends EventHandler{
       const [r, g, b, a] = [color >> 24 & 0xFF, color >> 16 & 0xFF, color >> 8 & 0xFF, color >> 0 & 0xFF]
       if(a != 0){
         acc.push({
-          point : [x, y],
+          point : [x-RADIUS, y-RADIUS],
           color : new Color(r, g, b)
         })
       }
       return acc;
-    }, []).sort(()=>Math.random()>0.5);
+    }, []).sort((a, b) => 0.5 - Math.random())
     return this.next();
   }
 }

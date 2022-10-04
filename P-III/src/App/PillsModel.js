@@ -16,10 +16,26 @@ import Vector from './../common/Vector.js';
 const { 
   physical : {
     pill_size_mm
+  },
+  robot : {
+    default : {
+      radius
+    }
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
 
 const pill_size_mm_sq = pill_size_mm * pill_size_mm;
+
+const findPillCloseTo = (pillArray, location) => {
+  const [d, closest, id] = pillArray.reduce(([dist, closest, id], pill, pillId)=>{
+    const d = pill.center.subtract(location).magSq();
+    if(d < dist || !closest) return [d, pill, pillId];
+    return [dist, closest, id];
+  }, [Number.MAX_VALUE, null, -1]);
+  return [Math.sqrt(d), closest, id];
+}
+
+
 
 class PillsModel extends EventHandler{
   constructor(){
@@ -30,54 +46,43 @@ class PillsModel extends EventHandler{
 
   update(cPills=[]/* box in px */){
     cPills.map(cPill => {
-      const tPill = new PillModel(cPill);
-      const pillId = this.findIndex( pill => pill.center.subtract(tPill.center).magSq() < pill_size_mm_sq);
-      if(pillId < 0){
-        this.pills.push(tPill);
-        super.trig("PillDiscovered", tPill);
+      const pillId = this.findIndex( pill => pill.center.subtract(cPill.center).magSq() < pill_size_mm_sq);
+      if(pillId < 0 && cPill.center.length() < radius){
+        this.pills.push(cPill);
+        super.trig("PillDiscovered", cPill);
       }
     });
   }
 
-  getPillByColor(color){
-    // console.log("getPillByColor", color.toArray());
-    let pill = this.pills.find( pill => !pill.locked && pill.color.equals(color));
-    if(!pill){
-      pill = this.pills.find( pill => pill.color.equals(color));
+  async getPillByColor(color, cbNotFound = async ()=>{}, depth = 0){
+    console.log(`looking for ${color.toArray()}`)
+    let pillId = this.pills.findIndex( pill => (!pill.locked || depth>10) && pill.color.equals(color));
+    if(pillId < 0){
+      await cbNotFound();
+      return await this.getPillByColor(color, cbNotFound, depth++);
     }
-    if(!pill){
-      pill = this.pills[Math.floor(Math.random()*this.pills.length)];
-    }
-    return pill;
+    console.log(`found ${this.pills[pillId].color.toArray()}`)
+    return [this.pills[pillId], pillId];
   }
 
   findIndex(request){
     return this.pills.findIndex( pill => request(pill));
   }
 
+  
   async getPillByLocation(x, y){
-    const loc = new Vector(x, y);
-    const [dist, closest] = this.pills.reduce(([dist, closest], pill)=>{
-      const d = pill.center.subtract(loc).magSq();
-      if(d < dist) return [d, pill];
-      return [dist, closest]
-    }, [Number.MAX_VALUE, null])
-
-    // console.log("closest",  Math.sqrt(dist));
-
-
-    // return pill at location or null
-    if(Math.random()<0.5){
-      // console.log("getPillByLocation null ");
-      return null; 
-    }else{
-      // console.log("getPillByLocation first");
-      return this.pills[0];  
+    const [dist, closest, id] = findPillCloseTo(this.pills, new Vector(x, y));
+    if(dist < pill_size_mm * 1.5 ){
+      return [closest, id];
     }
+    return [null, -1];
   }
 
   onPillDiscovered(fnc){
     super.on("PillDiscovered", fnc);
+  }
+  createPill(bPill){
+    return new PillModel(bPill);
   }
 }
 
@@ -90,28 +95,26 @@ class PillModel{
     this.label = pill.label;
     this.color = new Color(...pill.color);
     this.center = CameraModel.camToWorld(pill.center);
+    this.valid = this.center.length() <= radius;
     this.avgRGB = pill.avgRGB;
     this.accuracy = 10;
   }
   async update(){
-    const from = this.center.clone();
-    console.log("need precision for", from);
     while(this.accuracy>0.15){
-      await RobotModel.go(...this.center.toArray());
-      const cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
-      const [dist, closest] = cPills.reduce(([dist, closest], cPill)=>{
-        const tPill = new PillModel(cPill);
-        const d = tPill.center.subtract(this.center).magSq();
-        if(d < dist || !closest) return [d, tPill];
-        return [dist, closest];
-      }, [Number.MAX_VALUE, null]);
+      await RobotModel.go(...this.center.toArray(2));
+      let cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
+      cPills = cPills.map(pill => new PillModel(pill));
+      cPills = cPills.filter(pill => pill.valid);
+      const [dist, closest] = findPillCloseTo(cPills, this.center);
       pModel.update(cPills);
-      this.accuracy = this.center.subtract(closest.center).length();
-      this.center = closest.center;
+      if(closest){
+        this.accuracy = this.center.subtract(closest.center).length();
+        this.center = closest.center;
+      }else{
+        console.log("LOST");
+        break;
+      }
     }
-    const to = this.center.clone();
-    console.log("corrected", to);
-    console.log("correction", to.subtract(from));
   }
 
   compare(other){
