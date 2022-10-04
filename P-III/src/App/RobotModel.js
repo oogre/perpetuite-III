@@ -35,6 +35,7 @@ class RobotModel extends EventHandler{
 
   async init(){
     await this.CoreAPI(`HighPower -- 1`);
+    await this.CoreAPI(`Gripper -- 1`);
     await this.goHome();
   }
 
@@ -84,10 +85,10 @@ class RobotModel extends EventHandler{
     }
   }
   async grab(){
-    await this.gripper(1);
+    await this.gripper(0);
   }
   async drop(){
-    await this.gripper(0);
+    await this.gripper(1);
   }
 
   async touch(x, y){
@@ -145,7 +146,7 @@ class RobotModel extends EventHandler{
   Follow(){
     const {stdin, kill:killFnc, promise} = $pipe('P-III.core.api', 'Follow');
     const send = (data) => {
-      console.log(...data);
+      // console.log(...data);
       stdin.write(`${data.join(' ')}\n`);
     }
     const amp = lerp(1, 40, Math.random());
@@ -162,6 +163,18 @@ class RobotModel extends EventHandler{
           send([...this.location.toArray(3), lerp(-amp*0.5, amp*0.5, Math.cos(cnt)*0.5+0.5)]);
         }
       },
+      {
+        waitBetween:666,
+        action : async (cnt)=>{
+          if(cnt == 1){
+            const depth = await getDepthForXY(this.location.x, this.location.y);  
+            send([...this.location.toArray(2), depth*0.666, this.roll]);
+          }else{
+            send([...this.location.toArray(3), this.roll]);
+          }
+        }
+      },
+      {/* DO NOTHING */},
       {
         waitBetween:230,
         action : async (cnt)=>{

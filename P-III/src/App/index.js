@@ -74,10 +74,22 @@ const update = async (loop = false) => {
   await DrawModel.init();
   await RobotModel.init();
   await updateCV();
-  testMove(true)
+  testGrab(true)
   // await testdynamicGetPillPos(true);
 })()
 
+const testGrab = async (loop = false)=>{
+ const pill = PillsModel.pills[0];
+ if(pill){
+  await RobotModel.go(...pill.center.toArray());
+  await pill.update();
+  await RobotModel.grab();
+  await wait(1000);
+  await RobotModel.drop();
+  PillsModel.pills.shift();
+ }
+ loop && testGrab(loop);
+}
 
 const testMove = async (loop = false)=>{
   const pill = _.sample(PillsModel.pills);
