@@ -51,14 +51,16 @@
           "color" : [ 255, 0, 0 ]
         }
       ],
+      "pill_dist_accuracy" : 0.5,
+      "old_pill_dist_accuracy" : 0.15,
       "oldPill_HEIGHT" : 5,
       
       "approche" : {
         "height" : 4,
         "oldHeight" : 10,
-        "speed" : 1,
-        "acc" : 1,
-        "dcc" : 60
+        "speed" : 20,
+        "acc" : 10,
+        "dcc" : 10
       }
     },
     "robot" : {

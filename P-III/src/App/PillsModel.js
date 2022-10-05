@@ -15,7 +15,8 @@ import Vector from './../common/Vector.js';
 
 const { 
   physical : {
-    pill_size_mm
+    pill_size_mm,
+    pill_dist_accuracy
   },
   robot : {
     default : {
@@ -46,7 +47,7 @@ class PillsModel extends EventHandler{
 
   update(cPills=[]/* box in px */){
     cPills.map(cPill => {
-      const pillId = this.findIndex( pill => pill.center.subtract(cPill.center).magSq() < pill_size_mm_sq);
+      const pillId = this.pills.findIndex( pill => pill.center.subtract(cPill.center).magSq() < pill_size_mm_sq);
       if(pillId < 0 && cPill.center.length() < radius){
         this.pills.push(cPill);
         super.trig("PillDiscovered", cPill);
@@ -54,13 +55,17 @@ class PillsModel extends EventHandler{
     });
   }
 
+  shuffle(){
+    this.pills.sort((a, b) => 0.5 - Math.random())
+  }
+
   async getPillByColor(color, cbNotFound = async ()=>{}, depth = 0){
     console.log(`Looking for ${color.toString()}`)
     let pillId = this.pills.findIndex( pill => !pill.locked && pill.color.equals(color));
     if(pillId < 0){
       if(depth>10){
-        this.pills.filter(({color:c})=>c.equals(color)).forEach(pill=>pill.locked = false);
-        console.log(this.pills);
+        this.pills.filter(({color:c})=>c.equals(color)).forEach(pill=>pill.unlock());
+        console.log(`>>>> depth larger than 10 for ${color.toString()}`);
       }
       await cbNotFound();
       return await this.getPillByColor(color, cbNotFound, depth++);
@@ -68,15 +73,10 @@ class PillsModel extends EventHandler{
     console.log(`Found ${this.pills[pillId].color.toString()} @ ${this.pills[pillId].center.toString(2)}`)
     return [this.pills[pillId], pillId];
   }
-
-  findIndex(request){
-    return this.pills.findIndex( pill => request(pill));
-  }
-
   
-  getPillByLocation(x, y){
+  getPillByLocation(x, y, distFact = 1.5){
     const [dist, closest, id] = findPillCloseTo(this.pills, new Vector(x, y));
-    if(dist < pill_size_mm * 1.5 ){
+    if(dist < pill_size_mm * distFact ){
       return [closest, id];
     }
     return [null, -1];
@@ -105,23 +105,28 @@ class PillModel{
   lock(){
     this.locked = true;
   }
+  unlock(){
+    this.locked = false;
+    this.accuracy *= 2;
+  }
   async update(){
 
-    while(!_conf_.DEBUG && this.accuracy>0.15){
+    while(!_conf_.DEBUG && this.accuracy>pill_dist_accuracy){
       await RobotModel.go(...this.center.toArray(2));
       let cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
       cPills = cPills.map(pill => new PillModel(pill));
       cPills = cPills.filter(pill => pill.valid);
       const [dist, closest] = findPillCloseTo(cPills, this.center);
       pModel.update(cPills);
-      if(closest){
+      
+      if(closest &&  closest.color.equals(this.color)){
         this.accuracy = this.center.subtract(closest.center).length();
         this.center = closest.center;
       }else{
-        console.log("LOST");
-        break;
+        return false
       }
     }
+    return true;
   }
 
   compare(other){

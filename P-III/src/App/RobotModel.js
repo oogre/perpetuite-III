@@ -123,7 +123,9 @@ class RobotModel extends EventHandler{
     await this.setAcceleration(acc);
     await this.setDecceleration(dcc);
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - height} ${this.roll}`);
+    await wait(125);
     await this.CoreAPI(`Gripper -- ${flag}`);
+    await wait(125);
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth} ${this.roll}`);
 
     await this.go(this.location.x, this.location.y);
@@ -182,7 +184,7 @@ class RobotModel extends EventHandler{
     ];
 
     return {
-      stopAfter : 2000,
+      stopAfter : 1200,
       waitBefore : 0, 
       waitBetween : 50,
       action : async (cnt)=>{},
@@ -195,20 +197,20 @@ class RobotModel extends EventHandler{
     };
   }
 
-  async goRandom(){
-    let dest = this.location.add(Vector.Random2D().multiply(limitters.radius.value * Math.random()));
-    let vh = new Vector(...dest.toArray(2));
-    if(vh.length() > limitters.radius.value){
-      vh = vh.unit().multiply(limitters.radius.value);
-      if(Math.abs(dest.x) > Math.abs(vh.x)){
-        dest.x -= vh.x * 2
-      }
-      if(Math.abs(dest.y) > Math.abs(vh.y)){
-        dest.y -= vh.y * 2
-      } 
-    }
-    await this.go(...dest.toArray(2))
-  }
+  // async goRandom(){
+  //   let dest = this.location.add(Vector.Random2D().multiply(limitters.radius.value * Math.random()));
+  //   let vh = new Vector(...dest.toArray(2));
+  //   if(vh.length() > limitters.radius.value){
+  //     vh = vh.unit().multiply(limitters.radius.value);
+  //     if(Math.abs(dest.x) > Math.abs(vh.x)){
+  //       dest.x -= vh.x * 2
+  //     }
+  //     if(Math.abs(dest.y) > Math.abs(vh.y)){
+  //       dest.y -= vh.y * 2
+  //     } 
+  //   }
+  //   await this.go(...dest.toArray(2))
+  // }
 
   async goHome(){
     await this.setSpeed();

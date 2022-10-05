@@ -19,7 +19,8 @@ import Log from './../common/Log.js';
 
 const { 
   physical : {
-    pill_colors
+    pill_colors,
+    pill_dist_accuracy
   },
   robot : {
     default : {
@@ -47,61 +48,94 @@ const updateCV = async (flag = true)=>{
 }
 
 const update = async (loop = false) => {
-  const [request, len] = await DrawModel.next();
-  Log.title(`Still : ${len} move`);
+  PillsModel.shuffle();
+  const next = (success = true)=>{
+    if(success){
+      Log.step(`Done`);  
+    }
+    else{
+     Log.step(`Fail`); 
+    }
+    loop && update(loop);
+  }
+
+  const [request, len, frameID] = await DrawModel.next();
+  Log.title(`Current frame : ${frameID} - Still : ${len} move`);
   Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
   await RobotModel.go(...request.point.toArray(2));
   await updateCV(false);
   
-  let [pillTarget, id] = PillsModel.getPillByLocation(...request.point.toArray(2));
+  let [pillTarget, id] = PillsModel.getPillByLocation(...request.point.toArray(2), 1.5);
   
   if(pillTarget){
     if(request.color.equals(pillTarget.color)){
       pillTarget.lock();
     }else{
       Log.step(`Remove the wrong colored pill ${pillTarget.color.toString()} @ ${pillTarget.center.toString(2)}`);
-      await pillTarget.update();
+      if(!await pillTarget.update()){
+        PillsModel.pills.splice(id, 1);
+        return next(false);
+      }
+
       await RobotModel.go(...pillTarget.center.toArray(2));
       await RobotModel.grab();
       const currentHoledPill = pillTarget;
       PillsModel.pills.splice(id, 1);
       while(pillTarget){
-        await RobotModel.goRandom();
+        const randPt = await DrawModel.getRandomPoint();
+        await RobotModel.go(...randPt.toArray(2));
         await updateCV(false);
-        [pillTarget, id] = PillsModel.getPillByLocation(...RobotModel.location.toArray(2));
+        [pillTarget, id] = PillsModel.getPillByLocation(...RobotModel.location.toArray(2), 1.2);
         if(pillTarget){
           Log.step(`The Random location ${RobotModel.location.toString(2)} is populated by ${pillTarget.color.toString()}`);  
         }else{
           Log.step(`The Random location ${RobotModel.location.toString(2)} is empty`);  
           currentHoledPill.center = new Vector(...RobotModel.location.toArray(2));
-          currentHoledPill.accuracy = 0;
+          currentHoledPill.accuracy = pill_dist_accuracy;
         }
       }
       await RobotModel.drop();
     }
-  }else if(!request.color.isBlack()){
+  }
+
+  if(!pillTarget && !request.color.isBlack()){
     Log.step(`Put the good colored pill ${request.color.toString()} @ ${request.point.toString(2)}`);
     let [pill, id] = await PillsModel.getPillByColor(request.color, async () => {
-      await RobotModel.goRandom();
+      const randPt = await DrawModel.getRandomPoint();
+      await RobotModel.go(...randPt.toArray(2));
       await updateCV(false);
     });
-    await pill.update();
+    if(!await pill.update()) {
+      PillsModel.pills.splice(id, 1);
+      return next(false);
+    }
+
     await RobotModel.grab();
     pill.lock();
     await RobotModel.go(...request.point.toArray(2));
     await RobotModel.drop();
   }
-  Log.step(`Done`);
-  loop && update(loop);
+  next();
 }
-
-
 
 (async () => {
   await DrawModel.init();
   await RobotModel.init();
   await update(true);
 })()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // const testGrab = async (loop = false)=>{
 //  const pill = PillsModel.pills[0];
@@ -115,7 +149,6 @@ const update = async (loop = false) => {
 //  }
 //  loop && testGrab(loop);
 // }
-
 // const testMove = async (loop = false)=>{
 //   const pill = _.sample(PillsModel.pills);
 //   if(pill){
@@ -124,15 +157,11 @@ const update = async (loop = false) => {
 //   }  
 //   loop && testMove(loop);
 // }
-
 // const testdynamicGetPillPos = async (loop = false) => {
 //   const res = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
 //   console.log("")  
 //   loop && testdynamicGetPillPos(loop);  
 // }
-
-
-
 // const updateMove = async (loop = false) => {
 //   const pillTarget = await RobotModel.findPillByColor(_.sample(colors))
 //   if(pillTarget){

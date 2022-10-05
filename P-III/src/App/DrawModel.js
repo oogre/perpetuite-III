@@ -11,6 +11,7 @@ import _conf_ from './../common/config.js';
 import Color from './../common/Color.js';
 import Vector from './../common/Vector.js';
 import Jimp from 'jimp';
+import _ from 'underscore';
 import fs from 'fs-extra';
 
 const { 
@@ -67,6 +68,7 @@ new Jimp(DIAMETER, DIAMETER, (err, image) => {
 class DrawModel extends EventHandler{
   constructor(){
     super();
+    this.currentFrame = 0;
     this.offset = STEP_INC;
     this.commands = [];
   }
@@ -81,10 +83,11 @@ class DrawModel extends EventHandler{
   
   async next(){
     if(this.commands.length > 0){
-      return [this.commands.pop(), this.commands.length];
+      return [this.commands.pop(), this.commands.length, this.currentFrame];
     }
     await fs.writeFile(drawOffsetPath, ""+this.offset);
     await $(`P-III.gen`, ""+(this.offset), {NO_DEBUG : true} );
+    this.currentFrame = this.offset;
     this.offset += STEP_INC;
     
     const img = await Jimp.read(`${process.env.PIII_PATH}/data/draw.diff.png`);
@@ -100,7 +103,20 @@ class DrawModel extends EventHandler{
       }
       return acc;
     }, []).sort((a, b) => 0.5 - Math.random())
-    return this.next();
+    return await this.next();
+  }
+
+  async getRandomPoint(){
+    const img = await Jimp.read(`${process.env.PIII_PATH}/data/draw.diff.png`);
+    while(true){
+      const [x, y] = _.sample(pts);
+      const iPoint = [Math.round(x*img.bitmap.width*_DIAMETER), Math.round(y*img.bitmap.height*_DIAMETER)];
+      const color = img.getPixelColor(...iPoint);
+      const [r, g, b, a] = [color >> 24 & 0xFF, color >> 16 & 0xFF, color >> 8 & 0xFF, color >> 0 & 0xFF]
+      if(a == 0){
+        return new Vector(x-RADIUS, y-RADIUS);
+      }
+    }
   }
 }
 
