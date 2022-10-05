@@ -28,6 +28,7 @@ class Server_Process{
 			}); 
 			actions.put("Snap", new Runner() {
 				public String run(String [] args) {
+					
 					JSONArray json = new JSONArray();
 					int i = 0 ; 
 					for(Pill p : pills){
