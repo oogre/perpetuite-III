@@ -2,11 +2,11 @@
   perpetuite-III - Vector.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-23 09:06:37
-  @Last Modified time: 2022-09-29 17:24:56
+  @Last Modified time: 2022-10-05 11:10:31
 \*----------------------------------------*/
 
 import Quaternion from "quaternion";
-
+import LOG from "./Log.js";
 
 export default class Vector {
   constructor(x, y, z) {
@@ -83,6 +83,9 @@ export default class Vector {
   }
   rotate  (axis, angle){
     return  new Vector(...Quaternion.fromAxisAngle(axis.toArray(), angle).rotateVector(this.toArray()));
+  }
+  toString(n=3){
+     return LOG.position(...this.toArray(n).map(v=>v.toFixed(2)));
   }
 };
 

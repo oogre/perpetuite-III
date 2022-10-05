@@ -2,7 +2,7 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-04 11:36:01
+  @Last Modified time: 2022-10-05 11:13:09
 \*----------------------------------------*/
 
 import Vector from './../common/Vector.js';
@@ -133,7 +133,7 @@ class RobotModel extends EventHandler{
     await this.setSpeed();
     await this.setAcceleration();
     await this.setDecceleration();
-    return await this.setLocation(new Vector(x, y, z));
+    await this.setLocation(new Vector(x, y, z));
   }
 
   Follow(){
@@ -207,37 +207,16 @@ class RobotModel extends EventHandler{
         dest.y -= vh.y * 2
       } 
     }
-    this.go(...dest.toArray(2))
+    await this.go(...dest.toArray(2))
   }
 
   async goHome(){
-    console.log("goHome");
-
     await this.setSpeed();
     await this.setAcceleration();
     await this.setDecceleration();
     await this.setLocation();
     await this.setRoll();
   }
-
-
-  // async grab([x, y]){
-  //   console.log("GOTO @ WORK ALTITUDE");
-  //   await $(`P-III.go`, "-x", x+"", "-y", y+"", '-z', "-1000");
-  //   console.log("GRAB");
-  //   await $(`P-III.grab`, "-f", "1");
-  //   console.log("GOBACK TO FLY ALTITUDE");
-  //   await $(`P-III.go`, "-x", x+"", "-y", y+"", '-z', "0");
-  // }
-
-  // async drop([x, y]){
-  //   console.log("GOTO @ WORK ALTITUDE");
-  //   await $(`P-III.go`, "-x", x+"", "-y", y+"", '-z', "-1000");
-  //   console.log("DROP");
-  //   await $(`P-III.grab`, "-f", "0");
-  //   console.log("GOBACK TO FLY ALTITUDE");
-  //   await $(`P-III.go`, "-x", x+"", "-y", y+"", '-z', "0");
-  // }
 }
 
 export default (new RobotModel());

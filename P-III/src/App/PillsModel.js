@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-03 11:21:13
+  @Last Modified time: 2022-10-05 10:46:36
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -56,8 +56,12 @@ class PillsModel extends EventHandler{
 
   async getPillByColor(color, cbNotFound = async ()=>{}, depth = 0){
     console.log(`looking for ${color.toArray()}`)
-    let pillId = this.pills.findIndex( pill => (!pill.locked || depth>10) && pill.color.equals(color));
+    let pillId = this.pills.findIndex( pill => !pill.locked && pill.color.equals(color));
     if(pillId < 0){
+      if(depth>10){
+        this.pills.filter(({color:c})=>c.equals(color)).forEach(pill=>pill.locked = false);
+        console.log(this.pills);
+      }
       await cbNotFound();
       return await this.getPillByColor(color, cbNotFound, depth++);
     }
@@ -70,7 +74,7 @@ class PillsModel extends EventHandler{
   }
 
   
-  async getPillByLocation(x, y){
+  getPillByLocation(x, y){
     const [dist, closest, id] = findPillCloseTo(this.pills, new Vector(x, y));
     if(dist < pill_size_mm * 1.5 ){
       return [closest, id];
@@ -92,15 +96,18 @@ class PillModel{
   constructor(pill){
     this.locked = false;
     this.avgLAB = pill.avgLAB;
-    this.label = pill.label;
     this.color = new Color(...pill.color);
     this.center = CameraModel.camToWorld(pill.center);
     this.valid = this.center.length() <= radius;
     this.avgRGB = pill.avgRGB;
     this.accuracy = 10;
   }
+  lock(){
+    this.locked = true;
+  }
   async update(){
-    while(this.accuracy>0.15){
+
+    while(!_conf_.DEBUG && this.accuracy>0.15){
       await RobotModel.go(...this.center.toArray(2));
       let cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
       cPills = cPills.map(pill => new PillModel(pill));

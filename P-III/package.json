@@ -18,6 +18,7 @@
     "@babel/preset-env": "^7.18.9"
   },
   "dependencies": {
+    "cli-color": "^2.0.3",
     "commander": "^9.4.0",
     "fs-extra": "^10.1.0",
     "jimp": "^0.16.2",

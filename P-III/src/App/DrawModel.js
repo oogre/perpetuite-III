@@ -2,13 +2,14 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-03 14:20:13
+  @Last Modified time: 2022-10-05 11:23:54
 \*----------------------------------------*/
 
 import EventHandler from "./../common/EventHandler.js";
 import {$, wait} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import Color from './../common/Color.js';
+import Vector from './../common/Vector.js';
 import Jimp from 'jimp';
 import fs from 'fs-extra';
 
@@ -66,26 +67,25 @@ new Jimp(DIAMETER, DIAMETER, (err, image) => {
 class DrawModel extends EventHandler{
   constructor(){
     super();
-    this.isInit = false;
-    this.offset = 1;
+    this.offset = STEP_INC;
     this.commands = [];
   }
   async init(){
-    if(this.isInit)return;
-    this.isInit = true;
     if(await fs.exists(drawOffsetPath)){
-      this.offset = parseInt(await fs.readFile(drawOffsetPath, "utf8"));  
+      this.offset = parseInt(await fs.readFile(drawOffsetPath, "utf8"));
+      await $(`P-III.gen`, ""+(this.offset-STEP_INC), {NO_DEBUG : true} );
+    }else{
+      await $(`P-III.gen`, ""+(this.offset), {NO_DEBUG : true} );
     }
   }
   
   async next(){
-    if(!this.isInit) await init();
     if(this.commands.length > 0){
       return [this.commands.pop(), this.commands.length];
     }
     await fs.writeFile(drawOffsetPath, ""+this.offset);
-    
-    const res = await $(`P-III.gen`, ""+(this.offset += STEP_INC), {NO_DEBUG : true} );
+    await $(`P-III.gen`, ""+(this.offset), {NO_DEBUG : true} );
+    this.offset += STEP_INC;
     
     const img = await Jimp.read(`${process.env.PIII_PATH}/data/draw.diff.png`);
     this.commands = pts.reduce((acc, [x, y]) => {
@@ -94,7 +94,7 @@ class DrawModel extends EventHandler{
       const [r, g, b, a] = [color >> 24 & 0xFF, color >> 16 & 0xFF, color >> 8 & 0xFF, color >> 0 & 0xFF]
       if(a != 0){
         acc.push({
-          point : [x-RADIUS, y-RADIUS],
+          point : new Vector(x-RADIUS, y-RADIUS),
           color : new Color(r, g, b)
         })
       }
