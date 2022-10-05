@@ -32,7 +32,7 @@ const Log = {
 		if(args.includes("blue")) return ColorCli.black.bgBlue(...args);
 		if(args.includes("yellow")) return ColorCli.black.bgYellow(...args);
 		if(args.includes("red")) return ColorCli.black.bgRed(...args);
-		if(args.includes("black")) return ColorCli.black.bgBlack(...args);
+		if(args.includes("black")) return ColorCli.whiteBright.bgBlack(...args);
 		return `-${args.join(' ')}-`;
 	},
 	position : (...args) => {

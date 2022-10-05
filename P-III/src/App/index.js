@@ -55,26 +55,31 @@ const update = async (loop = false) => {
   
   let [pillTarget, id] = PillsModel.getPillByLocation(...request.point.toArray(2));
   
-
-  if(pillTarget && !request.color.equals(pillTarget.color)){ 
-    Log.step(`Remove the wrong colored pill ${pillTarget.color.toString()} @ ${pillTarget.center.toString(2)}`);
-    await pillTarget.update();
-    await RobotModel.go(...pillTarget.center.toArray(2));
-    await RobotModel.grab();
-    PillsModel.pills.splice(id, 1);
-    while(pillTarget){
-      await RobotModel.goRandom();
-      await updateCV(false);
-      [pillTarget, id] = PillsModel.getPillByLocation(...RobotModel.location.toArray(2));
-      if(pillTarget){
-        Log.step(`The Random location ${RobotModel.location.toString(2)} is populated by ${pillTarget.color.toString()}`);  
-      }else{
-        Log.step(`The Random location ${RobotModel.location.toString(2)} is empty`);  
+  if(pillTarget){
+    if(request.color.equals(pillTarget.color)){
+      pillTarget.lock();
+    }else{
+      Log.step(`Remove the wrong colored pill ${pillTarget.color.toString()} @ ${pillTarget.center.toString(2)}`);
+      await pillTarget.update();
+      await RobotModel.go(...pillTarget.center.toArray(2));
+      await RobotModel.grab();
+      const currentHoledPill = pillTarget;
+      PillsModel.pills.splice(id, 1);
+      while(pillTarget){
+        await RobotModel.goRandom();
+        await updateCV(false);
+        [pillTarget, id] = PillsModel.getPillByLocation(...RobotModel.location.toArray(2));
+        if(pillTarget){
+          Log.step(`The Random location ${RobotModel.location.toString(2)} is populated by ${pillTarget.color.toString()}`);  
+        }else{
+          Log.step(`The Random location ${RobotModel.location.toString(2)} is empty`);  
+          currentHoledPill.center = new Vector(...RobotModel.location.toArray(2));
+          currentHoledPill.accuracy = 0;
+        }
       }
+      await RobotModel.drop();
     }
-    await RobotModel.drop();
-  }
-  if(!pillTarget && !request.color.isBlack()){
+  }else if(!request.color.isBlack()){
     Log.step(`Put the good colored pill ${request.color.toString()} @ ${request.point.toString(2)}`);
     let [pill, id] = await PillsModel.getPillByColor(request.color, async () => {
       await RobotModel.goRandom();

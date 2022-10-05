@@ -15,11 +15,23 @@ const {
 
 
 export default class Color {
-	constructor(r, g, b){
+	constructor(r, g, b, withLabel=true){
 		this.r = r;
 		this.g = g;
 		this.b = b;
-		this.label = LOG.color(pill_colors.find(({color:[r, g, b]}) => r == this.r && g == this.g && b == this.b)?.name || (this.isBlack() ? 'black' : 'other'))
+		if(withLabel){
+			this.label = LOG.color(
+				pill_colors.find(({color}) => 
+					this.equals(new Color(...color, false))
+				)?.name || 
+				(
+					this.isBlack() ? 
+						'black' 
+					: 
+						`(${this.r}, ${this.g}, ${this.b})`
+				)
+			);
+		}
 	}
 	equals(other) {
   	return other && this.r == other.r && this.g == other.g && this.b == other.b;
@@ -31,6 +43,6 @@ export default class Color {
 		return this.label;
 	}
 	isBlack(){
-		return this.r = 0 && this.g == 0 && this.b == 0;
+		return this.r == 0 && this.g == 0 && this.b == 0;
 	}
 }

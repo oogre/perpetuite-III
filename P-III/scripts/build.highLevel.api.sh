@@ -7,6 +7,7 @@
 npx babel --verbose --out-dir ./release/robot/highLevelAPI ./src/robot/highLevelAPI
 npx babel --verbose --out-dir ./release/computerVision ./src/computerVision
 npx babel --verbose --out-dir ./release/common ./src/common
+npx babel --verbose --out-dir ./release/test ./src/test
 
 echo "remove symLink ./release/robot/highLevelAPI/P-III.*"
 rm ./release/robot/highLevelAPI/P-III.*

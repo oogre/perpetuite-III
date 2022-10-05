@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build.test": "./scripts/build.test.sh",
     "build.core.api": "./scripts/build.core.api.sh",
     "build.highLevel.api": "./scripts/build.highLevel.api.sh",
     "build": "./scripts/build.all.sh",
     "install": "./scripts/install.sh",
-    "init": "zx ./scripts/init.mjs"
+    "init": "zx ./scripts/init.mjs",
+    "test": "./scripts/test.sh"
   },
   "author": "",
   "license": "ISC",

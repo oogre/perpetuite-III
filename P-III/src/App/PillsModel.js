@@ -55,7 +55,7 @@ class PillsModel extends EventHandler{
   }
 
   async getPillByColor(color, cbNotFound = async ()=>{}, depth = 0){
-    console.log(`looking for ${color.toArray()}`)
+    console.log(`Looking for ${color.toString()}`)
     let pillId = this.pills.findIndex( pill => !pill.locked && pill.color.equals(color));
     if(pillId < 0){
       if(depth>10){
@@ -65,7 +65,7 @@ class PillsModel extends EventHandler{
       await cbNotFound();
       return await this.getPillByColor(color, cbNotFound, depth++);
     }
-    console.log(`found ${this.pills[pillId].color.toArray()}`)
+    console.log(`Found ${this.pills[pillId].color.toString()} @ ${this.pills[pillId].center.toString(2)}`)
     return [this.pills[pillId], pillId];
   }
 
