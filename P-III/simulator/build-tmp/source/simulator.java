@@ -27,7 +27,7 @@ ArrayList<Pill> pills;
 public void setup() {
 	
 	pills = new ArrayList<Pill>();
-	for(int i = 0 ; i < 600 ; i ++){
+	for(int i = 0 ; i < 100 ; i ++){
 		pills.add(new Pill());
 	}
 	server = new Server_Process(this);
@@ -37,14 +37,20 @@ public void setup() {
 public void draw() {
 	server.update();
 	background(0);
+	pushMatrix();
 	translate(width/2, height/2);
-	
-	scale(width/_width, -height/_height);
-
+	scale(width/_width, height/_height);
 	for(Pill p : pills){
 		p.draw();
 	}
 	robot.draw();
+	popMatrix();
+	fill(255);
+	ellipse(
+		width/2 + width/_width *  (robot.x - robot.camLeft),
+		height/2 + height/_height *  (robot.y - robot.camTop),
+		20, 20
+	);
 
 }
 
@@ -98,6 +104,15 @@ class Pill{
 		popMatrix();
 	}
 
+	public void draw(PGraphics pg){
+		pg.pushMatrix();
+		pg.noStroke();
+		pg.fill(col[0], col[1], col[2], 255);
+		pg.translate(location.x, location.y);
+		pg.ellipse(0, 0, 2 * radius, 2 * radius);
+		pg.popMatrix();
+	}
+
 	public JSONObject toObj(){
   		JSONObject json = new JSONObject();
   		JSONArray center = new JSONArray();
@@ -125,7 +140,7 @@ class Robot {
 	float cam_width;
 	float cam_height;
 	boolean grab = true;
-	
+	float camLeft, camRight, camTop, camBottom;
 	Robot(){
 		x = 0;
 		y = 0;
@@ -133,6 +148,11 @@ class Robot {
 		w = 0;
 		cam_width = 319.5f;
 		cam_height = 236.5f;
+		camLeft = cam_width*0.2855346836419753f;
+		camRight = cam_width*(1-0.2855346836419753f);
+		camTop = cam_height*0.504114891f;
+		camBottom = cam_width*(1-0.504114891f);
+		
 	}
 
 	public void setLocation(float x, float y, float z, float w ){
@@ -146,16 +166,29 @@ class Robot {
 		grab = flag == 1;
 	}
 	public boolean isInsideCamera(Pill p){
-		return 	p.location.x - p.radius > x - cam_width/2 && 
-				p.location.x + p.radius < x + cam_width/2 && 
+		return 	p.location.x - p.radius > x - cam_width/2 + camLeft && 
+				p.location.x + p.radius < x + cam_width/2 + camLeft && 
 				p.location.y - p.radius > y - cam_height/2 && 
 				p.location.y + p.radius < y + cam_height/2;
 	}
 
 	public PVector worldToPix(PVector world){
-		PVector tmp = PVector.sub(world, new PVector(x-cam_width*0.2855346836419753f, y+cam_height*0.504114891f));
-		tmp.set(tmp.x * _width/width, tmp.y * -_height/height);
-		return tmp;
+
+		println(world);
+		PVector tmp = world.copy();
+		tmp.sub(x, y).add(camLeft, camTop).div(1400).add(1, 1).div(2);
+
+
+		tmp.set(lerp(0, 2592, tmp.x), lerp(0, 1944, tmp.y));
+
+		// PVector tmp = new PVector(world.x * 2592.0/width , world.y * 1944.0/height);
+
+		// tmp.add((new PVector(2592, 1944)).mult(0.5));
+
+
+		// PVector tmp = PVector.sub(world, new PVector(x-camLeft, y+camTop));
+		
+		return tmp;//new PVector(lerp(0, 2592, tmp.x), lerp(0, 1944, tmp.y));
 	}
 
 	public void draw(){
@@ -171,12 +204,24 @@ class Robot {
 		translate(x, y);
 		// rotate(radians(this.w));
 		rect(0, 0, 20, 20);
-		
 		stroke(255);
-		rect(0, 0, cam_width, cam_height);
+		translate(-camLeft, -camTop);
+		beginShape();
+		vertex(0, 0);
+		vertex(cam_width, 0);
+		vertex(cam_width, cam_height);
+		vertex(0, cam_height);
+		endShape(CLOSE);
 		popMatrix();
 	}
 }
+
+
+
+
+
+
+
 
 public interface Runner {
    public String run(String [] args);
@@ -207,6 +252,20 @@ class Server_Process{
 			}); 
 			actions.put("Snap", new Runner() {
 				public String run(String [] args) {
+					
+					PGraphics pg = createGraphics(2592, 1944);
+					pg.beginDraw();
+					pg.background(0);
+					for(Pill p : pills){
+						if(robot.isInsideCamera(p)){
+							PVector loc = robot.worldToPix(p.location);
+							pg.fill(p.col[0],p.col[1],p.col[2]);
+							pg.ellipse(loc.x, loc.y, 75.611f, 75.611f);
+						}
+					}
+					pg.endDraw();
+					pg.save("/Users/ogre/works/2202/Felix/perpetuite-III/P-III/data/camera.sim.jpg");
+
 					JSONArray json = new JSONArray();
 					int i = 0 ; 
 					for(Pill p : pills){

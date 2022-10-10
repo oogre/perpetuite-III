@@ -46,6 +46,15 @@ class Pill{
 		popMatrix();
 	}
 
+	void draw(PGraphics pg){
+		pg.pushMatrix();
+		pg.noStroke();
+		pg.fill(col[0], col[1], col[2], 255);
+		pg.translate(location.x, location.y);
+		pg.ellipse(0, 0, 2 * radius, 2 * radius);
+		pg.popMatrix();
+	}
+
 	JSONObject toObj(){
   		JSONObject json = new JSONObject();
   		JSONArray center = new JSONArray();

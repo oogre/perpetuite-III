@@ -29,6 +29,19 @@ class Server_Process{
 			actions.put("Snap", new Runner() {
 				public String run(String [] args) {
 					
+					PGraphics pg = createGraphics(2592, 1944);
+					pg.beginDraw();
+					pg.background(0);
+					for(Pill p : pills){
+						if(robot.isInsideCamera(p)){
+							PVector loc = robot.worldToPix(p.location);
+							pg.fill(p.col[0],p.col[1],p.col[2]);
+							pg.ellipse(loc.x, loc.y, 75.611, 75.611);
+						}
+					}
+					pg.endDraw();
+					pg.save("/Users/ogre/works/2202/Felix/perpetuite-III/P-III/data/camera.sim.jpg");
+
 					JSONArray json = new JSONArray();
 					int i = 0 ; 
 					for(Pill p : pills){

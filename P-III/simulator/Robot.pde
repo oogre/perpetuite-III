@@ -4,7 +4,7 @@ class Robot {
 	float cam_width;
 	float cam_height;
 	boolean grab = true;
-	
+	float camLeft, camRight, camTop, camBottom;
 	Robot(){
 		x = 0;
 		y = 0;
@@ -15,7 +15,7 @@ class Robot {
 		camLeft = cam_width*0.2855346836419753;
 		camRight = cam_width*(1-0.2855346836419753);
 		camTop = cam_height*0.504114891;
-		cam_height = cam_width*(1-0.504114891);
+		camBottom = cam_width*(1-0.504114891);
 		
 	}
 
@@ -30,16 +30,29 @@ class Robot {
 		grab = flag == 1;
 	}
 	boolean isInsideCamera(Pill p){
-		return 	p.location.x - p.radius > x - cam_width/2 && 
-				p.location.x + p.radius < x + cam_width/2 && 
+		return 	p.location.x - p.radius > x - cam_width/2 + camLeft && 
+				p.location.x + p.radius < x + cam_width/2 + camLeft && 
 				p.location.y - p.radius > y - cam_height/2 && 
 				p.location.y + p.radius < y + cam_height/2;
 	}
 
 	PVector worldToPix(PVector world){
-		PVector tmp = PVector.sub(world, new PVector(x-camLeft, y+camTop));
-		tmp.set(tmp.x * _width/width, tmp.y * -_height/height);
-		return tmp;
+
+		println(world);
+		PVector tmp = world.copy();
+		tmp.sub(x, y).add(camLeft, camTop).div(1400).add(1, 1).div(2);
+
+
+		tmp.set(lerp(0, 2592, tmp.x), lerp(0, 1944, tmp.y));
+
+		// PVector tmp = new PVector(world.x * 2592.0/width , world.y * 1944.0/height);
+
+		// tmp.add((new PVector(2592, 1944)).mult(0.5));
+
+
+		// PVector tmp = PVector.sub(world, new PVector(x-camLeft, y+camTop));
+		
+		return tmp;//new PVector(lerp(0, 2592, tmp.x), lerp(0, 1944, tmp.y));
 	}
 
 	void draw(){
@@ -55,9 +68,21 @@ class Robot {
 		translate(x, y);
 		// rotate(radians(this.w));
 		rect(0, 0, 20, 20);
-		
 		stroke(255);
-		rect(0, 0, cam_width, cam_height);
+		translate(-camLeft, -camTop);
+		beginShape();
+		vertex(0, 0);
+		vertex(cam_width, 0);
+		vertex(cam_width, cam_height);
+		vertex(0, cam_height);
+		endShape(CLOSE);
 		popMatrix();
 	}
 }
+
+
+
+
+
+
+
