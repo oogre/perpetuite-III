@@ -31,6 +31,10 @@ echo "create symLink ./release/robot/highLevelAPI/P-III.go"
 ln -s ./go.js ./release/robot/highLevelAPI/P-III.go
 chmod +x ./release/robot/highLevelAPI/go.js
 
+echo "create symLink ./release/robot/highLevelAPI/P-III.goArc"
+ln -s ./goArc.js ./release/robot/highLevelAPI/P-III.goArc
+chmod +x ./release/robot/highLevelAPI/goArc.js
+
 echo "create symLink ./release/robot/highLevelAPI/P-III.grab"
 ln -s ./grab.js ./release/robot/highLevelAPI/P-III.grab
 chmod +x ./release/robot/highLevelAPI/grab.js

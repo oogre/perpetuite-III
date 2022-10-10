@@ -62,6 +62,7 @@ This script is used to move robot in straight line to destination
 				).toArray();
 			})
 
+		console.log(points);
 		
 		try{
 			// await $(`P-III.core.api Speed ${debug} -- ${s}`);

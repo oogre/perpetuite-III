@@ -8,6 +8,7 @@
 import Vector from './../common/Vector.js';
 import EventHandler from "./../common/EventHandler.js";
 import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
+import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import {getDepthForXY, limitters} from './../common/moveLimit.js';
 import _ from "underscore";
@@ -72,10 +73,10 @@ class RobotModel extends EventHandler{
     if(location.z != limitters.depth.max){
       location.z = constrain(await getDepthForXY(location.x, location.y), limitters.depth.max, location.z);  
     }
-    if(!location.equals(this.location)){
+    // if(!location.equals(this.location)){
       await this.CoreAPI(`Go -- ${location.x} ${location.y} ${location.z} ${this.roll}`);
       this.location = location;
-    }
+    // }
   }
   async grab(){
     await this.gripper(0);
@@ -117,18 +118,24 @@ class RobotModel extends EventHandler{
     
     const depth = await getDepthForXY(this.location.x, this.location.y);  
     await this.go(this.location.x, this.location.y);
-    await this.go(this.location.x, this.location.y, depth);
-    
+
+    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - height} ${this.roll}`);
     await this.setSpeed(speed);
     await this.setAcceleration(acc);
     await this.setDecceleration(dcc);
-    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - height} ${this.roll}`);
-    await wait(125);
     await this.CoreAPI(`Gripper -- ${flag}`);
     await wait(125);
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth} ${this.roll}`);
-
     await this.go(this.location.x, this.location.y);
+  
+  }
+
+  async goRandom(){
+    const dest = Vector.Random2D().multiply(limitters.radius.value * Math.random());
+    const depth = await getDepthForXY(dest.x, dest.y);  
+    dest.z = lerp(depth, limitters.depth.max , Math.random());
+    const w = lerp(limitters.roll.min , limitters.roll.max , Math.random());
+    await this.CoreAPI(`Go -- ${dest.x} ${dest.y} ${dest.z} ${w}`);
   }
 
   async go(x, y, z = 0){
@@ -138,13 +145,17 @@ class RobotModel extends EventHandler{
     await this.setLocation(new Vector(x, y, z));
   }
 
+  async goArc(x, y, z = 0){
+   
+  }
+
   Follow(){
     const {stdin, kill:killFnc, promise} = $pipe('P-III.core.api', 'Follow');
     const send = (data) => {
       // console.log(...data);
       stdin.write(`${data.join(' ')}\n`);
     }
-    const amp = lerp(1, 40, Math.random());
+    const amp = lerp(10, 40, Math.random());
     const animations = [
       {
         waitBetween:230,
@@ -169,7 +180,6 @@ class RobotModel extends EventHandler{
           }
         }
       },
-      {/* DO NOTHING */},
       {
         waitBetween:230,
         action : async (cnt)=>{

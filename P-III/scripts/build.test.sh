@@ -5,3 +5,4 @@
 # @Last Modified time: 2022-09-28 11:25:28
 
 npx babel --verbose --out-dir ./release/test ./src/test
+npx babel --verbose --out-dir ./release/common ./src/common

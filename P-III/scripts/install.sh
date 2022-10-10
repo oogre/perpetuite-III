@@ -37,6 +37,9 @@ ln -s $(pwd)/release/robot/highLevelAPI/P-III.goHome /usr/local/bin/P-III.goHome
 echo "create symLink /usr/local/bin/P-III.go"
 ln -s $(pwd)/release/robot/highLevelAPI/P-III.go /usr/local/bin/P-III.go
 
+echo "create symLink /usr/local/bin/P-III.goArc"
+ln -s $(pwd)/release/robot/highLevelAPI/P-III.goArc /usr/local/bin/P-III.goArc
+
 echo "create symLink /usr/local/bin/P-III.grab"
 ln -s $(pwd)/release/robot/highLevelAPI/P-III.grab /usr/local/bin/P-III.grab
 
