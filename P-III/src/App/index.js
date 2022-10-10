@@ -16,6 +16,7 @@ import _conf_ from "./../common/config.js";
 import Vector from "./../common/Vector.js";
 import Log from './../common/Log.js';
 
+process.title = "P-III.APP";
 
 const { 
   physical : {
@@ -51,7 +52,7 @@ const update = async (loop = false) => {
   PillsModel.shuffle();
   const next = (success = true)=>{
     if(success){
-      Log.step(`Done`);  
+      Log.step(`Done`); 
     }
     else{
      Log.step(`Fail`); 
@@ -115,6 +116,12 @@ const update = async (loop = false) => {
     await RobotModel.go(...request.point.toArray(2));
     await RobotModel.drop();
   }
+
+  let count = Math.random() *10;
+  while(count-- >0){
+    await RobotModel.goRandom();  
+  }
+  
   next();
 }
 
