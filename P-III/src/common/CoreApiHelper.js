@@ -2,7 +2,7 @@
   perpetuite-III - CoreApiHelper.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-22 15:21:12
-  @Last Modified time: 2022-09-29 11:48:31
+  @Last Modified time: 2022-10-11 12:01:38
 \*----------------------------------------*/
 
 import _conf_ from './config.js';
@@ -32,7 +32,7 @@ export const Call = ({debug = false, JsonFlag = true, ErrorFlag = true}={})=>{
 
 export const Go = async ({xpos, ypos, zpos, wpos, speed, acc, dcc, debug=false})=>{
 	debug = !debug ? '' : debug;
-	const { pos, s, a, d } = await moveLimit({xpos, ypos, zpos, wpos, speed, acc, dcc});
+	const { pos, s, a, d } = moveLimit({xpos, ypos, zpos, wpos, speed, acc, dcc});
 	const $ = Call({debug});
 	await $(`P-III.core.api Speed ${debug} -- ${s}`);
 	await $(`P-III.core.api Acc ${debug} -- ${a}`);
@@ -101,7 +101,7 @@ export const WaitProbe = async (debug=false) => {
 export const ZProbe = async (xpos, ypos, debug=false) => {
 	debug = !debug ? '' : debug;
 	const $ = Call({debug});
-	const { pos:[x, y] } = await moveLimit({xpos, ypos});
+	const { pos:[x, y] } = moveLimit({xpos, ypos});
 	return await $(`P-III.core.api ZProbe ${debug} -- ${x} ${y}`);
 }
 

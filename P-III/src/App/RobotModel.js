@@ -2,12 +2,11 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-05 11:13:09
+  @Last Modified time: 2022-10-10 18:39:54
 \*----------------------------------------*/
 
 import Vector from './../common/Vector.js';
 import EventHandler from "./../common/EventHandler.js";
-import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import {getDepthForXY, limitters} from './../common/moveLimit.js';

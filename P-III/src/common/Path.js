@@ -1,13 +1,49 @@
 import _conf_ from "./config.js";
 import LOG from "./Log.js";
-import {getDepthForXY, limitters} from './../common/moveLimit.js';
+import {getDepthForXY, limitters, moveLimit} from './../common/moveLimit.js';
 import Vector from './../common/Vector.js';
-import {lerp} from './../common/tools.js';
+import {lerp3, lerp} from './../common/tools.js';
 
 
-export const getArc = (start, stop) => {
 
-  const findCircle = ( {x:x1, y:y1}, {x:x2, y:y2}, {x:x3, y:y3} ) => {
+export const getArc = (
+  start = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random())), 
+  stop =  new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random())), 
+  third = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random())), 
+) => {
+  const p0 = start.clone();
+  const p1 = stop.clone();
+  const p2 = third.clone();
+  const p0Depth = p0.z;
+  const p1Depth = p1.z;
+  p0.z = 0;
+  p1.z = 0;
+
+  const [center, r] = findCircle(p0, p1, p2);
+  let p0Alpha = p0.subtract(center).angleBetween(new Vector(10, 0)) * -1;
+  let p1Alpha = p1.subtract(center).angleBetween(new Vector(10, 0)) * -1;
+  if(Math.abs(p0Alpha - p1Alpha) > Math.PI ){
+    p1Alpha = p1Alpha - Math.PI * 2;  
+  }
+  if(Math.abs(p0Alpha - p1Alpha) > Math.PI ){
+    p1Alpha = p1Alpha + Math.PI * 2;  
+    p0Alpha = p0Alpha - Math.PI * 2;  
+  }
+  const arcLen = Math.abs(p0Alpha - p1Alpha);
+  const ptLen = Math.floor(lerp(1, 15, arcLen/Math.PI))
+  const _ptLen = 1/ptLen;
+  return (new Array(ptLen+1)).fill(0).map((_, k) => [
+      center.x + r * Math.cos(lerp(p0Alpha, p1Alpha, k*_ptLen)), 
+      center.y + r * Math.sin(lerp(p0Alpha, p1Alpha, k*_ptLen)), 
+      lerp(p0Depth, p1Depth, k*_ptLen)
+    ]
+  ).map(([x, y, z]) => {
+    const {pos} = moveLimit({xpos:x, ypos:y, zpos:z});
+    return pos;
+  });
+}
+
+const findCircle = ( {x:x1, y:y1}, {x:x2, y:y2}, {x:x3, y:y3} ) => {
     const x12 = x1 - x2;
     const x13 = x1 - x3;
  
@@ -53,23 +89,3 @@ export const getArc = (start, stop) => {
     const r = Math.sqrt(sqr_of_r);
     return [new Vector(h, k), r]
   }
-
-  const startDepth = start.z;
-  const stopDepth = stop.z;
-  start = new Vector(...start.toArray(2));
-  stop = new Vector(...stop.toArray(2));
-
-  const [center, r] = findCircle(start, stop, Vector.Random2D().multiply(limitters.radius.value * Math.random()));
-
-
-  const aStart = start.subtract(center).angleTo(Vector.Right());
-  const aStop = stop.subtract(center).angleTo(Vector.Right());
-
-  const pts = (new Array(11)).fill(0).map((_, k)=> [
-    center.x + r * Math.cos(lerp(aStart, aStop, k*0.1)), 
-    center.y + r * Math.sin(lerp(aStart, aStop, k*0.1)),
-    lerp(startDepth, stopDepth, k*0.1)
-  ])
-
-  return [start, stop, pts];
-}

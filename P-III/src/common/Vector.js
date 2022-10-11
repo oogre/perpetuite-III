@@ -2,7 +2,7 @@
   perpetuite-III - Vector.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-23 09:06:37
-  @Last Modified time: 2022-10-05 11:10:31
+  @Last Modified time: 2022-10-11 10:26:54
 \*----------------------------------------*/
 
 import Quaternion from "quaternion";
@@ -71,6 +71,18 @@ export default class Vector {
   angleTo(a) {
     return Math.acos(this.dot(a) / (this.length() * a.length()));
   }
+  angleBetween(v) {
+    let dotmagmag = this.dot(v) / (this.length() * v.length());
+    // Mathematically speaking: the dotmagmag variable will be between -1 and 1
+    // inclusive. Practically though it could be slightly outside this range due
+    // to floating-point rounding issues. This can make Math.acos return NaN.
+    //
+    // Solution: we'll clamp the value to the -1,1 range
+    var angle;
+    angle = Math.acos(Math.min(1, Math.max(-1, dotmagmag)));
+    angle = angle * Math.sign(this.cross(v).z || 1);
+    return angle;
+  };
   toArray(n=3) {
     return [this.x, this.y, this.z].slice(0, n);
   }
