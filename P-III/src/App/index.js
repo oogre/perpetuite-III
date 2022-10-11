@@ -66,7 +66,7 @@ const update = async (loop = false) => {
   await RobotModel.go(...request.point.toArray(2));
   await updateCV(false);
   
-  let [pillTarget, id] = PillsModel.getPillByLocation(...request.point.toArray(2), 1.5);
+  let [pillTarget, id] = PillsModel.getPillByLocation(...request.point.toArray(2), 1.75);
   
   if(pillTarget){
     if(request.color.equals(pillTarget.color)){
@@ -86,7 +86,7 @@ const update = async (loop = false) => {
         const randPt = await DrawModel.getRandomPoint();
         await RobotModel.go(...randPt.toArray(2));
         await updateCV(false);
-        [pillTarget, id] = PillsModel.getPillByLocation(...RobotModel.location.toArray(2), 1.2);
+        [pillTarget, id] = PillsModel.getPillByLocation(...RobotModel.location.toArray(2), 1.5);
         if(pillTarget){
           Log.step(`The Random location ${RobotModel.location.toString(2)} is populated by ${pillTarget.color.toString()}`);  
         }else{
@@ -115,11 +115,6 @@ const update = async (loop = false) => {
     pill.lock();
     await RobotModel.go(...request.point.toArray(2));
     await RobotModel.drop();
-  }
-
-  let count = Math.random() *10;
-  while(count-- >0){
-    await RobotModel.goRandom();  
   }
   
   next();

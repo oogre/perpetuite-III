@@ -7,6 +7,7 @@
 
 import Vector from './../common/Vector.js';
 import EventHandler from "./../common/EventHandler.js";
+import {getArc, getMechanicalSheep, jitter} from './../common/Path.js';
 import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import {getDepthForXY, limitters} from './../common/moveLimit.js';
@@ -116,8 +117,8 @@ class RobotModel extends EventHandler{
 
     
     const depth = await getDepthForXY(this.location.x, this.location.y);  
-    await this.go(this.location.x, this.location.y);
 
+    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} 0 ${this.roll}`);
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - height} ${this.roll}`);
     await this.setSpeed(speed);
     await this.setAcceleration(acc);
@@ -138,14 +139,120 @@ class RobotModel extends EventHandler{
   }
 
   async go(x, y, z = 0){
+
+
+    await this.setSpeed();
+    await this.setAcceleration();
+    await this.setDecceleration();
+
+    if(Math.random()<0.1){
+     await this.danse();
+    }
+
+    if(Math.random()<0.66){
+      await this.goArc(x, y, z = 0)
+    }else{
+      await this.setLocation(new Vector(x, y, z));
+    }
+  }
+
+  async simpleGo(x, y, z = 0){
     await this.setSpeed();
     await this.setAcceleration();
     await this.setDecceleration();
     await this.setLocation(new Vector(x, y, z));
   }
 
+  async danse(){
+    
+    const coregraphicalMoves = [
+      async () => {
+        const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
+        let dest = Vector.Right().rotate(Vector.Up(), Math.random()*2*Math.PI).multiply(limitters.radius.value);
+        dest.z = await getDepthForXY(dest.x, dest.y);
+        stdin.write(`${dest.x} ${dest.y} ${dest.z + 10} ${this.roll}\n`);
+        await wait(500);
+        dest = dest.rotate(Vector.Up(), Math.PI);
+        dest.z = await getDepthForXY(dest.x, dest.y);
+        stdin.write(`${dest.x} ${dest.y} ${dest.z + 10} ${this.roll}\n`);
+        await wait(500);
+        dest = dest.rotate(Vector.Up(), Math.PI*0.5);
+        dest.z = await getDepthForXY(dest.x, dest.y);
+        stdin.write(`${dest.x} ${dest.y} ${dest.z + 10} ${this.roll}\n`);
+        await wait(500);
+        dest = dest.rotate(Vector.Up(), Math.PI);
+        dest.z = await getDepthForXY(dest.x, dest.y);
+        stdin.write(`${dest.x} ${dest.y} ${dest.z + 10} ${this.roll}\n`);
+        await wait(500);
+        kill();
+        await wait(500);
+      },
+      async () => {
+        const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
+        let path = getMechanicalSheep();
+        let pt;
+        for(pt of path){
+          stdin.write(`${pt.join(' ')}\n`);
+          await wait(360);
+        }
+        await wait(500);
+        path = jitter(new Vector(...pt));
+        for(pt of path){
+          stdin.write(`${pt.join(' ')}\n`);
+          await wait(150);
+        }
+        await wait(500);
+        kill();
+      },
+      async () => {
+        const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
+        let path = jitter(this.location);
+        for(const pt of path){
+          stdin.write(`${pt.join(' ')}\n`);
+          await wait(150);
+        }
+        await wait(500);
+        kill();
+      },
+      async () => {
+        const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
+        let old = this.location;
+        let count = Math.random() * 10;
+        while(count-- > 0){
+          const smoothness =  Math.random();
+          const stop = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random()));
+          const path = getArc({start:old, stop, smooth:lerp(3, 10,smoothness)});
+          old = stop.clone();
+          for(const pt of path){
+            stdin.write(`${pt.join(' ')}\n`);
+            await wait(lerp(250, 150, smoothness));
+          }
+        }
+        await wait(500);
+        kill();
+      }
+    ];
+    const anim = _.sample(coregraphicalMoves);
+    await anim();
+    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${this.location.z} ${this.roll}`);
+  }
+
   async goArc(x, y, z = 0){
-   
+    const smoothness =  Math.random();
+    const path = getArc({start:this.location, stop:new Vector(x, y, z), smooth:lerp(3, 10,smoothness)});
+    try{
+      const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
+      for(const pt of path){
+        stdin.write(`${pt.join(' ')}\n`);
+        await wait(lerp(250, 150, smoothness));
+      }
+      kill();
+      await wait(125);
+    }catch(error){
+      console.log("CATCHED")
+    }
+
+    await this.setLocation(new Vector(x, y, z));
   }
 
   Follow(){
@@ -172,8 +279,7 @@ class RobotModel extends EventHandler{
         waitBetween:666,
         action : async (cnt)=>{
           if(cnt == 1){
-            const depth = await getDepthForXY(this.location.x, this.location.y);  
-            send([...this.location.toArray(2), depth*0.666, this.roll]);
+            send([...this.location.toArray(2), limitters.depth.min * 0.666, this.roll]);
           }else{
             send([...this.location.toArray(3), this.roll]);
           }
@@ -193,13 +299,14 @@ class RobotModel extends EventHandler{
     ];
 
     return {
-      stopAfter : 1200,
+      stopAfter : 1000,
       waitBefore : 0, 
       waitBetween : 50,
       action : async (cnt)=>{},
       ...(_.sample(animations)),
       kill : async () => {
         killFnc();
+        await wait(250);
         await this.CoreAPI(`Go -- ${this.location.toArray(3).join(" ")} ${this.roll}`);
       },
       promise

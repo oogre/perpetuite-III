@@ -6,11 +6,13 @@ import {lerp3, lerp} from './../common/tools.js';
 
 
 
-export const getArc = (
+export const getArc = ({
   start = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random())), 
   stop =  new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random())), 
   third = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random())), 
-) => {
+  smooth = 15
+}) => {
+  smooth = Math.max(2, smooth);
   const p0 = start.clone();
   const p1 = stop.clone();
   const p2 = third.clone();
@@ -30,7 +32,7 @@ export const getArc = (
     p0Alpha = p0Alpha - Math.PI * 2;  
   }
   const arcLen = Math.abs(p0Alpha - p1Alpha);
-  const ptLen = Math.floor(lerp(1, 15, arcLen/Math.PI))
+  const ptLen = Math.floor(lerp(1, smooth, arcLen/Math.PI))
   const _ptLen = 1/ptLen;
   return (new Array(ptLen+1)).fill(0).map((_, k) => [
       center.x + r * Math.cos(lerp(p0Alpha, p1Alpha, k*_ptLen)), 
@@ -41,6 +43,39 @@ export const getArc = (
     const {pos} = moveLimit({xpos:x, ypos:y, zpos:z});
     return pos;
   });
+}
+
+export const getMechanicalSheep = ()=>{
+  const [center, r] = [new Vector(0, 0, 0), limitters.radius.value];
+  const ptLen = 12;
+  const _ptLen = 1/ptLen;
+  const offAlpha = Math.random() * Math.PI * 2 ; 
+  return (new Array(ptLen+1)).fill(0).map((_, k) => [
+     center.x + r * Math.cos(offAlpha +  Math.PI * 2 * k * _ptLen ), 
+     center.y + r * Math.sin(offAlpha +  Math.PI * 2 * k * _ptLen ), 
+     lerp(limitters.depth.min * 0.25, limitters.depth.max, Math.abs(Math.sin(Math.PI * 2 * k * _ptLen * 3)))
+  ]).map(([x, y, z]) => {
+    const {pos} = moveLimit({xpos:x, ypos:y, zpos:z});
+    return pos;
+  });;
+}
+
+
+
+export const jitter = (
+  location = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random()))
+)=>{
+  const ptLen = 12;
+  const _ptLen = 1/ptLen;
+  return (new Array(ptLen+1)).fill(0).map((_, k) => [
+     location.x, 
+     location.y, 
+     location.z, 
+     Math.sin(Math.PI * k * _ptLen) * limitters.roll.max * 0.25 * Math.sin(Math.PI * k * _ptLen * 8)
+  ]).map(([x, y, z, w]) => {
+    const {pos} = moveLimit({xpos:x, ypos:y, zpos:z, zpos:z, wpos:w});
+    return pos;
+  });;
 }
 
 const findCircle = ( {x:x1, y:y1}, {x:x2, y:y2}, {x:x3, y:y3} ) => {

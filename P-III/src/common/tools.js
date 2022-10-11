@@ -234,6 +234,7 @@ export const $pipe = (cmd, ...args) => {
 
     child.on('error', (error) => {
         e += error.message;
+        return res(r);
     });
 
     child.on("close", code => {
@@ -253,14 +254,16 @@ export const $pipe = (cmd, ...args) => {
 
 export const waiter = async (promise, action, endAction=()=>{}, stopAfter=0, waitBefore = 0, waitBetween = 0) => {
       let running = true;
-      
+      let timer;
       const finish = async ()=>{
         running=false;
+        clearTimeout(timer);
+        timer = undefined;
         await endAction();
       }
 
       if(stopAfter>10){
-        setTimeout(finish, stopAfter);  
+        timer = setTimeout(finish, stopAfter);  
       }
       promise.finally(finish);
       let i = 0;

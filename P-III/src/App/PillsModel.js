@@ -112,7 +112,7 @@ class PillModel{
   async update(){
 
     while(!_conf_.DEBUG && this.accuracy>pill_dist_accuracy){
-      await RobotModel.go(...this.center.toArray(2));
+      await RobotModel.simpleGo(...this.center.toArray(2));
       let cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
       cPills = cPills.map(pill => new PillModel(pill));
       cPills = cPills.filter(pill => pill.valid);
