@@ -207,6 +207,8 @@ export const $ = (cmd, ...args) => {
 
       proc.on('error', (error) => {
           e += error.message;
+          console.log(e);
+          return res(r);
       });
 
       proc.on("close", code => {
@@ -234,6 +236,7 @@ export const $pipe = (cmd, ...args) => {
 
     child.on('error', (error) => {
         e += error.message;
+        console.log(e);
         return res(r);
     });
 
