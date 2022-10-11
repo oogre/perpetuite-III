@@ -60,9 +60,25 @@ export const getMechanicalSheep = ()=>{
   });;
 }
 
+export const getCross = () => {
 
+  let p0 = Vector.Right().rotate(Vector.Up(), Math.random()*2*Math.PI).multiply(limitters.radius.value);
+  p0.z = getDepthForXY(p0.x, p0.y);
+  let p1 = p0.clone().rotate(Vector.Up(), Math.random()*Math.PI);
+  p1.z = getDepthForXY(p1.x, p1.y);
+  let p2 = p1.clone().rotate(Vector.Up(), Math.random()*Math.PI*0.5);
+  p2.z = getDepthForXY(p2.x, p2.y);
+  let p3 = p2.clone().rotate(Vector.Up(), Math.random()*Math.PI);
+  p3.z = getDepthForXY(p3.x, p3.y);
+  return [p0, p1, p2, p3]
+    .map(v =>[...v.toArray()])
+    .map(([x, y, z]) => {
+      const {pos} = moveLimit({xpos:x, ypos:y, zpos:z});
+      return pos;
+    });
+}
 
-export const jitter = (
+export const getJitter = (
   location = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random()))
 )=>{
   const ptLen = 12;

@@ -7,7 +7,7 @@
 
 import Vector from './../common/Vector.js';
 import EventHandler from "./../common/EventHandler.js";
-import {getArc, getMechanicalSheep, jitter} from './../common/Path.js';
+import {getArc, getMechanicalSheep, getJitter, getCross} from './../common/Path.js';
 import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import {getDepthForXY, limitters} from './../common/moveLimit.js';
@@ -71,7 +71,7 @@ class RobotModel extends EventHandler{
       [location.x, location.y] = vh.unit().multiply(limitters.radius.value).toArray();
     }
     if(location.z != limitters.depth.max){
-      location.z = constrain(await getDepthForXY(location.x, location.y), limitters.depth.max, location.z);  
+      location.z = constrain(getDepthForXY(location.x, location.y), limitters.depth.max, location.z);  
     }
     // if(!location.equals(this.location)){
       await this.CoreAPI(`Go -- ${location.x} ${location.y} ${location.z} ${this.roll}`);
@@ -97,7 +97,7 @@ class RobotModel extends EventHandler{
       }
     } = _conf_.HIGH_LEVEL_API_CONF;
     
-    const depth = await getDepthForXY(x, y);  
+    const depth = getDepthForXY(x, y);  
     await this.go(x, y);
     await this.go(x, y, depth);
     await this.go(x, y);
@@ -116,9 +116,10 @@ class RobotModel extends EventHandler{
     } = _conf_.HIGH_LEVEL_API_CONF;
 
     
-    const depth = await getDepthForXY(this.location.x, this.location.y);  
+    const depth = getDepthForXY(this.location.x, this.location.y);  
 
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} 0 ${this.roll}`);
+    await wait(125);
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - height} ${this.roll}`);
     await this.setSpeed(speed);
     await this.setAcceleration(acc);
@@ -132,7 +133,7 @@ class RobotModel extends EventHandler{
 
   async goRandom(){
     const dest = Vector.Random2D().multiply(limitters.radius.value * Math.random());
-    const depth = await getDepthForXY(dest.x, dest.y);  
+    const depth = getDepthForXY(dest.x, dest.y);  
     dest.z = lerp(depth, limitters.depth.max , Math.random());
     const w = lerp(limitters.roll.min , limitters.roll.max , Math.random());
     await this.CoreAPI(`Go -- ${dest.x} ${dest.y} ${dest.z} ${w}`);
@@ -167,27 +168,20 @@ class RobotModel extends EventHandler{
     
     const coregraphicalMoves = [
       async () => {
+        console.log("Cross Anim");
         const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
-        let dest = Vector.Right().rotate(Vector.Up(), Math.random()*2*Math.PI).multiply(limitters.radius.value);
-        dest.z = await getDepthForXY(dest.x, dest.y);
-        stdin.write(`${dest.x} ${dest.y} ${dest.z + 10} ${this.roll}\n`);
-        await wait(500);
-        dest = dest.rotate(Vector.Up(), Math.PI);
-        dest.z = await getDepthForXY(dest.x, dest.y);
-        stdin.write(`${dest.x} ${dest.y} ${dest.z + 10} ${this.roll}\n`);
-        await wait(500);
-        dest = dest.rotate(Vector.Up(), Math.PI*0.5);
-        dest.z = await getDepthForXY(dest.x, dest.y);
-        stdin.write(`${dest.x} ${dest.y} ${dest.z + 10} ${this.roll}\n`);
-        await wait(500);
-        dest = dest.rotate(Vector.Up(), Math.PI);
-        dest.z = await getDepthForXY(dest.x, dest.y);
-        stdin.write(`${dest.x} ${dest.y} ${dest.z + 10} ${this.roll}\n`);
+        let path = getCross();
+        let pt;
+        for(pt of path){
+          stdin.write(`${pt.join(' ')}\n`);
+          await wait(500);
+        }
         await wait(500);
         kill();
         await wait(500);
       },
       async () => {
+        console.log("getMechanicalSheep Anim");
         const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
         let path = getMechanicalSheep();
         let pt;
@@ -196,7 +190,7 @@ class RobotModel extends EventHandler{
           await wait(360);
         }
         await wait(500);
-        path = jitter(new Vector(...pt));
+        path = getJitter(new Vector(...pt));
         for(pt of path){
           stdin.write(`${pt.join(' ')}\n`);
           await wait(150);
@@ -205,8 +199,9 @@ class RobotModel extends EventHandler{
         kill();
       },
       async () => {
+        console.log("jitter Anim");
         const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
-        let path = jitter(this.location);
+        let path = getJitter(this.location);
         for(const pt of path){
           stdin.write(`${pt.join(' ')}\n`);
           await wait(150);
@@ -215,6 +210,7 @@ class RobotModel extends EventHandler{
         kill();
       },
       async () => {
+        console.log("goArc Anim");
         const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
         let old = this.location;
         let count = Math.random() * 10;
@@ -238,16 +234,17 @@ class RobotModel extends EventHandler{
   }
 
   async goArc(x, y, z = 0){
+    console.log("goArc");
     const smoothness =  Math.random();
     const path = getArc({start:this.location, stop:new Vector(x, y, z), smooth:lerp(3, 10,smoothness)});
     try{
       const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
       for(const pt of path){
         stdin.write(`${pt.join(' ')}\n`);
-        await wait(lerp(250, 150, smoothness));
+        await wait(lerp(300, 200, smoothness));
       }
       kill();
-      await wait(125);
+      await wait(200);
     }catch(error){
       console.log("CATCHED")
     }

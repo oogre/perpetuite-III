@@ -68,7 +68,7 @@ class PillsModel extends EventHandler{
         console.log(`>>>> depth larger than 10 for ${color.toString()}`);
       }
       await cbNotFound();
-      return await this.getPillByColor(color, cbNotFound, depth++);
+      return await this.getPillByColor(color, cbNotFound, depth+1);
     }
     console.log(`Found ${this.pills[pillId].color.toString()} @ ${this.pills[pillId].center.toString(2)}`)
     return [this.pills[pillId], pillId];

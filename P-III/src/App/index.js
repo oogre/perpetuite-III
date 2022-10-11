@@ -64,6 +64,7 @@ const update = async (loop = false) => {
   Log.title(`Current frame : ${frameID} - Still : ${len} move`);
   Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
   await RobotModel.go(...request.point.toArray(2));
+  await wait(200);
   await updateCV(false);
   
   let [pillTarget, id] = PillsModel.getPillByLocation(...request.point.toArray(2), 1.75);
