@@ -4,7 +4,7 @@
 # @Author: Evrard Vincent
 # @Date:   2022-10-13 01:02:34
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-10-13 01:17:37
+# @Last Modified time: 2022-10-13 01:27:57
 
 import cv2
 import numpy
@@ -24,8 +24,12 @@ _, thresh1 = cv2.threshold(blur,48,255,cv2.THRESH_BINARY)
 
 
 morph_kernel = numpy.ones((20, 20),numpy.uint8)
-erosion = cv2.erode(thresh1,morph_kernel,iterations = 1)
-img_dilation = cv2.dilate(erosion, morph_kernel, iterations=1)
+erosion = cv2.erode(thresh1,numpy.ones((20, 20),numpy.uint8),iterations = 1)
+
+blur = cv2.GaussianBlur(erosion,(31, 31),0)
+_, thresh2 = cv2.threshold(blur,68,255,cv2.THRESH_BINARY)
 
 cv2.imwrite(dataPath+'mask2.jpg', thresh1)
 cv2.imwrite(dataPath+'mask.erode.jpg', erosion)
+cv2.imwrite(dataPath+'mask.erode.blur.jpg', blur)
+cv2.imwrite(dataPath+'mask3.jpg', thresh2)
