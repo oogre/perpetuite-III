@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-05 11:15:15
+  @Last Modified time: 2022-10-12 09:54:28
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -39,7 +39,7 @@ PillsModel.onPillDiscovered((event)=>{
 const updateCV = async (flag = true)=>{
   let cPills = [];
   if(flag){
-    cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
+    cPills = await CameraModel.dynamicGetPillPos(RobotModel.adjustmentMove());
   }else{
     cPills = await CameraModel.getPillPos();
   }
@@ -65,7 +65,7 @@ const update = async (loop = false) => {
   Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
   await RobotModel.go(...request.point.toArray(2));
   await wait(200);
-  await updateCV(false);
+  await updateCV(true);
   
   let [pillTarget, id] = PillsModel.getPillByLocation(...request.point.toArray(2), 1.75);
   

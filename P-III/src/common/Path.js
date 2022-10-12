@@ -5,7 +5,6 @@ import Vector from './../common/Vector.js';
 import {lerp3, lerp} from './../common/tools.js';
 
 
-
 export const getArc = ({
   start = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random())), 
   stop =  new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random())), 

@@ -138,9 +138,25 @@ export const pointInPoly = ({x, y}, vert) => {
 // HELPERS
 export const wait = async (time) => {
   if(isNumber(time)){
-    return new Promise(s => setTimeout(s, time)); 
+    return new Promise(s => setTimeout(()=>s(), time)); 
   }
 }
+
+export const wait2 = (time) => {
+  let timer;
+  let resolver;
+  const waiter = new Promise(resolve => {
+    timer = setTimeout(()=>resolve(), time)
+    resolver = resolve;
+  }); 
+  waiter.killer = ()=>{
+    clearTimeout(timer);
+    resolver();
+    timer = undefined;
+  }
+  return waiter
+}
+
 
 export const promisify = (f) => {
   return function (...args) { // return a wrapper-function (*)

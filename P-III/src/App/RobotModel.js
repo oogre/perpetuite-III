@@ -2,16 +2,20 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-10 18:39:54
+  @Last Modified time: 2022-10-12 10:18:53
 \*----------------------------------------*/
 
+
+import {getChoreographicMove, getAdjustmentMoves} from './ChoreographicModel.js';
 import Vector from './../common/Vector.js';
 import EventHandler from "./../common/EventHandler.js";
-import {getArc, getMechanicalSheep, getJitter, getCross} from './../common/Path.js';
+import {getArc} from './../common/Path.js';
 import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import {getDepthForXY, limitters} from './../common/moveLimit.js';
 import _ from "underscore";
+
+
 
 const D = _conf_.DEBUG ? "-d 1" : "";
 
@@ -165,71 +169,10 @@ class RobotModel extends EventHandler{
   }
 
   async danse(){
-    
-    const coregraphicalMoves = [
-      async () => {
-        console.log("Cross Anim");
-        const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
-        let path = getCross();
-        let pt;
-        for(pt of path){
-          stdin.write(`${pt.join(' ')}\n`);
-          await wait(500);
-        }
-        await wait(500);
-        kill();
-        await wait(500);
-      },
-      async () => {
-        console.log("getMechanicalSheep Anim");
-        const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
-        let path = getMechanicalSheep();
-        let pt;
-        for(pt of path){
-          stdin.write(`${pt.join(' ')}\n`);
-          await wait(360);
-        }
-        await wait(500);
-        path = getJitter(new Vector(...pt));
-        for(pt of path){
-          stdin.write(`${pt.join(' ')}\n`);
-          await wait(150);
-        }
-        await wait(500);
-        kill();
-      },
-      async () => {
-        console.log("jitter Anim");
-        const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
-        let path = getJitter(this.location);
-        for(const pt of path){
-          stdin.write(`${pt.join(' ')}\n`);
-          await wait(150);
-        }
-        await wait(500);
-        kill();
-      },
-      async () => {
-        console.log("goArc Anim");
-        const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
-        let old = this.location;
-        let count = Math.random() * 10;
-        while(count-- > 0){
-          const smoothness =  Math.random();
-          const stop = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random()));
-          const path = getArc({start:old, stop, smooth:lerp(3, 10,smoothness)});
-          old = stop.clone();
-          for(const pt of path){
-            stdin.write(`${pt.join(' ')}\n`);
-            await wait(lerp(250, 150, smoothness));
-          }
-        }
-        await wait(500);
-        kill();
-      }
-    ];
-    const anim = _.sample(coregraphicalMoves);
-    await anim();
+    const move = getChoreographicMove();
+    await move({
+      location : this.location
+    });
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${this.location.z} ${this.roll}`);
   }
 
@@ -237,77 +180,27 @@ class RobotModel extends EventHandler{
     console.log("goArc");
     const smoothness =  Math.random();
     const path = getArc({start:this.location, stop:new Vector(x, y, z), smooth:lerp(3, 10,smoothness)});
-    try{
-      const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
-      for(const pt of path){
-        stdin.write(`${pt.join(' ')}\n`);
-        await wait(lerp(300, 200, smoothness));
-      }
-      kill();
-      await wait(200);
-    }catch(error){
-      console.log("CATCHED")
+    const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
+    for(const pt of path){
+      stdin.write(`${pt.join(' ')}\n`);
+      await wait(lerp(300, 200, smoothness));
     }
-
+    await wait(200);
+    kill();
+    await wait(200);
+  
     await this.setLocation(new Vector(x, y, z));
   }
 
-  Follow(){
-    const {stdin, kill:killFnc, promise} = $pipe('P-III.core.api', 'Follow');
-    const send = (data) => {
-      // console.log(...data);
-      stdin.write(`${data.join(' ')}\n`);
+  adjustmentMove(){
+    return async () => {
+      const move = getAdjustmentMoves()
+      await move({
+        location : this.location,
+        roll : this.roll
+      });
+      await this.CoreAPI(`Go -- ${this.location.toArray(3).join(" ")} ${this.roll}`);
     }
-    const amp = lerp(10, 40, Math.random());
-    const animations = [
-      {
-        waitBetween:230,
-        action : async (cnt)=>{
-          send([...this.location.toArray(2), this.location.z+lerp(-amp, 0, Math.cos(cnt)*0.5+0.5) ,this.roll])
-        }
-      },
-      {
-        waitBetween:230,
-        action : async (cnt)=>{
-          send([...this.location.toArray(3), lerp(-amp*0.5, amp*0.5, Math.cos(cnt)*0.5+0.5)]);
-        }
-      },
-      {
-        waitBetween:666,
-        action : async (cnt)=>{
-          if(cnt == 1){
-            send([...this.location.toArray(2), limitters.depth.min * 0.666, this.roll]);
-          }else{
-            send([...this.location.toArray(3), this.roll]);
-          }
-        }
-      },
-      {
-        waitBetween:230,
-        action : async (cnt)=>{
-          send([
-            this.location.x+lerp(-amp*0.5, amp*0.5, Math.random()), 
-            this.location.y+lerp(-amp*0.5, amp*0.5, Math.random()), 
-            this.location.z+lerp(-amp*0.5, 0, Math.random()), 
-            this.roll+lerp(-amp*0.5, amp*0.5, Math.random())
-          ]);
-        }
-      }
-    ];
-
-    return {
-      stopAfter : 1000,
-      waitBefore : 0, 
-      waitBetween : 50,
-      action : async (cnt)=>{},
-      ...(_.sample(animations)),
-      kill : async () => {
-        killFnc();
-        await wait(250);
-        await this.CoreAPI(`Go -- ${this.location.toArray(3).join(" ")} ${this.roll}`);
-      },
-      promise
-    };
   }
 
   // async goRandom(){

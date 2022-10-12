@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-05 10:46:36
+  @Last Modified time: 2022-10-12 10:15:47
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -102,18 +102,20 @@ class PillModel{
     this.avgRGB = pill.avgRGB;
     this.accuracy = 10;
   }
+  
   lock(){
     this.locked = true;
   }
+
   unlock(){
     this.locked = false;
     this.accuracy *= 2;
   }
-  async update(){
 
+  async update(){
     while(!_conf_.DEBUG && this.accuracy>pill_dist_accuracy){
       await RobotModel.simpleGo(...this.center.toArray(2));
-      let cPills = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
+      let cPills = await CameraModel.dynamicGetPillPos(RobotModel.adjustmentMove());
       cPills = cPills.map(pill => new PillModel(pill));
       cPills = cPills.filter(pill => pill.valid);
       const [dist, closest] = findPillCloseTo(cPills, this.center);

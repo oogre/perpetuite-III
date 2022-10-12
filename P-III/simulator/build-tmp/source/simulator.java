@@ -24,6 +24,8 @@ Robot robot;
 float _width = 1400;
 float _height = 1400;
 ArrayList<Pill> pills;
+
+PVector s;
 public void setup() {
 	
 	pills = new ArrayList<Pill>();
@@ -32,6 +34,9 @@ public void setup() {
 	}
 	server = new Server_Process(this);
 	robot = new Robot();	
+
+	s = new PVector(width/_width, height/_height);
+	
 }
 
 public void draw() {
