@@ -18,6 +18,7 @@ import Log from './../common/Log.js';
 
 process.title = "P-III.APP";
 
+
 const { 
   physical : {
     pill_colors,

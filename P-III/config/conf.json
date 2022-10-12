@@ -26,7 +26,8 @@
         "size" : [2592, 1944],
         "size_px" : [2592, 1944],
         "size_mm" : [319.5, 236.5],
-        "offset" : [740.1059396299903,979.9993508601102],
+        "offset" : [676,979],
+        "offsetOld" : [740.1059396299903,979.9993508601102],
         "rotate" : -1.83
       },
       "probe_height" : 23,
@@ -75,7 +76,7 @@
         "max_decceleration" : 100,
         "min_decceleration" : 1,
         "home" : [0, 0, 0, 1.83],
-        "radius" : 450,"Realradius" : 650,
+        "radius" : 600,
         "max_depth" : 0,
         "min_depth" : -310,
         "min_roll" : -45,

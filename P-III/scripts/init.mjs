@@ -8,7 +8,9 @@ const wait = async t => new Promise(r => setTimeout(()=>r(), t));
 
 const setupParentIP = async () => {
 	console.log("Setup Parent IP");
-	const {stdout:HOST_IPV4} = await $`ipconfig.exe | grep "Ethernet adapter vEthernet (WSL):" -A 4 | grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`;
+	let {stdout:HOST_IPV4} = await $`ipconfig.exe | grep "Ethernet adapter vEthernet (WSL):" -A 4 | grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`;
+	HOST_IPV4 = HOST_IPV4.replace("\n", "");
+
 	await $`echo "nameserver ${HOST_IPV4}" > /etc/resolv.conf`;
 	return HOST_IPV4;
 }
@@ -46,7 +48,6 @@ const waitForAceServerRunning = async () =>{
 		await wait(1000);
 		process.stdout.write(".");
 	}
-	process.stdout.write("/n");
 }
 
 const runAce = async () => {
@@ -80,8 +81,9 @@ if(!await isPIIILauncherRunning()){
 			console.log("Run PIII");
 			const {stderr} = await $`P-III ${parent_IP}`;
 			if(stderr == "908") await shutdown();
+			if(stderr == "640") await shutdown();
 		}else{
-			return process.exit();
+			break;
 		}
 	}
 }

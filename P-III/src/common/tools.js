@@ -246,9 +246,11 @@ export const $pipe = (cmd, ...args) => {
     });
 
     child.on('error', (error) => {
-        e += error.message;
-        console.log(e);
-        return res(r);
+        // e += error.message;
+        console.log("pipe");
+        console.log(error);
+        rej(error.message);
+        throw error.message;
     });
 
     child.on("close", code => {
@@ -259,7 +261,6 @@ export const $pipe = (cmd, ...args) => {
   return {
     stdin : child.stdin,
     kill : () => {
-      // child.stdin.end();
       child.kill("SIGINT");
     },
     promise

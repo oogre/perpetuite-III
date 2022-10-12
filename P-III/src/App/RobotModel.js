@@ -10,7 +10,7 @@ import {getChoreographicMove, getAdjustmentMoves} from './ChoreographicModel.js'
 import Vector from './../common/Vector.js';
 import EventHandler from "./../common/EventHandler.js";
 import {getArc} from './../common/Path.js';
-import {$, wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
+import {wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import {getDepthForXY, limitters} from './../common/moveLimit.js';
 import _ from "underscore";

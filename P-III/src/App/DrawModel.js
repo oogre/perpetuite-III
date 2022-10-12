@@ -53,6 +53,10 @@ const pts = (new Array(vCount * hCount)).fill(0)
 .map(point=>point.map(c=>c+RADIUS));
 
 
+
+
+
+
 new Jimp(DIAMETER, DIAMETER, (err, image) => {
   const rSize = 9; 
   const pt = (new Array(rSize * rSize)).fill(0).map((_, k)=> [(k%rSize) - rSize/2, Math.floor(k / rSize)-rSize/2])

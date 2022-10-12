@@ -16,8 +16,10 @@ conf.DEBUG = false;
 if( os.hostname() === "oogre" || os.hostname() === "oogre.local"){
   conf.BASE_API_CONF.network.host = "oogre.local";
   conf.simulator = true;
+}else{
+  const content = fs.readFileSync(`/etc/resolv.conf`, "utf8");
+  const [HOST_IP] = content.match(/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/);
+  conf.BASE_API_CONF.network.host = HOST_IP;
 }
-
-
 
 export default conf;
