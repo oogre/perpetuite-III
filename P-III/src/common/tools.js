@@ -175,7 +175,7 @@ export const promisify = (f) => {
 }
 
 
-export const Call = (cmd, {debug = false, JsonFlag = true, ErrorFlag = true}={})=>{
+export const Call = (cmd, {debug = false}={})=>{
   return async (args) => {
     const command = `${cmd} ${args}`;
     if(debug){
@@ -183,17 +183,12 @@ export const Call = (cmd, {debug = false, JsonFlag = true, ErrorFlag = true}={})
       return console.log(command);
     } 
     const {stdout, stderr} = await _exec(command);
-    if(ErrorFlag && stderr != '')throw new Error(stderr);
-    try{
-      if(JsonFlag){
-        if(stdout == '')return stdout;
-        return JSON.parse(stdout);    
-      }else{
-        return stdout;
-      }
-    }catch(e){
-      throw new Error(stdout);
+    if(stderr){
+      throw JSON.parse(stderr);
     }
+
+    // console.log(stdout);
+    // return JSON.parse(stdout);
   }
 };
 

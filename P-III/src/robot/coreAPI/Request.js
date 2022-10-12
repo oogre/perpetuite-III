@@ -36,7 +36,14 @@ export default class Request{
     return this.type == REQUEST_TYPE.ko;
   }
   getErrorMessage(){
-    return ErrorDict[""+this.parameters[0]?.value] || (`${ErrorDict.unknown} : ${this.parameters[0]?.value}`);
+   const numberPattern = /\d+/g;
+   if(this.parameters[0]?.value){
+      const [errorId] = this.parameters[0].value.match(numberPattern);
+      const errorLabel = ErrorDict[`(-${errorId})`];
+      if(errorLabel) return [errorId, errorLabel];
+      return [-1, this.parameters[0]?.value];
+   }
+   return [-1, ErrorDict.unknown];
   }
   static fromRaw(rawData){// true for HighPower false for LowPower
       let splitedData = rawData.split(" ");

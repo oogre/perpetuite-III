@@ -37,19 +37,14 @@ const wait = (time) => {
 }
 
 const main = async (RequestBuilder, parameters, debug = false) => {
-	try{
-		const req = RequestBuilder(parameters);
-		if(debug){
-			await wait(1000);
-			return req;
-		}
-		const res = Request.fromRaw( await call(req) );
-		if(res.isFail()) throw res;
-		return res;
+	const req = RequestBuilder(parameters);
+	if(debug){
+		await wait(1000);
+		return req;
 	}
-	catch(error){
-			console.log(`Error : ${error?.getErrorMessage ? error.getErrorMessage() : error}`);
-	}
+	const res = Request.fromRaw( await call(req) );
+	if(res.isFail()) return process.stderr.write(JSON.stringify(res.getErrorMessage()));
+	return res;
 }
 
 

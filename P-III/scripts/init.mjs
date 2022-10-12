@@ -1,68 +1,87 @@
 #!/usr/bin/env zx
 
-const main = async () => {
-	console.log("setupParentIP");
-	await setupParentIP();
+const processName = "P-III.launcher";
 
-	console.log("isAceRunning");
-	const alreadyRunning = await isAceRunning();
-
-	console.log(alreadyRunning);
-	if(!alreadyRunning)await runAce();
-	await waitForAceServerRunning();
-	console.log("runPIII");
-	await runPIII();
-}
+$.verbose = false;
 
 const wait = async t => new Promise(r => setTimeout(()=>r(), t));
 
-
 const setupParentIP = async () => {
-	const {stdout:ipConf} = await $`ipconfig.exe`;
-	const HOST_IPV4 = ipConf.split("Ethernet adapter vEthernet (WSL):")[1]
-						.split("IPv4")[1]
-						.split("\r\n")[0]
-						.split(":")[1]
-						.trim();
+	console.log("Setup Parent IP");
+	const {stdout:HOST_IPV4} = await $`ipconfig.exe | grep "Ethernet adapter vEthernet (WSL):" -A 4 | grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`;
 	await $`echo "nameserver ${HOST_IPV4}" > /etc/resolv.conf`;
+	return HOST_IPV4;
 }
 
 const isAceRunning = async () => {
-	let  {stdout:tasks} = await $`tasklist.exe`;
-	tasks = tasks.split("\n").filter(line => line.includes("Ace."));
-	console.log(tasks);
-	return tasks.length != 0;
-}
-
-const isPIIIRunning = async () => {
-	let  {stdout:tasks} = await $`ps aux`;
-	tasks = tasks.split("\n").filter(line => line.includes("P-III.APP"));
-	console.log(tasks);
-	return tasks.length != 0;
-}
-
-const isAceServerRunning = async ()=>{
-	const {stdout:openPortList} = await $`netstat.exe -nao`;
-	const aceServerStatus = openPortList.split("\n").filter(line => line.includes("0.0.0.0:9090"));
-	console.log(aceServerStatus);
-	return aceServerStatus.length !=0;
-}
-
-const waitForAceServerRunning = async () =>{
-	while(! await isAceServerRunning()){
-		await wait(1000);
+	try{
+		await $`tasklist.exe | grep "Ace."`;
+		return true;
+	}catch(e){
+		return false;
 	}
 }
 
+const isPIIIRunning = async () => {
+	try{
+		await $`pgrep P-III.APP`;
+		return true;
+	}catch(e){
+		return false;
+	}
+}
+
+const isAceServerRunning = async ()=>{
+	try{
+		const {stdout:openPortList} = await $`netstat.exe -nao | grep "0.0.0.0:9090"`;
+		return true;
+	}catch(e){
+		return false;
+	}
+}
+
+const waitForAceServerRunning = async () =>{
+	console.log("Waiting for Ace Server Running")
+	while(! await isAceServerRunning()){
+		await wait(1000);
+		process.stdout.write(".");
+	}
+	process.stdout.write("/n");
+}
+
 const runAce = async () => {
+	console.log("Run Ace");
 	$`Ace.exe server=ace@43434`;
 	await wait(10000);
 	$`Ace.exe client datafile="C:/Users/felix/Desktop/perpetuite-III/ACE.3.8/driver.perpetuite3.ace.awp"`;
-	
 }
 
-const runPIII = async () => {
-	await $`P-III`;
+const shutdown = () => {
+	console.log("Run Shutdown");
+	return $`AutoHotKey "C:/Users/felix/Desktop/shutdown.ahk"`;
 }
 
-await main();
+const isPIIILauncherRunning = async ()=>{
+	try{
+		await $`pgrep ${processName}`;
+	}catch(e){
+		return false;
+	}
+}
+
+if(!await isPIIILauncherRunning()){
+	process.title = processName;
+	while(true){
+		const parent_IP = await setupParentIP();
+		console.log("HOST IP : ", parent_IP);
+		if(!await isAceRunning())await runAce();
+		await waitForAceServerRunning();
+		if(!await isPIIIRunning()){
+			console.log("Run PIII");
+			const {stderr} = await $`P-III ${parent_IP}`;
+			if(stderr == "908") await shutdown();
+		}else{
+			return process.exit();
+		}
+	}
+}

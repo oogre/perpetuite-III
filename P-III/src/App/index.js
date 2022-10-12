@@ -36,7 +36,7 @@ PillsModel.onPillDiscovered((event)=>{
    // console.log(event.target.color);
 });
 
-const update = async (loop = false) => {
+const update = async () => {
   PillsModel.shuffle();
   const next = (success = true)=>{
     if(success){
@@ -45,7 +45,6 @@ const update = async (loop = false) => {
     else{
      Log.step(`Fail`); 
     }
-    loop && update(loop);
   }
 
   const [request, len, frameID] = await DrawModel.next();
@@ -113,5 +112,18 @@ const update = async (loop = false) => {
 (async () => {
   await DrawModel.init();
   await RobotModel.init();
-  await update(true);
+  while(true){
+    await update(true);  
+  }
 })()
+.then(()=>{
+  console.log("OK")
+})
+.catch( error =>{
+  if(_.isArray(error)){
+    const [id, label] = error;
+    return process.stderr.write(`${id}`);
+  }
+  console.log(error);
+  process.stderr.write(JSON.stringify(error));
+});

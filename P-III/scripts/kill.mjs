@@ -1,6 +1,6 @@
+#!/usr/bin/env zx
+
 const shutdown = async () => {
-	await $`shutdown.exe /f /t 0`;
+	await $`AutoHotKey "C:/Users/felix/Desktop/shutdown.ahk"`;
 }
-
-
 await shutdown();
