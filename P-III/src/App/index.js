@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-12 09:54:28
+  @Last Modified time: 2022-10-13 00:46:40
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -110,6 +110,14 @@ const update = async () => {
   next();
 }
 
+const errorHandler = (error) => {
+  if(_.isArray(error)){
+    const [id, label] = error;
+    return process.stderr.write(`${label}`);
+  }
+  process.stderr.write(JSON.stringify(error));
+}
+
 (async () => {
   await DrawModel.init();
   await RobotModel.init();
@@ -117,14 +125,6 @@ const update = async () => {
     await update(true);  
   }
 })()
-.then(()=>{
-  console.log("OK")
-})
-.catch( error =>{
-  if(_.isArray(error)){
-    const [id, label] = error;
-    return process.stderr.write(`${id}`);
-  }
-  console.log(error);
-  process.stderr.write(JSON.stringify(error));
-});
+.catch(errorHandler);
+process.on("unhandledRejection", errorHandler);
+

@@ -182,9 +182,17 @@ export const Call = (cmd, {debug = false}={})=>{
       await wait(300);
       return console.log(command);
     } 
-    const {stdout, stderr} = await _exec(command);
+    let {stdout, stderr} = await _exec(command);
     if(stderr){
-      throw JSON.parse(stderr);
+      let flag = true;
+      try{
+         stderr = JSON.parse(stderr);
+         flag = false;
+         throw stderr;
+      }catch(error){
+        if(!flag)throw stderr;
+        else throw error;
+      }
     }
 
     // console.log(stdout);
@@ -218,8 +226,7 @@ export const $ = (cmd, ...args) => {
 
       proc.on('error', (error) => {
           e += error.message;
-          console.log(e);
-          return res(r);
+          return rej(e);
       });
 
       proc.on("close", code => {

@@ -3,7 +3,7 @@
   client-perpetuite-3 - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-04-04 22:12:19
-  @Last Modified time: 2022-08-22 20:21:59
+  @Last Modified time: 2022-10-13 00:35:19
 \*----------------------------------------*/
 /*
 
@@ -47,6 +47,9 @@ const main = async (RequestBuilder, parameters, debug = false) => {
 	return res;
 }
 
+process.on("unhandledRejection", (error)=>{
+	return process.stderr.write(error);
+});
 
 program
 	.command('HighPower')

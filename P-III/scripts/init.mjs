@@ -62,6 +62,16 @@ const shutdown = () => {
 	return $`AutoHotKey "C:/Users/felix/Desktop/shutdown.ahk"`;
 }
 
+const reboot = () => {
+	console.log("Run reboot");
+	return $`AutoHotKey "C:/Users/felix/Desktop/reboot.ahk"`;
+}
+
+const onLockCollision = () => {
+	console.log("Run onLockCollision");
+	return Promise.reject();
+}
+
 const isPIIILauncherRunning = async ()=>{
 	try{
 		await $`pgrep ${processName}`;
@@ -82,6 +92,9 @@ if(!await isPIIILauncherRunning()){
 			const {stderr} = await $`P-III ${parent_IP}`;
 			if(stderr == "908") await shutdown();
 			if(stderr == "640") await shutdown();
+			if(stderr.includes("E-STOP")) await shutdown();
+			if(stderr.includes("ECONNREFUSED")) await shutdown();
+			if(stderr.includes("collision")) await onLockCollision();
 		}else{
 			break;
 		}
