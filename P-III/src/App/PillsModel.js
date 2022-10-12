@@ -53,6 +53,7 @@ class PillsModel extends EventHandler{
         super.trig("PillDiscovered", cPill);
       }
     });
+    return cPills;
   }
 
   shuffle(){
@@ -85,8 +86,13 @@ class PillsModel extends EventHandler{
   onPillDiscovered(fnc){
     super.on("PillDiscovered", fnc);
   }
-  createPill(bPill){
-    return new PillModel(bPill);
+
+  insert(cPills){
+    return this.update(
+      cPills
+        .map(pill => new PillModel(pill))
+        .filter(pill => pill.valid)
+    );
   }
 }
 
@@ -115,12 +121,8 @@ class PillModel{
   async update(){
     while(!_conf_.DEBUG && this.accuracy>pill_dist_accuracy){
       await RobotModel.simpleGo(...this.center.toArray(2));
-      let cPills = await CameraModel.dynamicGetPillPos(RobotModel.adjustmentMove());
-      cPills = cPills.map(pill => new PillModel(pill));
-      cPills = cPills.filter(pill => pill.valid);
+      let cPills = await CameraModel.update();
       const [dist, closest] = findPillCloseTo(cPills, this.center);
-      pModel.update(cPills);
-      
       if(closest &&  closest.color.equals(this.color)){
         this.accuracy = this.center.subtract(closest.center).length();
         this.center = closest.center;

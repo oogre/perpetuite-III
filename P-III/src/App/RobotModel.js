@@ -15,6 +15,7 @@ import _conf_ from './../common/config.js';
 import {getDepthForXY, limitters} from './../common/moveLimit.js';
 import _ from "underscore";
 
+import Log from './../common/Log.js';
 
 
 const D = _conf_.DEBUG ? "-d 1" : "";
@@ -155,8 +156,10 @@ class RobotModel extends EventHandler{
     }
 
     if(Math.random()<0.66){
+      Log.info("go arc to", new Vector(x, y, z));
       await this.goArc(x, y, z = 0)
     }else{
+      Log.info("go straight to", new Vector(x, y, z));
       await this.setLocation(new Vector(x, y, z));
     }
   }
@@ -177,7 +180,6 @@ class RobotModel extends EventHandler{
   }
 
   async goArc(x, y, z = 0){
-    console.log("goArc");
     const smoothness =  Math.random();
     const path = getArc({start:this.location, stop:new Vector(x, y, z), smooth:lerp(3, 10,smoothness)});
     const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');

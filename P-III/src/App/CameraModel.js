@@ -6,7 +6,8 @@
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
-import RobotModel from "./RobotModel.js"
+import RobotModel from "./RobotModel.js";
+import PillsModel from "./PillsModel.js";
 import Vector from './../common/Vector.js';
 import Rect from './../common/Rect.js';
 import {$, wait} from './../common/tools.js';
@@ -74,18 +75,36 @@ class CameraModel extends EventHandler {
 	}
 
 	async dynamicGetPillPos(move){
+		const t0 = new Date().getTime();
+		let t1;
+		let t2;
 		const moveWaiter = move();	
 		const collectWaiter = this.collectPillInfo();
+		moveWaiter.then(()=> t1=new Date().getTime());
+		collectWaiter.then(()=> t2=new Date().getTime());
 		await moveWaiter;
-		console.log("moveWaiter")
 		const rawData = await collectWaiter;
-		console.log("collectWaiter")
+		// console.log({
+		// 	collectTime : t2 - t0,
+		// 	adjustmentTime : t1 - t0
+		// });
+
 		return JSON.parse(rawData);
 	}
 	
 	async getPillPos(){
 		const t = await this.collectPillInfo();
 		return JSON.parse(t);
+	}
+
+	async update(flag = true){
+		let tPills;
+		if(flag){
+			tPills = await this.dynamicGetPillPos(RobotModel.adjustmentMove());
+		}else{
+			tPills = await this.getPillPos();
+		}
+		return await PillsModel.insert(tPills);
 	}
 }
 

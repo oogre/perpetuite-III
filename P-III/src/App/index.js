@@ -36,18 +36,6 @@ PillsModel.onPillDiscovered((event)=>{
    // console.log(event.target.color);
 });
 
-const updateCV = async (flag = true)=>{
-  let cPills = [];
-  if(flag){
-    cPills = await CameraModel.dynamicGetPillPos(RobotModel.adjustmentMove());
-  }else{
-    cPills = await CameraModel.getPillPos();
-  }
-  cPills = cPills.map(pill => PillsModel.createPill(pill));
-  cPills = cPills.filter(pill => pill.valid);
-  PillsModel.update(cPills);
-}
-
 const update = async (loop = false) => {
   PillsModel.shuffle();
   const next = (success = true)=>{
@@ -65,7 +53,8 @@ const update = async (loop = false) => {
   Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
   await RobotModel.go(...request.point.toArray(2));
   await wait(200);
-  await updateCV(true);
+
+  await CameraModel.update(false);
   
   let [pillTarget, id] = PillsModel.getPillByLocation(...request.point.toArray(2), 1.75);
   
@@ -78,7 +67,6 @@ const update = async (loop = false) => {
         PillsModel.pills.splice(id, 1);
         return next(false);
       }
-
       await RobotModel.go(...pillTarget.center.toArray(2));
       await RobotModel.grab();
       const currentHoledPill = pillTarget;
@@ -86,7 +74,8 @@ const update = async (loop = false) => {
       while(pillTarget){
         const randPt = await DrawModel.getRandomPoint();
         await RobotModel.go(...randPt.toArray(2));
-        await updateCV(false);
+        await CameraModel.update(false);
+
         [pillTarget, id] = PillsModel.getPillByLocation(...RobotModel.location.toArray(2), 1.5);
         if(pillTarget){
           Log.step(`The Random location ${RobotModel.location.toString(2)} is populated by ${pillTarget.color.toString()}`);  
@@ -105,7 +94,7 @@ const update = async (loop = false) => {
     let [pill, id] = await PillsModel.getPillByColor(request.color, async () => {
       const randPt = await DrawModel.getRandomPoint();
       await RobotModel.go(...randPt.toArray(2));
-      await updateCV(false);
+      await CameraModel.update(false);
     });
     if(!await pill.update()) {
       PillsModel.pills.splice(id, 1);
@@ -117,7 +106,7 @@ const update = async (loop = false) => {
     await RobotModel.go(...request.point.toArray(2));
     await RobotModel.drop();
   }
-  
+
   next();
 }
 
@@ -126,51 +115,3 @@ const update = async (loop = false) => {
   await RobotModel.init();
   await update(true);
 })()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const testGrab = async (loop = false)=>{
-//  const pill = PillsModel.pills[0];
-//  if(pill){
-//   await RobotModel.go(...pill.center.toArray());
-//   await pill.update();
-//   await RobotModel.grab();
-//   await wait(1000);
-//   await RobotModel.drop();
-//   PillsModel.pills.shift();
-//  }
-//  loop && testGrab(loop);
-// }
-// const testMove = async (loop = false)=>{
-//   const pill = _.sample(PillsModel.pills);
-//   if(pill){
-//     await pill.update();
-//     await RobotModel.touch(...pill.center.toArray());
-//   }  
-//   loop && testMove(loop);
-// }
-// const testdynamicGetPillPos = async (loop = false) => {
-//   const res = await CameraModel.dynamicGetPillPos(RobotModel.Follow());
-//   console.log("")  
-//   loop && testdynamicGetPillPos(loop);  
-// }
-// const updateMove = async (loop = false) => {
-//   const pillTarget = await RobotModel.findPillByColor(_.sample(colors))
-//   if(pillTarget){
-//     RobotModel.grabPillTarget(pillTarget);
-//     const dest = Vector.Random2D().multiply(Math.random()*radius);
-//     RobotModel.dropPillTarget(dest, pillTarget)
-//   }
-//   updateMove(loop);
-// }

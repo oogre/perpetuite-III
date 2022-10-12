@@ -9,6 +9,7 @@ import ColorCli from "cli-color";
 const TITLE = ColorCli.black.bgWhite;
 const COMMAND = ColorCli.cyanBright;
 const STEP = ColorCli.greenBright;
+const INFO = ColorCli.cyan;
 
 
 const Log = {
@@ -25,6 +26,10 @@ const Log = {
 	},
 	step : (...args) => {
 		console.log(STEP(...args));
+	},
+	info : (...args) => {
+		args.unshift("\t");
+		console.log(INFO(...args));
 	},
 	color : (...args) => {
 		args.push(" ");
