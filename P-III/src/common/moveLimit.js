@@ -2,7 +2,7 @@
   perpetuite-III - moveLimit.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-08-23 08:51:09
-  @Last Modified time: 2022-08-24 17:08:45
+  @Last Modified time: 2022-10-11 12:03:30
 \*----------------------------------------*/
 
 import fs from 'fs-extra';
@@ -10,6 +10,9 @@ const math = require("mathjs");
 import {constrain} from './tools.js';
 import _conf_ from './config.js';
 import Vector from './Vector.js';
+
+
+
 
 const { 
 	robot : {
@@ -43,9 +46,12 @@ const {
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
 
-
+const probePoints = fs.readJsonSync(probesPath);
 
 export const limitters = {
+	radius : {
+		value : radius,
+	},
 	speed : {
 		value: speed,
 		min : minSpeed,
@@ -83,14 +89,12 @@ export const limitters = {
 	}
 }
 
-export const moveLimit = async ({xpos=limitters.x.value, ypos=limitters.y.value, zpos=limitters.depth.value, wpos=limitters.roll.value, speed=limitters.speed.value, acc=limitters.acc.value, dcc=limitters.dcc.value}) => {
+export const moveLimit = ({xpos=limitters.x.value, ypos=limitters.y.value, zpos=limitters.depth.value, wpos=limitters.roll.value, speed=limitters.speed.value, acc=limitters.acc.value, dcc=limitters.dcc.value}) => {
 	const vh = new Vector(xpos, ypos, 0);
 	if(vh.length() > radius){
-		const [x, y] = vh.unit().multiply(radius).toArray();
-		xpos = x;
-		ypos = y;
+		[xpos, ypos] = vh.unit().multiply(radius).toArray();
 	}
-	const minDepth = await getDepthForXY(xpos, ypos);
+	const minDepth = getDepthForXY(xpos, ypos);
 	return {
 		s : constrain(limitters.speed.min, limitters.speed.max, speed),
 		a : constrain(limitters.acc.min, limitters.acc.max, acc),
@@ -104,8 +108,7 @@ export const moveLimit = async ({xpos=limitters.x.value, ypos=limitters.y.value,
 	};
 };
 
-export const getDepthForXY = async (x, y) => {
-	const probePoints = await fs.readJson(probesPath);
+export const getDepthForXY = (x, y) => {
   const closestPoints = probePoints.map(([_x, _y, _z]) => {
     let dX = x - _x;
     let dY = y - _y;

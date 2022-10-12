@@ -7,6 +7,7 @@
 npx babel --verbose --out-dir ./release/robot/highLevelAPI ./src/robot/highLevelAPI
 npx babel --verbose --out-dir ./release/computerVision ./src/computerVision
 npx babel --verbose --out-dir ./release/common ./src/common
+npx babel --verbose --out-dir ./release/test ./src/test
 
 echo "remove symLink ./release/robot/highLevelAPI/P-III.*"
 rm ./release/robot/highLevelAPI/P-III.*
@@ -29,6 +30,10 @@ chmod +x ./release/robot/highLevelAPI/goHome.js
 echo "create symLink ./release/robot/highLevelAPI/P-III.go"
 ln -s ./go.js ./release/robot/highLevelAPI/P-III.go
 chmod +x ./release/robot/highLevelAPI/go.js
+
+echo "create symLink ./release/robot/highLevelAPI/P-III.goArc"
+ln -s ./goArc.js ./release/robot/highLevelAPI/P-III.goArc
+chmod +x ./release/robot/highLevelAPI/goArc.js
 
 echo "create symLink ./release/robot/highLevelAPI/P-III.grab"
 ln -s ./grab.js ./release/robot/highLevelAPI/P-III.grab

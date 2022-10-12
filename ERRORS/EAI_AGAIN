@@ -1,0 +1,20 @@
+/home/perpetuite3/perpetuite-III/P-III/release/common/tools.js:251
+      throw new Error(stdout);
+            ^
+
+Error: Error : getaddrinfo EAI_AGAIN DESKTOP-8KD5D4K.local
+
+    at RobotModel.CoreAPI (/home/perpetuite3/perpetuite-III/P-III/release/common/tools.js:251:13)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async kill (/home/perpetuite3/perpetuite-III/P-III/release/App/RobotModel.js:206:9)
+    at async /home/perpetuite3/perpetuite-III/P-III/release/App/CameraModel.js:85:20
+    at async finish (/home/perpetuite3/perpetuite-III/P-III/release/common/tools.js:331:5)
+
+
+
+
+
+EAI_AGAIN is a DNS lookup timed out error, means it is a network connectivity error or proxy related error.
+
+ping DESKTOP-8KD5D4K.local
+64 bytes from DESKTOP-8KD5D4K.mshome.net (172.21.128.1): icmp_seq=1 ttl=128 time=0.516 ms

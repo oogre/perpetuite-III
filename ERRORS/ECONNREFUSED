@@ -1,0 +1,18 @@
+/home/perpetuite3/perpetuite-III/P-III/release/common/tools.js:251
+      throw new Error(stdout);
+            ^
+
+Error: Error : connect ECONNREFUSED 172.21.128.1:9090
+
+    at RobotModel.CoreAPI (/home/perpetuite3/perpetuite-III/P-III/release/common/tools.js:251:13)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async kill (/home/perpetuite3/perpetuite-III/P-III/release/App/RobotModel.js:206:9)
+    at async /home/perpetuite3/perpetuite-III/P-III/release/App/CameraModel.js:85:20
+    at async Timeout.finish [as _onTimeout] (/home/perpetuite3/perpetuite-III/P-III/release/common/tools.js:331:5)
+
+
+
+Stop server 
+Launch connection
+play the script
+rerun P-III

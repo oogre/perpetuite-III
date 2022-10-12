@@ -70,25 +70,29 @@ namespace Ace.Custom{
 			if(!isRunning)return;
 			TcpClient client = server.AcceptTcpClient();
 			Trace.WriteLine("Connected!");
-
-			data = null;
-
-			// Get a stream object for reading and writing
-			NetworkStream stream = client.GetStream();
+			try{
+				data = null;
 	
-			int i;
-	
-			// Loop to receive all the data sent by the client.
-			while((i = stream.Read(bytes, 0, bytes.Length))!=0){
-				// Translate data bytes to a ASCII string.
-				data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-				// Process the data sent by the client.
-				parent.requests.Add(new Request(data));
-				
-				Request rep = parent.replies.Take();
-				byte[] msg = System.Text.Encoding.ASCII.GetBytes(rep.ToString());
-				// Send back a response.
-				stream.Write(msg, 0, msg.Length);
+				// Get a stream object for reading and writing
+				NetworkStream stream = client.GetStream();
+		
+				int i;
+		
+				// Loop to receive all the data sent by the client.
+				while((i = stream.Read(bytes, 0, bytes.Length))!=0){
+					// Translate data bytes to a ASCII string.
+					data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+					// Process the data sent by the client.
+					parent.requests.Add(new Request(data));
+					
+					Request rep = parent.replies.Take();
+					byte[] msg = System.Text.Encoding.ASCII.GetBytes(rep.ToString());
+					// Send back a response.
+					stream.Write(msg, 0, msg.Length);
+				}
+			}
+			catch(Exception e){
+				Trace.WriteLine("SILENT CRASH");
 			}
 	
 			// Shutdown and end connection
@@ -380,9 +384,7 @@ namespace Ace.Custom{
 		}
 		
 		public void Gripper(bool value){
-			System.Threading.Thread.Sleep(250);
 			robot.SetDigitalIO(value ? 1 : -1);
-			System.Threading.Thread.Sleep(500);
 		}
 		
 		public void Go(double x, double y, double z, double w){
@@ -494,8 +496,16 @@ namespace Ace.Custom{
 		public BlockingCollection<Request> requests = new BlockingCollection<Request>();
 		public BlockingCollection<Request> replies = new BlockingCollection<Request>();		
 		public void Main() {
+			// Create the controller and associate it with an IP address
+			IAdeptController controller = ace.Root["/SmartController 101/SmartController 101"] as IAdeptController;
+
+			// Connect to the controller
+			controller.Enabled = true;
+			
 			RobotController robotController = new RobotController(ace);
 			
+			
+
 			TCPListener server = new TCPListener(this);  
 			Thread serverThread = new Thread(new ThreadStart(server.Start));
 			serverThread.Start();
@@ -569,6 +579,7 @@ namespace Ace.Custom{
 			}
 			server.Stop();
 			robotController.Kill();
+			controller.Enabled = false;
 		}
 	}
 }

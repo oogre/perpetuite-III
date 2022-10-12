@@ -2,6 +2,11 @@ import fs from 'fs';
 import _ from 'underscore';
 import  { spawn } from "child_process";
 import _conf_ from './config.js';
+import util from 'util';
+import {exec} from 'child_process';
+const _exec = util.promisify(exec)
+
+
 
 const DEBUG = _conf_.DEBUG ? "-d 1" : "";
 
@@ -137,6 +142,22 @@ export const wait = async (time) => {
   }
 }
 
+export const wait2 = (time) => {
+  let timer;
+  let resolver;
+  const waiter = new Promise(resolve => {
+    timer = setTimeout(()=>resolve(), time)
+    resolver = resolve;
+  }); 
+  waiter.killer = ()=>{
+    clearTimeout(timer);
+    resolver();
+    timer = undefined;
+  }
+  return waiter
+}
+
+
 export const promisify = (f) => {
   return function (...args) { // return a wrapper-function (*)
     return new Promise((resolve, reject) => {
@@ -154,30 +175,127 @@ export const promisify = (f) => {
 }
 
 
+export const Call = (cmd, {debug = false, JsonFlag = true, ErrorFlag = true}={})=>{
+  return async (args) => {
+    const command = `${cmd} ${args}`;
+    if(debug){
+      await wait(300);
+      return console.log(command);
+    } 
+    const {stdout, stderr} = await _exec(command);
+    if(ErrorFlag && stderr != '')throw new Error(stderr);
+    try{
+      if(JsonFlag){
+        if(stdout == '')return stdout;
+        return JSON.parse(stdout);    
+      }else{
+        return stdout;
+      }
+    }catch(e){
+      throw new Error(stdout);
+    }
+  }
+};
+
 export const $ = (cmd, ...args) => {
+  let NO_DEBUG = false;
+  if(args.length > 0){
+    NO_DEBUG = args[args.length-1]?.NO_DEBUG != undefined
+  }
+  if(NO_DEBUG){
+    args.pop();
+  }else{
     args = [DEBUG, ...args];
     args = _.compact(args);
-    return new Promise((res, rej)=>{
-        const proc = spawn(cmd, args);
-        let r = "";
-        let e = "";
+  }
+  return new Promise((res, rej)=>{
+      const proc = spawn(cmd, args);
+      let r = "";
+      let e = "";
 
-        proc.stdout.on("data", data => {
-            r += data;
-        });
+      proc.stdout.on("data", data => {
+          r += data;
+      });
 
-        proc.stderr.on("data", data => {
-            e += data;
-        });
+      proc.stderr.on("data", data => {
+          e += data;
+      });
 
-        proc.on('error', (error) => {
-            e += error.message;
-        });
+      proc.on('error', (error) => {
+          e += error.message;
+          console.log(e);
+          return res(r);
+      });
 
-        proc.on("close", code => {
-            if(code == 0) return res(r);
-            return rej(e);
-        });
-
-    });
+      proc.on("close", code => {
+          if(code == 0) return res(r);
+          return rej(e);
+      });
+  });
 }
+
+export const $pipe = (cmd, ...args) => {
+  let child;
+  const promise = new Promise((res, rej)=>{
+    child = spawn(cmd, args);
+    child.stdin.setEncoding('utf-8');
+    let r = "";
+    let e = "";
+
+    child.stdout.on("data", data => {
+        r += data;
+    });
+
+    child.stderr.on("data", data => {
+        e += data;
+    });
+
+    child.on('error', (error) => {
+        e += error.message;
+        console.log(e);
+        return res(r);
+    });
+
+    child.on("close", code => {
+      return res(r);
+    });
+  });
+  
+  return {
+    stdin : child.stdin,
+    kill : () => {
+      // child.stdin.end();
+      child.kill("SIGINT");
+    },
+    promise
+  }
+}
+
+export const waiter = async (promise, action, endAction=()=>{}, stopAfter=0, waitBefore = 0, waitBetween = 0) => {
+      let running = true;
+      let timer;
+      const finish = async ()=>{
+        running=false;
+        clearTimeout(timer);
+        timer = undefined;
+        await endAction();
+      }
+
+      if(stopAfter>10){
+        timer = setTimeout(finish, stopAfter);  
+      }
+      promise.finally(finish);
+      let i = 0;
+
+      if(waitBefore > 10){
+        await wait(waitBefore)  
+      }
+      while(running){
+        await action(i++);
+        if(waitBetween > 10){
+          await wait(waitBetween) 
+        }
+      }
+      return promise;
+    }
+

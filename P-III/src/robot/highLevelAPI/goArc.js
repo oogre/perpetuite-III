@@ -36,7 +36,7 @@ This script is used to move robot in straight line to destination
 		if(!isNumber(ypos))ypos = y0;
 		if(!isNumber(zpos))zpos = z0;
 		if(!isNumber(wpos))wpos = w0;
-		const { pos:[x1, y1, z1, w1], s, a, d } = await moveLimit({xpos, ypos, zpos, wpos, speed, acc, dcc});
+		const { pos:[x1, y1, z1, w1], s, a, d } = moveLimit({xpos, ypos, zpos, wpos, speed, acc, dcc});
 		const p1 = new Vector(x1, y1, z1);
 	
 		const _p = p1.subtract(p0);
@@ -62,6 +62,7 @@ This script is used to move robot in straight line to destination
 				).toArray();
 			})
 
+		console.log(points);
 		
 		try{
 			// await $(`P-III.core.api Speed ${debug} -- ${s}`);
