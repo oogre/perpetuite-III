@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-12 10:15:47
+  @Last Modified time: 2022-10-14 09:06:29
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -12,6 +12,7 @@ import EventHandler from "./../common/EventHandler.js";
 import {deltaE} from './../common/tools.js';
 import Color from './../common/Color.js';
 import Vector from './../common/Vector.js';
+import Log from './../common/Log.js';
 
 const { 
   physical : {
@@ -61,17 +62,17 @@ class PillsModel extends EventHandler{
   }
 
   async getPillByColor(color, cbNotFound = async ()=>{}, depth = 0){
-    console.log(`Looking for ${color.toString()}`)
+    Log.info(`Looking for ${color.toString()}`)
     let pillId = this.pills.findIndex( pill => !pill.locked && pill.color.equals(color));
     if(pillId < 0){
       if(depth>10){
         this.pills.filter(({color:c})=>c.equals(color)).forEach(pill=>pill.unlock());
-        console.log(`>>>> depth larger than 10 for ${color.toString()}`);
+        Log.info(`>>>> depth larger than 10 for ${color.toString()}`);
       }
       await cbNotFound();
       return await this.getPillByColor(color, cbNotFound, depth+1);
     }
-    console.log(`Found ${this.pills[pillId].color.toString()} @ ${this.pills[pillId].center.toString(2)}`)
+    Log.info(`Found ${this.pills[pillId].color.toString()} @ ${this.pills[pillId].center.toString(2)}`)
     return [this.pills[pillId], pillId];
   }
   
@@ -133,12 +134,12 @@ class PillModel{
     return true;
   }
 
-  compare(other){
-    const dSpa = this.center.subtract(other.center).magSq() / pill_size_mm_sq;
-    const dCol = deltaE(this.avgLAB, other.avgLAB);
-    console.log("compare", dSpa, dCol, Math.sqrt(dSpa*dSpa+ dCol*dCol));
+  // compare(other){
+  //   const dSpa = this.center.subtract(other.center).magSq() / pill_size_mm_sq;
+  //   const dCol = deltaE(this.avgLAB, other.avgLAB);
+  //   Log.info("compare", dSpa, dCol, Math.sqrt(dSpa*dSpa+ dCol*dCol));
 
-  }
+  // }
 }
 
 export default pModel;

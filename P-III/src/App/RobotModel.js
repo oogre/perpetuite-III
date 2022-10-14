@@ -2,13 +2,12 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-12 10:18:53
+  @Last Modified time: 2022-10-14 09:13:18
 \*----------------------------------------*/
 
 
 import {getChoreographicMove, getAdjustmentMoves} from './ChoreographicModel.js';
 import Vector from './../common/Vector.js';
-import EventHandler from "./../common/EventHandler.js";
 import {getArc} from './../common/Path.js';
 import {wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
@@ -21,9 +20,8 @@ import Log from './../common/Log.js';
 const D = _conf_.DEBUG ? "-d 1" : "";
 
 
-class RobotModel extends EventHandler{
+class RobotModel{
   constructor(){
-    super();
     this.location = undefined;
     this.roll = Math.random();
     this.speed = undefined;

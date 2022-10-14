@@ -1,4 +1,5 @@
 {
+  "log_path" : "[PIII_PATH]/data/PIII.log",
   "BASE_API_CONF": {
     "network": {
       "host": "DESKTOP-8KD5D4K.local",

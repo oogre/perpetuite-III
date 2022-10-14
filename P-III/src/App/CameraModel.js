@@ -2,7 +2,7 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2022-10-12 10:11:37
+  @Last Modified time: 2022-10-14 09:12:46
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -10,10 +10,10 @@ import RobotModel from "./RobotModel.js";
 import PillsModel from "./PillsModel.js";
 import Vector from './../common/Vector.js';
 import Rect from './../common/Rect.js';
+import Log from './../common/Log.js';
 import {$, wait} from './../common/tools.js';
 import fs from 'fs-extra';
 import _ from 'underscore';
-import EventHandler from "./../common/EventHandler.js";
 
 const util = require("util")
 
@@ -30,7 +30,7 @@ const {
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
 
-class CameraModel extends EventHandler {
+class CameraModel {
 	static DEG_TO_RAD = Math.PI * 2 / 360.0
 	static PIX_TO_MM = (new Vector(...size_mm)).divide(new Vector(...size_px)).toArray().reduce((acc, v)=>acc+=v, 0)/2 
 
@@ -41,9 +41,9 @@ class CameraModel extends EventHandler {
 	static OFFSET_PX = CameraModel.CAM_SIZE_PX.multiply(0.5).subtract(CameraModel.CAM_OFFSET_PX);
 	static ROTATION = camRotation * CameraModel.DEG_TO_RAD;
 	
-	constructor(){
-		super();
-	}
+	// constructor(){
+	// 	super();
+	// }
 	camToWorld(point){
   		return (new Vector(...point))
 			.subtract(CameraModel.CAM_OFFSET_PX)
@@ -58,7 +58,6 @@ class CameraModel extends EventHandler {
 			...RobotModel.location.subtract(CameraModel.CAM_SIZE_MM.multiply(0.5)).toArray(), 
 			...CameraModel.CAM_SIZE_MM.toArray()
 		]);
-		// console.log(fov, RobotModel.location, CameraModel.CAM_SIZE_MM)
 	}
 
 	async collectPillInfo(){
@@ -84,7 +83,7 @@ class CameraModel extends EventHandler {
 		collectWaiter.then(()=> t2=new Date().getTime());
 		await moveWaiter;
 		const rawData = await collectWaiter;
-		// console.log({
+		// Log.info({
 		// 	collectTime : t2 - t0,
 		// 	adjustmentTime : t1 - t0
 		// });

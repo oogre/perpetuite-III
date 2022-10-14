@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-13 00:46:40
+  @Last Modified time: 2022-10-14 10:12:20
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -17,7 +17,6 @@ import Vector from "./../common/Vector.js";
 import Log from './../common/Log.js';
 
 process.title = "P-III.APP";
-
 
 const { 
   physical : {

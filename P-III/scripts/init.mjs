@@ -10,7 +10,6 @@ const setupParentIP = async () => {
 	console.log("Setup Parent IP");
 	let {stdout:HOST_IPV4} = await $`ipconfig.exe | grep "Ethernet adapter vEthernet (WSL):" -A 4 | grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`;
 	HOST_IPV4 = HOST_IPV4.replace("\n", "");
-
 	await $`echo "nameserver ${HOST_IPV4}" > /etc/resolv.conf`;
 	return HOST_IPV4;
 }
@@ -89,7 +88,7 @@ if(!await isPIIILauncherRunning()){
 		await waitForAceServerRunning();
 		if(!await isPIIIRunning()){
 			console.log("Run PIII");
-			const {stderr} = await $`P-III ${parent_IP}`;
+			const {stderr} = await $`P-III`;
 			if(stderr == "908") await shutdown();
 			if(stderr == "640") await shutdown();
 			if(stderr.includes("E-STOP")) await shutdown();

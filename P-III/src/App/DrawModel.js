@@ -2,10 +2,9 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-05 11:23:54
+  @Last Modified time: 2022-10-14 09:13:02
 \*----------------------------------------*/
 
-import EventHandler from "./../common/EventHandler.js";
 import {$, wait} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import Color from './../common/Color.js';
@@ -69,9 +68,8 @@ new Jimp(DIAMETER, DIAMETER, (err, image) => {
 
 
 
-class DrawModel extends EventHandler{
+class DrawModel{
   constructor(){
-    super();
     this.currentFrame = 0;
     this.offset = STEP_INC;
     this.commands = [];
