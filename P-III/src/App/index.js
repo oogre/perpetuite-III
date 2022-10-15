@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-15 14:52:57
+  @Last Modified time: 2022-10-15 15:12:22
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -32,6 +32,11 @@ const {
 
 const colors = pill_colors.map(({name})=>name);
 
+const stats = {
+  success : 0,
+  fail : 0,
+};
+
 PillsModel.onPillDiscovered((event)=>{
    // console.log(event.target.color);
 });
@@ -39,9 +44,11 @@ PillsModel.onPillDiscovered((event)=>{
 const next = (success = true)=>{
   if(success){
     Log.step(`Done`); 
+    stats.success ++;
   }
   else{
    Log.step(`Fail`); 
+   stats.fail ++;
   }
 }
 
@@ -49,7 +56,11 @@ const update = async () => {
   PillsModel.shuffle();
   const [request, len, frameID] = await DrawModel.next();
 
-  Log.title(`Current frame : ${frameID} - Still : ${len} move`);
+
+  Log.title(`Current frame : ${frameID}`);
+  Log.title(`Still : ${len} move`);
+  Log.title(`Success VS Fail : ${stats.success}/${stats.fail}`);
+  Log.title(`Known pills : ${PillsModel.info()}`);
   Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
   
   const hasToMovePill = await cleanDropZoneIfNeeded(request.point, request.color);
@@ -66,14 +77,16 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   await CameraModel.update(false);
   let targets = PillsModel.getPillsAround(dropLocation.toArray(2), 1.75);
   let items = targets.length;
+  let itemsToRemove = targets.length;
   let hasToMovePill = true;
+  let removedCount = 0;
   while (items--) {
     const {pillTarget:{color, center}, id} = target[items];
     if(dropColor.equals(color)){
       PillsModel.pills[id].lock();
       hasToMovePill = false;
     }else{
-      Log.step(`Remove the wrong colored pill ${color.toString()} @ ${center.toString(2)}`);
+      Log.step(`${++removedCount}/${itemsToRemove} : Remove the wrong colored pill ${color.toString()} @ ${center.toString(2)}`);
       if(!await PillsModel.pills[id].update()){
         PillsModel.pills.splice(id, 1);
         return next(false);

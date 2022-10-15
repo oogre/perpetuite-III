@@ -2,7 +2,7 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2022-10-14 09:12:46
+  @Last Modified time: 2022-10-15 15:04:31
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -103,9 +103,7 @@ class CameraModel {
 		}else{
 			tPills = await this.getPillPos();
 		}
-		const data = await PillsModel.insert(tPills);
-		Log.log(...PillsModel.info());
-		return data;
+		return await PillsModel.insert(tPills);
 	}
 }
 
