@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-15 15:23:37
+  @Last Modified time: 2022-10-15 15:25:34
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -84,7 +84,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   let hasToMovePill = true;
   let removedCount = 0;
   while (items--) {
-    const {pillTarget:{color, center}, id} = target[items];
+    const {pillTarget:{color, center}, id} = targets[items];
     if(dropColor.equals(color)){
       PillsModel.pills[id].lock();
       hasToMovePill = false;
