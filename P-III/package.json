@@ -10,6 +10,7 @@
     "build": "./scripts/build.all.sh",
     "install": "./scripts/install.sh",
     "init": "zx ./scripts/init.mjs",
+    "start": "zx ./scripts/init.mjs",
     "kill": "zx ./scripts/kill.mjs",
     "test": "./scripts/test.sh"
   },

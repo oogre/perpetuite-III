@@ -67,7 +67,7 @@ program
 	.argument('<flag>', 'boolean argument', stringToBoolean)
 	.description('Enable/Disable Gripper. true turns the Gripper On & false turns the Gripper Off')
 	.action( (flag, {debug}) => {
-		main(Request.Gripper, flag, debug)
+		main(Request.Gripper, !flag, debug)
 	});
 
 

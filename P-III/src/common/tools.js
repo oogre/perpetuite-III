@@ -2,7 +2,6 @@ import fs from 'fs';
 import _ from 'underscore';
 import  { spawn } from "child_process";
 import _conf_ from './config.js';
-import Log from './Log.js';
 import util from 'util';
 import {exec} from 'child_process';
 const _exec = util.promisify(exec)
@@ -181,7 +180,7 @@ export const Call = (cmd, {debug = false}={})=>{
     const command = `${cmd} ${args}`;
     if(debug){
       await wait(300);
-      return Log.command(command);
+      return console.log(command);
     } 
     let {stdout, stderr} = await _exec(command);
     if(stderr){
@@ -252,8 +251,8 @@ export const $pipe = (cmd, ...args) => {
 
     child.on('error', (error) => {
         // e += error.message;
-        Log.error("pipe");
-        Log.error(error);
+        console.log("pipe");
+        console.log(error);
         rej(error.message);
         throw error.message;
     });

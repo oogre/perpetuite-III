@@ -110,6 +110,7 @@ const update = async () => {
 }
 
 const errorHandler = (error) => {
+  Log.log(error);
   if(_.isArray(error)){
     const [id, label] = error;
     return process.stderr.write(`${label}`);
@@ -118,6 +119,7 @@ const errorHandler = (error) => {
 }
 
 (async () => {
+  Log.date("Run @ ");
   await DrawModel.init();
   await RobotModel.init();
   while(true){
@@ -125,5 +127,12 @@ const errorHandler = (error) => {
   }
 })()
 .catch(errorHandler);
+
+
+process.on('exit',() => {
+  Log.date("Exit @ ");
+  Log.end();
+})
+
 process.on("unhandledRejection", errorHandler);
 

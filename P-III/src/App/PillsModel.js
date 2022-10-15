@@ -57,6 +57,15 @@ class PillsModel extends EventHandler{
     return cPills;
   }
 
+  info(){
+    return  Object.entries(this.pills.reduce((acc, pill)=>{
+      const color = pill.color.toString();
+      if(!acc.hasOwnProperty(color))acc[color] = 0;
+      acc[color]++;
+      return acc;
+    }, {})).flat() ;
+  }
+
   shuffle(){
     this.pills.sort((a, b) => 0.5 - Math.random())
   }

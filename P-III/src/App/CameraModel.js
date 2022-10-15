@@ -103,7 +103,9 @@ class CameraModel {
 		}else{
 			tPills = await this.getPillPos();
 		}
-		return await PillsModel.insert(tPills);
+		const data = await PillsModel.insert(tPills);
+		Log.log(...PillsModel.info());
+		return data;
 	}
 }
 

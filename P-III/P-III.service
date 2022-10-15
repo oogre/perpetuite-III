@@ -1,0 +1,14 @@
+[Unit]
+Description=P-III.launcher app 
+
+[Service]
+ExecStart=/home/perpetuite3/perpetuite-III/P-III/scripts/init.mjs
+Restart=always
+User=perpetuite3
+Group=nogroup
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/Daheng Imaging/GalaxySDK/GenICam/bin/Win64_x64:/mnt/c/Program Files/Daheng Imaging/GalaxySDK/APIDll/Win64:/mnt/c/Program Files/Daheng Imaging/GalaxySDK/GenICam/bin/Win32_i86:/mnt/c/Program Files/Daheng Imaging/GalaxySDK/APIDll/Win32:/mnt/c/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64_win/compiler:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64/compiler:/mnt/c/Program Files (x86)/Parallels/Parallels Tools/Applications:/mnt/c/Program Files (x86)/Intel/iCLS Client/:/mnt/c/Program Files/Intel/iCLS Client/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/Program Files/Common Files/OMRON_SENTECH/GenICam/v3_2/bin/:/mnt/c/Program Files/Common Files/OMRON_SENTECH/StApi/v1_1/:/mnt/c/Program Files (x86)/Common Files/OMRON_SENTECH/GenICam/v3_2/bin/:/mnt/c/Program Files (x86)/Common Files/OMRON_SENTECH/StApi/v1_1/:/mnt/c/Program Files (x86)/Git/cmd:/mnt/c/Program Files/TortoiseGit/bin:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/nodejs/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/usbipd-win/:/mnt/c/Users/felix/AppData/Local/Programs/Python/Python310/Scripts/:/mnt/c/Users/felix/AppData/Local/Programs/Python/Python310/:/mnt/c/Users/felix/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/felix/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/felix/.dotnet/tools:/mnt/c/Users/felix/AppData/Roaming/npm
+Environment=PIII_PATH=/home/perpetuite3/perpetuite-III/P-III
+WorkingDirectory=/home/perpetuite3/perpetuite-III/P-III
+
+[Install]
+WantedBy=multi-user.target
