@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-14 09:06:29
+  @Last Modified time: 2022-10-15 14:49:11
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -36,7 +36,6 @@ const findPillCloseTo = (pillArray, location) => {
   }, [Number.MAX_VALUE, null, -1]);
   return [Math.sqrt(d), closest, id];
 }
-
 
 
 class PillsModel extends EventHandler{
@@ -91,6 +90,20 @@ class PillsModel extends EventHandler{
       return [closest, id];
     }
     return [null, -1];
+  }
+
+
+  getPillsAround(location, radius = pill_size_mm *1.5){
+    location = new Vector(...location)
+    const distSq = dist*dist;
+    return this.pills.reduce((acc, pill, id) => {
+      const dSq = pill.center.subtract(location).magSq();
+      if(dSq < distSq){
+        acc.push({dSq, pill, id});
+      }
+      return acc;
+    }, [])
+    .sort(({dSq:a}, {dSq:b})=> a-b);
   }
 
   onPillDiscovered(fnc){
