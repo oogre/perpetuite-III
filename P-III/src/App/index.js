@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-15 15:25:34
+  @Last Modified time: 2022-10-15 15:30:09
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -58,12 +58,10 @@ const update = async () => {
   const [request, len, frameID] = await DrawModel.next();
 
 
-  Log.title(`
-Current frame : ${frameID}
+  Log.title(`Current frame : ${frameID}
 Still : ${len} move
 Success VS Fail : ${stats.success}/${stats.fail}
-Known pills : ${PillsModel.info()}
-`);
+Known pills : ${PillsModel.info()}`);
   Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
   
   const hasToMovePill = await cleanDropZoneIfNeeded(request.point, request.color);
@@ -139,6 +137,8 @@ const populateDropZone = async (dropLocation, dropColor) => {
 
 const errorHandler = (error) => {
   Log.log(error);
+  console.log(err.stack);
+  
   if(_.isArray(error)){
     const [id, label] = error;
     return process.stderr.write(`${label}`);
