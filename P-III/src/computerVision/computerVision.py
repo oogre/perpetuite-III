@@ -77,14 +77,15 @@ gray = cv2.cvtColor(cvImg, cv2.COLOR_BGR2GRAY)
 blur = cv2.GaussianBlur(gray,(11, 11),0)
 _, thresh1 = cv2.threshold(blur,48,255,cv2.THRESH_BINARY)
 
-erosion = cv2.erode(thresh1,numpy.ones((20, 20),numpy.uint8),iterations = 1)
+erosion = cv2.erode(thresh1,numpy.ones((41, 41),numpy.uint8),iterations = 1)
 blur = cv2.GaussianBlur(erosion,(31, 31),0)
 _, thresh2 = cv2.threshold(blur,68,255,cv2.THRESH_BINARY)
 contours, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 cv2.imwrite(dataPath+'camera.jpg', cvImg)
-cv2.imwrite(dataPath+'mask.jpg', thresh1)
-cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
+# cv2.imwrite(dataPath+'mask.jpg', thresh1)
+# cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
+
 pills = []
 for cnt in contours :
     pill = Pill(cnt, cvImg)
