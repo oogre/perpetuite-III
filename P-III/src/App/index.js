@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-15 15:12:22
+  @Last Modified time: 2022-10-15 15:21:04
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -20,6 +20,7 @@ process.title = "P-III.APP";
 
 const { 
   physical : {
+    pill_size_mm,
     pill_colors,
     pill_dist_accuracy
   },
@@ -75,7 +76,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   await RobotModel.go(...dropLocation.toArray(2));
   await wait(200);
   await CameraModel.update(false);
-  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), 1.75);
+  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pill_size_mm * 1.75);
   let items = targets.length;
   let itemsToRemove = targets.length;
   let hasToMovePill = true;
@@ -98,7 +99,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
         await RobotModel.go(...randPt.toArray(2));
         await CameraModel.update(false);
 
-        const pillJam = PillsModel.getPillsAround(RobotModel.location.toArray(2), 1.5);
+        const pillJam = PillsModel.getPillsAround(RobotModel.location.toArray(2), pill_size_mm *1.5);
         if(pillJam.length > 0){
           Log.step(`The random location ${RobotModel.location.toString(2)} is populated by ${pillJam.length} pills`);  
         }else{

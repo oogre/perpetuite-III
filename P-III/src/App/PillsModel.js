@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-15 14:49:11
+  @Last Modified time: 2022-10-15 15:19:37
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -95,7 +95,7 @@ class PillsModel extends EventHandler{
 
   getPillsAround(location, radius = pill_size_mm *1.5){
     location = new Vector(...location)
-    const distSq = dist*dist;
+    const distSq = radius*radius;
     return this.pills.reduce((acc, pill, id) => {
       const dSq = pill.center.subtract(location).magSq();
       if(dSq < distSq){
