@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-17 13:55:08
+  @Last Modified time: 2022-10-17 13:58:26
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -94,14 +94,15 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   while (items--) {
     const {pill:{color, center}, id} = targets[items];
     if(dropColor.equals(color) && items == 0 ){
-      if(center.subtract(dropLocation).length() > pillRadius){
+      const dist = center.subtract(dropLocation).length();
+      if(dist > pillRadius){
         Log.step(`Adjust the good colored pill ${color.toString()} @ ${dropLocation.toString(2)}`);
         await RobotModel.go(...center.toArray(2));
         await RobotModel.grab();
         await RobotModel.go(...dropLocation.toArray(2));
         await RobotModel.drop();
       }else{
-        Log.step(`The good colored pill ${color.toString()} is already @ ${center.toString(2)}`);
+        Log.step(`The good colored pill ${color.toString()} is already @ ${dist} of ${center.toString(2)}`);
       }
       PillsModel.pills[id].lock();
       result = color;
