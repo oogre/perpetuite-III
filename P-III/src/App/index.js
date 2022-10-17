@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-17 14:11:31
+  @Last Modified time: 2022-10-17 14:20:57
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -85,7 +85,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   await wait(200);
   await CameraModel.update(false);
 
-  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 3);
+  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 3.5);
   let items = targets.length;
   let itemsToRemove = targets.length;
   let removedCount = 0;
@@ -94,7 +94,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   while (items--) {
     const {pill:{color, center}, id, dSq} = targets[items];
     if(dropColor.equals(color) && items == 0 ){
-      if(dSq > pillRadius * pillRadius){
+      if(dSq >= pillRadius * pillRadius){
         Log.step(`Adjust the good colored pill ${color.toString()} @ ${dropLocation.toString(2)}`);
         await RobotModel.go(...center.toArray(2));
         await RobotModel.grab();
