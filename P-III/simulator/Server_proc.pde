@@ -34,9 +34,14 @@ class Server_Process{
 					pg.background(0);
 					for(Pill p : pills){
 						if(robot.isInsideCamera(p)){
-							PVector loc = robot.worldToPix(p.location);
+							// PVector loc = robot.worldToPix(p.location);
 							pg.fill(p.col[0],p.col[1],p.col[2]);
-							pg.ellipse(loc.x, loc.y, 75.611, 75.611);
+							pg.ellipse(
+								map(width/_width * (p.location.x + robot.camLeft) - width/_width * (robot.x ), 0, robot.cam_width/2, 0, 2592) ,
+								map(height/_height *  (p.location.y + robot.camTop) - height/_height *  (robot.y ), 0, robot.cam_height/2 * 2592/1944.0, 0, 1944) ,
+								75.611, 
+								75.611
+							);
 						}
 					}
 					pg.endDraw();

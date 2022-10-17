@@ -15,9 +15,7 @@ void setup() {
 	}
 	server = new Server_Process(this);
 	robot = new Robot();	
-
 	s = new PVector(width/_width, height/_height);
-	
 }
 
 void draw() {
@@ -33,10 +31,22 @@ void draw() {
 	popMatrix();
 	fill(255);
 	ellipse(
-		width/2 + width/_width *  (robot.x - robot.camLeft),
+		width/2 + width/_width * (robot.x - robot.camLeft),
 		height/2 + height/_height *  (robot.y - robot.camTop),
 		20, 20
 	);
+
+	// // // translate(-width/_width * (robot.x - robot.camLeft), - height/2 + height/_height *  (robot.y - robot.camTop));
+	// for(Pill p : pills){
+	
+	// 	ellipse(
+	// 		width/_width * (p.location.x + robot.camLeft) - width/_width * (robot.x ),
+	// 		height/_height *  (p.location.y + robot.camTop) - height/_height *  (robot.y ),
+	// 		3, 3
+	// 	);
+	// }
+
+	
 
 }
 

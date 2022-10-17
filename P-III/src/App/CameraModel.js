@@ -2,7 +2,7 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2022-10-15 15:04:31
+  @Last Modified time: 2022-10-18 00:01:40
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -11,12 +11,17 @@ import PillsModel from "./PillsModel.js";
 import Vector from './../common/Vector.js';
 import Rect from './../common/Rect.js';
 import Log from './../common/Log.js';
-import {$, wait} from './../common/tools.js';
+import {$, wait, subProcessTrigger} from './../common/tools.js';
 import fs from 'fs-extra';
 import _ from 'underscore';
 
-const util = require("util")
 
+
+(async () => {
+	const res = await trig();
+	console.log(res);
+	console.log("FINISHED");
+})();
 
 const { 
   physical : {
@@ -41,9 +46,11 @@ class CameraModel {
 	static OFFSET_PX = CameraModel.CAM_SIZE_PX.multiply(0.5).subtract(CameraModel.CAM_OFFSET_PX);
 	static ROTATION = camRotation * CameraModel.DEG_TO_RAD;
 	
-	// constructor(){
-	// 	super();
-	// }
+	constructor(){
+		const {promise, trig} = subProcessTrigger(`${process.env.PIII_PATH}/src/computerVision/test.stdin.py`,  []);
+		this.promise = promise;
+		this.trig = trig;
+	}
 	camToWorld(point){
   		return (new Vector(...point))
 			.subtract(CameraModel.CAM_OFFSET_PX)
@@ -71,6 +78,10 @@ class CameraModel {
 		}else{
 			return await $("P-III.cv");
 		}
+	}
+
+	async liveCollectPillInfo(){
+			return await this.trig();
 	}
 
 	async dynamicGetPillPos(move){
