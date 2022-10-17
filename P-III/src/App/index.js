@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-17 13:28:35
+  @Last Modified time: 2022-10-17 13:55:08
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -31,6 +31,9 @@ const {
     }
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
+
+const pillRadius = pill_size_mm / 2;
+
 
 const colors = pill_colors.map(({name})=>name);
 
@@ -82,7 +85,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   await wait(200);
   await CameraModel.update(false);
 
-  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pill_size_mm * 1.85);
+  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 3);
   let items = targets.length;
   let itemsToRemove = targets.length;
   let removedCount = 0;
@@ -90,8 +93,16 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
 
   while (items--) {
     const {pill:{color, center}, id} = targets[items];
-    if(dropColor.equals(color)){
-      Log.step(`The good colored pill ${color.toString()} is already @ ${center.toString(2)}`);
+    if(dropColor.equals(color) && items == 0 ){
+      if(center.subtract(dropLocation).length() > pillRadius){
+        Log.step(`Adjust the good colored pill ${color.toString()} @ ${dropLocation.toString(2)}`);
+        await RobotModel.go(...center.toArray(2));
+        await RobotModel.grab();
+        await RobotModel.go(...dropLocation.toArray(2));
+        await RobotModel.drop();
+      }else{
+        Log.step(`The good colored pill ${color.toString()} is already @ ${center.toString(2)}`);
+      }
       PillsModel.pills[id].lock();
       result = color;
     }else{
@@ -106,7 +117,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
         const randPt = await DrawModel.getRandomPoint();
         await RobotModel.go(...randPt.toArray(2));
         await CameraModel.update(false);
-        const pillJam = PillsModel.getPillsAround(RobotModel.location.toArray(2), pill_size_mm *1.75);
+        const pillJam = PillsModel.getPillsAround(RobotModel.location.toArray(2), pillRadius * 3);
         if(pillJam.length > 0){
           Log.step(`The random location ${RobotModel.location.toString(2)} is populated by ${pillJam.length} pills`);  
         }else{
