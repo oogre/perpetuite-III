@@ -66,7 +66,7 @@ class Log {
 	position(...args){
 		args.push("]");
 		args.unshift("[");
-		return ColorCli.whiteBright.bgBlackBright(...args);
+		return ColorCli.whiteBright(...args);
 	}
 	end(){
 		log_file.end()

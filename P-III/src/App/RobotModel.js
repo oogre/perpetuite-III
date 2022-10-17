@@ -130,7 +130,7 @@ class RobotModel{
     await this.CoreAPI(`Gripper -- ${flag}`);
     // await wait(125);
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth} ${this.roll}`);
-    await this.go(this.location.x, this.location.y);
+    await this.simpleGo(this.location.x, this.location.y);
   
   }
 

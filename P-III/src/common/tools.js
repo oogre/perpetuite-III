@@ -235,6 +235,7 @@ export const $ = (cmd, ...args) => {
 
 export const $pipe = (cmd, ...args) => {
   let child;
+  let pipeIsSafe = true;
   const promise = new Promise((res, rej)=>{
     child = spawn(cmd, args);
     child.stdin.setEncoding('utf-8');
@@ -260,10 +261,27 @@ export const $pipe = (cmd, ...args) => {
     child.on("close", code => {
       return res(r);
     });
+
+    child.stdin.once("error", (error) => {
+      console.log(error);
+      pipeIsSafe = false;
+    });
+
   });
   
   return {
-    stdin : child.stdin,
+    stdin : { 
+      write : (msg) => {
+        if(pipeIsSafe){
+          child.stdin.write(msg, (error)=>{
+            if (error){
+              console.log(error);
+              pipeIsSafe = false;
+            }
+          });
+        }    
+      }
+    },
     kill : () => {
       child.kill("SIGINT");
     },
