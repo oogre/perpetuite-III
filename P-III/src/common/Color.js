@@ -45,4 +45,7 @@ export default class Color {
 	isBlack(){
 		return this.r == 0 && this.g == 0 && this.b == 0;
 	}
+	static Black(){
+		return new Color(0, 0, 0);
+	}
 }

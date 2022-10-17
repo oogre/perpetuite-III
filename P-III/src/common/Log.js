@@ -30,7 +30,6 @@ class Log {
 	title(...args){
 		args.push(" ");
 		args.unshift(" ");
-		this.date();
 		console.log(TITLE(...args));
 	}
 	date(...args){

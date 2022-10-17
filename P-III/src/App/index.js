@@ -14,6 +14,7 @@ import {wait} from "./../common/tools.js";
 import CameraModel from "./CameraModel.js";
 import _conf_ from "./../common/config.js";
 import Vector from "./../common/Vector.js";
+import Color from "./../common/Color.js";
 import Log from './../common/Log.js';
 
 process.title = "P-III.APP";
@@ -57,19 +58,23 @@ const update = async () => {
   PillsModel.shuffle();
   const [request, len, frameID] = await DrawModel.next();
 
-
-  Log.title(`Current frame : ${frameID}
-Still : ${len} move
-Success VS Fail : ${stats.success}/${stats.fail}
-Known pills : ${PillsModel.info()}`);
+  Log.date();
+  Log.title(`Current frame : ${frameID}`);
+  Log.title(`Still : ${len} move`);
+  Log.title(`Success VS Fail : ${stats.success}/${stats.fail}`);
+  Log.title(`Known pills : ${PillsModel.info()}`);
   Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
   
-  const hasToMovePill = await cleanDropZoneIfNeeded(request.point, request.color);
-  if(hasToMovePill && !request.color.isBlack()){
-    populateDropZone(request.point, request.color)
-  }
+  let colorResult = await cleanDropZoneIfNeeded(request.point, request.color);
+  
+  if(!colorResult) return next(false);
+  if(request.color.isBlack()) return next(true);
+  if(request.color.equals(colorResult)) return next(true);
 
-  next();
+  let result = await populateDropZone(request.point, request.color)
+  if(!colorResult) return next(false);
+
+  next(true);
 }
 
 const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
@@ -79,18 +84,19 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pill_size_mm * 1.75);
   let items = targets.length;
   let itemsToRemove = targets.length;
-  let hasToMovePill = true;
   let removedCount = 0;
+  let result = Color.Black();
+
   while (items--) {
-    const {pillTarget:{color, center}, id} = targets[items];
+    const {pill:{color, center}, id} = targets[items];
     if(dropColor.equals(color)){
       PillsModel.pills[id].lock();
-      hasToMovePill = false;
+      result = color;
     }else{
       Log.step(`${++removedCount}/${itemsToRemove} : Remove the wrong colored pill ${color.toString()} @ ${center.toString(2)}`);
       if(!await PillsModel.pills[id].update()){
         PillsModel.pills.splice(id, 1);
-        return next(false);
+        return false;
       }
       await RobotModel.go(...center.toArray(2));
       await RobotModel.grab();
@@ -98,7 +104,6 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
         const randPt = await DrawModel.getRandomPoint();
         await RobotModel.go(...randPt.toArray(2));
         await CameraModel.update(false);
-
         const pillJam = PillsModel.getPillsAround(RobotModel.location.toArray(2), pill_size_mm *1.5);
         if(pillJam.length > 0){
           Log.step(`The random location ${RobotModel.location.toString(2)} is populated by ${pillJam.length} pills`);  
@@ -112,7 +117,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
       }
     }
   }
-  return hasToMovePill;
+  return result;
 }
 
 const populateDropZone = async (dropLocation, dropColor) => {
@@ -124,19 +129,19 @@ const populateDropZone = async (dropLocation, dropColor) => {
   });
   if(!await pill.update()) {
     PillsModel.pills.splice(id, 1);
-    return next(false);
+    return false;
   }
-
   await RobotModel.grab();
   pill.lock();
   await RobotModel.go(...dropLocation.toArray(2));
   await RobotModel.drop();
+  return dropColor;
 }
 
 
 const errorHandler = (error) => {
   Log.log(error);
-  console.log(err.stack);
+  console.log(error.stack);
   
   if(_.isArray(error)){
     const [id, label] = error;

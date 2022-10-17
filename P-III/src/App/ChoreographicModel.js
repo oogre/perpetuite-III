@@ -126,7 +126,31 @@ const choreographicMoves = [
     let count = Math.random() * 10;
     while(count-- > 0){
       const smoothness =  Math.random();
-      const stop = new Vector(...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), lerp(limitters.depth.min, limitters.depth.max, Math.random()));
+      const stop = new Vector(
+      	...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), 
+      	lerp(limitters.depth.min, limitters.depth.max, Math.random())
+      );
+      const path = getArc({start:old, stop, smooth:lerp(3, 10, smoothness)});
+      old = stop.clone();
+      for(const pt of path){
+        stdin.write(`${pt.join(' ')}\n`);
+        await wait(lerp(250, 150, smoothness));
+      }
+    }
+    await wait(500);
+    kill();
+  },
+  async ({location}) => {
+    Log.info("goArc choreographic");
+    const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
+    let old = location;
+    let count = Math.random() * 10;
+    while(count-- > 0){
+      const smoothness =  Math.random();
+      const stop = new Vector(
+      	...(Vector.Random2D().multiply(limitters.radius.value * Math.random()).toArray(2)), 
+      	lerp(limitters.depth.min, limitters.depth.max, Math.random())
+      );
       const path = getArc({start:old, stop, smooth:lerp(3, 10, smoothness)});
       old = stop.clone();
       for(const pt of path){
