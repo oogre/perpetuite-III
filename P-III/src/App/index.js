@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-15 15:30:09
+  @Last Modified time: 2022-10-17 13:17:24
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -111,7 +111,6 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
         }
       }
     }
-    targets.splice(items, 1);
   }
   return hasToMovePill;
 }
