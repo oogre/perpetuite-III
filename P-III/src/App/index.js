@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-18 17:48:10
+  @Last Modified time: 2022-10-18 17:51:04
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -68,14 +68,14 @@ const update = async () => {
   Log.title(`Known pills : ${PillsModel.info()}`);
   Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
   
-  let colorResult = await cleanDropZoneIfNeeded(request.point, request.color);
+  let cleanResult = await cleanDropZoneIfNeeded(request.point, request.color);
   
-  if(!colorResult) return next(false);
+  if(!cleanResult) return next(false);
   if(request.color.isBlack()) return next(true);
-  if(request.color.equals(colorResult)) return next(true);
+  if(request.color.equals(cleanResult)) return next(true);
 
-  let result = await populateDropZone(request.point, request.color)
-  if(!colorResult) return next(false);
+  let dropResult = await populateDropZone(request.point, request.color)
+  if(!dropResult) return next(false);
 
   next(true);
 }

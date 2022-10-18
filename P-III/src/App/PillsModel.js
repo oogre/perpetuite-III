@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-18 17:25:40
+  @Last Modified time: 2022-10-18 17:51:40
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -157,7 +157,6 @@ class PillModel{
     return true;
   }
 
-
   async update(){
     do{
       await RobotModel.simpleGo(...this.center.toArray(2));
@@ -170,27 +169,8 @@ class PillModel{
         return false
       }
     }while(this.accuracy>pill_dist_accuracy);
-
-    // while(!_conf_.DEBUG && this.accuracy>pill_dist_accuracy){
-    //   await RobotModel.simpleGo(...this.center.toArray(2));
-    //   let cPills = await CameraModel.update();
-    //   const [dist, closest] = findPillCloseTo(cPills, this.center);
-    //   if(closest &&  closest.color.equals(this.color)){
-    //     this.accuracy = this.center.subtract(closest.center).length();
-    //     this.center = closest.center;
-    //   }else{
-    //     return false
-    //   }
-    // }
     return true;
   }
-
-  // compare(other){
-  //   const dSpa = this.center.subtract(other.center).magSq() / pill_size_mm_sq;
-  //   const dCol = deltaE(this.avgLAB, other.avgLAB);
-  //   Log.info("compare", dSpa, dCol, Math.sqrt(dSpa*dSpa+ dCol*dCol));
-
-  // }
 }
 
 export default pModel;
