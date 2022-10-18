@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-17 15:17:55
+  @Last Modified time: 2022-10-18 17:48:10
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -144,14 +144,16 @@ const populateDropZone = async (dropLocation, dropColor) => {
     await RobotModel.go(...randPt.toArray(2));
     await CameraModel.update(false);
   });
-  if(!await pill.update()) {
+  if(!await PillsModel.pills[id].update()) {
     PillsModel.pills.splice(id, 1);
     return false;
   }
   await RobotModel.grab();
-  pill.lock();
   await RobotModel.go(...dropLocation.toArray(2));
   await RobotModel.drop();
+  PillsModel.pills[id].lock();
+  PillsModel.pills[id].center = new Vector(...dropLocation.toArray(2));
+  PillsModel.pills[id].accuracy = pill_dist_accuracy;
   return dropColor;
 }
 

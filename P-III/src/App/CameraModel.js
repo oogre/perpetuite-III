@@ -2,7 +2,7 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2022-10-18 09:53:55
+  @Last Modified time: 2022-10-18 17:48:55
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -80,7 +80,6 @@ class CameraModel {
 	}
 
 	async dynamicGetPillPos(move){
-		console.log("dynamicGetPillPos");
 		await wait(500);
 		const collectWaiter = this.trig();
 		await wait(250);
@@ -112,7 +111,6 @@ class CameraModel {
 	
 	async getPillPos(){
 		await wait(500);
-		console.log("getPillPos");
 		const t = await this.trig();
 		return JSON.parse(t);
 	}
