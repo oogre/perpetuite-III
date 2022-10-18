@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-18 17:21:19
+  @Last Modified time: 2022-10-18 17:25:16
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -169,7 +169,7 @@ class PillModel{
       }else{
         return false
       }
-    }while(this.accuracy>pill_dist_accuracy){
+    }while(this.accuracy>pill_dist_accuracy)
 
     // while(!_conf_.DEBUG && this.accuracy>pill_dist_accuracy){
     //   await RobotModel.simpleGo(...this.center.toArray(2));
