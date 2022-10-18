@@ -16,13 +16,6 @@ import fs from 'fs-extra';
 import _ from 'underscore';
 
 
-
-(async () => {
-	const res = await trig();
-	console.log(res);
-	console.log("FINISHED");
-})();
-
 const { 
   physical : {
     camera : {
@@ -47,7 +40,7 @@ class CameraModel {
 	static ROTATION = camRotation * CameraModel.DEG_TO_RAD;
 	
 	constructor(){
-		const {promise, trig, kill} = subProcessTrigger(`${process.env.PIII_PATH}/src/computerVision/liveCV.py`,  []);
+		const {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
 		this.promise = promise;
 		this.trig = trig;
 		this.kill = kill;
@@ -87,20 +80,13 @@ class CameraModel {
 	}
 
 	async dynamicGetPillPos(move){
-		const t0 = new Date().getTime();
-		let t1;
-		let t2;
-		const moveWaiter = move();	
-		// const collectWaiter = this.collectPillInfo();
-		// moveWaiter.then(()=> t1=new Date().getTime());
-		collectWaiter.then(()=> t2=new Date().getTime());
-		await moveWaiter;
-		const rawData = await liveCollectPillInfo();
-		// Log.info({
-		// 	collectTime : t2 - t0,
-		// 	adjustmentTime : t1 - t0
-		// });
-
+		console.log("dynamicGetPillPos");
+		await wait(500);
+		const collectWaiter = this.trig();
+		await wait(250);
+		await move();
+		const rawData = await collectWaiter;
+	
 		return JSON.parse(rawData);
 	}
 
@@ -125,7 +111,9 @@ class CameraModel {
 
 	
 	async getPillPos(){
-		const t = await this.collectPillInfo();
+		await wait(500);
+		console.log("getPillPos");
+		const t = await this.trig();
 		return JSON.parse(t);
 	}
 
