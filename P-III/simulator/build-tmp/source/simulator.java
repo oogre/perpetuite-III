@@ -34,9 +34,7 @@ public void setup() {
 	}
 	server = new Server_Process(this);
 	robot = new Robot();	
-
 	s = new PVector(width/_width, height/_height);
-	
 }
 
 public void draw() {
@@ -52,10 +50,22 @@ public void draw() {
 	popMatrix();
 	fill(255);
 	ellipse(
-		width/2 + width/_width *  (robot.x - robot.camLeft),
+		width/2 + width/_width * (robot.x - robot.camLeft),
 		height/2 + height/_height *  (robot.y - robot.camTop),
 		20, 20
 	);
+
+	// // // translate(-width/_width * (robot.x - robot.camLeft), - height/2 + height/_height *  (robot.y - robot.camTop));
+	// for(Pill p : pills){
+	
+	// 	ellipse(
+	// 		width/_width * (p.location.x + robot.camLeft) - width/_width * (robot.x ),
+	// 		height/_height *  (p.location.y + robot.camTop) - height/_height *  (robot.y ),
+	// 		3, 3
+	// 	);
+	// }
+
+	
 
 }
 
@@ -263,9 +273,14 @@ class Server_Process{
 					pg.background(0);
 					for(Pill p : pills){
 						if(robot.isInsideCamera(p)){
-							PVector loc = robot.worldToPix(p.location);
+							// PVector loc = robot.worldToPix(p.location);
 							pg.fill(p.col[0],p.col[1],p.col[2]);
-							pg.ellipse(loc.x, loc.y, 75.611f, 75.611f);
+							pg.ellipse(
+								map(width/_width * (p.location.x + robot.camLeft) - width/_width * (robot.x ), 0, robot.cam_width/2, 0, 2592) ,
+								map(height/_height *  (p.location.y + robot.camTop) - height/_height *  (robot.y ), 0, robot.cam_height/2 * 2592/1944.0f, 0, 1944) ,
+								75.611f, 
+								75.611f
+							);
 						}
 					}
 					pg.endDraw();

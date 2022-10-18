@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-14 09:06:29
+  @Last Modified time: 2022-10-17 13:50:36
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -27,6 +27,7 @@ const {
 } = _conf_.HIGH_LEVEL_API_CONF;
 
 const pill_size_mm_sq = pill_size_mm * pill_size_mm;
+const pillRadius = pill_size_mm / 2;
 
 const findPillCloseTo = (pillArray, location) => {
   const [d, closest, id] = pillArray.reduce(([dist, closest, id], pill, pillId)=>{
@@ -36,7 +37,6 @@ const findPillCloseTo = (pillArray, location) => {
   }, [Number.MAX_VALUE, null, -1]);
   return [Math.sqrt(d), closest, id];
 }
-
 
 
 class PillsModel extends EventHandler{
@@ -55,6 +55,15 @@ class PillsModel extends EventHandler{
       }
     });
     return cPills;
+  }
+
+  info(){
+    return  Object.entries(this.pills.reduce((acc, pill)=>{
+      const color = pill.color.toString();
+      if(!acc.hasOwnProperty(color))acc[color] = 0;
+      acc[color]++;
+      return acc;
+    }, {})).flat() ;
   }
 
   shuffle(){
@@ -82,6 +91,20 @@ class PillsModel extends EventHandler{
       return [closest, id];
     }
     return [null, -1];
+  }
+
+
+  getPillsAround(location, radius = pillRadius * 1.5){
+    location = new Vector(...location)
+    const distSq = radius*radius;
+    return this.pills.reduce((acc, pill, id) => {
+      const dSq = pill.center.subtract(location).magSq();
+      if(dSq < distSq){
+        acc.push({dSq, pill, id});
+      }
+      return acc;
+    }, [])
+    .sort(({dSq:a}, {dSq:b})=> a-b);
   }
 
   onPillDiscovered(fnc){

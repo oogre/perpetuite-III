@@ -2,7 +2,6 @@ import fs from 'fs';
 import _ from 'underscore';
 import  { spawn } from "child_process";
 import _conf_ from './config.js';
-import Log from './Log.js';
 import util from 'util';
 import {exec} from 'child_process';
 const _exec = util.promisify(exec)
@@ -181,7 +180,7 @@ export const Call = (cmd, {debug = false}={})=>{
     const command = `${cmd} ${args}`;
     if(debug){
       await wait(300);
-      return Log.command(command);
+      return console.log(command);
     } 
     let {stdout, stderr} = await _exec(command);
     if(stderr){
@@ -236,6 +235,7 @@ export const $ = (cmd, ...args) => {
 
 export const $pipe = (cmd, ...args) => {
   let child;
+  let pipeIsSafe = true;
   const promise = new Promise((res, rej)=>{
     child = spawn(cmd, args);
     child.stdin.setEncoding('utf-8');
@@ -252,8 +252,8 @@ export const $pipe = (cmd, ...args) => {
 
     child.on('error', (error) => {
         // e += error.message;
-        Log.error("pipe");
-        Log.error(error);
+        console.log("pipe");
+        console.log(error);
         rej(error.message);
         throw error.message;
     });
@@ -261,16 +261,83 @@ export const $pipe = (cmd, ...args) => {
     child.on("close", code => {
       return res(r);
     });
+
+    child.stdin.once("error", (error) => {
+      console.log(error);
+      pipeIsSafe = false;
+    });
+
   });
   
   return {
-    stdin : child.stdin,
+    stdin : { 
+      write : (msg) => {
+        if(pipeIsSafe){
+          child.stdin.write(msg, (error)=>{
+            if (error){
+              console.log(error);
+              pipeIsSafe = false;
+            }
+          });
+        }    
+      }
+    },
     kill : () => {
       child.kill("SIGINT");
     },
     promise
   }
 }
+
+export const isPending = (promise) => util.inspect(promise).includes("pending");
+
+export const subProcessTrigger = (cmd, args)=>{
+  let child;
+  let subPromise;
+  let subPromiseResolver;
+  let subPromiseRejecter;
+  const promise = new Promise((resolve, reject)=>{
+    child = spawn(cmd, args);
+    child.stdin.setEncoding('utf-8');
+    child.stdout.on('data', (data) => {
+        subPromiseResolver(data.toString());
+    });
+    child.on("close", code => {
+      // console.log("close");
+      resolve();
+      subPromiseRejecter();
+    });
+    child.stdin.once("error", (error) => {
+      // console.log(error);
+      reject(error);
+      subPromiseRejecter();
+    });
+  });
+  return {
+    promise,
+    trig : ()=>{
+      subPromise = new Promise((res, rej)=>{
+        subPromiseResolver = res;
+        subPromiseRejecter = rej;
+        if(isPending(promise)){
+          child.stdin.write(`${Math.random()}\n`, (error) => {
+            if (error){
+              // console.log("error",error );
+              reject(error);
+            }
+          });
+        }else{
+          rej();
+        }
+      });
+      return subPromise;
+    },
+    kill : ()=>{
+      child.kill("SIGINT");
+    }
+  }
+}
+
 
 export const waiter = async (promise, action, endAction=()=>{}, stopAfter=0, waitBefore = 0, waitBetween = 0) => {
       let running = true;

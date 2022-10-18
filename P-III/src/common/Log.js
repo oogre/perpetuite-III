@@ -15,30 +15,25 @@ const STEP = ColorCli.greenBright;
 const INFO = ColorCli.cyan;
 const ERROR = ColorCli.error;
 
-const log_file = fs.createWriteStream(_conf_.log_path, {flags : 'w'});
-const log_stdout = process.stdout;
-
 const dateFormat = new Intl.DateTimeFormat('fr', { year : "2-digit", hour:"2-digit", minute:"2-digit", second:"2-digit",  day:"2-digit", month: '2-digit' });
 
 
-
+const log_file = fs.createWriteStream(_conf_.log_path, {flags : 'w'});
+const log_stdout = process.stdout;
 console.log = function (...args) { //
   log_file.write(`${args.join('')}\n`);
   log_stdout.write(`${args.join('')}\n`);
 };
 
 class Log {
-	constructor(){
-		this.date("Run @ ");
-	}
+	
 	title(...args){
 		args.push(" ");
 		args.unshift(" ");
-		this.Date();
 		console.log(TITLE(...args));
 	}
 	date(...args){
-		console.log([...args, dateFormat.format(new Date()) ]);
+		console.log(...[...args, dateFormat.format(new Date()) ]);
 	}
 	command(...args){
 		console.log(COMMAND(...args));
@@ -71,15 +66,14 @@ class Log {
 	position(...args){
 		args.push("]");
 		args.unshift("[");
-		return ColorCli.whiteBright.bgBlackBright(...args);
+		return ColorCli.whiteBright(...args);
+	}
+	end(){
+		log_file.end()
 	}
 }
 
 const log = new Log();
 
-process.on('exit',() => {
-	log.date("Exit @ ");
-	log_file.end();
-})
 
 export default log;

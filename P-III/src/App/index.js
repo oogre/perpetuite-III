@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-14 10:12:20
+  @Last Modified time: 2022-10-17 15:17:55
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -14,12 +14,14 @@ import {wait} from "./../common/tools.js";
 import CameraModel from "./CameraModel.js";
 import _conf_ from "./../common/config.js";
 import Vector from "./../common/Vector.js";
+import Color from "./../common/Color.js";
 import Log from './../common/Log.js';
 
 process.title = "P-III.APP";
 
 const { 
   physical : {
+    pill_size_mm,
     pill_colors,
     pill_dist_accuracy
   },
@@ -30,86 +32,134 @@ const {
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
 
+const pillRadius = pill_size_mm / 2;
+
+
 const colors = pill_colors.map(({name})=>name);
+
+const stats = {
+  success : 0,
+  fail : 0,
+};
 
 PillsModel.onPillDiscovered((event)=>{
    // console.log(event.target.color);
 });
 
+const next = (success = true)=>{
+  if(success){
+    Log.step(`Done`); 
+    stats.success ++;
+  }
+  else{
+   Log.step(`Fail`); 
+   stats.fail ++;
+  }
+}
+
 const update = async () => {
   PillsModel.shuffle();
-  const next = (success = true)=>{
-    if(success){
-      Log.step(`Done`); 
-    }
-    else{
-     Log.step(`Fail`); 
-    }
-  }
-
   const [request, len, frameID] = await DrawModel.next();
-  Log.title(`Current frame : ${frameID} - Still : ${len} move`);
-  Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
-  await RobotModel.go(...request.point.toArray(2));
-  await wait(200);
 
+  Log.date();
+  Log.title(`Current frame : ${frameID}`);
+  Log.title(`Still : ${len} move`);
+  Log.title(`Success VS Fail : ${stats.success}/${stats.fail}`);
+  Log.title(`Known pills : ${PillsModel.info()}`);
+  Log.command(`Put ${request.color.toString()} @ ${request.point.toString(2)}`);
+  
+  let colorResult = await cleanDropZoneIfNeeded(request.point, request.color);
+  
+  if(!colorResult) return next(false);
+  if(request.color.isBlack()) return next(true);
+  if(request.color.equals(colorResult)) return next(true);
+
+  let result = await populateDropZone(request.point, request.color)
+  if(!colorResult) return next(false);
+
+  next(true);
+}
+
+const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
+  await RobotModel.go(...dropLocation.toArray(2));
+  await wait(200);
   await CameraModel.update(false);
-  
-  let [pillTarget, id] = PillsModel.getPillByLocation(...request.point.toArray(2), 1.75);
-  
-  if(pillTarget){
-    if(request.color.equals(pillTarget.color)){
-      pillTarget.lock();
-    }else{
-      Log.step(`Remove the wrong colored pill ${pillTarget.color.toString()} @ ${pillTarget.center.toString(2)}`);
-      if(!await pillTarget.update()){
-        PillsModel.pills.splice(id, 1);
-        return next(false);
+
+  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 3.5);
+  let items = targets.length;
+  let itemsToRemove = targets.length;
+  let removedCount = 0;
+  let result = Color.Black();
+
+  while (items--) {
+    const {pill:{color, center}, id, dSq} = targets[items];
+    if(dropColor.equals(color) && items == 0 ){
+      if(dSq >= pillRadius * pillRadius){
+        Log.step(`Adjust the good colored pill ${color.toString()} @ ${dropLocation.toString(2)}`);
+        if(!await PillsModel.pills[id].update()){
+          PillsModel.pills.splice(id, 1);
+          return false;
+        }
+        await RobotModel.go(...center.toArray(2));
+        await RobotModel.grab();
+        await RobotModel.go(...dropLocation.toArray(2));
+        await RobotModel.drop();
+      }else{
+        Log.step(`The good colored pill ${color.toString()} is already @ ${Math.round(Math.sqrt(dSq))}mm of ${center.toString(2)}`);
       }
-      await RobotModel.go(...pillTarget.center.toArray(2));
+      PillsModel.pills[id].lock();
+      result = color;
+    }else{
+      Log.step(`${++removedCount}/${itemsToRemove} : Remove the wrong colored pill ${color.toString()} @ ${center.toString(2)}`);
+      if(!await PillsModel.pills[id].update()){
+        PillsModel.pills.splice(id, 1);
+        return false;
+      }
+      await RobotModel.go(...center.toArray(2));
       await RobotModel.grab();
-      const currentHoledPill = pillTarget;
-      PillsModel.pills.splice(id, 1);
-      while(pillTarget){
+      while(true){
         const randPt = await DrawModel.getRandomPoint();
         await RobotModel.go(...randPt.toArray(2));
         await CameraModel.update(false);
-
-        [pillTarget, id] = PillsModel.getPillByLocation(...RobotModel.location.toArray(2), 1.5);
-        if(pillTarget){
-          Log.step(`The Random location ${RobotModel.location.toString(2)} is populated by ${pillTarget.color.toString()}`);  
+        const pillJam = PillsModel.getPillsAround(RobotModel.location.toArray(2), pillRadius * 3);
+        if(pillJam.length > 0){
+          Log.step(`The random location ${RobotModel.location.toString(2)} is populated by ${pillJam.length} pills`);  
         }else{
-          Log.step(`The Random location ${RobotModel.location.toString(2)} is empty`);  
-          currentHoledPill.center = new Vector(...RobotModel.location.toArray(2));
-          currentHoledPill.accuracy = pill_dist_accuracy;
+          Log.step(`The random location ${RobotModel.location.toString(2)} is empty`);  
+          await RobotModel.drop();
+          PillsModel.pills[id].center = new Vector(...RobotModel.location.toArray(2));
+          PillsModel.pills[id].accuracy = pill_dist_accuracy;
+          break;
         }
       }
-      await RobotModel.drop();
     }
   }
-
-  if(!pillTarget && !request.color.isBlack()){
-    Log.step(`Put the good colored pill ${request.color.toString()} @ ${request.point.toString(2)}`);
-    let [pill, id] = await PillsModel.getPillByColor(request.color, async () => {
-      const randPt = await DrawModel.getRandomPoint();
-      await RobotModel.go(...randPt.toArray(2));
-      await CameraModel.update(false);
-    });
-    if(!await pill.update()) {
-      PillsModel.pills.splice(id, 1);
-      return next(false);
-    }
-
-    await RobotModel.grab();
-    pill.lock();
-    await RobotModel.go(...request.point.toArray(2));
-    await RobotModel.drop();
-  }
-
-  next();
+  return result;
 }
 
+const populateDropZone = async (dropLocation, dropColor) => {
+  Log.step(`Put the good colored pill ${dropColor.toString()} @ ${dropLocation.toString(2)}`);
+  let [pill, id] = await PillsModel.getPillByColor(dropColor, async () => {
+    const randPt = await DrawModel.getRandomPoint();
+    await RobotModel.go(...randPt.toArray(2));
+    await CameraModel.update(false);
+  });
+  if(!await pill.update()) {
+    PillsModel.pills.splice(id, 1);
+    return false;
+  }
+  await RobotModel.grab();
+  pill.lock();
+  await RobotModel.go(...dropLocation.toArray(2));
+  await RobotModel.drop();
+  return dropColor;
+}
+
+
 const errorHandler = (error) => {
+  Log.log(error);
+  console.log(error.stack);
+  
   if(_.isArray(error)){
     const [id, label] = error;
     return process.stderr.write(`${label}`);
@@ -118,6 +168,7 @@ const errorHandler = (error) => {
 }
 
 (async () => {
+  Log.date("Run @ ");
   await DrawModel.init();
   await RobotModel.init();
   while(true){
@@ -125,5 +176,12 @@ const errorHandler = (error) => {
   }
 })()
 .catch(errorHandler);
+
+
+process.on('exit',() => {
+  Log.date("Exit @ ");
+  Log.end();
+})
+
 process.on("unhandledRejection", errorHandler);
 

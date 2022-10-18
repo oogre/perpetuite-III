@@ -39,6 +39,7 @@ export const getArc = ({
       lerp(p0Depth, p1Depth, k*_ptLen)
     ]
   ).map(([x, y, z]) => {
+    z = Math.max(z, getDepthForXY(x, y) + 10);
     const {pos} = moveLimit({xpos:x, ypos:y, zpos:z});
     return pos;
   });
