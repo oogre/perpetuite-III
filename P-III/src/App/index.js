@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-17 14:20:57
+  @Last Modified time: 2022-10-17 15:17:55
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -96,6 +96,10 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
     if(dropColor.equals(color) && items == 0 ){
       if(dSq >= pillRadius * pillRadius){
         Log.step(`Adjust the good colored pill ${color.toString()} @ ${dropLocation.toString(2)}`);
+        if(!await PillsModel.pills[id].update()){
+          PillsModel.pills.splice(id, 1);
+          return false;
+        }
         await RobotModel.go(...center.toArray(2));
         await RobotModel.grab();
         await RobotModel.go(...dropLocation.toArray(2));

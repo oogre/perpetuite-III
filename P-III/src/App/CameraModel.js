@@ -2,7 +2,7 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2022-10-15 15:04:31
+  @Last Modified time: 2022-10-18 09:53:55
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -11,12 +11,17 @@ import PillsModel from "./PillsModel.js";
 import Vector from './../common/Vector.js';
 import Rect from './../common/Rect.js';
 import Log from './../common/Log.js';
-import {$, wait} from './../common/tools.js';
+import {$, wait, subProcessTrigger} from './../common/tools.js';
 import fs from 'fs-extra';
 import _ from 'underscore';
 
-const util = require("util")
 
+
+(async () => {
+	const res = await trig();
+	console.log(res);
+	console.log("FINISHED");
+})();
 
 const { 
   physical : {
@@ -41,9 +46,13 @@ class CameraModel {
 	static OFFSET_PX = CameraModel.CAM_SIZE_PX.multiply(0.5).subtract(CameraModel.CAM_OFFSET_PX);
 	static ROTATION = camRotation * CameraModel.DEG_TO_RAD;
 	
-	// constructor(){
-	// 	super();
-	// }
+	constructor(){
+		const {promise, trig, kill} = subProcessTrigger(`${process.env.PIII_PATH}/src/computerVision/liveCV.py`,  []);
+		this.promise = promise;
+		this.trig = trig;
+		this.kill = kill;
+	}
+
 	camToWorld(point){
   		return (new Vector(...point))
 			.subtract(CameraModel.CAM_OFFSET_PX)
@@ -73,16 +82,20 @@ class CameraModel {
 		}
 	}
 
+	async liveCollectPillInfo(){
+			return await this.trig();
+	}
+
 	async dynamicGetPillPos(move){
 		const t0 = new Date().getTime();
 		let t1;
 		let t2;
 		const moveWaiter = move();	
-		const collectWaiter = this.collectPillInfo();
-		moveWaiter.then(()=> t1=new Date().getTime());
+		// const collectWaiter = this.collectPillInfo();
+		// moveWaiter.then(()=> t1=new Date().getTime());
 		collectWaiter.then(()=> t2=new Date().getTime());
 		await moveWaiter;
-		const rawData = await collectWaiter;
+		const rawData = await liveCollectPillInfo();
 		// Log.info({
 		// 	collectTime : t2 - t0,
 		// 	adjustmentTime : t1 - t0
@@ -90,6 +103,26 @@ class CameraModel {
 
 		return JSON.parse(rawData);
 	}
+
+
+	// async dynamicGetPillPos(move){
+	// 	const t0 = new Date().getTime();
+	// 	let t1;
+	// 	let t2;
+	// 	const moveWaiter = move();	
+	// 	const collectWaiter = this.collectPillInfo();
+	// 	moveWaiter.then(()=> t1=new Date().getTime());
+	// 	collectWaiter.then(()=> t2=new Date().getTime());
+	// 	await moveWaiter;
+	// 	const rawData = await collectWaiter;
+	// 	// Log.info({
+	// 	// 	collectTime : t2 - t0,
+	// 	// 	adjustmentTime : t1 - t0
+	// 	// });
+
+	// 	return JSON.parse(rawData);
+	// }
+
 	
 	async getPillPos(){
 		const t = await this.collectPillInfo();

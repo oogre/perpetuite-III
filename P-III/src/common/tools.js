@@ -289,6 +289,56 @@ export const $pipe = (cmd, ...args) => {
   }
 }
 
+export const isPending = (promise) => util.inspect(promise).includes("pending");
+
+export const subProcessTrigger = (cmd, args)=>{
+  let child;
+  let subPromise;
+  let subPromiseResolver;
+  let subPromiseRejecter;
+  const promise = new Promise((resolve, reject)=>{
+    child = spawn(cmd, args);
+    child.stdin.setEncoding('utf-8');
+    child.stdout.on('data', (data) => {
+        subPromiseResolver(data.toString());
+    });
+    child.on("close", code => {
+      // console.log("close");
+      resolve();
+      subPromiseRejecter();
+    });
+    child.stdin.once("error", (error) => {
+      // console.log(error);
+      reject(error);
+      subPromiseRejecter();
+    });
+  });
+  return {
+    promise,
+    trig : ()=>{
+      subPromise = new Promise((res, rej)=>{
+        subPromiseResolver = res;
+        subPromiseRejecter = rej;
+        if(isPending(promise)){
+          child.stdin.write(`${Math.random()}\n`, (error) => {
+            if (error){
+              // console.log("error",error );
+              reject(error);
+            }
+          });
+        }else{
+          rej();
+        }
+      });
+      return subPromise;
+    },
+    kill : ()=>{
+      child.kill("SIGINT");
+    }
+  }
+}
+
+
 export const waiter = async (promise, action, endAction=()=>{}, stopAfter=0, waitBefore = 0, waitBetween = 0) => {
       let running = true;
       let timer;
