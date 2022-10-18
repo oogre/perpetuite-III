@@ -52,21 +52,37 @@ const pipe = (cmd, args)=>{
 	}
 }
 
-// const {promise, trig} = pipe(`${process.env.PIII_PATH}/src/computerVision/test.stdin.py`,  []);
-
-// (async () => {
-// 	const res = await trig();
-// 	console.log(res);
-// 	console.log("FINISHED");
-// })();
-
-(async () => {
+const main = () => {
 	const {promise, trig, kill} = pipe(`${process.env.PIII_PATH}/src/computerVision/test.stdin.py`,  []);
-	setTimeout(()=>kill(), 4000);
-	while(isPending(promise)){
+	process.stdin.on('data', async (data)=>{
+		if(data == "close\n"){
+			return kill();
+		}
+		
+		// process.stdout.write(data);
 		const res = await trig();
 		console.log(res);
-		await wait(1000);		
-	}
+	});
+	return promise;
+};
+
+const stop = ()=>{
 	console.log("FINISHED");
-})();
+	process.exit();
+}
+
+main()
+	.then(stop)
+	.catch(stop);
+
+
+// (async () => {
+// 	const {promise, trig, kill} = pipe(`${process.env.PIII_PATH}/src/computerVision/test.stdin.py`,  []);
+// 	setTimeout(()=>kill(), 4000);
+// 	while(isPending(promise)){
+// 		const res = await trig();
+// 		console.log(res);
+// 		await wait(1000);		
+// 	}
+// 	console.log("FINISHED");
+// })();

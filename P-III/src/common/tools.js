@@ -331,6 +331,9 @@ export const subProcessTrigger = (cmd, args)=>{
         }
       });
       return subPromise;
+    },
+    kill : ()=>{
+      child.kill("SIGINT");
     }
   }
 }
