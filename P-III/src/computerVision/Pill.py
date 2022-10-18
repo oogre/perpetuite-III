@@ -18,7 +18,7 @@ class Pill:
         self.area = M["m00"]
         # self.perimeter = cv2.arcLength(contour, True)
         # self.circularity = getCircularity(self.area, self.perimeter)
-        if self.area > 1100 and self.area < 1500: # and self.circularity > 0.75 :
+        if self.area > 1000 and self.area < 1600: # and self.circularity > 0.75 :
             self.centroid = (M["m10"]/M["m00"], M["m01"]/M["m00"])
 
             x, y, w, h = cv2.boundingRect(contour)

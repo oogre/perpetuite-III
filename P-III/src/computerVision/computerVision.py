@@ -84,7 +84,7 @@ contours, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 cv2.imwrite(dataPath+'camera.jpg', cvImg)
 # cv2.imwrite(dataPath+'mask.jpg', thresh1)
-# cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
+cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
 
 pills = []
 for cnt in contours :
