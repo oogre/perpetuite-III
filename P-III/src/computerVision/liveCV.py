@@ -14,7 +14,25 @@ import select
 import json
 import os
 from Pill import Pill
+import threading
 
+dataPath=os.environ['PIII_PATH']+"/data/"
+
+
+last_line = ''
+new_line_event = threading.Event()
+
+def keep_last_line():
+    global last_line, new_line_event
+    for line in sys.stdin:
+        last_line = line
+        new_line_event.set()
+
+keep_last_line_thread = threading.Thread(target=keep_last_line)
+keep_last_line_thread.daemon = True
+keep_last_line_thread.start()
+isRunning = True
+ 
 # create a device manager
 device_manager = gx.DeviceManager()
 
@@ -50,7 +68,7 @@ cam.stream_on()
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stdin.reconfigure(encoding='utf-8')
 
-while True :
+while(isRunning) :
     raw_image = cam.data_stream[0].get_image()
     if raw_image is None:
         # print("Getting image failed.")
@@ -70,10 +88,12 @@ while True :
     #numpy image to opencv image
     img = cv2.cvtColor(numpy.asarray(numpy_image),cv2.COLOR_BGR2RGB)
     
-    i, o, e  = select.select( [sys.stdin], [], [], 0.1)
-    if len(i) > 0 :
-        res = sys.stdin.readline().strip()
-        
+    
+    if( "close" in last_line):
+        last_line =""
+        isRunning=False
+    elif(last_line):
+        last_line =""
         # imLab = cv2.cvtColor(cvImg, cv2.COLOR_BGR2LAB)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray,(11, 11),0)
@@ -84,19 +104,29 @@ while True :
         _, thresh2 = cv2.threshold(blur,68,255,cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+
+        cv2.imwrite(dataPath+'camera.jpg', img)
+        cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
+        # print(len(contours))
         # cv2.imwrite(dataPath+'mask.jpg', thresh1)
         # cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
         pills = []
         for cnt in contours :
-            pill = Pill(cnt, cvImg)
+            pill = Pill(cnt, img)
             if hasattr(pill, 'bBox'): 
-                pills.append(pill.toObj())
-        print(json.dumps(pills))
+              pills.append(pill.toObj())
+        rawData = json.dumps(pills)
+        splitedData = [rawData[i:i+256] for i in range(0, len(rawData), 256)]
 
-        cv2.imwrite(dataPath+'camera.jpg', cvImg)
-        cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
+        for chunck in splitedData :
+            sys.stdout.write(chunck)
+        sys.stdout.write("\n")
+
 
 # stop data acquisition
 cam.stream_off()
 # close device
 cam.close_device()
+       
+print("Finished")
+quit()
