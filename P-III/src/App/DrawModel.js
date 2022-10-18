@@ -2,13 +2,15 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-14 09:13:02
+  @Last Modified time: 2022-10-18 18:07:47
 \*----------------------------------------*/
 
 import {$, wait} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import Color from './../common/Color.js';
 import Vector from './../common/Vector.js';
+import PillsModel from '.PillsModel.js';
+
 import Jimp from 'jimp';
 import _ from 'underscore';
 import fs from 'fs-extra';
@@ -28,6 +30,9 @@ const {
     }
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
+
+
+const pillRadius = pill_size_mm / 2;
 
 const drawOffsetPath = `${process.env.PIII_PATH}/data/drawOffset`;
 
@@ -110,13 +115,20 @@ class DrawModel{
 
   async getRandomPoint(){
     const img = await Jimp.read(`${process.env.PIII_PATH}/data/draw.diff.png`);
+    let counter = 0 ; 
     while(true){
       const [x, y] = _.sample(pts);
       const iPoint = [Math.round(x*img.bitmap.width*_DIAMETER), Math.round(y*img.bitmap.height*_DIAMETER)];
       const color = img.getPixelColor(...iPoint);
       const [r, g, b, a] = [color >> 24 & 0xFF, color >> 16 & 0xFF, color >> 8 & 0xFF, color >> 0 & 0xFF]
       if(a == 0){
-        return new Vector(x-RADIUS, y-RADIUS);
+        const pt = new Vector(x-RADIUS, y-RADIUS);
+        const pillJam = PillsModel.getPillsAround(pt.toArray(2), pillRadius * 3);
+        if(counter > 5 || pillJam.length == 0){
+          return pt;
+        }else{
+          counter ++;
+        }
       }
     }
   }
