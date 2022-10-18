@@ -10,21 +10,28 @@ const pipe = (cmd, args)=>{
 	let subPromise;
 	let subPromiseResolver;
 	let subPromiseRejecter;
+	let rawData = "";
 	const promise = new Promise((resolve, reject)=>{
 		child = spawn(cmd, args);
 		child.stdin.setEncoding('utf-8');
 		child.stdout.on('data', (data) => {
-  			subPromiseResolver(data.toString());
+			rawData += data.toString();
+			if(rawData.includes("\n")){
+				if(subPromiseResolver)subPromiseResolver(rawData.replace("\n", ""));
+				rawData = "";
+			}
 		});
 		child.on("close", code => {
 		  console.log("close");
 		  resolve();
-		  subPromiseRejecter();
+		  if(subPromiseRejecter)subPromiseRejecter();
+		  rawData = "";
 		});
 		child.stdin.once("error", (error) => {
 		  console.log(error);
 		  reject(error);
-		  subPromiseRejecter();
+		  if(subPromiseRejecter)subPromiseRejecter();
+		  rawData = "";
 		});
 	});
 	return {
@@ -53,15 +60,13 @@ const pipe = (cmd, args)=>{
 }
 
 const main = () => {
-	const {promise, trig, kill} = pipe(`${process.env.PIII_PATH}/src/computerVision/test.stdin.py`,  []);
+	const {promise, trig, kill} = pipe('python.exe', ['-u', `C:/Users/felix/Desktop/perpetuite-III/P-III/src/computerVision/liveCV.py`]);
 	process.stdin.on('data', async (data)=>{
 		if(data == "close\n"){
 			return kill();
 		}
-		
-		// process.stdout.write(data);
 		const res = await trig();
-		console.log(res);
+		process.stdout.write(res);
 	});
 	return promise;
 };
