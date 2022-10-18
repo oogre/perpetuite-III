@@ -296,21 +296,28 @@ export const subProcessTrigger = (cmd, args)=>{
   let subPromise;
   let subPromiseResolver;
   let subPromiseRejecter;
+  let rawData = "";
   const promise = new Promise((resolve, reject)=>{
     child = spawn(cmd, args);
     child.stdin.setEncoding('utf-8');
     child.stdout.on('data', (data) => {
-        subPromiseResolver(data.toString());
+      rawData += data.toString();
+      if(rawData.includes("\n")){
+        if(subPromiseResolver)subPromiseResolver(rawData.replace("\n", ""));
+        rawData = "";
+      }
     });
     child.on("close", code => {
-      // console.log("close");
+      console.log("close");
       resolve();
-      subPromiseRejecter();
+      if(subPromiseRejecter)subPromiseRejecter();
+      rawData = "";
     });
     child.stdin.once("error", (error) => {
-      // console.log(error);
+      console.log(error);
       reject(error);
-      subPromiseRejecter();
+      if(subPromiseRejecter)subPromiseRejecter();
+      rawData = "";
     });
   });
   return {
@@ -322,7 +329,7 @@ export const subProcessTrigger = (cmd, args)=>{
         if(isPending(promise)){
           child.stdin.write(`${Math.random()}\n`, (error) => {
             if (error){
-              // console.log("error",error );
+              console.log("error",error );
               reject(error);
             }
           });
