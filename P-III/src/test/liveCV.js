@@ -1,74 +1,20 @@
-import util from 'util';
-import  { spawn } from "child_process";
+import {subProcessTrigger, wait} from './../common/tools.js';
 
-const wait = async (time) => new Promise(s => setTimeout(()=>s(), time)); 
 
-const isPending = (promise) => util.inspect(promise).includes("pending");
+process.stdin.setEncoding("utf8")
+process.stdout.setEncoding("utf8")
 
-const pipe = (cmd, args)=>{
-	let child;
-	let subPromise;
-	let subPromiseResolver;
-	let subPromiseRejecter;
-	let rawData = "";
-	const promise = new Promise((resolve, reject)=>{
-		child = spawn(cmd, args);
-		child.stdin.setEncoding('utf-8');
-		child.stdout.on('data', (data) => {
-			rawData += data.toString();
-			if(rawData.includes("\n")){
-				if(subPromiseResolver)subPromiseResolver(rawData.replace("\n", ""));
-				rawData = "";
-			}
-		});
-		child.on("close", code => {
-		  console.log("close");
-		  resolve();
-		  if(subPromiseRejecter)subPromiseRejecter();
-		  rawData = "";
-		});
-		child.stdin.once("error", (error) => {
-		  console.log(error);
-		  reject(error);
-		  if(subPromiseRejecter)subPromiseRejecter();
-		  rawData = "";
-		});
-	});
-	return {
-		promise,
-		trig : ()=>{
-			subPromise = new Promise((res, rej)=>{
-				subPromiseResolver = res;
-				subPromiseRejecter = rej;
-				if(isPending(promise)){
-					child.stdin.write(`${Math.random()}\n`, (error) => {
-						if (error){
-							console.log("error",error );
-							reject(error);
-						}
-					});
-				}else{
-					rej();
-				}
-			});
-			return subPromise;
-		},
-		kill : ()=>{
-			child.kill("SIGINT");
-		}
-	}
-}
-
-const main = () => {
-	const {promise, trig, kill} = pipe('python.exe', ['-u', `C:/Users/felix/Desktop/perpetuite-III/P-III/src/computerVision/liveCV.py`]);
+const main = async () => {
+	const {promise, trig, kill} = subProcessTrigger(`${process.env.PIII_PATH}/src/computerVision/test.stdin.py`,[]);
 	process.stdin.on('data', async (data)=>{
-		if(data == "close\n"){
-			return kill();
-		}
-		const res = await trig();
+		// if(data == "close\n"){
+		// 	return kill();
+		// }
+		console.log("liveCV", data);
+		const res = await trig(data);
 		process.stdout.write(res);
 	});
-	return promise;
+	return await promise;
 };
 
 const stop = ()=>{

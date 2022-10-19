@@ -322,12 +322,12 @@ export const subProcessTrigger = (cmd, args)=>{
   });
   return {
     promise,
-    trig : ()=>{
+    trig : (arg="")=>{
       subPromise = new Promise((res, rej)=>{
         subPromiseResolver = res;
         subPromiseRejecter = rej;
         if(isPending(promise)){
-          child.stdin.write(`${Math.random()}\n`, (error) => {
+          child.stdin.write(`${arg}\n`, (error) => {
             if (error){
               console.log("error",error );
               reject(error);

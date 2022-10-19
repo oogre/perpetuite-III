@@ -88,6 +88,11 @@ const isPIIILauncherRunning = async ()=>{
 	}
 }
 
+const cleanKill = async ()=>{
+	await $`killall P-III.liveCV.wrapper`;
+	await $`killall P-III.liveCV`;
+}
+
 if(!await isPIIILauncherRunning()){
 	process.title = processName;
 	while(true){
@@ -98,6 +103,7 @@ if(!await isPIIILauncherRunning()){
 			console.log("Run PIII");
 			const {stderr} = await $`P-III`;
 			console.log(stderr);
+			await cleanKill();
 			if(stderr.includes("E-STOP")) await shutdown();
 			else await reboot();
 		}else{

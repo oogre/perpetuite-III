@@ -4,7 +4,7 @@
 # @Author: Evrard Vincent
 # @Date:   2022-10-13 12:36:10
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-10-18 00:14:02
+# @Last Modified time: 2022-10-18 19:36:41
 
 import cv2
 import gxipy as gx
@@ -15,6 +15,9 @@ import json
 import os
 from Pill import Pill
 import threading
+from setproctitle import setproctitle
+setproctitle("P-III.liveCV")
+
 
 dataPath=os.environ['PIII_PATH']+"/data/"
 
@@ -87,15 +90,19 @@ while(isRunning) :
     # print("Getting image success.")
     #numpy image to opencv image
     img = cv2.cvtColor(numpy.asarray(numpy_image),cv2.COLOR_BGR2RGB)
-    
+    oldImg = cv2.imread(dataPath+'camera.jpg')
+    difference = cv2.difference(img, oldImg)
     
     if( "close" in last_line):
         last_line =""
         isRunning=False
     elif(last_line):
+        imgSrc = img
+        if( "diff" in last_line):
+            imgSrc = difference
         last_line =""
-        # imLab = cv2.cvtColor(cvImg, cv2.COLOR_BGR2LAB)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        
+        gray = cv2.cvtColor(imgSrc, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray,(11, 11),0)
         _, thresh1 = cv2.threshold(blur,48,255,cv2.THRESH_BINARY)
 
@@ -104,12 +111,10 @@ while(isRunning) :
         _, thresh2 = cv2.threshold(blur,68,255,cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-
         cv2.imwrite(dataPath+'camera.jpg', img)
         cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
-        # print(len(contours))
-        # cv2.imwrite(dataPath+'mask.jpg', thresh1)
-        # cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
+        cv2.imwrite(dataPath+'difference.jpg', difference)
+
         pills = []
         for cnt in contours :
             pill = Pill(cnt, img)

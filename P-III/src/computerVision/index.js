@@ -3,7 +3,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-05 22:17:47
+  @Last Modified time: 2022-10-18 19:24:00
 \*----------------------------------------*/
 
 import {deltaE, rgb2lab, subProcessTrigger} from './../common/tools.js';
@@ -11,6 +11,7 @@ import _conf_ from './../common/config.js';
 // import {Call} from './../robot/CoreApi/Communication.js';
 // import net from 'net';
 
+process.title("P-III.liveCV.wrapper")
 
 const { 
   physical : {
