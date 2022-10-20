@@ -9,7 +9,7 @@ import {$, wait} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import Color from './../common/Color.js';
 import Vector from './../common/Vector.js';
-import PillsModel from '.PillsModel.js';
+import PillsModel from './PillsModel.js';
 
 import Jimp from 'jimp';
 import _ from 'underscore';
@@ -32,7 +32,7 @@ const {
 } = _conf_.HIGH_LEVEL_API_CONF;
 
 
-const pillRadius = pill_size_mm / 2;
+const pillRadius = PILL_SIZE / 2;
 
 const drawOffsetPath = `${process.env.PIII_PATH}/data/drawOffset`;
 
