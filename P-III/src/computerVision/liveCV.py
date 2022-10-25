@@ -93,7 +93,7 @@ while(isRunning) :
     #numpy image to opencv image
     img = cv2.cvtColor(numpy.asarray(numpy_image),cv2.COLOR_BGR2RGB)
     oldImg = cv2.imread(dataPath+'camera.jpg')
-    difference = cv2.subtract(img, oldImg)
+    difference = cv2.subtract(oldImg, img)
     
     if( "close" in last_line):
         last_line =""
@@ -125,7 +125,7 @@ while(isRunning) :
             # image_name="x14y-456"
             height = img.shape[0]
             width = img.shape[1]
-            smallImg = cv2.resize(img, (int(width/4), int(height/4)), interpolation=cv2.INTER_AREA)
+            smallImg = cv2.resize(img, (int(width/8), int(height/8)), interpolation=cv2.INTER_AREA)
             now = datetime.now()
             dirpath = dataPath + "archive/" + now.strftime("%y/%m.%d/")
             os.makedirs(dirpath, exist_ok=True)
