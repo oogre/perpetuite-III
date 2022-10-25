@@ -33,9 +33,9 @@ class RobotModel{
   toString(){
     return this.location.toArray()
             .map((p, k)=>{
-              return [String.fromCharCode(k + ('x').charCodeAt(0)), p]
+              return [String.fromCharCode(k + ('x').charCodeAt(0)), p.toFixed(2)]
             })
-            .concat(['w', this.roll])
+            .concat(['w', this.roll.toFixed(2)])
             .flat()
             .join('');
   }
