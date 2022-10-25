@@ -80,6 +80,22 @@ const update = async () => {
   next(true);
 }
 
+const grabProcess = async ()=>{
+  const offsets = [
+    new Vector( 0,  0),
+    new Vector(-2,  0),
+    new Vector( 2,  0),
+    new Vector( 0, -2),
+    new Vector( 0,  2),
+  ];
+  for(const offset of offsets){
+    await RobotModel.go(RobotModel.location.add(offset).toArray(2));
+    await RobotModel.grab();
+    if(await CameraModel.isGrabbed())break;
+    await RobotModel.gripperOpen();
+  }
+}
+
 const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   await RobotModel.go(...dropLocation.toArray(2));
   await wait(200);
@@ -101,7 +117,8 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
           return false;
         }
         await RobotModel.go(...center.toArray(2));
-        await RobotModel.grab();
+        await grabProcess();
+
         await RobotModel.go(...dropLocation.toArray(2));
         await RobotModel.drop();
       }else{
@@ -116,7 +133,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
         return false;
       }
       await RobotModel.go(...center.toArray(2));
-      await RobotModel.grab();
+      await grabProcess();
       let counter = 0;
       while(true){
         const inTheDrawPart = counter > 10;
@@ -151,7 +168,7 @@ const populateDropZone = async (dropLocation, dropColor) => {
     PillsModel.pills.splice(id, 1);
     return false;
   }
-  await RobotModel.grab();
+  await grabProcess();
   await RobotModel.go(...dropLocation.toArray(2));
   await RobotModel.drop();
   PillsModel.pills[id].lock();
@@ -184,6 +201,7 @@ const errorHandler = (error) => {
 
 
 process.on('exit',() => {
+  CameraModel.destructor();
   Log.date("Exit @ ");
   Log.end();
 })

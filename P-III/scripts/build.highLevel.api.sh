@@ -42,15 +42,6 @@ chmod +x ./release/robot/highLevelAPI/grab.js
 cp -r ./src/computerVision/gxipy ./release/computerVision 
 cp -r ./src/computerVision/*.py ./release/computerVision 
 
-echo "create symLink ./release/computerVision/P-III.cv.raw"
-ln -s ./computerVision.py ./release/computerVision/P-III.cv.raw
-chmod +x ./release/computerVision/computerVision.py
-
 echo "create symLink ./release/computerVision/P-III.cv"
 ln -s ./index.js ./release/computerVision/P-III.cv
 chmod +x ./release/computerVision/index.js
-
-echo "create symLink ./release/computerVision/P-III.cv.wrapper"
-cp -r ./src/computerVision/computerVision.mjs ./release/computerVision/computerVision.mjs
-ln -s ./computerVision.mjs ./release/computerVision/P-III.cv.wrapper
-chmod +x ./release/computerVision/computerVision.mjs

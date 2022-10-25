@@ -13,6 +13,9 @@ import _conf_ from './../common/config.js';
 
 process.title = "P-III.liveCV.wrapper";
 
+process.stdin.setEncoding("utf8")
+process.stdout.setEncoding("utf8")
+
 const { 
   physical : {
     pill_colors
@@ -25,7 +28,7 @@ const main = () => {
         if(data == "close\n"){
             return kill();
         }
-        const res = await trig();
+        const res = await trig(data.replaceAll("\n", ""));
         const cPills = JSON.parse(res).map(rPill => {
             const avgLAB = rgb2lab(rPill.avgRGB);
             const [, color] = pill_colors.reduce((acc, color) => {

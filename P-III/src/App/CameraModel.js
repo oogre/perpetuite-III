@@ -46,6 +46,10 @@ class CameraModel {
 		this.kill = kill;
 	}
 
+	destructor(){
+		this.trig("close");
+	}
+
 	camToWorld(point){
   		return (new Vector(...point))
 			.subtract(CameraModel.CAM_OFFSET_PX)
@@ -75,10 +79,6 @@ class CameraModel {
 		}
 	}
 
-	async liveCollectPillInfo(){
-			return await this.trig();
-	}
-
 	async dynamicGetPillPos(move){
 		await wait(500);
 		const collectWaiter = this.trig();
@@ -88,26 +88,6 @@ class CameraModel {
 	
 		return JSON.parse(rawData);
 	}
-
-
-	// async dynamicGetPillPos(move){
-	// 	const t0 = new Date().getTime();
-	// 	let t1;
-	// 	let t2;
-	// 	const moveWaiter = move();	
-	// 	const collectWaiter = this.collectPillInfo();
-	// 	moveWaiter.then(()=> t1=new Date().getTime());
-	// 	collectWaiter.then(()=> t2=new Date().getTime());
-	// 	await moveWaiter;
-	// 	const rawData = await collectWaiter;
-	// 	// Log.info({
-	// 	// 	collectTime : t2 - t0,
-	// 	// 	adjustmentTime : t1 - t0
-	// 	// });
-
-	// 	return JSON.parse(rawData);
-	// }
-
 	
 	async getPillPos(){
 		await wait(500);
@@ -115,13 +95,21 @@ class CameraModel {
 		return JSON.parse(t);
 	}
 
+	async isGrabbed(){
+		const rawData = await this.trig("diff")
+		const tPills = JSON.parse(rawData);
+		return tPills.length != 0;
+	}
+
 	async update(flag = true){
-		let tPills;
+		await wait(500);
+		const collectWaiter = this.trig(RobotModel.toString())
 		if(flag){
-			tPills = await this.dynamicGetPillPos(RobotModel.adjustmentMove());
-		}else{
-			tPills = await this.getPillPos();
+			await wait(500);
+			await move();
 		}
+		const rawData = await collectWaiter;
+		const tPills = JSON.parse(rawData);
 		return await PillsModel.insert(tPills);
 	}
 }

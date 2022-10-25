@@ -30,6 +30,16 @@ class RobotModel{
     this.CoreAPI = Call(`P-III.core.api`, {debug:_conf_.DEBUG});
   }
 
+  toString(){
+    return this.location.toArray()
+            .map((p, k)=>{
+              return [String.fromCharCode(k + ('x').charCodeAt(0)), p]
+            })
+            .concat(['w', this.roll])
+            .flat()
+            .join('');
+  }
+
   async init(){
     await this.CoreAPI(`HighPower -- 1`);
     await this.CoreAPI(`Gripper -- 1`);
@@ -87,6 +97,14 @@ class RobotModel{
   }
   async drop(){
     await this.gripper(1);
+  }
+
+  async gripperOpen(){
+    await this.CoreAPI(`Gripper -- 1`);
+  }
+
+  async gripperClose(){
+    await this.CoreAPI(`Gripper -- 0`);
   }
 
   async touch(x, y){
