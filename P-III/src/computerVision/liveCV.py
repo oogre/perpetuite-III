@@ -4,7 +4,7 @@
 # @Author: Evrard Vincent
 # @Date:   2022-10-13 12:36:10
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-10-25 10:20:09
+# @Last Modified time: 2022-10-25 11:12:57
 
 import cv2
 import gxipy as gx
@@ -116,7 +116,18 @@ while(isRunning) :
 
         cv2.imwrite(dataPath+'camera.jpg', img)
         cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
-        cv2.imwrite(dataPath+'difference.jpg', difference)
+        
+        if(isDiff) :
+            cv2.imwrite(dataPath+'difference.jpg', difference)
+        else :
+            # image_name="x14y-456"
+            (w,h) = img.shape[:2]
+            smallImg = cv2.resize(img, (int(w/4), int(h/4)), interpolation=inter)
+            now = datetime.now()
+            dirpath = dataPath + "archive/" + now.strftime("%y/%m.%d/")
+            os.makedirs(dirpath, exist_ok=True)
+            image_path = dirpath + now.strftime("%H.%M.%S")+ "_" + image_name + ".jpg"
+            cv2.imwrite(image_path, smallImg)
 
         pills = []
         for cnt in contours :
