@@ -80,7 +80,8 @@ const update = async () => {
   next(true);
 }
 
-const grabProcess = async ()=>{
+const grabProcess = async () => {
+  const originLocation = RobotModel.location.clone();
   const offsets = [
     new Vector( 0,  0),
     new Vector(-2,  0),
@@ -89,8 +90,9 @@ const grabProcess = async ()=>{
     new Vector( 0,  2),
   ];
   for(const offset of offsets){
-    await RobotModel.go(RobotModel.location.add(offset).toArray(2));
+    await RobotModel.go(...originLocation.add(offset).toArray(2));
     await RobotModel.grab();
+    await RobotModel.go(...originLocation.toArray(2));
     if(await CameraModel.isGrabbed())break;
     await RobotModel.gripperOpen();
   }
