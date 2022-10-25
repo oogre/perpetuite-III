@@ -2,15 +2,14 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-18 18:07:47
+  @Last Modified time: 2022-10-25 10:06:38
 \*----------------------------------------*/
 
-import {$, wait} from './../common/tools.js';
+import {$} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import Color from './../common/Color.js';
 import Vector from './../common/Vector.js';
-import PillsModel from '.PillsModel.js';
-
+import PillsModel from './PillsModel.js';
 import Jimp from 'jimp';
 import _ from 'underscore';
 import fs from 'fs-extra';
@@ -31,10 +30,10 @@ const {
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
 
-
-const pillRadius = pill_size_mm / 2;
+const pillRadius = PILL_SIZE / 2;
 
 const drawOffsetPath = `${process.env.PIII_PATH}/data/drawOffset`;
+const drawPath = `${process.env.PIII_PATH}/data/draw.diff.png`;
 
 const DIAMETER = RADIUS * 2;
 const _DIAMETER = 1.0/DIAMETER;
@@ -57,10 +56,6 @@ const pts = (new Array(vCount * hCount)).fill(0)
 .map(point=>point.map(c=>c+RADIUS));
 
 
-
-
-
-
 new Jimp(DIAMETER, DIAMETER, (err, image) => {
   const rSize = 9; 
   const pt = (new Array(rSize * rSize)).fill(0).map((_, k)=> [(k%rSize) - rSize/2, Math.floor(k / rSize)-rSize/2])
@@ -70,14 +65,12 @@ new Jimp(DIAMETER, DIAMETER, (err, image) => {
   image.write(`${process.env.PIII_PATH}/data/grid.png`)
 });
 
-
-
-
 class DrawModel{
   constructor(){
     this.currentFrame = 0;
     this.offset = STEP_INC;
     this.commands = [];
+    this.img;
   }
   async init(){
     if(await fs.exists(drawOffsetPath)){
@@ -87,24 +80,37 @@ class DrawModel{
       await $(`P-III.gen`, ""+(this.offset), {NO_DEBUG : true} );
     }
   }
+
+  pointToDraw([x, y]){
+    return [Math.round(x*this.img.bitmap.width*_DIAMETER), Math.round(y*this.img.bitmap.height*_DIAMETER)]
+  }
   
+  pointToColor([x, y]){
+    const iPoint = this.pointToDraw([x, y]);
+    const color = this.img.getPixelColor(...iPoint);
+    return [color >> 24 & 0xFF, color >> 16 & 0xFF, color >> 8 & 0xFF, color >> 0 & 0xFF]
+  }
+
+  pointToWorld([x, y]){
+    return new Vector(x-RADIUS, y-RADIUS);
+  }
+
   async next(){
     if(this.commands.length > 0){
       return [this.commands.pop(), this.commands.length, this.currentFrame];
     }
     await fs.writeFile(drawOffsetPath, ""+this.offset);
     await $(`P-III.gen`, ""+(this.offset), {NO_DEBUG : true} );
+    this.img = await Jimp.read(drawPath);
+
     this.currentFrame = this.offset;
     this.offset += STEP_INC;
     
-    const img = await Jimp.read(`${process.env.PIII_PATH}/data/draw.diff.png`);
     this.commands = pts.reduce((acc, [x, y]) => {
-      const iPoint = [Math.round(x*img.bitmap.width*_DIAMETER), Math.round(y*img.bitmap.height*_DIAMETER)];
-      const color = img.getPixelColor(...iPoint);
-      const [r, g, b, a] = [color >> 24 & 0xFF, color >> 16 & 0xFF, color >> 8 & 0xFF, color >> 0 & 0xFF]
+      const [r, g, b, a] = this.pointToColor([x, y])
       if(a != 0){
         acc.push({
-          point : new Vector(x-RADIUS, y-RADIUS),
+          point : this.pointToWorld([x, y]),
           color : new Color(r, g, b)
         })
       }
@@ -113,16 +119,13 @@ class DrawModel{
     return await this.next();
   }
 
-  async getRandomPoint(){
-    const img = await Jimp.read(`${process.env.PIII_PATH}/data/draw.diff.png`);
+  async getRandomPoint( inTheDrawPart = false ){
     let counter = 0 ; 
     while(true){
       const [x, y] = _.sample(pts);
-      const iPoint = [Math.round(x*img.bitmap.width*_DIAMETER), Math.round(y*img.bitmap.height*_DIAMETER)];
-      const color = img.getPixelColor(...iPoint);
-      const [r, g, b, a] = [color >> 24 & 0xFF, color >> 16 & 0xFF, color >> 8 & 0xFF, color >> 0 & 0xFF]
-      if(a == 0){
-        const pt = new Vector(x-RADIUS, y-RADIUS);
+      const [r, g, b, a] = this.pointToColor([x, y]);
+      if((!inTheDrawPart && a == 0) || (inTheDrawPart && a == 255)){
+        const pt = this.pointToWorld([x, y]);
         const pillJam = PillsModel.getPillsAround(pt.toArray(2), pillRadius * 3);
         if(counter > 5 || pillJam.length == 0){
           return pt;

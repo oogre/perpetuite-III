@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-18 18:04:31
+  @Last Modified time: 2022-10-25 10:08:21
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -117,8 +117,11 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
       }
       await RobotModel.go(...center.toArray(2));
       await RobotModel.grab();
+      let counter = 0;
       while(true){
-        const randPt = await DrawModel.getRandomPoint();
+        const inTheDrawPart = counter > 10;
+        counter++;
+        const randPt = await DrawModel.getRandomPoint(inTheDrawPart);
         await RobotModel.go(...randPt.toArray(2));
         await CameraModel.update(false);
         const pillJam = PillsModel.getPillsAround(RobotModel.location.toArray(2), pillRadius * 3);

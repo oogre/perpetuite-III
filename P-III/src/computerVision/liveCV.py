@@ -4,7 +4,7 @@
 # @Author: Evrard Vincent
 # @Date:   2022-10-13 12:36:10
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-10-18 19:36:41
+# @Last Modified time: 2022-10-25 09:50:45
 
 import cv2
 import gxipy as gx
@@ -98,6 +98,7 @@ while(isRunning) :
         isRunning=False
     elif(last_line):
         imgSrc = img
+        diff = False
         if( "diff" in last_line):
             imgSrc = difference
         last_line =""

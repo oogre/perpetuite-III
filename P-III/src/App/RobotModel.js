@@ -2,7 +2,7 @@
   P-III - RobotModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-14 09:13:18
+  @Last Modified time: 2022-10-25 10:11:28
 \*----------------------------------------*/
 
 
@@ -83,6 +83,7 @@ class RobotModel{
   }
   async grab(){
     await this.gripper(0);
+    
   }
   async drop(){
     await this.gripper(1);
