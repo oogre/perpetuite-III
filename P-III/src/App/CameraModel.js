@@ -78,7 +78,7 @@ class CameraModel {
 			return await $("P-III.cv");
 		}
 	}
-	
+
 	async isGrabbed(){
 		const rawData = await this.trig("diff")
 		const tPills = JSON.parse(rawData);
@@ -90,7 +90,7 @@ class CameraModel {
 		const collectWaiter = this.trig(RobotModel.toString())
 		if(flag){
 			await wait(500);
-			const  =  RobotModel.adjustmentMove();
+			const move = RobotModel.adjustmentMove();
 			await move();
 		}
 		const rawData = await collectWaiter;
