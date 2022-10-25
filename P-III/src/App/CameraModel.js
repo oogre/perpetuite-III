@@ -44,9 +44,12 @@ class CameraModel {
 		this.promise = promise;
 		this.trig = trig;
 		this.kill = kill;
+		this.killed = false;
 	}
 
 	destructor(){
+		if(this.killed)return;
+		this.killed = true;
 		this.trig("close");
 	}
 

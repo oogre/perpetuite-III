@@ -11,7 +11,7 @@ import _conf_ from './../common/config.js';
 // import {Call} from './../robot/CoreApi/Communication.js';
 // import net from 'net';
 
-process.title = "P-III.liveCV.wrapper";
+process.title = "P-III.cv";
 
 process.stdin.setEncoding("utf8")
 process.stdout.setEncoding("utf8")

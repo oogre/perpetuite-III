@@ -18,7 +18,7 @@ import threading
 from setproctitle import setproctitle
 from datetime import datetime
 
-setproctitle("P-III.liveCV")
+setproctitle("P-III.cv.server")
 
 
 dataPath=os.environ['PIII_PATH']+"/data/"
@@ -117,20 +117,20 @@ while(isRunning) :
         contours, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         cv2.imwrite(dataPath+'camera.jpg', img)
-        cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
+        # cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
         
         if(isDiff) :
             cv2.imwrite(dataPath+'difference.jpg', difference)
-        else :
-            # image_name="x14y-456"
-            height = img.shape[0]
-            width = img.shape[1]
-            smallImg = cv2.resize(img, (int(width/8), int(height/8)), interpolation=cv2.INTER_AREA)
-            now = datetime.now()
-            dirpath = dataPath + "archive/" + now.strftime("%y/%m.%d/")
-            os.makedirs(dirpath, exist_ok=True)
-            image_path = dirpath + now.strftime("%H.%M.%S")+ "_" + image_name + ".jpg"
-            cv2.imwrite(image_path, smallImg)
+        # else :
+        #     # image_name="x14y-456"
+        #     height = img.shape[0]
+        #     width = img.shape[1]
+        #     smallImg = cv2.resize(img, (int(width/8), int(height/8)), interpolation=cv2.INTER_AREA)
+        #     now = datetime.now()
+        #     dirpath = dataPath + "archive/" + now.strftime("%y/%m.%d/")
+        #     os.makedirs(dirpath, exist_ok=True)
+        #     image_path = dirpath + now.strftime("%H.%M.%S")+ "_" + image_name + ".jpg"
+        #     cv2.imwrite(image_path, smallImg)
 
         pills = []
         for cnt in contours :
