@@ -91,7 +91,7 @@ while(isRunning) :
     #numpy image to opencv image
     img = cv2.cvtColor(numpy.asarray(numpy_image),cv2.COLOR_BGR2RGB)
     oldImg = cv2.imread(dataPath+'camera.jpg')
-    difference = cv2.difference(img, oldImg)
+    difference = cv2.subtract(img, oldImg)
     
     if( "close" in last_line):
         last_line =""

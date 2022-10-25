@@ -13,7 +13,7 @@ source ~/.zshenv
 
 pip3 install noise;
 pip3 install screeninfo;
-
+pip3 install setproctitle
 
 if [ $EUID != 0 ]; then
 	sudo "$0" "$@"
