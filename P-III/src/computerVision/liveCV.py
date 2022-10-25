@@ -4,7 +4,7 @@
 # @Author: Evrard Vincent
 # @Date:   2022-10-13 12:36:10
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-10-25 09:50:45
+# @Last Modified time: 2022-10-25 10:20:09
 
 import cv2
 import gxipy as gx
@@ -98,10 +98,12 @@ while(isRunning) :
         isRunning=False
     elif(last_line):
         imgSrc = img
-        diff = False
+        isDiff = False
         if( "diff" in last_line):
             imgSrc = difference
-        last_line =""
+            isDiff = True
+        image_name = last_line.replace("\n", "");
+        last_line = ""
         
         gray = cv2.cvtColor(imgSrc, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray,(11, 11),0)
