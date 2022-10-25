@@ -122,7 +122,7 @@ while(isRunning) :
         else :
             # image_name="x14y-456"
             (w,h) = img.shape[:2]
-            smallImg = cv2.resize(img, (int(w/4), int(h/4)), interpolation=inter)
+            smallImg = cv2.resize(img, (int(w/4), int(h/4)), interpolation=iter)
             now = datetime.now()
             dirpath = dataPath + "archive/" + now.strftime("%y/%m.%d/")
             os.makedirs(dirpath, exist_ok=True)
