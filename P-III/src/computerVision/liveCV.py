@@ -121,8 +121,9 @@ while(isRunning) :
             cv2.imwrite(dataPath+'difference.jpg', difference)
         else :
             # image_name="x14y-456"
-            (w,h) = img.shape[:2]
-            smallImg = cv2.resize(img, (int(w/4), int(h/4)), interpolation=iter)
+            height = img.shape[0]
+            width = img.shape[1]
+            smallImg = cv2.resize(img, (int(width/4), int(height/4)), interpolation=cv.INTER_AREA)
             now = datetime.now()
             dirpath = dataPath + "archive/" + now.strftime("%y/%m.%d/")
             os.makedirs(dirpath, exist_ok=True)
