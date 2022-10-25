@@ -16,6 +16,8 @@ import os
 from Pill import Pill
 import threading
 from setproctitle import setproctitle
+from datetime import datetime
+
 setproctitle("P-III.liveCV")
 
 
