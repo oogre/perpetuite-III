@@ -2,7 +2,7 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-25 10:06:38
+  @Last Modified time: 2022-10-25 11:14:50
 \*----------------------------------------*/
 
 import {$} from './../common/tools.js';
