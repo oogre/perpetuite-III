@@ -20,7 +20,6 @@ from datetime import datetime
 
 setproctitle("P-III.cv.server")
 
-
 dataPath=os.environ['PIII_PATH']+"/data/"
 
 

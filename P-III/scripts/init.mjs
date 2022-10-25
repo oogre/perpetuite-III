@@ -89,8 +89,15 @@ const isPIIILauncherRunning = async ()=>{
 }
 
 const cleanKill = async ()=>{
-	await $`killall P-III.liveCV.wrapper`;
-	await $`killall P-III.liveCV`;
+	try{
+		await $`killall P-III.cv`;
+	}catch(e){}
+	try{
+		await $`killall P-III.cv.Server`;
+	}catch(e){}
+	try{
+		await $`killall python.exe`;
+	}catch(e){}
 }
 
 if(!await isPIIILauncherRunning()){
