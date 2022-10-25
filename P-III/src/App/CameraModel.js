@@ -78,23 +78,7 @@ class CameraModel {
 			return await $("P-III.cv");
 		}
 	}
-
-	async dynamicGetPillPos(move){
-		await wait(500);
-		const collectWaiter = this.trig();
-		await wait(250);
-		await move();
-		const rawData = await collectWaiter;
 	
-		return JSON.parse(rawData);
-	}
-	
-	async getPillPos(){
-		await wait(500);
-		const t = await this.trig();
-		return JSON.parse(t);
-	}
-
 	async isGrabbed(){
 		const rawData = await this.trig("diff")
 		const tPills = JSON.parse(rawData);
@@ -106,6 +90,7 @@ class CameraModel {
 		const collectWaiter = this.trig(RobotModel.toString())
 		if(flag){
 			await wait(500);
+			const  =  RobotModel.adjustmentMove();
 			await move();
 		}
 		const rawData = await collectWaiter;
