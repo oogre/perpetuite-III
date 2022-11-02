@@ -2,7 +2,7 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-11-02 22:17:53
+  @Last Modified time: 2022-11-02 22:27:54
 \*----------------------------------------*/
 
 import {$} from './../common/tools.js';
@@ -124,7 +124,7 @@ class DrawModel{
     while(true){
       const [x, y] = _.sample(pts);
       const [r, g, b, a] = this.pointToColor([x, y]);
-      if((!inTheDrawPart && a == 0) || (inTheDrawPart && a == 255)){
+      if(a == 0 || (inTheDrawPart && a == 255)){
         const pt = this.pointToWorld([x, y]);
         const pillJam = PillsModel.getPillsAround(pt.toArray(2), pillRadius * 3);
         if(counter > 5 || pillJam.length == 0){
