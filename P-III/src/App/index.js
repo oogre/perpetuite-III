@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-10-25 10:08:21
+  @Last Modified time: 2022-11-02 22:18:27
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -36,11 +36,12 @@ const pillRadius = pill_size_mm / 2;
 
 
 const colors = pill_colors.map(({name})=>name);
-
 const stats = {
   success : 0,
   fail : 0,
 };
+
+let dropInTheDrawPart = false;
 
 PillsModel.onPillDiscovered((event)=>{
    // console.log(event.target.color);
@@ -59,8 +60,12 @@ const next = (success = true)=>{
 
 const update = async () => {
   PillsModel.shuffle();
-  const [request, len, frameID] = await DrawModel.next();
+  const [request, len, frameID, newFrame] = await DrawModel.next();
 
+  if(newFrame){
+    dropInTheDrawPart = false;
+  }
+  
   Log.date();
   Log.title(`Current frame : ${frameID}`);
   Log.title(`Still : ${len} move`);
@@ -138,9 +143,9 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
       await grabProcess();
       let counter = 0;
       while(true){
-        const inTheDrawPart = counter > 10;
+        dropInTheDrawPart = counter > 10;
         counter++;
-        const randPt = await DrawModel.getRandomPoint(inTheDrawPart);
+        const randPt = await DrawModel.getRandomPoint(dropInTheDrawPart);
         await RobotModel.go(...randPt.toArray(2));
         await CameraModel.update(false);
         const pillJam = PillsModel.getPillsAround(RobotModel.location.toArray(2), pillRadius * 3);
