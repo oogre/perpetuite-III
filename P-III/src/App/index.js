@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-11-02 22:18:27
+  @Last Modified time: 2022-11-02 22:27:04
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -65,7 +65,7 @@ const update = async () => {
   if(newFrame){
     dropInTheDrawPart = false;
   }
-  
+
   Log.date();
   Log.title(`Current frame : ${frameID}`);
   Log.title(`Still : ${len} move`);
@@ -143,8 +143,10 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
       await grabProcess();
       let counter = 0;
       while(true){
-        dropInTheDrawPart = counter > 10;
-        counter++;
+        if(!dropInTheDrawPart){
+          dropInTheDrawPart = counter > 10;
+          counter++;
+        }
         const randPt = await DrawModel.getRandomPoint(dropInTheDrawPart);
         await RobotModel.go(...randPt.toArray(2));
         await CameraModel.update(false);
