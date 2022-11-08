@@ -8,7 +8,7 @@ const wait = async t => new Promise(r => setTimeout(()=>r(), t));
 
 const setupParentIP = async () => {
 	console.log("Setup Parent IP");
-	let {stdout:HOST_IPV4} = await $`ipconfig.exe | grep "Ethernet adapter vEthernet (WSL):" -A 4 | grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`;
+	let {stdout:HOST_IPV4} = await $`ipconfig.exe | grep "Ethernet adapter vEthernet (WSL):" -A 4  | grep "IPv4 Address" -A 1 | grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`;
 	HOST_IPV4 = HOST_IPV4.replace("\n", "");
 	await $`echo "nameserver ${HOST_IPV4}" > /etc/resolv.conf`;
 	return HOST_IPV4;
