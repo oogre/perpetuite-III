@@ -7,6 +7,8 @@ try{
 
 try{
 	await $`killall Ace.exe`;
+	await $`taskkill.exe /IM Ace.exe /F`;
+	
 }catch(e){}
 
 try{
@@ -23,5 +25,6 @@ try{
 
 try{
 	await $`killall python.exe`;
+	await $`taskkill.exe /IM python.exe /F`;
 }catch(e){}
 
