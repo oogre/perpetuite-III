@@ -28,9 +28,8 @@
         "size_px" : [2592, 1944],
         "size_mm" : [280.0, 211.0],
         "size_mmOld" : [319.5, 236.5],
-        "offset" : [682,981],
-        "offsetShortOld" : [676,981],
-        "offsetOld" : [740.1059396299903,979.9993508601102],
+        "offset" : [691.19,958.26],
+        "oldoffset" : [682,981],
         "rotate" : -1.83
       },
       "probe_height" : 23,

@@ -6,6 +6,13 @@ try{
 }catch(e){}
 
 try{
+	await $`killall P-III.APP`;
+}catch(e){}
+
+
+
+
+try{
 	await $`killall Ace.exe`;
 	await $`taskkill.exe /IM Ace.exe /F`;
 	
