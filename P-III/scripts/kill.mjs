@@ -1,6 +1,27 @@
 #!/usr/bin/env zx
 
-const shutdown = async () => {
-	await $`AutoHotKey "C:/Users/felix/Desktop/shutdown.ahk"`;
-}
-await shutdown();
+
+try{
+	await $`killall P-III.launcher`;
+}catch(e){}
+
+try{
+	await $`killall Ace.exe`;
+}catch(e){}
+
+try{
+	await $`killall P-III`;
+}catch(e){}
+
+try{
+	await $`killall P-III.cv`;
+}catch(e){}
+
+try{
+	await $`killall P-III.cv.Server`;
+}catch(e){}
+
+try{
+	await $`killall python.exe`;
+}catch(e){}
+

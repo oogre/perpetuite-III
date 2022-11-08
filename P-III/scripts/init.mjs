@@ -125,7 +125,10 @@ if(!await isPIIILauncherRunning()){
 			const {stderr} = await $`P-III`;
 			console.log(stderr);
 			await cleanKill();
-			if(stderr.includes("E-STOP")) await shutdown();
+			if(stderr.includes("E-STOP")){
+				await shutdown();
+				break;
+			}
 			else if(!await reboot()){
 				break;
 			}
