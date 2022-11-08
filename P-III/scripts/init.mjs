@@ -2,6 +2,9 @@
 
 const processName = "P-III.launcher";
 
+const rebootMinDelay = 10 * 60 * 1000;
+const rebootTimeFilePath = `./../data/reboot.timestamp`;
+
 $.verbose = false;
 
 const wait = async t => new Promise(r => setTimeout(()=>r(), t));
@@ -70,9 +73,20 @@ const shutdown = () => {
 	return $`AutoHotKey "C:/Users/felix/Desktop/perpetuite-III/P-III/scripts/shutdown.ahk"`;
 }
 
-const reboot = () => {
+const reboot = async () => {
 	console.log("Run reboot");
-	return $`AutoHotKey "C:/Users/felix/Desktop/perpetuite-III/P-III/scripts/reboot.ahk"`;
+	let {stdout:lastBootTime} = await $`cat ${rebootTimeFilePath}`
+	lastBootTime = parseInt(lastBootTime.replace("\n", ""));
+	const now = new Date().getTime();
+	await $`echo ${now} > ${rebootTimeFilePath}`
+	const durationSinceLastReboot = (now - lastBootTime); // milliseconds
+	if(durationSinceLastReboot < rebootMinDelay){
+		console.log("somethingWentWrong")
+		return false;
+	}else{
+		await $`AutoHotKey "C:/Users/felix/Desktop/perpetuite-III/P-III/scripts/reboot.ahk"`;	
+		return true;
+	}
 }
 
 const onLockCollision = () => {
@@ -112,7 +126,9 @@ if(!await isPIIILauncherRunning()){
 			console.log(stderr);
 			await cleanKill();
 			if(stderr.includes("E-STOP")) await shutdown();
-			else await reboot();
+			else if(!await reboot()){
+				break;
+			}
 		}else{
 			break;
 		}

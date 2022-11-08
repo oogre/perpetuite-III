@@ -2,7 +2,7 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-25 11:14:50
+  @Last Modified time: 2022-11-02 22:27:54
 \*----------------------------------------*/
 
 import {$} from './../common/tools.js';
@@ -95,9 +95,9 @@ class DrawModel{
     return new Vector(x-RADIUS, y-RADIUS);
   }
 
-  async next(){
+  async next(flag = false){
     if(this.commands.length > 0){
-      return [this.commands.pop(), this.commands.length, this.currentFrame];
+      return [this.commands.pop(), this.commands.length, this.currentFrame, flag];
     }
     await fs.writeFile(drawOffsetPath, ""+this.offset);
     await $(`P-III.gen`, ""+(this.offset), {NO_DEBUG : true} );
@@ -116,7 +116,7 @@ class DrawModel{
       }
       return acc;
     }, []).sort((a, b) => 0.5 - Math.random())
-    return await this.next();
+    return await this.next(true);
   }
 
   async getRandomPoint( inTheDrawPart = false ){
@@ -124,7 +124,7 @@ class DrawModel{
     while(true){
       const [x, y] = _.sample(pts);
       const [r, g, b, a] = this.pointToColor([x, y]);
-      if((!inTheDrawPart && a == 0) || (inTheDrawPart && a == 255)){
+      if(a == 0 || (inTheDrawPart && a == 255)){
         const pt = this.pointToWorld([x, y]);
         const pillJam = PillsModel.getPillsAround(pt.toArray(2), pillRadius * 3);
         if(counter > 5 || pillJam.length == 0){
