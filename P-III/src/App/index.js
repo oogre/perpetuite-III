@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-11-02 22:27:04
+  @Last Modified time: 2022-11-09 10:41:22
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -89,10 +89,10 @@ const grabProcess = async () => {
   const originLocation = RobotModel.location.clone();
   const offsets = [
     new Vector( 0,  0),
-    new Vector(-2,  0),
-    new Vector( 2,  0),
-    new Vector( 0, -2),
     new Vector( 0,  2),
+    new Vector( 2,  0),
+    new Vector(-2,  0),
+    new Vector( 0, -2)
   ];
   for(const offset of offsets){
     await RobotModel.go(...originLocation.add(offset).toArray(2));
