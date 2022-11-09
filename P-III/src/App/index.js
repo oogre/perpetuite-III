@@ -3,7 +3,7 @@
   P-III - index.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 16:19:31
-  @Last Modified time: 2022-11-09 10:41:22
+  @Last Modified time: 2022-11-09 15:43:51
 \*----------------------------------------*/
 
 import _ from "underscore";
@@ -94,13 +94,18 @@ const grabProcess = async () => {
     new Vector(-2,  0),
     new Vector( 0, -2)
   ];
+  let isGrabbed = false;
   for(const offset of offsets){
     await RobotModel.go(...originLocation.add(offset).toArray(2));
     await RobotModel.grab();
     await RobotModel.go(...originLocation.toArray(2));
-    if(await CameraModel.isGrabbed())break;
+    if(await CameraModel.isGrabbed()){
+      isGrabbed = true;
+      break;
+    }
     await RobotModel.gripperOpen();
   }
+  return isGrabbed;
 }
 
 const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
@@ -124,8 +129,9 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
           return false;
         }
         await RobotModel.go(...center.toArray(2));
-        await grabProcess();
-
+        if(!await grabProcess()){
+          return false;
+        }
         await RobotModel.go(...dropLocation.toArray(2));
         await RobotModel.drop();
       }else{
@@ -140,7 +146,9 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
         return false;
       }
       await RobotModel.go(...center.toArray(2));
-      await grabProcess();
+      if(!await grabProcess()){
+        return false;
+      }
       let counter = 0;
       while(true){
         if(!dropInTheDrawPart){
