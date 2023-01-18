@@ -301,6 +301,7 @@ export const subProcessTrigger = (cmd, args)=>{
     child = spawn(cmd, args);
     child.stdin.setEncoding('utf-8');
     child.stdout.on('data', (data) => {
+      console.log("TRIG OUT");
       rawData += data.toString();
       if(rawData.includes("\n")){
         if(subPromiseResolver)subPromiseResolver(rawData.replace("\n", ""));
@@ -314,6 +315,7 @@ export const subProcessTrigger = (cmd, args)=>{
       rawData = "";
     });
     child.stdin.once("error", (error) => {
+      console.log("ERROR");
       console.log(error);
       reject(error);
       if(subPromiseRejecter)subPromiseRejecter();
@@ -327,6 +329,7 @@ export const subProcessTrigger = (cmd, args)=>{
         subPromiseResolver = res;
         subPromiseRejecter = rej;
         if(isPending(promise)){
+          console.log("TRIG");
           child.stdin.write(`${arg}\n`, (error) => {
             if (error){
               console.log("error",error );
@@ -334,6 +337,7 @@ export const subProcessTrigger = (cmd, args)=>{
             }
           });
         }else{
+          console.log("NOT PENDING");
           rej();
         }
       });
