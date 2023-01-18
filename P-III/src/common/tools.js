@@ -301,7 +301,6 @@ export const subProcessTrigger = (cmd, args)=>{
     child = spawn(cmd, args);
     child.stdin.setEncoding('utf-8');
     child.stdout.on('data', (data) => {
-      console.log("TRIG OUT");
       rawData += data.toString();
       if(rawData.includes("\n")){
         if(subPromiseResolver)subPromiseResolver(rawData.replace("\n", ""));
