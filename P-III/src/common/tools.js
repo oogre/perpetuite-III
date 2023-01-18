@@ -329,7 +329,6 @@ export const subProcessTrigger = (cmd, args)=>{
         subPromiseResolver = res;
         subPromiseRejecter = rej;
         if(isPending(promise)){
-          console.log("TRIG");
           child.stdin.write(`${arg}\n`, (error) => {
             if (error){
               console.log("error",error );
