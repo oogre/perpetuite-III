@@ -2,7 +2,7 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2022-10-18 17:48:55
+  @Last Modified time: 2023-01-18 17:06:18
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -92,13 +92,17 @@ class CameraModel {
 
 	async update(flag = true){
 		await wait(500);
+		Log.step("before Trig");
 		const collectWaiter = this.trig(RobotModel.toString())
 		if(flag){
 			await wait(500);
+			Log.step("before move");
 			const move = RobotModel.adjustmentMove();
 			await move();
+			Log.step("after move");
 		}
 		const rawData = await collectWaiter;
+		Log.step("after Trig");
 		const tPills = JSON.parse(rawData);
 		return await PillsModel.insert(tPills);
 	}
