@@ -63,15 +63,17 @@ const runAce = async () => {
 	console.log("Run Ace");
 	$`Ace.exe server=ace@43434`;
 	await wait(10000);
-	$`Ace.exe client datafile="${appPath}/ACE.3.8/driver.perpetuite3.ace.awp"`;
+	const AceAPI = `${appPath}/ACE.3.8/driver.perpetuite3.ace.awp`;
+	$`Ace.exe client datafile=${AceAPI}`;
 	await waitForAceReady();
 	$`Ace.exe client culture=fr-LU loadui="/Src/Interface Homme Machine"`;
-	await $`AutoHotkey.exe "${appPath}/P-III/scripts/fakeUser.ahk"`;
+	const fakeUser = `${appPath}/P-III/scripts/fakeUser.ahk`;
+	await $`AutoHotkey.exe ${fakeUser}`;
 }
 
 const shutdown = () => {
 	console.log("Run Shutdown");
-	return $`AutoHotKey ${appPath}/P-III/scripts/shutdown.ahk"`;
+	return $`AutoHotKey ${appPath+'/P-III/scripts/shutdown.ahk'}`;
 }
 
 const reboot = async () => {
@@ -85,7 +87,7 @@ const reboot = async () => {
 		console.log("somethingWentWrong")
 		return false;
 	}else{
-		await $`AutoHotKey "${appPath}/P-III/scripts/reboot.ahk"`;	
+		await $`AutoHotKey ${appPath+'/P-III/scripts/reboot.ahk'}`;	
 		return true;
 	}
 }

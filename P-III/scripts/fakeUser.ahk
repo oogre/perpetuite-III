@@ -1,5 +1,6 @@
 while !WinExist("ACE 3.8.3.250 - Interface Homme Machine")
 	Sleep 100
+Sleep 5000
 WinActivate ; Use the window found by WinExist.
 WinMove, 0, 0
 MouseMove, 70, 370
