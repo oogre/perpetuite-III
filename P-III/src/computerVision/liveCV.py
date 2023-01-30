@@ -91,9 +91,7 @@ while(isRunning) :
     # print("Getting image success.")
     #numpy image to opencv image
     img = cv2.cvtColor(numpy.asarray(numpy_image),cv2.COLOR_BGR2RGB)
-    oldImg = cv2.imread(dataPath+'camera.jpg')
-    difference = cv2.subtract(oldImg, img)
-    
+   
     if( "close" in last_line):
         last_line =""
         isRunning=False
@@ -101,8 +99,10 @@ while(isRunning) :
         imgSrc = img
         isDiff = False
         if( "diff" in last_line):
-            imgSrc = difference
-            isDiff = True
+            oldImg = cv2.imread(dataPath+'camera.jpg')
+            if oldImg is not None :
+                imgSrc = cv2.subtract(oldImg, img)
+                isDiff = True
         image_name = last_line.replace("\n", "");
         last_line = ""
         
@@ -115,11 +115,11 @@ while(isRunning) :
         _, thresh2 = cv2.threshold(blur,68,255,cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        cv2.imwrite(dataPath+'camera.jpg', img)
+        cv2.imwrite(dataPath+'camera.jpg', imgSrc)
         # cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
         
         if(isDiff) :
-            cv2.imwrite(dataPath+'difference.jpg', difference)
+            cv2.imwrite(dataPath+'difference.jpg', imgSrc)
         # else :
         #     # image_name="x14y-456"
         #     height = img.shape[0]
