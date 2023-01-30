@@ -4,8 +4,8 @@ const processName = "P-III.launcher";
 
 const rebootMinDelay = 10 * 60 * 1000;
 const rebootTimeFilePath = `./../data/reboot.timestamp`;
-
-$.verbose = false;
+const appPath = 'C:/Users/32495/Desktop/perpetuite-III';
+//$.verbose = false;
 
 const wait = async t => new Promise(r => setTimeout(()=>r(), t));
 
@@ -13,7 +13,8 @@ const setupParentIP = async () => {
 	console.log("Setup Parent IP");
 	let {stdout:HOST_IPV4} = await $`ipconfig.exe | grep "Ethernet adapter vEthernet (WSL):" -A 4  | grep "IPv4 Address" -A 1 | grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`;
 	HOST_IPV4 = HOST_IPV4.replace("\n", "");
-	await $`echo "nameserver ${HOST_IPV4}" > /etc/resolv.conf`;
+	await $`touch ./data/parent_IP.conf`;
+	await $`echo "${HOST_IPV4}" > ./data/parent_IP.conf`;
 	return HOST_IPV4;
 }
 
@@ -62,15 +63,15 @@ const runAce = async () => {
 	console.log("Run Ace");
 	$`Ace.exe server=ace@43434`;
 	await wait(10000);
-	$`Ace.exe client datafile="C:/Users/felix/Desktop/perpetuite-III/ACE.3.8/driver.perpetuite3.ace.awp"`;
+	$`Ace.exe client datafile="${appPath}/ACE.3.8/driver.perpetuite3.ace.awp"`;
 	await waitForAceReady();
 	$`Ace.exe client culture=fr-LU loadui="/Src/Interface Homme Machine"`;
-	await $`AutoHotKey "C:/Users/felix/Desktop/perpetuite-III/P-III/scripts/fakeUser.ahk"`;
+	await $`AutoHotkey.exe "${appPath}/P-III/scripts/fakeUser.ahk"`;
 }
 
 const shutdown = () => {
 	console.log("Run Shutdown");
-	return $`AutoHotKey "C:/Users/felix/Desktop/perpetuite-III/P-III/scripts/shutdown.ahk"`;
+	return $`AutoHotKey ${appPath}/P-III/scripts/shutdown.ahk"`;
 }
 
 const reboot = async () => {
@@ -84,7 +85,7 @@ const reboot = async () => {
 		console.log("somethingWentWrong")
 		return false;
 	}else{
-		await $`AutoHotKey "C:/Users/felix/Desktop/perpetuite-III/P-III/scripts/reboot.ahk"`;	
+		await $`AutoHotKey "${appPath}/P-III/scripts/reboot.ahk"`;	
 		return true;
 	}
 }

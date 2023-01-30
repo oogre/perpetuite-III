@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.9
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Author: Evrard Vincent
 # @Date:   2022-09-26 22:28:27

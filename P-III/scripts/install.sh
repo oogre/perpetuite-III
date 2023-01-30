@@ -10,15 +10,16 @@ touch ~/.zshenv
 echo 'export PIII_PATH='$(pwd) >> ~/.zshenv
 source ~/.zshenv
 
-
 pip3 install noise;
 pip3 install screeninfo;
-pip3 install setproctitle
-
+pip3 install setproctitle;
+pip3 install numpy;
 if [ $EUID != 0 ]; then
 	sudo "$0" "$@"
 	exit $?
 fi
+npm i -g zx;
+apt-get install -y python3-opencv;
 
 $(pwd)/scripts/uninstall.sh
 

@@ -212,7 +212,7 @@ const errorHandler = (error) => {
   await DrawModel.init();
   await RobotModel.init();
   while(true){
-    await update(true);  
+    await update(true);
   }
 })()
 .catch(errorHandler);

@@ -23,7 +23,7 @@ const {
 } = _conf_.HIGH_LEVEL_API_CONF;
 
 const main = () => {
-    const {promise, trig, kill} = subProcessTrigger('python.exe', ['-u', `C:/Users/felix/Desktop/perpetuite-III/P-III/src/computerVision/liveCV.py`]);
+    const {promise, trig, kill} = subProcessTrigger('python.exe', ['-u', `C:/Users/32495/Desktop/perpetuite-III/P-III/src/computerVision/liveCV.py`]);
     process.stdin.on('data', async (data)=>{
         if(data == "close\n"){
             return kill();
