@@ -35,3 +35,8 @@ try{
 	await $`taskkill.exe /IM python.exe /F`;
 }catch(e){}
 
+
+
+// try{
+// 	await $`shutdown.exe -s -t 00 -f`;
+// }catch(e){}

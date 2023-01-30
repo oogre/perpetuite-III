@@ -3,7 +3,7 @@
 const processName = "P-III.launcher";
 
 const rebootMinDelay = 10 * 60 * 1000;
-const rebootTimeFilePath = `./../data/reboot.timestamp`;
+const rebootTimeFilePath = `./data/reboot.timestamp`;
 const appPath = 'C:/Users/32495/Desktop/perpetuite-III';
 //$.verbose = false;
 
@@ -72,8 +72,7 @@ const runAce = async () => {
 }
 
 const shutdown = () => {
-	console.log("Run Shutdown");
-	return $`AutoHotKey ${appPath+'/P-III/scripts/shutdown.ahk'}`;
+	return $`shutdown.exe -s -t 00 -f`;
 }
 
 const reboot = async () => {
@@ -87,7 +86,7 @@ const reboot = async () => {
 		console.log("somethingWentWrong")
 		return false;
 	}else{
-		await $`AutoHotKey ${appPath+'/P-III/scripts/reboot.ahk'}`;	
+		await $`shutdown.exe -r -t 00 -f`;
 		return true;
 	}
 }
