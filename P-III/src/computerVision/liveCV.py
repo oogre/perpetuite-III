@@ -110,7 +110,7 @@ while(isRunning) :
         blur = cv2.GaussianBlur(gray,(11, 11),0)
         _, thresh1 = cv2.threshold(blur,48,255,cv2.THRESH_BINARY)
 
-        erosion = cv2.erode(thresh1,numpy.ones((20, 20),numpy.uint8),iterations = 1)
+        erosion = cv2.erode(thresh1,numpy.ones((32, 32),numpy.uint8),iterations = 1)
         blur = cv2.GaussianBlur(erosion,(31, 31),0)
         _, thresh2 = cv2.threshold(blur,68,255,cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -133,12 +133,10 @@ while(isRunning) :
         #     image_path = dirpath + now.strftime("%H.%M.%S")+ "_" + image_name + ".jpg"
         #     cv2.imwrite(image_path, smallImg)
 
-        pills = []
+        data = []
         for cnt in contours :
-            pill = Pill(cnt, img)
-            if hasattr(pill, 'bBox'): 
-              pills.append(pill.toObj())
-        rawData = json.dumps(pills)
+            data.append(Pill(cnt, img).toObj())
+        rawData = json.dumps(data)
         splitedData = [rawData[i:i+256] for i in range(0, len(rawData), 256)]
 
         for chunck in splitedData :

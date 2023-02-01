@@ -30,6 +30,7 @@ const main = () => {
         }
         const res = await trig(data.replaceAll("\n", ""));
         const cPills = JSON.parse(res).map(rPill => {
+            if(!rPill.isPill) return rPill;
             const avgLAB = rgb2lab(rPill.avgRGB);
             const [, color] = pill_colors.reduce((acc, color) => {
                 const d = deltaE(avgLAB, color.lab);
