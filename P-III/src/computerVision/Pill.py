@@ -36,9 +36,9 @@ class Pill:
         self.avgRGB = (int(b), int(g), int(r))
     def toObj(self):
         return {
-            "center" : [float("{:.2f}".format(self.centroid[0])), float("{:.2f}".format(self.centroid[1]))],
-            "avgRGB" : [self.avgRGB[2], self.avgRGB[1], self.avgRGB[0]],
-            "box" : [self.bBox["x"],self.bBox["y"], self.bBox["w"], self.bBox["h"]],
             "isPill" : self.isPill,
-            "area" : self.area
+            "area" : self.area,
+            "box" : [self.bBox["x"],self.bBox["y"], self.bBox["w"], self.bBox["h"]],
+            "center" : [float("{:.2f}".format(self.centroid[0])), float("{:.2f}".format(self.centroid[1]))],
+            "avgRGB" : [self.avgRGB[2], self.avgRGB[1], self.avgRGB[0]]
         }

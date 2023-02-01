@@ -38,10 +38,10 @@ const main = () => {
                 return [d, color];
             }, null);
             return {
+                ...rPill,
                 avgLAB,
                 label : color.name,
-                color : color.color,
-                ...rPill
+                color : color.color
             }
         });
         console.log(JSON.stringify(cPills))  
