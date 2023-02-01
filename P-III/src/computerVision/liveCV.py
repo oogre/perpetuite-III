@@ -61,7 +61,8 @@ cam.TriggerMode.set(gx.GxSwitchEntry.OFF)
 cam.ExposureAuto.set(False)
 cam.ExposureTime.set(15000.0)
 cam.GainAuto.set(False)
-cam.Gain.set(24.0)
+cam.Gain.set(18.0)
+# cam.Gain.set(24.0)
 # cam.LightSourcePreset.set(2)
 
 # set the acq buffer count

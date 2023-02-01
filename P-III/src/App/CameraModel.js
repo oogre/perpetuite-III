@@ -8,7 +8,7 @@
 import _conf_ from './../common/config.js';
 import RobotModel from "./RobotModel.js";
 import PillsModel from "./PillsModel.js";
-import ForBiddenPlaceModel from "./ForBiddenPlaceModel.js";
+import ForbiddenPlaceModel from "./ForbiddenPlaceModel.js";
 import Vector from './../common/Vector.js';
 import Rect from './../common/Rect.js';
 import Log from './../common/Log.js';
@@ -104,7 +104,7 @@ class CameraModel {
 		const realPills = rawPills.filter(({isPill}) => isPill);
 		const fakePills = rawPills.filter(({isPill}) => !isPill);
 
-		ForBiddenPlaceModel.insert(fakePills);
+		ForbiddenPlaceModel.insert(fakePills);
 		return await PillsModel.insert(realPills);
 	}
 }

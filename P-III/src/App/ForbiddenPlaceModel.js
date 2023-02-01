@@ -4,7 +4,7 @@ import Log from './../common/Log.js';
 import {isArray} from './../common/tools.js';
 import Rect from './../common/Rect.js';
 
- class ForBiddenPlaceModel extends EventHandler{
+ class ForbiddenPlaceModel extends EventHandler{
   constructor(){
     super();
     this.forbiddenPlaces = [];
@@ -27,3 +27,6 @@ import Rect from './../common/Rect.js';
 		});
   }
 }
+
+
+export default (new ForbiddenPlaceModel());
