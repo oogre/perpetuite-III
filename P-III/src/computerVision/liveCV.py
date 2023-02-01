@@ -13,6 +13,7 @@ import sys
 import select
 import json
 import os
+import time
 from Pill import Pill
 import threading
 from setproctitle import setproctitle
@@ -39,43 +40,54 @@ isRunning = True
  
 # create a device manager
 device_manager = gx.DeviceManager()
+def createCamera():
 
-dev_num, dev_info_list = device_manager.update_device_list()
-if dev_num == 0:
-    print("Daheng camera is not found!!!")
-    sys.exit(1)
+    dev_num, dev_info_list = device_manager.update_device_list()
 
-# open the first device
-cam = device_manager.open_device_by_index(1)
+    # print(dev_info_list)
 
-# exit when the camera is a mono camera
-if cam.PixelColorFilter.is_implemented() is False:
-    print("This sample does not support mono camera.")
-    cam.close_device()
-    sys.exit(1)
+    if dev_num == 0:
+        # print("Daheng camera is not found!!!")
+        return None
 
-# set continuous acquisition
-cam.TriggerMode.set(gx.GxSwitchEntry.OFF)
+    # open the first device
+    cam = device_manager.open_device_by_index(1)
 
-# set exposure gain and white balance to auto
-cam.ExposureAuto.set(False)
-cam.ExposureTime.set(15000.0)
-cam.GainAuto.set(False)
-cam.Gain.set(21.0)
-# cam.Gain.set(24.0)
-# cam.LightSourcePreset.set(2)
+    # exit when the camera is a mono camera
+    if cam.PixelColorFilter.is_implemented() is False:
+        print("This sample does not support mono camera.")
+        cam.close_device()
+        sys.exit(1)
 
-# set the acq buffer count
-cam.data_stream[0].set_acquisition_buffer_number(3)
-# start data acquisition
-cam.stream_on()
+    # set continuous acquisition
+    cam.TriggerMode.set(gx.GxSwitchEntry.OFF)
 
+    # set exposure gain and white balance to auto
+    cam.ExposureAuto.set(False)
+    cam.ExposureTime.set(15000.0)
+    cam.GainAuto.set(False)
+    cam.Gain.set(21.0)
+    # cam.Gain.set(24.0)
+    # cam.LightSourcePreset.set(2)
+
+    # set the acq buffer count
+    cam.data_stream[0].set_acquisition_buffer_number(3)
+    # start data acquisition
+    cam.stream_on()
+    return cam
+
+cam = createCamera();
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stdin.reconfigure(encoding='utf-8')
 
 while(isRunning) :
-    raw_image = cam.data_stream[0].get_image()
+    raw_image = None
+    if cam is not None:
+        raw_image = cam.data_stream[0].get_image()
     if raw_image is None:
+        if cam is not None:
+            cam.close_device()
+        cam = createCamera()
         # print("Getting image failed.")
         continue
 
