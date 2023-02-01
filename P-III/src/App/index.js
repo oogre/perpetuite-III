@@ -155,6 +155,8 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
           dropInTheDrawPart = counter > 10;
           counter++;
         }
+
+        // get position of that color into DrawModel.commands
         const randPt = await DrawModel.getRandomPoint(dropInTheDrawPart);
         await RobotModel.go(...randPt.toArray(2));
         await CameraModel.update(false);

@@ -100,12 +100,18 @@ class CameraModel {
 			await move();
 		}
 		const rawData = await collectWaiter;
-		const rawPills = JSON.parse(rawData);
-		const realPills = rawPills.filter(({isPill}) => isPill);
-		const fakePills = rawPills.filter(({isPill}) => !isPill);
+		try {
+			const rawPills = JSON.parse(rawData);
+			const realPills = rawPills.filter(({isPill}) => isPill);
+			const fakePills = rawPills.filter(({isPill}) => !isPill);
 
-		ForbiddenPlaceModel.insert(fakePills);
-		return await PillsModel.insert(realPills);
+			ForbiddenPlaceModel.insert(fakePills);
+			return await PillsModel.insert(realPills);
+		}
+		catch(error){
+			console.log(rawData);
+			console.error(error);
+		}
 	}
 }
 
