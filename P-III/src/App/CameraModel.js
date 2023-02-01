@@ -8,6 +8,7 @@
 import _conf_ from './../common/config.js';
 import RobotModel from "./RobotModel.js";
 import PillsModel from "./PillsModel.js";
+import ForBiddenPlaceModel from "./ForBiddenPlaceModel.js";
 import Vector from './../common/Vector.js';
 import Rect from './../common/Rect.js';
 import Log from './../common/Log.js';
@@ -92,19 +93,19 @@ class CameraModel {
 
 	async update(flag = true){
 		await wait(500);
-		Log.step("before Trig");
 		const collectWaiter = this.trig(RobotModel.toString())
 		if(flag){
 			await wait(500);
-			Log.step("before move");
 			const move = RobotModel.adjustmentMove();
 			await move();
-			Log.step("after move");
 		}
 		const rawData = await collectWaiter;
-		Log.step("after Trig");
-		const tPills = JSON.parse(rawData);
-		return await PillsModel.insert(tPills);
+		const rawPills = JSON.parse(rawData);
+		const realPills = rawPills.filter(({isPill}) => isPill);
+		const fakePills = rawPills.filter(({isPill}) => !isPill);
+
+		ForBiddenPlaceModel.insert(fakePills);
+		return await PillsModel.insert(realPills);
 	}
 }
 

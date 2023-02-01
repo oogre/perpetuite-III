@@ -127,7 +127,7 @@ class PillModel{
     this.locked = false;
     this.avgLAB = pill.avgLAB;
     this.color = new Color(...pill.color);
-    this.center = CameraModel.camToWorld(pill.center);
+    this.center = CameraModel.camToWorld(pill.box.slice(0, 2));
     this.valid = this.center.length() <= radius;
     this.avgRGB = pill.avgRGB;
     this.accuracy = 10;

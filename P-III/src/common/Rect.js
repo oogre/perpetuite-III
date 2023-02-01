@@ -12,6 +12,10 @@ class Rect{
 		           	other.bottom < this.top
 		        );
 	}
+	contains([x, y]){
+		return 	x > this.left && x < this.right &&
+				y > this.top && y < this.bottom;
+	}
 
 }
 
