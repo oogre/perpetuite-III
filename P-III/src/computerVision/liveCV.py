@@ -115,6 +115,8 @@ while(isRunning) :
         _, thresh2 = cv2.threshold(blur,68,255,cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+        
+        cv2.imwrite(dataPath+'thresh2.jpg', thresh2)
         cv2.imwrite(dataPath+'camera.jpg', imgSrc)
         # cv2.imwrite(dataPath+'mask.eroded.jpg', thresh2)
         
