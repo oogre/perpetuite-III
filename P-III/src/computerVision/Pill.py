@@ -20,7 +20,7 @@ class Pill:
         # self.circularity = getCircularity(self.area, self.perimeter)
         # print(self.area)
 
-        self.isPill= self.area > 2200 and self.area < 4200: # and self.circularity > 0.75 :
+        self.isPill= self.area > 2200 and self.area < 4200 # and self.circularity > 0.75 :
  
         self.centroid = (M["m10"]/M["m00"], M["m01"]/M["m00"])
 
