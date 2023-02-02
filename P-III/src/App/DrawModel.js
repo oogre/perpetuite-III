@@ -31,6 +31,7 @@ const {
 } = _conf_.HIGH_LEVEL_API_CONF;
 
 const pillRadius = PILL_SIZE / 2;
+const pillRadiusSq = pillRadius * pillRadius;
 
 const drawOffsetPath = `${process.env.PIII_PATH}/data/drawOffset`;
 const drawPath = `${process.env.PIII_PATH}/data/draw.diff.png`;
@@ -93,6 +94,17 @@ class DrawModel{
 
   pointToWorld([x, y]){
     return new Vector(x-RADIUS, y-RADIUS);
+  }
+
+  isInCommand(location, c){
+    const subCommands = this.commands
+      .filter(({color}) => color.equals(c))
+      .filter(({point}) => {
+        const dSq = point.subtract(location).magSq();
+        return dSq < pillRadiusSq;
+      });
+      console.log(subCommands.length, location, c);
+    return subCommands.length > 0;
   }
 
   async next(flag = false){

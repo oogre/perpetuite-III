@@ -8,6 +8,7 @@
 
 import _ from "underscore";
 import PillsModel from "./PillsModel.js";
+import ForbiddenPlaceModel from "./ForbiddenPlaceModel.js";
 import RobotModel from "./RobotModel.js";
 import DrawModel from "./DrawModel.js";
 import {wait} from "./../common/tools.js";
@@ -113,7 +114,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   await wait(200);
   await CameraModel.update(false);
 
-  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 3.5);
+  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 1.75);
   let items = targets.length;
   let itemsToRemove = targets.length;
   let removedCount = 0;
@@ -122,7 +123,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   while (items--) {
     const {pill:{color, center}, id, dSq} = targets[items];
     if(dropColor.equals(color) && items == 0 ){
-      if(dSq >= pillRadius * pillRadius){
+      if(dSq >= pillRadius * pillRadius * 2){
         Log.step(`Adjust the good colored pill ${color.toString()} @ ${dropLocation.toString(2)}`);
         if(!await PillsModel.pills[id].update()){
           PillsModel.pills.splice(id, 1);

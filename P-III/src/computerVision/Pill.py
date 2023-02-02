@@ -40,5 +40,5 @@ class Pill:
         else :
             return {
                 "isPill" : self.isPill,
-                "box" : [float("{:.2f}".format(self.centroid[0])), float("{:.2f}".format(self.centroid[1])), self.bBox["w"], self.bBox["h"]],
+                "box" : [self.bBox["x"], self.bBox["y"], self.bBox["x"] + self.bBox["w"], self.bBox["y"] + self.bBox["h"]],
             }

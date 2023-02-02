@@ -1,31 +1,61 @@
 import {subProcessTrigger, wait} from './../common/tools.js';
 
-
 process.stdin.setEncoding("utf8")
 process.stdout.setEncoding("utf8")
 
-const main = async () => {
-	const {promise, trig, kill} = subProcessTrigger(`${process.env.PIII_PATH}/src/computerVision/test.stdin.py`,[]);
-	process.stdin.on('data', async (data)=>{
-		// if(data == "close\n"){
-		// 	return kill();
-		// }
-		console.log("liveCV", data);
-		const res = await trig(data);
-		process.stdout.write(res);
-	});
-	return await promise;
-};
+class CameraGuffy{
+	constructor(){
+		const {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
+		this.promise = promise;
+		this.trig = trig;
+		this.kill = kill;
+		this.killed = false;
+	}
+	async update(){
+		const collectWaiter = this.trig(" ")
+		const rawData = await collectWaiter;
+		try {
+			const rawPills = JSON.parse(rawData);
+			const realPills = rawPills.filter(({isPill}) => isPill);
+			const fakePills = rawPills.filter(({isPill}) => !isPill);
 
-const stop = ()=>{
-	console.log("FINISHED");
-	process.exit();
+			console.log("realPills", realPills.map(({circularity})=>circularity));
+			// console.log("fakePills", fakePills);
+		}
+		catch(error){
+			console.log(rawData);
+			console.error(error);
+		}
+	}
 }
 
-main()
-	.then(stop)
-	.catch(stop);
 
+
+
+
+
+
+const main = async () => {
+	const guffy = new CameraGuffy();
+
+
+	const autoRun = async () =>{
+		await guffy.update();
+		await autoRun();
+	}
+	// process.stdin.on('data', async (data)=>{
+	// 	await guffy.update();
+	// });
+
+	autoRun();
+	await guffy.promise;
+};
+
+
+main()
+	.then(()=>console.log("finish"))
+	.catch((error)=>console.log(error))
+;
 
 // (async () => {
 // 	const {promise, trig, kill} = pipe(`${process.env.PIII_PATH}/src/computerVision/test.stdin.py`,  []);

@@ -7,6 +7,7 @@
 
 import _conf_ from './../common/config.js';
 import CameraModel from "./CameraModel.js";
+import DrawModel from "./DrawModel.js";
 import RobotModel from "./RobotModel.js";
 import EventHandler from "./../common/EventHandler.js";
 import {deltaE} from './../common/tools.js';
@@ -72,7 +73,8 @@ class PillsModel extends EventHandler{
 
   async getPillByColor(color, cbNotFound = async ()=>{}, depth = 0){
     Log.info(`Looking for ${color.toString()}`)
-    let pillId = this.pills.findIndex( pill => !pill.locked && pill.color.equals(color));
+    let pillId = this.pills.findIndex( pill => !pill.locked && pill.color.equals(color) && !DrawModel.isInCommand(pill.center,pill.color));
+    
     if(pillId < 0){
       if(depth>10){
         this.pills.filter(({color:c})=>c.equals(color)).forEach(pill=>pill.unlock());

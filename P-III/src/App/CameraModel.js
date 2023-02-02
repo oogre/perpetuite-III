@@ -16,7 +16,6 @@ import {$, wait, subProcessTrigger} from './../common/tools.js';
 import fs from 'fs-extra';
 import _ from 'underscore';
 
-
 const { 
   physical : {
     camera : {
@@ -93,7 +92,7 @@ class CameraModel {
 
 	async update(flag = true){
 		await wait(500);
-		const collectWaiter = this.trig(RobotModel.toString())
+		const collectWaiter = this.trig(" ")
 		if(flag){
 			await wait(500);
 			const move = RobotModel.adjustmentMove();

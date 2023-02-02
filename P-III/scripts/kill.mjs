@@ -19,10 +19,6 @@ try{
 }catch(e){}
 
 try{
-	await $`killall P-III`;
-}catch(e){}
-
-try{
 	await $`killall P-III.cv`;
 }catch(e){}
 

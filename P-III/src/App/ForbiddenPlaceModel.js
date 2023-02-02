@@ -1,5 +1,7 @@
 
 import EventHandler from "./../common/EventHandler.js";
+import CameraModel from "./CameraModel.js";
+
 import Log from './../common/Log.js';
 import {isArray} from './../common/tools.js';
 import Rect from './../common/Rect.js';
@@ -22,8 +24,10 @@ import Rect from './../common/Rect.js';
   insert(forbiddenPlaces=[]){
   	forbiddenPlaces
 		.filter(({isPills, box})=> isPills == false && isArray(box))
-		.map(({box:[x, y, w, h]}) => {
-			forbiddenPlaces.push(new Rect(x-w/2, y-h/2, w, h));
+		.map(({box:[left, top, right, bottom]}) => {
+      [left, top] = CameraModel.camToWorld([left, top]);
+      [right, bottom] = CameraModel.camToWorld([right, bottom]);
+			forbiddenPlaces.push(new Rect(left, top, Math.abs(right-left), Math.abs(bottom-top)));
 		});
   }
 }
