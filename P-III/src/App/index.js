@@ -114,7 +114,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   await wait(200);
   await CameraModel.update(false);
 
-  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 1.75);
+  let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 2.75);
   let items = targets.length;
   let itemsToRemove = targets.length;
   let removedCount = 0;
