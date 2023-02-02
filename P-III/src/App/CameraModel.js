@@ -92,10 +92,14 @@ class CameraModel {
 
 	async isGrabbed(){
 		await wait(500);
-		const rawData = await this.trig("diff");
-		await wait(500);
-		const tPills = JSON.parse(rawData);
-		return tPills.length != 0;
+		try{
+			const rawData = await this.trig("diff");
+			await wait(500);
+			const tPills = JSON.parse(rawData);
+			return tPills.length != 0;
+		}catch(error){
+			return true;
+		}
 	}
 
 	async update(flag = true){
