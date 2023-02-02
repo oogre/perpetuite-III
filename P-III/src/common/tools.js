@@ -309,7 +309,7 @@ export const subProcessTrigger = (cmd, args)=>{
     });
     child.on("close", code => {
       console.log("close");
-      resolve();
+      reject(`${cmd} CRASHED : ${code}`);
       if(subPromiseRejecter)subPromiseRejecter();
       rawData = "";
     });

@@ -40,13 +40,21 @@ class CameraModel {
 	static ROTATION = camRotation * CameraModel.DEG_TO_RAD;
 	
 	constructor(){
-		const {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
-		this.promise = promise;
-		this.trig = trig;
-		this.kill = kill;
+		this.initCV()
 		this.killed = false;
 	}
 
+	initCV(){
+		console.log("init CV");
+		let {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
+		this.promise = promise;
+		this.promise
+			.then(data => console.log(`P-III.cv released`, data))
+			.catch(error => this.initCV());
+		this.trig = trig;
+		this.kill = kill;
+
+	}
 	destructor(){
 		if(this.killed)return;
 		this.killed = true;
@@ -98,7 +106,13 @@ class CameraModel {
 			const move = RobotModel.adjustmentMove();
 			await move();
 		}
-		const rawData = await collectWaiter;
+		let rawData;
+		try {
+			rawData = await collectWaiter;
+		}
+		catch(error){
+			console.error(`trig is dead ${error}`);
+		}
 		try {
 			const rawPills = JSON.parse(rawData);
 			const realPills = rawPills.filter(({isPill}) => isPill);
@@ -108,8 +122,8 @@ class CameraModel {
 			return await PillsModel.insert(realPills);
 		}
 		catch(error){
-			console.log(rawData);
 			console.error(error);
+			return [];
 		}
 	}
 }

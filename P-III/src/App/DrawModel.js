@@ -96,14 +96,18 @@ class DrawModel{
     return new Vector(x-RADIUS, y-RADIUS);
   }
 
-  isInCommand(location, c){
+  isInCommand(location, c, remove=false){
     const subCommands = this.commands
       .filter(({color}) => color.equals(c))
       .filter(({point}) => {
         const dSq = point.subtract(location).magSq();
         return dSq < pillRadiusSq;
       });
-      console.log(subCommands.length, location, c);
+      // if(remove && subCommands.length==1){
+      //   const id = this.commands.findIndex(({color, point}) => color.equals(subCommands[0].color) && point.equals(subCommands[0].point))
+      //   if(id >= 0 ) this.commands.splice(id, 1);
+      // }
+      // console.log(subCommands.length, location, c);
     return subCommands.length > 0;
   }
 

@@ -61,8 +61,9 @@ class PillsModel extends EventHandler{
   info(){
     return  Object.entries(this.pills.reduce((acc, pill)=>{
       const color = pill.color.toString();
-      if(!acc.hasOwnProperty(color))acc[color] = 0;
-      acc[color]++;
+      if(!acc.hasOwnProperty(color))acc[color] = [0,0];
+      if(pill.locked)acc[color][1]++;
+      acc[color][0]++;
       return acc;
     }, {})).flat() ;
   }
@@ -73,7 +74,7 @@ class PillsModel extends EventHandler{
 
   async getPillByColor(color, cbNotFound = async ()=>{}, depth = 0){
     Log.info(`Looking for ${color.toString()}`)
-    let pillId = this.pills.findIndex( pill => !pill.locked && pill.color.equals(color) && !DrawModel.isInCommand(pill.center,pill.color));
+    let pillId = this.pills.findIndex( pill => !pill.locked && pill.color.equals(color) && !DrawModel.isInCommand(pill.center,pill.color, true));
     
     if(pillId < 0){
       if(depth>10){
@@ -144,20 +145,20 @@ class PillModel{
     this.accuracy *= 2;
   }
 
-  async update(){
-    while(!_conf_.DEBUG && this.accuracy>pill_dist_accuracy){
-      await RobotModel.simpleGo(...this.center.toArray(2));
-      let cPills = await CameraModel.update();
-      const [dist, closest] = findPillCloseTo(cPills, this.center);
-      if(closest &&  closest.color.equals(this.color)){
-        this.accuracy = this.center.subtract(closest.center).length();
-        this.center = closest.center;
-      }else{
-        return false
-      }
-    }
-    return true;
-  }
+  // async update(){
+  //   while(!_conf_.DEBUG && this.accuracy>pill_dist_accuracy){
+  //     await RobotModel.simpleGo(...this.center.toArray(2));
+  //     let cPills = await CameraModel.update();
+  //     const [dist, closest] = findPillCloseTo(cPills, this.center);
+  //     if(closest &&  closest.color.equals(this.color)){
+  //       this.accuracy = this.center.subtract(closest.center).length();
+  //       this.center = closest.center;
+  //     }else{
+  //       return false
+  //     }
+  //   }
+  //   return true;
+  // }
 
   async update(){
     do{
