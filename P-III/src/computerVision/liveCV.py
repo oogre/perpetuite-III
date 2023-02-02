@@ -43,9 +43,6 @@ device_manager = gx.DeviceManager()
 def createCamera():
 
     dev_num, dev_info_list = device_manager.update_device_list()
-
-    # print(dev_info_list)
-
     if dev_num == 0:
         # print("Daheng camera is not found!!!")
         return None
@@ -66,8 +63,8 @@ def createCamera():
     cam.ExposureAuto.set(False)
     cam.ExposureTime.set(15000.0)
     cam.GainAuto.set(False)
-    cam.Gain.set(21.0)
-    # cam.Gain.set(24.0)
+    # cam.Gain.set(21.0)
+    cam.Gain.set(22.0)
     # cam.LightSourcePreset.set(2)
 
     # set the acq buffer count

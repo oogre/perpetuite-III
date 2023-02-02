@@ -18,10 +18,12 @@ class Pill:
         self.area = M["m00"]
         self.perimeter = cv2.arcLength(contour, True)
         self.circularity = getCircularity(self.area, self.perimeter)
-        self.isPill= self.area > 2000 and self.area < 2600 and self.circularity > 0.75
+        self.isPill= self.area > 1700 and self.area < 2600 and self.circularity > 0.8
         self.centroid = (M["m10"]/M["m00"], M["m01"]/M["m00"])
         x, y, w, h = cv2.boundingRect(contour)
         self.bBox = {"x":x, "y":y, "w":w, "h":h}
+        if x < 2 or y < 2 or x > imBGR.shape[1]-2  or y > imBGR.shape[0]-2 :
+            self.isPill= False
         if self.isPill :
             parcel = imBGR[self.bBox["y"]:self.bBox["y"]+self.bBox["h"], self.bBox["x"]:self.bBox["x"]+self.bBox["w"]]
             pixels = np.float32(parcel.reshape(-1, 3))
@@ -34,11 +36,15 @@ class Pill:
         if self.isPill :
             return {
                 "isPill" : self.isPill,
+                "area" : self.area,
+                "circularity" : self.circularity,
                 "box" : [float("{:.2f}".format(self.centroid[0])), float("{:.2f}".format(self.centroid[1])), self.bBox["w"], self.bBox["h"]],
                 "avgRGB" : [self.avgRGB[2], self.avgRGB[1], self.avgRGB[0]]
             }
         else :
             return {
                 "isPill" : self.isPill,
-                "box" : [self.bBox["x"], self.bBox["y"], self.bBox["x"] + self.bBox["w"], self.bBox["y"] + self.bBox["h"]],
+                "area" : self.area,
+                "circularity" : self.circularity,
+                "box" : [float("{:.2f}".format(self.centroid[0])), float("{:.2f}".format(self.centroid[1])), self.bBox["w"], self.bBox["h"]]
             }
