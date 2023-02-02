@@ -2,7 +2,7 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-11-02 22:27:54
+  @Last Modified time: 2023-02-02 16:11:25
 \*----------------------------------------*/
 
 import {$} from './../common/tools.js';
@@ -135,7 +135,14 @@ class DrawModel{
     return await this.next(true);
   }
 
-  async getRandomPoint( inTheDrawPart = false ){
+  async getRandomPoint( inTheDrawPart = false, color = false ){
+    if(color != false){
+      const subCommand = this.commands.filter(({color:c}) => color.equals(c));
+      if(subCommand.length>0){
+        console.log("USEFULL DROP : happy");
+        return subCommand[Math.floor(Math.random()*subCommand.length)].point;
+      }
+    }
     let counter = 0 ; 
     while(true){
       const [x, y] = _.sample(pts);

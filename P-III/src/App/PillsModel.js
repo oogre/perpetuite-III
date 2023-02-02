@@ -2,7 +2,7 @@
   P-III - PillsModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2022-10-18 17:51:40
+  @Last Modified time: 2023-02-02 16:02:18
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -65,7 +65,7 @@ class PillsModel extends EventHandler{
       if(pill.locked)acc[color][1]++;
       acc[color][0]++;
       return acc;
-    }, {})).flat() ;
+    }, {})).flat(2) ;
   }
 
   shuffle(){

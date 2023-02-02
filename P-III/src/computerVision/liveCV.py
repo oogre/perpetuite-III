@@ -4,7 +4,7 @@
 # @Author: Evrard Vincent
 # @Date:   2022-10-13 12:36:10
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-10-25 11:12:57
+# @Last Modified time: 2023-02-02 16:12:15
 
 import cv2
 import gxipy as gx
@@ -64,7 +64,7 @@ def createCamera():
     cam.ExposureTime.set(15000.0)
     cam.GainAuto.set(False)
     # cam.Gain.set(21.0)
-    cam.Gain.set(22.0)
+    cam.Gain.set(24.0)
     # cam.LightSourcePreset.set(2)
 
     # set the acq buffer count
