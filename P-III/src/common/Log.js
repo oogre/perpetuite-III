@@ -14,8 +14,7 @@ const COMMAND = ColorCli.cyanBright;
 const STEP = ColorCli.greenBright;
 const INFO = ColorCli.cyan;
 const ERROR = ColorCli.error;
-
-const dateFormat = new Intl.DateTimeFormat('fr', { year : "2-digit", hour:"2-digit", minute:"2-digit", second:"2-digit",  day:"2-digit", month: '2-digit' });
+const WARN = ColorCli.xterm(209);
 
 
 const log_file = fs.createWriteStream(_conf_.log_path, {flags : 'w'});
@@ -33,13 +32,16 @@ class Log {
 		console.log(TITLE(...args));
 	}
 	date(...args){
-		console.log(...[...args, dateFormat.format(new Date()) ]);
+		console.log(TITLE(...[...args, _conf_.dateFormat.format(new Date()) ]));
 	}
 	command(...args){
 		console.log(COMMAND(...args));
 	}
 	step(...args){
 		console.log(STEP(...args));
+	}
+	warn(...args){
+		console.log(WARN(...args));
 	}
 
 	log(...args){

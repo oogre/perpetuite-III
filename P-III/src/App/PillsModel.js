@@ -73,7 +73,7 @@ class PillsModel extends EventHandler{
   }
 
   async getPillByColor(color, cbNotFound = async ()=>{}, depth = 0){
-    Log.info(`Looking for ${color.toString()}`)
+    Log.step(`Looking for ${color.toString()}`)
     let pillId = this.pills.findIndex( pill => !pill.locked && pill.color.equals(color) && !DrawModel.isInCommand(pill.center,pill.color, true));
     
     if(pillId < 0){
@@ -84,7 +84,7 @@ class PillsModel extends EventHandler{
       await cbNotFound();
       return await this.getPillByColor(color, cbNotFound, depth+1);
     }
-    Log.info(`Found ${this.pills[pillId].color.toString()} @ ${this.pills[pillId].center.toString(2)}`)
+    Log.step(`Found ${this.pills[pillId].color.toString()} @ ${this.pills[pillId].center.toString(2)}`)
     return [this.pills[pillId], pillId];
   }
   

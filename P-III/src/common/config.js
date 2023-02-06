@@ -22,4 +22,8 @@ if( os.hostname() === "oogre" || os.hostname() === "oogre.local"){
   conf.BASE_API_CONF.network.host = HOST_IP;
 }
 
+
+conf.dateFormat = new Intl.DateTimeFormat('fr', { year : "2-digit", hour:"2-digit", minute:"2-digit", second:"2-digit",  day:"2-digit", month: '2-digit' });
+
+
 export default conf;

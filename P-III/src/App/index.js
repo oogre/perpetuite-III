@@ -34,7 +34,8 @@ const {
 } = _conf_.HIGH_LEVEL_API_CONF;
 
 const pillRadius = pill_size_mm / 2;
-
+const timeAtStart = new Date();
+let now;
 
 const colors = pill_colors.map(({name})=>name);
 const stats = {
@@ -66,8 +67,9 @@ const update = async () => {
   if(newFrame){
     dropInTheDrawPart = false;
   }
-
-  Log.date();
+  now = new Date();
+  Log.title(`Run since ${_conf_.dateFormat.format(timeAtStart)}`);
+  Log.title(`Now ${_conf_.dateFormat.format(now)}`);
   Log.title(`Current frame : ${frameID}`);
   Log.title(`Still : ${len} move`);
   Log.title(`Success VS Fail : ${stats.success}/${stats.fail}`);
@@ -97,9 +99,9 @@ const grabProcess = async () => {
   ];
   let isGrabbed = false;
   for(const offset of offsets){
-    await RobotModel.go(...originLocation.add(offset).toArray(2));
+    await RobotModel.simpleGo(...originLocation.add(offset).toArray(2));
     await RobotModel.grab();
-    await RobotModel.go(...originLocation.toArray(2));
+    await RobotModel.simpleGo(...originLocation.toArray(2));
     if(await CameraModel.isGrabbed()){
       isGrabbed = true;
       break;
@@ -113,6 +115,10 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   await RobotModel.go(...dropLocation.toArray(2));
   await wait(200);
   await CameraModel.update(false);
+
+  if(!ForbiddenPlaceModel.isAuthorizedLocation(dropLocation)){
+    return false;
+  }
 
   let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 2.75);
   let items = targets.length;
@@ -135,6 +141,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
         }
         await RobotModel.go(...dropLocation.toArray(2));
         await RobotModel.drop();
+        await RobotModel.go(...dropLocation.toArray(2));
       }else{
         Log.step(`The good colored pill ${color.toString()} is already @ ${Math.round(Math.sqrt(dSq))}mm of ${center.toString(2)}`);
       }
@@ -161,7 +168,10 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
         await RobotModel.go(...randPt.toArray(2));
         await CameraModel.update(false);
         const pillJam = PillsModel.getPillsAround(RobotModel.location.toArray(2), pillRadius * 3);
-        if(pillJam.length > 0){
+       
+        if(!ForbiddenPlaceModel.isAuthorizedLocation(RobotModel.location)){
+          Log.step(`The random location ${RobotModel.location.toString(2)} is inside a forbidden place`);  
+        }else if(pillJam.length > 0){
           Log.step(`The random location ${RobotModel.location.toString(2)} is populated by ${pillJam.length} pills`);  
         }else{
           Log.step(`The random location ${RobotModel.location.toString(2)} is empty`);  
@@ -177,6 +187,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
 }
 
 const populateDropZone = async (dropLocation, dropColor) => {
+  
   Log.step(`Put the good colored pill ${dropColor.toString()} @ ${dropLocation.toString(2)}`);
   let [pill, id] = await PillsModel.getPillByColor(dropColor, async () => {
     const randPt = await DrawModel.getRandomPoint();
@@ -187,6 +198,11 @@ const populateDropZone = async (dropLocation, dropColor) => {
     PillsModel.pills.splice(id, 1);
     return false;
   }
+
+  if(!ForbiddenPlaceModel.isAuthorizedLocation(dropLocation)){
+    return false;
+  }
+  
   await grabProcess();
   await RobotModel.go(...dropLocation.toArray(2));
   await RobotModel.drop();

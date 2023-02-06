@@ -185,6 +185,7 @@ class RobotModel{
     await this.setSpeed();
     await this.setAcceleration();
     await this.setDecceleration();
+    Log.info("simple go to", new Vector(x, y, z));
     await this.setLocation(new Vector(x, y, z));
   }
 

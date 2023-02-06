@@ -45,7 +45,7 @@ class CameraModel {
 	}
 
 	initCV(){
-		console.log("init CV");
+		Log.warn("init CV");
 		let {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
 		this.promise = promise;
 		this.promise
@@ -126,7 +126,7 @@ class CameraModel {
 			return await PillsModel.insert(realPills);
 		}
 		catch(error){
-			console.error(error);
+			// console.error(error);
 			return [];
 		}
 	}

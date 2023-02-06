@@ -6,7 +6,9 @@ import Log from './../common/Log.js';
 import {isArray} from './../common/tools.js';
 import Rect from './../common/Rect.js';
 
- class ForbiddenPlaceModel extends EventHandler{
+
+const MAX_AGE_SECOND = 10 * 60;
+class ForbiddenPlaceModel extends EventHandler{
   constructor(){
     super();
     this.forbiddenPlaces = [];
@@ -14,11 +16,21 @@ import Rect from './../common/Rect.js';
   }
 
   isAuthorizedLocation(point){
+    return true;
+    
+    this.forbiddenPlaces = this.forbiddenPlaces.filter(area => area.getAge() < MAX_AGE_SECOND);
   	for(rect of forbiddenPlaces){
   		if(rect.contains(point))
   			return false;
   	}
   	return true;
+  }
+
+  isAlreadyKown(other){
+    for(rect of forbiddenPlaces){
+      if(rect.intersect(other))return true;
+    }
+    return true;
   }
 
   insert(forbiddenPlaces=[]){
@@ -29,6 +41,16 @@ import Rect from './../common/Rect.js';
       [right, bottom] = CameraModel.camToWorld([right, bottom]);
 			forbiddenPlaces.push(new Rect(left, top, Math.abs(right-left), Math.abs(bottom-top)));
 		});
+  }
+}
+
+class Area {
+  constructor(rect){
+    this.createdAt = new Date().getTime();
+    this.rect = rect;
+  }
+  getAge(){
+    return (new Date().getTime() - this.createdAt)*0.001;
   }
 }
 
