@@ -136,8 +136,10 @@ class DrawModel{
   }
 
   async getRandomPoint( inTheDrawPart = false, color = false ){
-    if(color != false){
-      const subCommand = this.commands.filter(({color:c}) => color.equals(c));
+    if(color != false && inTheDrawPart != false){
+      const subCommand = this.commands
+        .filter(({color:c}) => color.equals(c));
+
       if(subCommand.length>0){
         console.log("USEFULL DROP : happy");
         return subCommand[Math.floor(Math.random()*subCommand.length)].point;
