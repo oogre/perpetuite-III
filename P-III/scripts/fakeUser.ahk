@@ -25,3 +25,4 @@ MouseMove, 70, 370
 Sleep 300
 Click
 WinClose 
+return

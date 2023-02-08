@@ -46,6 +46,9 @@ const runAce = async () => {
 	$`Ace.exe client datafile=${AceAPI}`;
 	await waitForAceReady();
 	$`Ace.exe client culture=fr-LU loadui="/Src/Interface Homme Machine"`;
+	try{
+		await $`P-III.core.api HighPower -- 0`;
+	}catch(error){}
 	const fakeUser = `${appPath}/P-III/scripts/fakeUser.ahk`;
 	await $`AutoHotkey.exe ${fakeUser}`;
 }
@@ -54,3 +57,4 @@ const runAce = async () => {
 if(!await isAceRunning())await runAce();
 		
 
+// AutoHotkey.exe "C:/Users/32495/Desktop/perpetuite-III/P-III/scripts/fakeUser.ahk"
