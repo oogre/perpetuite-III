@@ -214,15 +214,15 @@ const populateDropZone = async (dropLocation, dropColor) => {
 
 
 const errorHandler = (error) => {
-  Log.log(error);
-  Log.log(error?.stack);
-  CameraModel.destructor();
+  // Log.log(error);
+  // Log.log(error?.stack);
   if(_.isArray(error)){
     const [id, label] = error;
-    return process.stderr.write(`${label}`);
+    process.stderr.write(`${label}`);
+    process.exit(0);
   }
-  process.stderr.write(JSON.stringify(error));
-  process.exit(1);
+  process.stderr.write(error, error?.stack);
+  process.exit(0);
 }
 
 (async () => {
@@ -237,7 +237,6 @@ const errorHandler = (error) => {
 
 
 process.on('exit',() => {
-  CameraModel.destructor();
   Log.date("Exit @ ");
   Log.end();
 })

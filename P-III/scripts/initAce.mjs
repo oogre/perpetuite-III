@@ -37,7 +37,6 @@ const waitForAceReady = async () =>{
 	}
 }
 
-
 const runAce = async () => {
 	console.log("Run Ace");
 	$`Ace.exe server=ace@43434`;
@@ -55,6 +54,5 @@ const runAce = async () => {
 
 
 if(!await isAceRunning())await runAce();
-		
 
-// AutoHotkey.exe "C:/Users/32495/Desktop/perpetuite-III/P-III/scripts/fakeUser.ahk"
+process.exit(0);

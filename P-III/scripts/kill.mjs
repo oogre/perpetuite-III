@@ -39,3 +39,5 @@ try{
 // try{
 // 	await $`shutdown.exe -s -t 00 -f`;
 // }catch(e){}
+
+process.exit(0);
