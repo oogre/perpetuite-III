@@ -1,3 +1,4 @@
 *.zip
 bin/*
 node_modules/*
+*.mov
