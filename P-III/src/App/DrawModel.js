@@ -10,6 +10,7 @@ import _conf_ from './../common/config.js';
 import Color from './../common/Color.js';
 import Vector from './../common/Vector.js';
 import PillsModel from './PillsModel.js';
+import Log from './../common/Log.js';
 import Jimp from 'jimp';
 import _ from 'underscore';
 import fs from 'fs-extra';
@@ -136,10 +137,12 @@ class DrawModel{
   }
 
   async getRandomPoint( inTheDrawPart = false, color = false ){
-    if(color != false){
-      const subCommand = this.commands.filter(({color:c}) => color.equals(c));
+    if(color != false && inTheDrawPart == false){
+      const subCommand = this.commands
+        .filter(({color:c}) => color.equals(c));
+
       if(subCommand.length>0){
-        console.log("USEFULL DROP : happy");
+        Log.step("USEFULL DROP");
         return subCommand[Math.floor(Math.random()*subCommand.length)].point;
       }
     }

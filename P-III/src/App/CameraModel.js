@@ -45,7 +45,7 @@ class CameraModel {
 	}
 
 	initCV(){
-		console.log("init CV");
+		Log.warn("init CV");
 		let {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
 		this.promise = promise;
 		this.promise
@@ -92,10 +92,14 @@ class CameraModel {
 
 	async isGrabbed(){
 		await wait(500);
-		const rawData = await this.trig("diff");
-		await wait(500);
-		const tPills = JSON.parse(rawData);
-		return tPills.length != 0;
+		try{
+			const rawData = await this.trig("diff");
+			await wait(500);
+			const tPills = JSON.parse(rawData);
+			return tPills.length != 0;
+		}catch(error){
+			return true;
+		}
 	}
 
 	async update(flag = true){
@@ -122,7 +126,7 @@ class CameraModel {
 			return await PillsModel.insert(realPills);
 		}
 		catch(error){
-			console.error(error);
+			// console.error(error);
 			return [];
 		}
 	}

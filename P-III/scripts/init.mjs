@@ -1,26 +1,59 @@
 #!/usr/bin/env zx
 
 const processName = "P-III.launcher";
-
 const rebootMinDelay = 10 * 60 * 1000;
-const rebootTimeFilePath = `./data/reboot.timestamp`;
+const rebootTimeFilePath = `${process.env.PIII_PATH}/data/reboot.timestamp`;
 const appPath = 'C:/Users/32495/Desktop/perpetuite-III';
 //$.verbose = false;
 
-const wait = async t => new Promise(r => setTimeout(()=>r(), t));
 
-const setupParentIP = async () => {
-	console.log("Setup Parent IP");
-	let {stdout:HOST_IPV4} = await $`ipconfig.exe | grep "Ethernet adapter vEthernet (WSL):" -A 4  | grep "IPv4 Address" -A 1 | grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`;
-	HOST_IPV4 = HOST_IPV4.replace("\n", "");
-	await $`touch ./data/parent_IP.conf`;
-	await $`echo "${HOST_IPV4}" > ./data/parent_IP.conf`;
-	return HOST_IPV4;
+const main = async () =>{
+
+	if(await isPIIILauncherRunning()) return;
+
+	process.title = processName;
+		
+	await $`zx $PIII_PATH/scripts/initAce.mjs`;
+
+	if(await isPIIIRunning()) return;
+
+	console.log("Run PIII");
+	try{
+		await $`P-III`;
+	}catch({stderr}){
+		console.log("error collector", stderr);
+		await $`zx $PIII_PATH/scripts/kill.mjs`;
+		if(stderr.includes("E-STOP")) return await shutdown();
+		else return await reboot();
+	}
 }
 
-const isAceRunning = async () => {
+
+const shutdown = () => {
+	// return console.log("shutdown.exe -s -t 00 -f");
+	return $`shutdown.exe -s -t 00 -f`;
+}
+
+const reboot = async () => {
+	console.log("Run reboot");
+	let {stdout:lastBootTime} = await $`cat ${rebootTimeFilePath}`
+	lastBootTime = parseInt(lastBootTime.replace("\n", ""));
+	const now = new Date().getTime();
+	await $`echo ${now} > ${rebootTimeFilePath}`
+	const durationSinceLastReboot = (now - lastBootTime); // milliseconds
+	if(durationSinceLastReboot < rebootMinDelay){
+		console.log("somethingWentWrong")
+		return false;
+	}else{
+		// return console.log("shutdown.exe -r -t 00 -f");
+		await $`shutdown.exe -r -t 00 -f`;
+		return true;
+	}
+}
+
+const isPIIILauncherRunning = async ()=>{
 	try{
-		await $`tasklist.exe | grep "Ace."`;
+		await $`pgrep ${processName}`;
 		return true;
 	}catch(e){
 		return false;
@@ -36,106 +69,6 @@ const isPIIIRunning = async () => {
 	}
 }
 
-const isAceReady = async ()=>{
-	try{
-		const {stdout:openPortList} = await $`netstat.exe -nao | grep "0.0.0.0:9090"`;
-		return true;
-	}catch(e){
-		return false;
-	}
-}
+await main();
 
-const waitForAceReady = async () =>{
-	console.log("Waiting for Ace to be ready");
-	let flag = false;
-	while(! await isAceReady()){
-		await wait(1000);
-		process.stdout.write(".");
-		flag =true;
-	}
-	if(flag){
-		console.log("");	
-	}
-}
-
-
-const runAce = async () => {
-	console.log("Run Ace");
-	$`Ace.exe server=ace@43434`;
-	await wait(10000);
-	const AceAPI = `${appPath}/ACE.3.8/driver.perpetuite3.ace.awp`;
-	$`Ace.exe client datafile=${AceAPI}`;
-	await waitForAceReady();
-	$`Ace.exe client culture=fr-LU loadui="/Src/Interface Homme Machine"`;
-	const fakeUser = `${appPath}/P-III/scripts/fakeUser.ahk`;
-	await $`AutoHotkey.exe ${fakeUser}`;
-}
-
-const shutdown = () => {
-	return $`shutdown.exe -s -t 00 -f`;
-}
-
-const reboot = async () => {
-	console.log("Run reboot");
-	let {stdout:lastBootTime} = await $`cat ${rebootTimeFilePath}`
-	lastBootTime = parseInt(lastBootTime.replace("\n", ""));
-	const now = new Date().getTime();
-	await $`echo ${now} > ${rebootTimeFilePath}`
-	const durationSinceLastReboot = (now - lastBootTime); // milliseconds
-	if(durationSinceLastReboot < rebootMinDelay){
-		console.log("somethingWentWrong")
-		return false;
-	}else{
-		await $`shutdown.exe -r -t 00 -f`;
-		return true;
-	}
-}
-
-const onLockCollision = () => {
-	console.log("Run onLockCollision");
-	return Promise.reject();
-}
-
-const isPIIILauncherRunning = async ()=>{
-	try{
-		await $`pgrep ${processName}`;
-	}catch(e){
-		return false;
-	}
-}
-
-const cleanKill = async ()=>{
-	try{
-		await $`killall P-III.cv`;
-	}catch(e){}
-	try{
-		await $`killall P-III.cv.Server`;
-	}catch(e){}
-	try{
-		await $`killall python.exe`;
-	}catch(e){}
-}
-
-if(!await isPIIILauncherRunning()){
-	process.title = processName;
-	while(true){
-		const parent_IP = await setupParentIP();
-		console.log("HOST IP : ", parent_IP);
-		if(!await isAceRunning())await runAce();
-		if(!await isPIIIRunning()){
-			console.log("Run PIII");
-			const {stderr} = await $`P-III`;
-			console.log("error collector", stderr);
-			await cleanKill();
-			if(stderr.includes("E-STOP")){
-				await shutdown();
-				break;
-			}
-			else if(!await reboot()){
-				break;
-			}
-		}else{
-			break;
-		}
-	}
-}
+process.exit(0);

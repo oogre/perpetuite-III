@@ -13,24 +13,36 @@ const {network:NETWORK_CONF} = _conf_.BASE_API_CONF;
 export default async (req) => { // Request object
 	return new Promise((resolve, reject)=>{
 		if(!isRequest(req))return reject("Call communication takes only Request Object as parameter ");
-		const client = net.createConnection(NETWORK_CONF, () => {
-			client.write(req.toString());
-		});
+		
+		try{
+			let timer;
+			const client = net.createConnection(NETWORK_CONF, () => {
+				client.write(req.toString());
+			});
 
-		client.on('data', (data) => {
-			client.end();
-			if(isBuffer(data)) data = data.toString('utf8');
-			resolve(data);
-		});
+			client.on('data', (data) => {
+				clearTimeout(timer);
+				client.end();
+				if(isBuffer(data)) data = data.toString('utf8');
+				resolve(data);
+			});
 
-		client.on("error", e => {
-			client.end();
-			reject(`${e && e.message}`);
+			client.on("error", e => {
+				clearTimeout(timer);
+				client.end();
+				reject(`${e && e.message}`);
+			});
 
-		});
+			client.on('end', () => {
+				clearTimeout(timer);
+				// console.log('CLIENT : closed');
+			});
 
-		client.on('end', () => {
-			// console.log('CLIENT : closed');
-		});
+			timer = setTimeout(()=>{
+				reject("Timeout");
+			}, NETWORK_CONF.timeout);
+		}catch(error){
+			reject("Connection failed");
+		}
 	});
 }
