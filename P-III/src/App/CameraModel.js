@@ -2,7 +2,7 @@
   P-III - CameraModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-22 21:02:03
-  @Last Modified time: 2023-01-18 17:06:18
+  @Last Modified time: 2023-02-11 16:56:37
 \*----------------------------------------*/
 
 import _conf_ from './../common/config.js';
@@ -28,6 +28,10 @@ const {
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
 
+const {
+	enabled:camEnabled
+} = _conf_.CAMERA_CONF;
+
 class CameraModel {
 	static DEG_TO_RAD = Math.PI * 2 / 360.0
 	static PIX_TO_MM = (new Vector(...size_mm)).divide(new Vector(...size_px)).toArray().reduce((acc, v)=>acc+=v, 0)/2 
@@ -45,6 +49,7 @@ class CameraModel {
 	}
 
 	initCV(){
+		if(!camEnabled)return;
 		Log.warn("init CV");
 		let {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
 		this.promise = promise;
@@ -91,6 +96,7 @@ class CameraModel {
 	}
 
 	async isGrabbed(){
+		if(!camEnabled)return true;
 		await wait(500);
 		try{
 			const rawData = await this.trig("diff");
@@ -103,6 +109,7 @@ class CameraModel {
 	}
 
 	async update(flag = true){
+		if(!camEnabled)return [];
 		await wait(500);
 		const collectWaiter = this.trig(" ")
 		if(flag){

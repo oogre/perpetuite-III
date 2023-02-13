@@ -88,6 +88,7 @@
     }
   },
   "CAMERA_CONF" : {
+    "enabled" : true,
     "img_file_path" : "[PIII_PATH]/data/camera.jpg",
     "empty_img_file_path" : "[PIII_PATH]/data/empty.jpg",
     "diff_img_file_path" : "[PIII_PATH]/data/diff.jpg",
