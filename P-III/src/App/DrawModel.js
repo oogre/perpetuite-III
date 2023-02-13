@@ -2,7 +2,7 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2023-02-13 13:20:36
+  @Last Modified time: 2023-02-13 14:29:18
 \*----------------------------------------*/
 
 import {$} from './../common/tools.js';
@@ -145,7 +145,7 @@ class DrawModel{
     }
     let sqCmd = new Array(cellCount).fill(0).map(() => new Array(cellCount).fill(" "));
     for(const cmd of cmds) {
-      const [x, y] = worldToTable(cmd.point.toArray(2));
+      const [x, y] = worldToGrid(cmd.point.toArray(2));
       if(sqCmd[x][y] == " ")
         sqCmd[x][y] = [];
       sqCmd[x][y].push(cmd);
