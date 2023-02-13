@@ -19,7 +19,7 @@ const main = async () =>{
 
 	console.log("Run PIII");
 	try{
-		await $`P-III`;
+		await $`P-III 2>&1 | tee -a ${process.env.PIII_PATH}/data/P-III.log`;
 	}catch({stderr}){
 		console.log("error collector", stderr);
 		await $`zx $PIII_PATH/scripts/kill.mjs`;

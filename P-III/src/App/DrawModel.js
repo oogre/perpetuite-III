@@ -5,7 +5,7 @@
   @Last Modified time: 2023-02-13 14:29:18
 \*----------------------------------------*/
 
-import {$} from './../common/tools.js';
+import {$, lerp} from './../common/tools.js';
 import _conf_ from './../common/config.js';
 import Color from './../common/Color.js';
 import Vector from './../common/Vector.js';
@@ -116,7 +116,7 @@ class DrawModel{
     if(this.commands.length > 0){
       return [this.commands.pop(), this.commands.length, this.currentFrame, flag];
     }
-    this.commands = this.randomizer(await this.GEN(), 100, [3, 10]);
+    this.commands = this.randomizer(await this.GEN(), 13, [3, 10]);
     return await this.next(true);
   }
 
@@ -138,10 +138,10 @@ class DrawModel{
     }, []);
   }
 
-  randomizer(cmds, cellSize, [inArowMin, inArowMax]){
-    const cellCount = 1300/cellSize;
+  randomizer(cmds, cellCount, [inArowMin, inArowMax]){
+    const cellSize = 1300/cellCount;
     const worldToGrid = ([x, y]) => {
-      return [Math.floor((x + RADIUS) / cellCount), Math.floor((y + RADIUS) / cellCount)];
+      return [Math.floor((x + RADIUS) / cellSize), Math.floor((y + RADIUS) / cellSize)];
     }
     let sqCmd = new Array(cellCount).fill(0).map(() => new Array(cellCount).fill(" "));
     for(const cmd of cmds) {
