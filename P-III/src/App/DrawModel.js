@@ -2,7 +2,7 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2023-02-02 16:11:25
+  @Last Modified time: 2023-02-13 13:13:13
 \*----------------------------------------*/
 
 import {$} from './../common/tools.js';
@@ -116,14 +116,17 @@ class DrawModel{
     if(this.commands.length > 0){
       return [this.commands.pop(), this.commands.length, this.currentFrame, flag];
     }
+    this.commands = this.randomizer(await this.GEN(), 100, [3, 10]);
+    return await this.next(true);
+  }
+
+  async GEN(){
     await fs.writeFile(drawOffsetPath, ""+this.offset);
     await $(`P-III.gen`, ""+(this.offset), {NO_DEBUG : true} );
     this.img = await Jimp.read(drawPath);
-
     this.currentFrame = this.offset;
     this.offset += STEP_INC;
-    
-    this.commands = pts.reduce((acc, [x, y]) => {
+    return = pts.reduce((acc, [x, y]) => {
       const [r, g, b, a] = this.pointToColor([x, y])
       if(a != 0){
         acc.push({
@@ -132,8 +135,30 @@ class DrawModel{
         })
       }
       return acc;
-    }, []).sort((a, b) => 0.5 - Math.random())
-    return await this.next(true);
+    }, []);
+  }
+
+  randomizer(cmds, cellSize, [inArowMin, inArowMax]){
+    const cellCount = 1300/cellSize;
+    const worldToGrid = ([x, y]) => {
+      return [Math.floor((x + RADIUS) / cellCount), Math.floor((y + RADIUS) / cellCount)];
+    }
+    let sqCmd = new Array(cellCount).fill(0).map(() => new Array(cellCount).fill(" "));
+    for(const cmd of cmds) {
+      const [x, y] = worldToTable(cmd.point.toArray(2));
+      if(sqCmd[x][y] == " ")
+        sqCmd[x][y] = [];
+      sqCmd[x][y].push(cmd);
+    }
+    const cmdListTmp = sqCmd.map(line => line.sort((a, b) => 0.5 - Math.random()))//2DShuffle
+              .sort((a, b) => 0.5 - Math.random())
+              .flat(2)
+              .filter(cmd => cmd != " " && !!cmd);
+    let cmdList = [];
+    while(cmdListTmp.length>0){
+      cmdList = cmdList.concat(cmdListTmp.splice(Math.floor(Math.random() * cmdListTmp.length), Math.floor(lerp(inArowMin, inArowMax, Math.random()))));
+    }
+    return cmdList;
   }
 
   async getRandomPoint( inTheDrawPart = false, color = false ){

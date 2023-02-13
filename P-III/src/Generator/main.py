@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.9
 # -*- coding: utf-8 -*-
 # @Author: Evrard Vincent
 # @Date:   2022-09-26 22:28:27
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2022-10-04 21:07:15
+# @Last Modified time: 2023-02-10 16:30:55
 
 import cv2
 import sys
@@ -33,24 +33,21 @@ def genImage(w=75, h=75, offset=0) :
 	m1 = curve(pnoise2(1, offset * 0.001))
 	m2 = curve(pnoise2(2, offset * 0.002))
 	m3 = curve(pnoise2(3, offset * 0.003))
-	m4 = curve(pnoise2(4, offset * 0.004))
 	for y in range(0, h):
 		for x in range(0, w):
 			r = x * 0.01
 			s = y * 0.01
-			c1 = pnoise3(0 + r*m1, 0 + s*m1, offset * 0.005);
-			c2 = pnoise3(1 + r*m2, 1 + s*m2, offset * 0.006);
-			c3 = pnoise3(2 + r*m3, 2 + s*m3, offset * 0.007);
-			c4 = pnoise3(3 + r*m4, 3 + s*m4, offset * 0.008);
-			c = max(c1,max(c2, max(c3, c4))); 
+			c1 = pnoise3(0 + r*m1, 0 + s*m1, offset * 0.005)
+			c2 = pnoise3(1 + r*m2, 1 + s*m2, offset * 0.006)
+			c3 = pnoise3(2 + r*m3, 2 + s*m3, offset * 0.007)
+			c = max(c1,max(c2, c3))
 			if(c1 == c) :
-				image[y, x] = (255, 0, 0);
-			elif(c2 == c):
-				image[y, x] = (0, 255, 0);
-			elif(c3 == c):
-				image[y, x] = (0, 0, 255);
-			else:
-				image[y, x] = (0, 0, 0);
+				image[y, x] = (255, 0, 0)
+			elif(c2 == c) :
+				image[y, x] = (0, 255, 0)
+			else :
+				image[y, x] = (0, 0, 255)
+			
 	return image
 
 def display(img, w=400, h=400, winname="generator") : 
@@ -91,7 +88,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "loop" :
 		oldImg = curImg.copy()
 		curImg = genImage(w=width, h=height, offset=offset)
 		moveImg = diff(curImg, oldImg, w=width, h=height)
-		offset += 5
+		offset += 10
 		if not display(moveImg):
 			break
 else :
