@@ -2,7 +2,7 @@
   P-III - DrawModel.js
   @author Evrard Vincent (vincent@ogre.be)
   @Date:   2022-09-21 19:03:46
-  @Last Modified time: 2023-02-13 13:13:13
+  @Last Modified time: 2023-02-13 13:20:36
 \*----------------------------------------*/
 
 import {$} from './../common/tools.js';
@@ -126,7 +126,7 @@ class DrawModel{
     this.img = await Jimp.read(drawPath);
     this.currentFrame = this.offset;
     this.offset += STEP_INC;
-    return = pts.reduce((acc, [x, y]) => {
+    return pts.reduce((acc, [x, y]) => {
       const [r, g, b, a] = this.pointToColor([x, y])
       if(a != 0){
         acc.push({
