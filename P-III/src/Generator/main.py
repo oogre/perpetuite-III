@@ -1,9 +1,9 @@
-#!/usr/bin/env python3.9
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Author: Evrard Vincent
 # @Date:   2022-09-26 22:28:27
 # @Last Modified by:   vincent evrard
-# @Last Modified time: 2023-02-10 16:30:55
+# @Last Modified time: 2023-02-13 13:24:18
 
 import cv2
 import sys
