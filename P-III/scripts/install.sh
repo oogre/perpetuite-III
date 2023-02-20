@@ -19,7 +19,7 @@ if [ $EUID != 0 ]; then
 	exit $?
 fi
 npm i -g zx;
-apt-get install -y python3-opencv;
+apt-get install -y python3-opencv moreutils;
 
 $(pwd)/scripts/uninstall.sh
 

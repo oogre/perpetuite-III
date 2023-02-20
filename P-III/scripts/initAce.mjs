@@ -2,7 +2,7 @@
 
 const appPath = 'C:/Users/32495/Desktop/perpetuite-III';
 
-//$.verbose = false;
+// $.verbose = false;
 
 const wait = async t => new Promise(r => setTimeout(()=>r(), t));
 

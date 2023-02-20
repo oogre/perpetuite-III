@@ -1,4 +1,5 @@
 #!/usr/bin/env zx
+// $.verbose = false;
 
 
 // try{
@@ -9,14 +10,14 @@ try{
 	await $`killall P-III.APP`;
 }catch(e){}
 
-try{
-	await $`killall Ace.exe`;
-}catch(e){}
+// try{
+// 	await $`killall Ace.exe`;
+// }catch(e){}
 
-try{
-	await $`taskkill.exe /IM Ace.exe /F`;
+// try{
+// 	await $`taskkill.exe /IM Ace.exe /F`;
 	
-}catch(e){}
+// }catch(e){}
 
 try{
 	await $`killall P-III.cv`;
