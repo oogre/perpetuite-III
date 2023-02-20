@@ -1,5 +1,4 @@
 {
-  "log_path" : "[PIII_PATH]/data/PIII.log",
   "BASE_API_CONF": {
     "network": {
       "host": "DESKTOP-QMI4M8B.mshome.net",

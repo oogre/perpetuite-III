@@ -17,10 +17,8 @@ const ERROR = ColorCli.error;
 const WARN = ColorCli.xterm(209);
 
 
-const log_file = fs.createWriteStream(_conf_.log_path, {flags : 'w'});
 const log_stdout = process.stdout;
 console.log = function (...args) { //
-  log_file.write(`${args.join('')}\n`);
   log_stdout.write(`${args.join('')}\n`);
 };
 
