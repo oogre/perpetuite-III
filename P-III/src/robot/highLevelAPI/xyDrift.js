@@ -34,7 +34,6 @@ This script is used to measure xy drift of 2D points.
 It runs 'P-III.core.api' script who drive the robot of the installation
 `,
 	})
-	.option('-p, --path <path>', 'destination of measured probes points', savePath)
 	.action( async ({debug, path}) => {
 		try{
 			await RobotHelper.HighPower(true, debug);
