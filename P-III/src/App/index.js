@@ -17,9 +17,11 @@ import _conf_ from "./../common/config.js";
 import Vector from "./../common/Vector.js";
 import Color from "./../common/Color.js";
 import Log from './../common/Log.js';
-
+import {getOffsetFor} from './../common/Offset.js';
 process.title = "P-III.APP";
 
+
+console.log(getOffsetFor([0, 0]));
 const { 
   physical : {
     pill_size_mm,
@@ -90,25 +92,25 @@ const update = async () => {
 
 const grabProcess = async () => {
   const originLocation = RobotModel.location.clone();
-  const offsets = [
-    new Vector( 0,  0),
-    new Vector( 0,  2),
-    new Vector( 2,  0),
-    new Vector(-2,  0),
-    new Vector( 0, -2)
-  ];
-  let isGrabbed = false;
+  const offsets = [new Vector( 0,  0), ...(new Array(6).fill(0).map((_, k, {length})=>{
+        const alpha = k * (Math.PI * 2)/length;
+        const r = 3;
+        return new Vector(r * Math.cos(alpha), r * Math.sin(alpha));
+      }))]
+  Log.warn(offsets);
+ 
   for(const offset of offsets){
     await RobotModel.simpleGo(...originLocation.add(offset).toArray(2));
+    await CameraModel.update(false);
     await RobotModel.grab();
     await RobotModel.simpleGo(...originLocation.toArray(2));
     if(await CameraModel.isGrabbed()){
-      isGrabbed = true;
-      break;
+      return true;
     }
     await RobotModel.gripperOpen();
+    await CameraModel.update(false);
   }
-  return isGrabbed;
+  return false;
 }
 
 const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
@@ -116,9 +118,9 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
   await wait(200);
   await CameraModel.update(false);
 
-  if(!ForbiddenPlaceModel.isAuthorizedLocation(dropLocation)){
+  /*if(!ForbiddenPlaceModel.isAuthorizedLocation(dropLocation)){
     return false;
-  }
+  }*/
 
   let targets = PillsModel.getPillsAround(dropLocation.toArray(2), pillRadius * 2.75);
   let items = targets.length;
@@ -198,10 +200,11 @@ const populateDropZone = async (dropLocation, dropColor) => {
     PillsModel.pills.splice(id, 1);
     return false;
   }
-
+  /*
   if(!ForbiddenPlaceModel.isAuthorizedLocation(dropLocation)){
     return false;
   }
+  */
   
   await grabProcess();
   await RobotModel.go(...dropLocation.toArray(2));

@@ -101,7 +101,8 @@ while(isRunning) :
     # print("Getting image success.")
     #numpy image to opencv image
     img = cv2.cvtColor(numpy.asarray(numpy_image),cv2.COLOR_BGR2RGB)
-   
+    img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
     if( "close" in last_line):
         last_line =""
         isRunning=False

@@ -81,6 +81,7 @@ program
 	.argument('<w>', 'float argument', parseFloat)
 	.description('Tell the robot to go at a position x y z with a orientation of w')
 	.action( (x, y, z, w, {debug}) => {
+		w = (w>0?1:-1)*(180-Math.abs(w));
 		main(Request.Go, new Position(x, y, z, w), debug)
 	});
 
@@ -161,8 +162,9 @@ program
 		});
 
 		rl.on('line', (line) => {
-				const coord = line.trim().split(" ").map(v=>parseFloat(v));
-				main(Request.Follow, new Position(...coord), debug)
+				let [x, y, z, w] = line.trim().split(" ").map(v=>parseFloat(v));
+				w = (w>0?1:-1)*(180-Math.abs(w));
+				main(Request.Follow, new Position(x, y, z, w), debug)
 		});
 	});
 

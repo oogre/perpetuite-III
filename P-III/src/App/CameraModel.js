@@ -12,6 +12,7 @@ import ForbiddenPlaceModel from "./ForbiddenPlaceModel.js";
 import Vector from './../common/Vector.js';
 import Rect from './../common/Rect.js';
 import Log from './../common/Log.js';
+import {getOffsetFor} from './../common/Offset.js';
 import {$, wait, subProcessTrigger} from './../common/tools.js';
 import fs from 'fs-extra';
 import _ from 'underscore';
@@ -20,8 +21,6 @@ const {
   physical : {
     camera : {
         size:camSize,
-        offset:camOffset,
-        rotate:camRotation,
         size_px,
         size_mm,
       }
@@ -31,17 +30,14 @@ const {
 const {
 	enabled:camEnabled
 } = _conf_.CAMERA_CONF;
+const lerp  = (a, b, t) => a + (b - a) * t;
+const inverseLerp  = (a, b, x) => (x - a) / (b - a);
 
 class CameraModel {
 	static DEG_TO_RAD = Math.PI * 2 / 360.0
 	static PIX_TO_MM = (new Vector(...size_mm)).divide(new Vector(...size_px)).toArray().reduce((acc, v)=>acc+=v, 0)/2 
-
 	static CAM_SIZE_PX = new Vector(...camSize);
-	static CAM_OFFSET_PX = new Vector(...camOffset);
-
 	static CAM_SIZE_MM = CameraModel.CAM_SIZE_PX.multiply(CameraModel.PIX_TO_MM);
-	static OFFSET_PX = CameraModel.CAM_SIZE_PX.multiply(0.5).subtract(CameraModel.CAM_OFFSET_PX);
-	static ROTATION = camRotation * CameraModel.DEG_TO_RAD;
 	
 	constructor(){
 		this.initCV()
@@ -56,7 +52,10 @@ class CameraModel {
 		this.promise
 			.then(data => console.log(`P-III.cv released`, data))
 			.catch(error => this.initCV());
-		this.trig = trig;
+		this.trig = (s)=>{
+			Log.warn("> "+s);
+			return trig(s);
+		}
 		this.kill = kill;
 
 	}
@@ -67,10 +66,12 @@ class CameraModel {
 	}
 
 	camToWorld(point){
+		const [ox, oy] = getOffsetFor([RobotModel.location.x, RobotModel.location.y]);
+
+		//Log.warn(RobotModel.location.x, RobotModel.location.y, ox, oy);
   		return (new Vector(...point))
-			.subtract(CameraModel.CAM_OFFSET_PX)
-			// .rotate(Vector.Up(), CameraModel.ROTATION)
-			.multiply(new Vector(-1, 1, 1))
+			.subtract(new Vector(ox, oy))
+			.multiply(new Vector(1, -1, 1))
 			.multiply(CameraModel.PIX_TO_MM)
 			.subtract(RobotModel.location)
 			.multiply(new Vector(-1, -1, 1));
@@ -97,11 +98,12 @@ class CameraModel {
 
 	async isGrabbed(){
 		if(!camEnabled)return true;
-		await wait(500);
+		await wait(700);
 		try{
 			const rawData = await this.trig("diff");
 			await wait(500);
 			const tPills = JSON.parse(rawData);
+			Log.warn(tPills.length);
 			return tPills.length != 0;
 		}catch(error){
 			return true;
@@ -127,9 +129,9 @@ class CameraModel {
 		try {
 			const rawPills = JSON.parse(rawData);
 			const realPills = rawPills.filter(({isPill}) => isPill);
-			const fakePills = rawPills.filter(({isPill}) => !isPill);
+			//const fakePills = rawPills.filter(({isPill}) => !isPill);
 
-			ForbiddenPlaceModel.insert(fakePills);
+			//ForbiddenPlaceModel.insert(fakePills);
 			return await PillsModel.insert(realPills);
 		}
 		catch(error){

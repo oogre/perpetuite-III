@@ -106,6 +106,8 @@ export const moveLimit = ({xpos=limitters.x.value, ypos=limitters.y.value, zpos=
 			constrain(limitters.roll.min, limitters.roll.max, wpos)
 		],
 	};
+	//r.pos[3] = (r.pos[3]>0?1:-1)*(180-Math.abs(r.pos[3]));
+	//return r;
 };
 
 export const getDepthForXY = (x, y) => {

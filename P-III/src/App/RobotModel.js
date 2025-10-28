@@ -23,7 +23,7 @@ const D = _conf_.DEBUG ? "-d 1" : "";
 class RobotModel{
   constructor(){
     this.location = undefined;
-    this.roll = Math.random();
+    this.roll = 0;
     this.speed = undefined;
     this.acc = undefined;
     this.dcc = undefined;

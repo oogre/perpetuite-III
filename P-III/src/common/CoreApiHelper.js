@@ -34,6 +34,8 @@ export const Call = ({debug = false, JsonFlag = true, ErrorFlag = true}={})=>{
 export const Go = async ({xpos, ypos, zpos, wpos, speed, acc, dcc, debug=false})=>{
 	debug = !debug ? '' : debug;
 	const { pos, s, a, d } = moveLimit({xpos, ypos, zpos, wpos, speed, acc, dcc});
+
+	console.log(pos);
 	const $ = Call({debug});
 	await $(`P-III.core.api Speed ${debug} -- ${s}`);
 	await $(`P-III.core.api Acc ${debug} -- ${a}`);
