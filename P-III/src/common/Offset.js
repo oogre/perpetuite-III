@@ -7,13 +7,23 @@ import Log from './Log.js';
 const { 
   physical : {
     camera : {
-        offset:[
-        	xDriftPath, 
-        	yDriftPath
-        ],
-      }
+      offset:[
+      	xDriftPath, 
+      	yDriftPath
+      ],
+    },
+    probe_height:probeHeight, 
+    pill_HEIGHT:pillHeight, 
+    approche:{
+      height:approche
+    }
+  },
+  zProbe : { 
+    save_path : probesPath 
   }
 } = _conf_.HIGH_LEVEL_API_CONF;
+
+const zProbs = fs.readJsonSync(probesPath);
 
 const xDrifts = fs.readJsonSync(xDriftPath);
 const yDrifts = fs.readJsonSync(yDriftPath);
@@ -82,7 +92,8 @@ const getIntersection=(point, set)=>{
 }
 
 export const getDepthFor = (point)=>{
-  return getIntersection(point, zProbs);
+  const [x, y, z] = getIntersection(point, zProbs);
+  return [x, y, z + approche + pillHeight - probeHeight]
 }
 
 export const getOffsetFor = (point)=>{

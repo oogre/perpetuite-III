@@ -72,6 +72,13 @@ export const HighPower = async (flag, debug=false) => {
 	return await $(`P-III.core.api HighPower ${debug} -- ${flag}`);
 }
 
+export const Gripper = async (flag, debug=false) => {
+	debug = !debug ? '' : debug;
+	const $ = Call({debug});
+	if(!isBool)throw new Error('CoreApiHelper.Gripper first argument must be a boolean');
+	return await $(`P-III.core.api Gripper ${debug} -- ${flag}`);
+}
+
 export const Grab = async (flag, debug=false) => {
 	if(!isBool)throw new Error('CoreApiHelper.Gripper first argument must be a boolean');
 	debug = !debug ? '' : debug;
