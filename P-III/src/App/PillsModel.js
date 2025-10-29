@@ -161,14 +161,20 @@ class PillModel{
   // }
 
   async update(){
+    let counter = 10;
     do{
       await RobotModel.simpleGo(...this.center.toArray(2));
       let cPills = await CameraModel.update();
+
       const [dist, closest] = findPillCloseTo(cPills, this.center);
       if(closest &&  closest.color.equals(this.color)){
         this.accuracy = this.center.subtract(closest.center).length();
         this.center = closest.center;
+        await RobotModel.simpleGo(...this.center.toArray(2));
       }else{
+        return false
+      }
+      if((counter--) <= 0){
         return false
       }
     }while(this.accuracy>pill_dist_accuracy);
