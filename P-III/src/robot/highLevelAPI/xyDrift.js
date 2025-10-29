@@ -41,50 +41,50 @@ It runs 'P-III.core.api' script who drive the robot of the installation
 			await RobotHelper.GoHome(debug);
 			
 			const probePoints = [
-				[0,  0], 
-				...(
-					new Array(4).fill(0).map((_, k, {length})=>{
-        		const alpha = k * (Math.PI * 2)/length;
-        		const r = 100;
-        		return [r * Math.cos(alpha), r * Math.sin(alpha)];
-      		})
-      	),
-      	...(
-					new Array(4).fill(0).map((_, k, {length})=>{
-        		const alpha = (k+0.25) * (Math.PI * 2)/length;
-        		const r = 200;
-        		return [r * Math.cos(alpha), r * Math.sin(alpha)];
-      		})
-      	),
-      	...(
-					new Array(4).fill(0).map((_, k, {length})=>{
-        		const alpha = (k+0.5) * (Math.PI * 2)/length;
-        		const r = 300;
-        		return [r * Math.cos(alpha), r * Math.sin(alpha)];
-      		})
-      	),
-      	...(
-					new Array(4).fill(0).map((_, k, {length})=>{
-        		const alpha = (k+0.75) * (Math.PI * 2)/length;
-        		const r = 400;
-        		return [r * Math.cos(alpha), r * Math.sin(alpha)];
-      		})
-      	),
-      	...(
-					new Array(8).fill(0).map((_, k, {length})=>{
-        		const alpha = (k) * (Math.PI * 2)/length;
-        		const r = 500;
-        		return [r * Math.cos(alpha), r * Math.sin(alpha)];
-      		})
-      	),
-      	...(
-					new Array(8).fill(0).map((_, k, {length})=>{
-        		const alpha = (k+0.5) * (Math.PI * 2)/length;
-        		const r = 600;
-        		return [r * Math.cos(alpha), r * Math.sin(alpha)];
-      		})
-      	),
-			]
+        [0,  0], 
+        ...(
+          new Array(6).fill(0).map((_, k, {length})=>{
+            const alpha = k * (Math.PI * 2)/length;
+            const r = 100;
+            return [r * Math.cos(alpha), r * Math.sin(alpha)];
+          })
+        ),
+        ...(
+          new Array(6).fill(0).map((_, k, {length})=>{
+            const alpha = (k+0.5) * (Math.PI * 2)/length;
+            const r = 200;
+            return [r * Math.cos(alpha), r * Math.sin(alpha)];
+          })
+        ),
+        ...(
+          new Array(6).fill(0).map((_, k, {length})=>{
+            const alpha = (k) * (Math.PI * 2)/length;
+            const r = 300;
+            return [r * Math.cos(alpha), r * Math.sin(alpha)];
+          })
+        ),
+        ...(
+          new Array(6).fill(0).map((_, k, {length})=>{
+            const alpha = (k+0.5) * (Math.PI * 2)/length;
+            const r = 400;
+            return [r * Math.cos(alpha), r * Math.sin(alpha)];
+          })
+        ),
+        ...(
+          new Array(6).fill(0).map((_, k, {length})=>{
+            const alpha = (k) * (Math.PI * 2)/length;
+            const r = 500;
+            return [r * Math.cos(alpha), r * Math.sin(alpha)];
+          })
+        ),
+        ...(
+          new Array(12).fill(0).map((_, k, {length})=>{
+            const alpha = (k+0.5) * (Math.PI * 2)/length;
+            const r = 600;
+            return [r * Math.cos(alpha), r * Math.sin(alpha)];
+          })
+        ),
+      ]
 
 			for(const [x, y] of probePoints){
 				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0});
