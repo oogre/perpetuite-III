@@ -43,6 +43,10 @@ echo "create symLink ./release/robot/highLevelAPI/P-III.xyDrift"
 ln -s ./xyDrift.js ./release/robot/highLevelAPI/P-III.xyDrift
 chmod +x ./release/robot/highLevelAPI/xyDrift.js
 
+echo "create symLink ./release/robot/highLevelAPI/P-III.test"
+ln -s ./test.js ./release/robot/highLevelAPI/P-III.test
+chmod +x ./release/robot/highLevelAPI/test.js
+
 cp -r ./src/computerVision/gxipy ./release/computerVision 
 cp -r ./src/computerVision/*.py ./release/computerVision 
 
