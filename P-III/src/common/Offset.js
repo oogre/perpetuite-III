@@ -2,14 +2,15 @@
 import fs from 'fs-extra';
 import _conf_ from './config.js';
 
+const math = require("mathjs");
 import Log from './Log.js';
 
 const { 
   physical : {
     camera : {
       offset:[
-      	xDriftPath, 
-      	yDriftPath
+        xDriftPath, 
+        yDriftPath
       ],
     },
     probe_height:probeHeight, 
@@ -65,6 +66,14 @@ const mag = ([x, y, z])=>{
 }
 
 const getPlane = (x, y, z, set)=>{
+  const triangle = getTriangle(x, y, z, set); 
+  return {
+    normal : getPlaneNormal(...triangle),
+    point : triangle[0]
+  }
+}
+
+const getTriangle = (x, y, z, set)=>{
   let closestPoints = set.map(([_x, _y, _z])=>{
     let dX = x - _x;
     let dY = y - _y;
@@ -72,11 +81,7 @@ const getPlane = (x, y, z, set)=>{
   }).sort((a, b)=> a[3]-b[3]);
   closestPoints.length = 3;
   closestPoints.map(([_x, _y, _z])=>{return [_x, _y, _z]}); 
-
-  return {
-    normal : getPlaneNormal(...closestPoints),
-    point : closestPoints[0]
-  }
+  return closestPoints;
 }
 
 const getIntersection=(point, set)=>{
@@ -110,4 +115,23 @@ export const getOffsetFor = (point)=>{
   // Log.warn(x2, y2, yDrift)
 
   return [xDrift, yDrift]
+}
+
+const intersection = (x, y, z, triangle)=>{
+  const matB = math.matrix(triangle.map(([x, y, z]) => [z]))
+  const matA = math.matrix(triangle.map(([x, y]) => [x, y, 1]))
+  const maAt = math.transpose(matA);
+  const fit = math.chain(maAt).multiply(matA).inv().multiply(maAt).multiply(matB).done()
+  const [[a, b, c]] = math.transpose(fit).valueOf();
+  z = a * x + b * y + c;
+  return [x, y, z]
+}
+
+export const getOffset2For = (point) => {
+  point = [...point, 0];
+  const xTriangle = getTriangle(...point, xDrifts);
+  const [ax, ay, ox] = intersection(...point, xTriangle);
+  const yTriangle = getTriangle(...point, yDrifts);
+  const [bx, by, oy] = intersection(...point, yTriangle);
+  return [ox, oy]
 }

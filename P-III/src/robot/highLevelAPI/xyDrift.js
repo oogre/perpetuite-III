@@ -106,7 +106,7 @@ It runs 'P-III.core.api' script who drive the robot of the installation
 					const {box:[ox, oy]} = data;
 					Log.warn([x, y, ox, oy]);
 					xDrifts.push([x, y, ox]);
-					xDrifts.push([x, y, oy]);
+					yDrifts.push([x, y, oy]);
 				}catch(err){
 					Log.warn(err);
 				}
@@ -116,6 +116,8 @@ It runs 'P-III.core.api' script who drive the robot of the installation
 			}
 			fs.writeFileSync(xDriftPath, JSON.stringify(xDrifts, null, 2));
 			fs.writeFileSync(yDriftPath, JSON.stringify(yDrifts, null, 2));
+			await RobotHelper.Gripper(1);
+			process.exit(0)
 		}catch(error){
 			console.error(error);
 		}
