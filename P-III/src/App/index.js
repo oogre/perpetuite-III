@@ -106,11 +106,11 @@ const grabProcess = async () => {
   //Log.warn(offsets);
  
   for(const offset of offsets){
-    const position = originLocation.add(offset).toArray(2);
-    await RobotModel.simpleGo(position);
+    const [x, y] = originLocation.add(offset).toArray(2);
+    await RobotModel.simpleGo(x, y);
     await CameraModel.update(false);
     await RobotModel.grab();
-    await RobotModel.simpleGo(position);
+    await RobotModel.simpleGo(x, y);
     if(await CameraModel.isGrabbed()){
       return true;
     }
