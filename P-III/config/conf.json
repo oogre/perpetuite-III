@@ -58,7 +58,7 @@
       "oldPill_HEIGHT" : 5,
       
       "approche" : {
-        "height" : 2,
+        "height" : 1,
         "oldHeight" : 10,
         "speed" : 20,
         "acc" : 10,

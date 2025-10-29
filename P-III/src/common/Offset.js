@@ -24,7 +24,6 @@ const {
 } = _conf_.HIGH_LEVEL_API_CONF;
 
 const zProbs = fs.readJsonSync(probesPath);
-
 const xDrifts = fs.readJsonSync(xDriftPath);
 const yDrifts = fs.readJsonSync(yDriftPath);
 
@@ -101,7 +100,7 @@ export const getOffsetFor = (point)=>{
 
   // Log.warn("")
 
-  // Log.warn(yDrifts)
+  //Log.warn(point);
   const [ x1, y1, xDrift ] = getIntersection(point, xDrifts);
   const [ x2, y2, yDrift ] = getIntersection(point, yDrifts);
 

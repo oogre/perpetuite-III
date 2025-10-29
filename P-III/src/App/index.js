@@ -92,12 +92,19 @@ const update = async () => {
 
 const grabProcess = async () => {
   const originLocation = RobotModel.location.clone();
-  const offsets = [new Vector( 0,  0), ...(new Array(6).fill(0).map((_, k, {length})=>{
-        const alpha = k * (Math.PI * 2)/length;
-        const r = 3;
-        return new Vector(r * Math.cos(alpha), r * Math.sin(alpha));
-      }))]
-  Log.warn(offsets);
+ 
+  const offsets = [ 
+    new Vector( 0,  0), 
+    ...(
+      new Array(8).fill(0).map((_, k, {length})=>{
+            const alpha = k * (Math.PI * 2)/length;
+            const r = 4;
+            return new Vector(r * Math.cos(alpha), r * Math.sin(alpha));
+          }
+      )
+    )
+  ]
+  //Log.warn(offsets);
  
   for(const offset of offsets){
     await RobotModel.simpleGo(...originLocation.add(offset).toArray(2));

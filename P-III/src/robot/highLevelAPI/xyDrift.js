@@ -13,6 +13,7 @@ import Command from './../../common/CommandHelper.js';
 import { getDepthFor } from './../../common/Offset.js';
 import {$, wait, subProcessTrigger} from './../../common/tools.js';
 
+import Log from './../../common/Log.js';
 const { 
 	physical:{
 		camera : {
@@ -50,21 +51,21 @@ It runs 'P-III.core.api' script who drive the robot of the installation
       	),
       	...(
 					new Array(4).fill(0).map((_, k, {length})=>{
-        		const alpha = (k+0.5) * (Math.PI * 2)/length;
+        		const alpha = (k+0.25) * (Math.PI * 2)/length;
         		const r = 200;
         		return [r * Math.cos(alpha), r * Math.sin(alpha)];
       		})
       	),
       	...(
 					new Array(4).fill(0).map((_, k, {length})=>{
-        		const alpha = (k) * (Math.PI * 2)/length;
+        		const alpha = (k+0.5) * (Math.PI * 2)/length;
         		const r = 300;
         		return [r * Math.cos(alpha), r * Math.sin(alpha)];
       		})
       	),
       	...(
 					new Array(4).fill(0).map((_, k, {length})=>{
-        		const alpha = (k+0.5) * (Math.PI * 2)/length;
+        		const alpha = (k+0.75) * (Math.PI * 2)/length;
         		const r = 400;
         		return [r * Math.cos(alpha), r * Math.sin(alpha)];
       		})
@@ -86,22 +87,35 @@ It runs 'P-III.core.api' script who drive the robot of the installation
 			]
 
 			for(const [x, y] of probePoints){
-				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0, debug});
+				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0});
 			}
-			let probes = [];
+			let xDrifts = [];
+			let yDrifts = [];
+			let {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
 			for(const [x, y] of probePoints){
-				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0, debug});
-				await RobotHelper.Gripper(1);
-				await RobotHelper.WaitProbe(debug);
-				await RobotHelper.Go({xpos:x, ypos:y, zpos: getDepthFor([x, y]) + 10, wpos:0, speed : 10, debug});
+				const [a, b, z] = getDepthFor([x, y]);
+				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0});
 				await RobotHelper.Gripper(0);
-				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0, debug});
-				let {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
-				const collectWaiter = await this.trig(" ");
-				console.log(collectWaiter);
-				await this.trig("close");
+				await RobotHelper.WaitProbe();
+				await RobotHelper.Go({xpos:x, ypos:y, zpos: z, wpos:0, speed : 10});
+				await RobotHelper.Gripper(1);
+				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0});
+				try{
+					const rawData = await trig(" ");
+					const [data] = JSON.parse(rawData);
+					const {box:[ox, oy]} = data;
+					Log.warn([x, y, ox, oy]);
+					xDrifts.push([x, y, ox]);
+					xDrifts.push([x, y, oy]);
+				}catch(err){
+					Log.warn(err);
+				}
+				await RobotHelper.Go({xpos:x, ypos:y, zpos: z, wpos:0, speed : 10});
+				await RobotHelper.Gripper(0);
+				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0});
 			}
-			//fs.writeFileSync(path, JSON.stringify(probes, null, 2));
+			fs.writeFileSync(xDriftPath, JSON.stringify(xDrifts, null, 2));
+			fs.writeFileSync(yDriftPath, JSON.stringify(yDrifts, null, 2));
 		}catch(error){
 			console.error(error);
 		}

@@ -50,7 +50,7 @@ class CameraModel {
 		let {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
 		this.promise = promise;
 		this.promise
-			.then(data => console.log(`P-III.cv released`, data))
+			.then(data => Log.warn(`P-III.cv released`, data))
 			.catch(error => this.initCV());
 		this.trig = (s)=>{
 			Log.warn("> "+s);
@@ -103,8 +103,9 @@ class CameraModel {
 			const rawData = await this.trig("diff");
 			await wait(500);
 			const tPills = JSON.parse(rawData);
-			Log.warn(tPills.length);
-			return tPills.length != 0;
+			const realPills = tPills.filter(({isPill}) => isPill);
+			Log.warn(realPills.length);
+			return realPills.length != 0;
 		}catch(error){
 			return true;
 		}
