@@ -21,7 +21,6 @@ import {getOffsetFor} from './../common/Offset.js';
 process.title = "P-III.APP";
 
 
-console.log(getOffsetFor([0, 0]));
 const { 
   physical : {
     pill_size_mm,
@@ -107,10 +106,11 @@ const grabProcess = async () => {
   //Log.warn(offsets);
  
   for(const offset of offsets){
-    await RobotModel.simpleGo(...originLocation.add(offset).toArray(2));
+    const position = originLocation.add(offset).toArray(2);
+    await RobotModel.simpleGo(position);
     await CameraModel.update(false);
     await RobotModel.grab();
-    await RobotModel.simpleGo(...originLocation.toArray(2));
+    await RobotModel.simpleGo(position);
     if(await CameraModel.isGrabbed()){
       return true;
     }
