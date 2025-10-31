@@ -95,7 +95,7 @@ const grabProcess = async () => {
   const offsets = [ 
     new Vector( 0,  0), 
     ...(
-      new Array(8).fill(0).map((_, k, {length})=>{
+      new Array(4).fill(0).map((_, k, {length})=>{
             const alpha = k * (Math.PI * 2)/length;
             const r = 5;
             return new Vector(r * Math.cos(alpha), r * Math.sin(alpha));
@@ -213,7 +213,9 @@ const populateDropZone = async (dropLocation, dropColor) => {
   }
   */
   
-  await grabProcess();
+  if(!await grabProcess()){
+    return false;
+  }
   await RobotModel.go(...dropLocation.toArray(2));
   await RobotModel.drop();
   PillsModel.pills[id].lock();
