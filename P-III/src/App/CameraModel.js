@@ -98,10 +98,10 @@ class CameraModel {
 
 	async isGrabbed(){
 		if(!camEnabled)return true;
-		await wait(700);
+		await wait(500);
 		try{
 			const rawData = await this.trig("diff");
-			await wait(500);
+			//await wait(100);
 			const tPills = JSON.parse(rawData);
 			const realPills = tPills.filter(({isPill}) => isPill);
 			Log.warn(realPills.length);

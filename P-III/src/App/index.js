@@ -144,7 +144,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
           PillsModel.pills.splice(id, 1);
           return false;
         }
-        await RobotModel.go(...center.toArray(2));
+        //await RobotModel.go(...center.toArray(2));
         if(!await grabProcess()){
           return false;
         }
@@ -162,7 +162,7 @@ const cleanDropZoneIfNeeded = async (dropLocation, dropColor) => {
         PillsModel.pills.splice(id, 1);
         return false;
       }
-      await RobotModel.go(...center.toArray(2));
+      //await RobotModel.go(...center.toArray(2));
       if(!await grabProcess()){
         return false;
       }

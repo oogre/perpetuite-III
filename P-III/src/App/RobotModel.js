@@ -142,7 +142,7 @@ class RobotModel{
 
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} 0 ${this.roll}`);
     await wait(125);
-    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - height} ${this.roll}`);
+    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - height + 0.5} ${this.roll}`);
     await this.setSpeed(speed);
     await this.setAcceleration(acc);
     await this.setDecceleration(dcc);
