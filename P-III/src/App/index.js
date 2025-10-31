@@ -97,7 +97,7 @@ const grabProcess = async () => {
     ...(
       new Array(4).fill(0).map((_, k, {length})=>{
             const alpha = k * (Math.PI * 2)/length;
-            const r = 5;
+            const r = 2;
             return new Vector(r * Math.cos(alpha), r * Math.sin(alpha));
           }
       )
