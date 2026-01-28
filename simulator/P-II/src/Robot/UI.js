@@ -13,7 +13,12 @@ export default class RobotUI extends BaseUI{
 	draw(ctx){
 		ctx.scale(this.parent.offset.z, this.parent.offset.z);
 		ctx.lineWidth = 0.2;
-		ctx.strokeStyle = "white";
+		if(this.parent.hoverDangerousPlace){
+			ctx.strokeStyle = "red";
+		}else{
+			ctx.strokeStyle = "white";	
+		}
+		
 		ctx.strokeRect(-this.headSize/2, 0, this.headSize, 0);
 		ctx.strokeRect(0, -this.headSize/2, 0, this.headSize);
 

@@ -11,7 +11,7 @@ export default class GridUI extends BaseUI{
 		super.draw(ctx);
 		
 		const matrix = ctx.getTransform();
-		this.parent.cells.forEach(({location})=>{
+		this.parent.set.forEach(({location})=>{
 			ctx.setTransform(matrix);
 			ctx.translate(location.x, location.y);
 			ctx.beginPath();

@@ -1,10 +1,9 @@
 import fs from 'fs-extra';
+import { Image } from '@napi-rs/canvas';
 import {EventsManager} from "events-manager"
-import { OBSWebSocket } from 'obs-websocket-js';
 import {delay} from "./../tools/helpers.js";
 import ImageUI from './ImageUI.js';
 import FrameUI from './FrameUI.js';
-import { Image } from '@napi-rs/canvas';
 
 
 export default class ImageManager extends EventsManager{
@@ -12,7 +11,6 @@ export default class ImageManager extends EventsManager{
 		super();
 		this.ui = new ImageUI(this);
 		this.uiFrame = new FrameUI(this);
-		this.obs = new OBSWebSocket();
 		this.conf = conf;
 		this.allYears = [];
 		this.currentYear = 0;
@@ -128,53 +126,3 @@ export default class ImageManager extends EventsManager{
 		});
 	}
 }
-
-/*
-	// await this.obs.connect();
-	// this.obs.on('InputSettingsChanged', this.displayNextImage.bind(this));
-		
-	// this.obs.off('InputSettingsChanged', this.displayNextImage.bind(this));
-	// await this.obs.disconnect();
-	async display(imagePath, x, y, scale=0.2){
-		x += 860;//1920/2
-		y += 540 - 200;//1080/2
-		await this.obs.callBatch([
-			{
-				requestType : 'SetInputSettings', 
-				requestData : {
-					inputName: 'Image',
-					inputSettings : {
-						file : imagePath
-					}
-				}
-			},{
-				requestType : 'SetSceneItemTransform', 
-				requestData : {
-					sceneName: 'Scène 2',
-					sceneItemId: 8,
-					sceneItemTransform : {
-						positionX: x,
-						positionY: y,
-						scaleX: scale,
-						scaleY: scale
-					}
-				}
-			},{
-				requestType : 'SetSceneItemTransform', 
-				requestData : {
-					sceneName: 'Scène 2',
-					sceneItemId: 13,
-					sceneItemTransform : {
-						positionX: x,
-						positionY: y,
-						scaleX: scale,
-						scaleY: scale
-					}
-				}
-			}
-		]);
-	}
-*/
-
-
-

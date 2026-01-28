@@ -38,6 +38,7 @@ robot.on("locationChange initilized", location => {
 	});
 	camera.offset = location;
 	robot.intersection = table.toFloorLocation(location.clone().mult(new Vector3(-1, -1, 1)));
+	robot.hoverDangerousPlace = forbidden.isHover(location.clone().mult(new Vector3(-1, -1, 1)));
 });
 
 robot.on("initilized", async ()=>{});
@@ -82,13 +83,27 @@ const api = new API({
 
 
 
-real.pills.add(real.pills.createPill({
-	box :[ 0, 0, real.conf.radius.value, real.conf.radius.value]
-}));
 
-real.pills.add(real.pills.createPill({
-	box :[ real.conf.radius.value, 0, real.conf.radius.value, real.conf.radius.value]
-}));
+
+
+// real.add(real.createPill({
+// 	box :[ -30, -30, real.conf.radius.value, real.conf.radius.value]
+// }));
+
+// real.add(real.createPill({
+// 	box :[ 0, 0, real.conf.radius.value, real.conf.radius.value]
+// }));
+
+// real.add(real.createPill({
+// 	box :[ real.conf.radius.value, 0, real.conf.radius.value, real.conf.radius.value]
+// }));
+
+// real.add(real.createPill({
+// 	box :[ 0, real.conf.radius.value, real.conf.radius.value, real.conf.radius.value]
+// }));
+
+
+
 
 
 process.on('SIGINT', ()=>process.exit(0));

@@ -34,10 +34,18 @@ export default class Camera {
 		this._offset = value;
 	}
 
-	pointToWorldLocation([x, y, w, h], canvas){
+	pointToWorldLocation([x, y], canvas){
 		return [
 			(x - canvas.width/2)/this._offset.z - this._offset.x, 
 			(y - canvas.height/2)/this._offset.z - this._offset.y, 
+		]
+	}
+	contourToWorldLocation(contour, canvas){
+		return contour.map(([x, y])=>this.pointToWorldLocation([x, y], canvas));
+	}
+	boxToWorldLocation([x, y, w, h], canvas){
+		return [
+			...this.pointToWorldLocation([x, y], canvas),
 			w/this._offset.z, 
 			h/this._offset.z 
 		]
@@ -59,7 +67,8 @@ export default class Camera {
 						.map((desc, id)=>{
 							return {
 								...desc,
-								box : this.pointToWorldLocation(desc.box, canvas)
+								contour : this.contourToWorldLocation(desc.contour, canvas),
+								box : this.boxToWorldLocation(desc.box, canvas)
 							}
 						});
 					resolve(data);

@@ -1,15 +1,24 @@
 import BaseUI from './../UI/Base.js';
+import fs from 'fs-extra';
+import { Image } from '@napi-rs/canvas';
+
+
 
 export default class RealUI extends BaseUI{
 	constructor(parent){
 		super();
 		this.parent = parent;
+
+		this.image = new Image();
+		fs.readFile(`${process.env.PWD}/data/notWelcomObject.png`).then(data=>{
+			this.image.src = data	
+		});
 	}
 
 	draw(ctx, canvas){
 		super.draw(ctx);
 		const matrix = ctx.getTransform();
-		this.parent.pills.forEach(pill=>{
+		this.parent.set.forEach(pill=>{
 			ctx.setTransform(matrix);
 			ctx.translate(pill.x, pill.y);
 			ctx.beginPath();
@@ -24,6 +33,13 @@ export default class RealUI extends BaseUI{
 
 		});
 		ctx.resetTransform();
+		ctx.setTransform(matrix);
+		if(this.image.src){
+			ctx.drawImage(this.image, -50, -50, 100, 100);	
+		}
+		ctx.resetTransform();
+
+		
 		this.fire('updated', canvas);
 	}
 }

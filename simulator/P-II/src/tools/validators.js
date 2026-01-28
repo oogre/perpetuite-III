@@ -12,6 +12,6 @@ export const isLocation = v => {
 				v.every(i=>Number(i)===i)
 			);
 }
-export const isNumber = v => Number(i)===i;
+export const isNumber = v => Number(v)===v;
 export const isBox = v => (Array.isArray(v) && v.length!=0 && v.length===4 && v.every(i=>Number(i)===i));
 export const isPath = v => Array.isArray(v) && v.every(item=>isLocation(item));

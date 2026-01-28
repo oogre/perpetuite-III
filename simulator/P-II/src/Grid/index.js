@@ -3,9 +3,9 @@ import { Vector3 } from 'vecteur/3d';
 import Pills from "./../Pills";
 
 
-export default class Grid{
+export default class Grid extends Pills{
 	constructor(conf){
-		this.conf = conf;
+		super(conf);
 		this.ui = new GridUI(this);
 		const hCount = Math.round(conf.density * conf.diameter * 1);
 		const vCount = Math.round(conf.density * conf.diameter * 1.33);
@@ -16,15 +16,14 @@ export default class Grid{
 			y = y * offsetY - conf.positionRadius
 			return new Vector3(x, y, 0);
 		}
-		this.cells = new Pills(this.conf);
-		this.cells.addEach(
+		this.addEach(
 			new Array(vCount * hCount)
-			.fill(0)
-			.map((_, k) => getPosition([ k % hCount, Math.floor(k / hCount) ]))
-			.map(location=> this.cells.createPill({box :[ location.x, location.y]}))
+				.fill(0)
+				.map((_, k) => getPosition([ k % hCount, Math.floor(k / hCount) ]))
+				.map(location=> this.createPill({box :[ location.x, location.y]}))
 		);
 	}
 	getRandomCellLocation(){
-		return this.cells.toArray()[Math.floor(this.cells.length * Math.random())].location;
+		return this.getRandom().location;
 	}
 }

@@ -18,20 +18,22 @@ const {
 	ROBOT_FLIP_X,
 	ROBOT_FLIP_Y,
 	ROBOT_FLIP_Z,
+	PILL_DEBUG,
 	PILL_COUNT,
 	PILL_SIZE,
 	PILL_LOCK_DURATION,
 	PILL_MIN_CIRCULARITY,
 	PILL_MIN_RADIUS,
 	PILL_MAX_RADIUS,
+	FORBIDDEN_DEBUG,
 	FORBIDDEN_SIZE,
 	FORBIDDEN_MIN_RADIUS,
 	FORBIDDEN_MAX_RADIUS,
 	FORBIDDEN_MIN_CIRCULARITY,
 	FORBIDDEN_LOCK_DURATION,
-
 	GRID_DENSITY,
 	GRID_SIZE,
+	GRID_DEBUG,
 	GENERATOR_OFFSET_PATH,
 	COMMANDS_PATH,
 	CV_IMAGE_PATH,
@@ -64,6 +66,7 @@ export default {
 		flip : [parseFloat(ROBOT_FLIP_X), parseFloat(ROBOT_FLIP_Y), parseFloat(ROBOT_FLIP_Z)]
 	},
 	pills : {
+		debug : parseInt(PILL_DEBUG)==1,
 		count : parseInt(PILL_COUNT),
 		positionRadius : parseInt(ROBOT_RADIUS),
 		circularity : {
@@ -89,6 +92,7 @@ export default {
 		]
 	},
 	forbidden : {
+		debug : parseInt(FORBIDDEN_DEBUG)==1,
 		positionRadius: parseInt(ROBOT_RADIUS),
 		circularity : {
 			min : parseFloat(FORBIDDEN_MIN_CIRCULARITY)
@@ -115,6 +119,7 @@ export default {
   		]
 	},
 	grid : {
+		debug : parseInt(GRID_DEBUG)==1,
 		density : parseFloat(GRID_DENSITY),
 		diameter : parseInt(ROBOT_RADIUS)*2,
 		positionRadius : parseInt(ROBOT_RADIUS),

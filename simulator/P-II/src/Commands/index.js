@@ -1,6 +1,5 @@
 import fs from 'fs-extra';
 import { Vector3 } from 'vecteur/3d';
-
 import PatternGenerator from "./../PatternGenerator"
 import Pills, {PillModel} from "./../Pills";
 import {isString} from "./../tools/validators.js";
@@ -50,8 +49,8 @@ export default class Commands{
 			const task = listTool.getByColorName(colorName).one();
 			const isTaskExist = task!==undefined;
 			if(isTaskExist){
-				listTool.delete(task);
-				this.taskList = listTool.map(pill=>pill.toString());
+				listTool.set.delete(task);
+				this.taskList = listTool.set.map(pill=>pill.toString());
 				return task;
 			}else{
 				const location = this.grid.getRandomCellLocation();
@@ -62,11 +61,11 @@ export default class Commands{
 			}
 		}
 
-		const task = listTool.one()
+		const task = listTool.set.one()
 		const isTaskExist = task!==null;
 		if(isTaskExist){
-			listTool.delete(task);
-			this.taskList = listTool.map(pill=>pill.toString());
+			listTool.set.delete(task);
+			this.taskList = listTool.set.map(pill=>pill.toString());
 			return task;
 		}
 
@@ -86,7 +85,7 @@ export default class Commands{
 		}		
 		const list = new Pills(this.conf);
 		list.addEach(
-			this.grid.cells.map(cell=>{
+			this.grid.set.map(cell=>{
 				const [x, y] = locationToDraw(cell.location)
 				const color = img.getPixelColor(x, y);
 				const [R, G, B, A] = [
@@ -105,7 +104,7 @@ export default class Commands{
 			}).filter(pill=>!!pill)
 		);
 
-		const groupedItems = list.group((item)=>{
+		const groupedItems = list.set.group((item)=>{
 			return `${
 				Math.round(Math.round(item.x / 50)*50)
 			} ${

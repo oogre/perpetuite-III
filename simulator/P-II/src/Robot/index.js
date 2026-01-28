@@ -10,6 +10,7 @@ export default class Robot extends RobotBase{
 		this.path = [];
 		this.grabbedPill = null;
 		this.colorName = "";
+		this.hoverDangerousPlace = false;
 	}
 
 	async go(target){

@@ -12,6 +12,7 @@ export default class PillModel {
 	static Color = LimitedColorPaletteGenerator(conf.pills.colors);
 	constructor(conf){
 		this.conf = conf;
+		this._contour = [];
 		this._location = new Vector3(0, 0, 0);
 		this._color = new PillModel.Color();
 		this._size = [0, 0];
@@ -25,6 +26,12 @@ export default class PillModel {
 	}
 	lock(){
 		this._timeAtUsedToDraw = new Date().getTime();
+	}
+	get contour(){
+		return this._contour;
+	}
+	set contour(array){
+		this._contour = array;
 	}
 	get isLocked(){
 		return new Date().getTime()-this._timeAtUsedToDraw<this.conf.lockDuration;

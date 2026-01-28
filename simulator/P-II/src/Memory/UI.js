@@ -12,7 +12,7 @@ export default class MemoryUI extends BaseUI{
 
 		const t0 = new Date().getTime()
 
-		this.parent.pills.forEach(pill=>{
+		this.parent.set.forEach(pill=>{
 			ctx.setTransform(matrix);
 			ctx.translate(pill.x, pill.y);
 			ctx.strokeStyle = "white";

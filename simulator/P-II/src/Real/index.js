@@ -1,12 +1,12 @@
 import Pills from "./../Pills";
 import RealUI from './UI.js';
 
-export default class Real{
+
+export default class Real extends Pills{
 	constructor(conf, {grid}){
-		this.conf = conf;
+		super(conf);
 		this.grid = grid;
 		this.ui = new RealUI(this);
-		this.pills = new Pills(this.conf);
 		for(let i = 0 ; i < this.conf.count ;){
 			if(this.creatPillAtRandomFreeLocation()){
 				i++
@@ -14,19 +14,16 @@ export default class Real{
 		}
 	}
 	creatPillAtRandomFreeLocation(){
-		const t = this.length;
 		let location = this.grid.getRandomCellLocation();
-		const pill = this.pills.createPill({
+		const pill = this.createPill({
 			box :[ location.x, location.y, this.conf.radius.value, this.conf.radius.value]
 		});
-		this.pills.add(pill);
-		return t != this.pills
+		return this.add(pill);
 	}
 
-
 	async delete(pill){
-		const deleted = this.pills.delete(pill);
-
+		const toDelete = this.getByLocation(pill.location);
+		const deleted = this.set.delete(toDelete);
 		// wait for UI to be updated
 		let t = null;
 		await new Promise(resolve=>{

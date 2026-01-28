@@ -15,69 +15,74 @@ const getDefault = () => {
 	return null;
 }
 
-export default class Pills extends FastSet{
-	constructor(conf={}, content=[]){
-		super(content, contentEquals, contentHash, getDefault);
+export default class Pills{
+	constructor(conf={}){
+		this.set = new FastSet([], contentEquals, contentHash, getDefault);
 		this.conf = conf;
 		this.conf.maxPositionSqRadius = this.conf.positionRadius * this.conf.positionRadius;
 	}
-	constructClone(data) {
-		return new this.constructor(this.conf, data);
-	};
-	createPill({circularity=1, box:[x=0, y=0, w=this.conf.radius.value, h=this.conf.radius.value], avgRGB=(new PillModel.Color()).rgb}){
+	createPill({contour=[], circularity=1, box:[x=0, y=0, w=this.conf.radius.value, h=this.conf.radius.value], avgRGB=(new PillModel.Color()).rgb}){
 		const p = new PillModel(this.conf);
+		p.contour = contour;
 		p.location = [x, y];
 		p.color = avgRGB;
 		p.size = [w, h];
 		p.circularity = circularity;
 		return p;
 	}
-
 	isPill(pill){
-		return pill instanceof PillModel;
+		let result = pill instanceof PillModel;
+		if(this.conf.debug && !result)console.log(`This is not a PillModel instance : `, pill);
+		return result;
 	}
 	isOnWorkingArea(pill){
-		return pill.location.lengthSq() <= this.conf.maxPositionSqRadius;
+		let result = pill.location.lengthSq() <= this.conf.maxPositionSqRadius;
+		if(this.conf.debug && !result)console.log(`This is not on working area : `, pill);
+		return result;
 	}
 	isRound(pill){
-		return pill.circularity > this.conf.circularity.min;
+		let result = pill.circularity > this.conf.circularity.min;
+		if(this.conf.debug && !result)console.log(`This is not circular : `, pill);
+		return result;
 	}
-	isLargeLikeAPIll(pill){
-		return pill.radius > this.conf.radius.min && pill.radius < this.conf.radius.max;
+	isLargeLikeAPill(pill){
+		let result = pill.radius > this.conf.radius.min && pill.radius < this.conf.radius.max;
+		if(this.conf.debug && !result)console.log(`This is not in size range : `, pill);
+		return result;
 	}
-
 	isValid(pill){
-		console.log(pill.circularity, this.conf.circularity);
-		console.log(this.isPill(pill), this.isOnWorkingArea(pill), this.isRound(pill), this.isLargeLikeAPIll(pill))
-
-		return this.isPill(pill) && this.isOnWorkingArea(pill) && this.isRound(pill) && this.isLargeLikeAPIll(pill);
+		return this.isPill(pill) && this.isOnWorkingArea(pill) && this.isRound(pill) && this.isLargeLikeAPill(pill);
 	}
-	add(pill){
-		if(this.isValid(pill)){
-			return super.add(pill, pill.hash);
-		}
+	add(item){
+		let result = getDefault();
+		if(!this.isValid(item))
+			return result;
+		if(result = this.set.get(item))
+			return result;
+		if(result = this.find( pill => contentEquals(pill, item)))
+			return result;
+		return this.set.add(item, item.hash);
 	}
 	addEach(collection){
-		const data = collection.filter(item=>!(super.get(item) || this.find( pill => contentEquals(pill, item))));
-		super.addEach(data);
+		return collection
+			.map(item=>this.add(item));
 	}
 	find(callback){
-		return super.toArray().find((...p)=>callback(...p));
+		return this.set.toArray().find((...p)=>callback(...p));
 	}
 	getByLocation(location){
 		const tmp = this.createPill({box:[location.x, location.y]});
-		return super.get(tmp) || this.find( pill => contentEquals(pill, tmp));
+		return this.set.get(tmp) || this.find( pill => contentEquals(pill, tmp));
 	}
 	getByBox(box=[x=0, y=0, w=this.conf.radius.value, h=this.conf.radius.value]){
 		const tmp = this.createPill({box});
-		return this.filter( pill => contentEquals(pill, tmp)).toArray();
+		return this.set.filter( pill => contentEquals(pill, tmp)).toArray();
 	}
 	getByColorName(colorName){
-		return this.filter( pill => pill.color.name === colorName);
+		return this.set.filter( pill => pill.color.name === colorName);
 	}
 	getRandom(){
-		const array = this.toArray();
+		const array = this.set.toArray();
 		return array[Math.floor(Math.random() * array.length)];
 	}
-	
 }

@@ -37,10 +37,11 @@ def imageProcess(rawImage):
     erosion = cv2.erode(thresh1,numpy.ones((erosionFactor, erosionFactor),numpy.uint8),iterations = 1)
     blur = cv2.GaussianBlur(erosion,(9, 9),0)
     _, thresh2 = cv2.threshold(blur,68,255,cv2.THRESH_BINARY)
-    contours, _ = cv2.findContours(thresh2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(thresh2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     data = []
     for cnt in contours :
+
         data.append(Pill(cnt, img, erosionFactor).toObj())
     return data
     

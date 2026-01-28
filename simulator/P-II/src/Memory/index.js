@@ -1,14 +1,9 @@
 import Pills from "./../Pills";
 import MemoryUI from './UI.js';
 
-export default class Memory{
+export default class Memory extends Pills{
 	constructor(conf){
-		this.conf = conf
+		super(conf);
 		this.ui = new MemoryUI(this);
-		this.pills = new Pills(this.conf)
-	}
-
-	inject(rawData){
-		this.pills.addEach(rawData.map(data=>this.pills.createPill(data)));
 	}
 }

@@ -4,7 +4,6 @@ import {EventsManager} from "events-manager"
 import * as Actions from "./Actions.js";
 import {isNumber} from "./../tools/validators.js";
 
-
 export default class API extends EventsManager{
 	constructor(controllables){
 		super();
