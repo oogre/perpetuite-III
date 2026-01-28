@@ -1,0 +1,149 @@
+import dotenv from 'dotenv';
+import fs from 'fs-extra';
+
+const {
+	TITLE,
+	PREVIEW,
+	UI_WIDTH,
+	UI_HEIGHT,
+	UI_X,
+	UI_Y,
+	PREVIEW_X,
+	PREVIEW_Y,
+	ROBOT_RADIUS,
+	ROBOT_MAX_SPEED,
+	ROBOT_ORIGIN_X,
+	ROBOT_ORIGIN_Y,
+	ROBOT_ORIGIN_Z,
+	ROBOT_FLIP_X,
+	ROBOT_FLIP_Y,
+	ROBOT_FLIP_Z,
+	PILL_COUNT,
+	PILL_SIZE,
+	PILL_LOCK_DURATION,
+	PILL_MIN_CIRCULARITY,
+	PILL_MIN_RADIUS,
+	PILL_MAX_RADIUS,
+	FORBIDDEN_SIZE,
+	FORBIDDEN_MIN_RADIUS,
+	FORBIDDEN_MAX_RADIUS,
+	FORBIDDEN_MIN_CIRCULARITY,
+	FORBIDDEN_LOCK_DURATION,
+
+	GRID_DENSITY,
+	GRID_SIZE,
+	GENERATOR_OFFSET_PATH,
+	COMMANDS_PATH,
+	CV_IMAGE_PATH,
+	PLAYER_IMAGE_PATH
+
+} = dotenv.config().parsed;
+
+let rawZProbes = fs.readFileSync(`${__dirname}/../data/zProbes.json`, "utf8");
+
+export default {
+	window : {
+		title: TITLE,
+		width: parseInt(UI_WIDTH),
+		height: parseInt(UI_HEIGHT),
+		x : parseInt(UI_X),
+		y : parseInt(UI_Y),
+	},
+	windowPreview : {
+		title: PREVIEW,
+		width: parseInt(UI_WIDTH),
+		height: parseInt(UI_HEIGHT),
+		x : parseInt(PREVIEW_X),
+		y : parseInt(PREVIEW_Y), 
+	},
+	robot : {
+		maxSpeed : parseInt(ROBOT_MAX_SPEED),
+		radius : parseInt(ROBOT_RADIUS),
+		pillSize : parseInt(PILL_SIZE),
+		origin : [parseFloat(ROBOT_ORIGIN_X), parseFloat(ROBOT_ORIGIN_Y), parseFloat(ROBOT_ORIGIN_Z)],
+		flip : [parseFloat(ROBOT_FLIP_X), parseFloat(ROBOT_FLIP_Y), parseFloat(ROBOT_FLIP_Z)]
+	},
+	pills : {
+		count : parseInt(PILL_COUNT),
+		positionRadius : parseInt(ROBOT_RADIUS),
+		circularity : {
+			min : parseFloat(PILL_MIN_CIRCULARITY)
+		},
+		radius : {
+			min : parseFloat(PILL_MIN_RADIUS),
+			max : parseFloat(PILL_MAX_RADIUS),
+			value : parseInt(PILL_SIZE),
+		},
+		lockDuration : parseInt(PILL_LOCK_DURATION),
+		colors : [
+			{
+				name : "red",
+				rgb : [127,  73,  61]
+			},{
+				name : "yellow",
+				rgb : [100, 100,  61]
+			},{
+				name : "blue",
+				rgb : [ 66,  70,  80]
+			}
+		]
+	},
+	forbidden : {
+		positionRadius: parseInt(ROBOT_RADIUS),
+		circularity : {
+			min : parseFloat(FORBIDDEN_MIN_CIRCULARITY)
+		},
+		radius : {
+			min : parseFloat(FORBIDDEN_MIN_RADIUS),
+			max : parseFloat(FORBIDDEN_MAX_RADIUS),
+			value : parseInt(FORBIDDEN_SIZE),
+		},
+		lockDuration : parseInt(FORBIDDEN_LOCK_DURATION),
+	},
+	floor : {
+		probes : JSON.parse(rawZProbes),
+		triangles : [
+    		[ 0, 12,  1], [12, 13,  1], [ 1, 13,  2], [13, 14,  2], 
+    		[ 2, 14,  3], [14, 15,  3], [15,  4,  3], [15, 16,  4], 
+    		[16,  5,  4], [16, 17,  5], [17,  6,  5], [18, 19,  7],
+    		[17, 18,  6], [18,  7,  6], [19,  8,  7], [19, 20,  8], 
+    		[20,  9,  8], [20, 21,  9], [21, 10,  9], [21, 22, 10], 
+    		[22, 11, 10], [22, 23, 11], [23,  0, 11], [23, 12,  0], 
+    		[23, 24, 12], [12, 24, 13], [13, 24, 14], [14, 24, 15], 
+    		[15, 24, 16], [16, 24, 17], [17, 24, 18], [18, 24, 19], 
+    		[19, 24, 20], [20, 24, 21], [21, 24, 22], [22, 24, 23]
+  		]
+	},
+	grid : {
+		density : parseFloat(GRID_DENSITY),
+		diameter : parseInt(ROBOT_RADIUS)*2,
+		positionRadius : parseInt(ROBOT_RADIUS),
+		circularity : {
+			min : parseFloat(PILL_MIN_CIRCULARITY)
+		},
+		radius : {
+			min : Number.MIN_SAFE_INTEGER,
+			max : Number.MAX_SAFE_INTEGER,
+			value : parseInt(GRID_SIZE),
+		},
+	},
+	commands : {
+		commandsPath : COMMANDS_PATH,
+		generator : {
+			offsetFilePath : GENERATOR_OFFSET_PATH
+		},
+		positionRadius : parseInt(ROBOT_RADIUS),
+		circularity : {
+			min : parseFloat(PILL_MIN_CIRCULARITY)
+		},
+		radius : {
+			min : parseFloat(PILL_MIN_RADIUS),
+			max : parseFloat(PILL_MAX_RADIUS),
+			value : parseInt(PILL_SIZE),
+		},
+	},
+	player : {
+		imageSourcePath : CV_IMAGE_PATH,
+		imageDestPath : PLAYER_IMAGE_PATH
+	}
+}

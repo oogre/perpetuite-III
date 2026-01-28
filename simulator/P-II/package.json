@@ -1,0 +1,36 @@
+{
+  "name": "p-ii",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "./scripts/build.sh",
+    "start": "./scripts/start.sh",
+    "start.player": "./scripts/start.player.sh",
+    "stop": "./scripts/stop.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.18.9",
+    "dotenv": "^16.4.5"
+  },
+  "dependencies": {
+    "@kmamal/sdl": "^0.11.7",
+    "@napi-rs/canvas": "^0.1.68",
+    "collections": "^5.1.13",
+    "enum": "^3.0.4",
+    "events-manager": "^1.1.2",
+    "fs-extra": "^11.3.3",
+    "got": "^14.4.7",
+    "jimp": "^1.6.0",
+    "mathjs": "^15.1.0",
+    "obs-websocket-js": "^5.0.7",
+    "stdin": "^0.0.1",
+    "vecteur": "^0.3.0"
+  }
+}
