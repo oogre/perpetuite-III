@@ -35,6 +35,7 @@ const {
 		}
 	},
 	physical : { 
+		suction_cup_height: suctionCupHeight,
 		probe_height:probeHeight, 
 		pill_HEIGHT:pillHeight, 
 		approche:{
@@ -125,5 +126,5 @@ export const getDepthForXY = (x, y) => {
   const fit = math.chain(maAt).multiply(matA).inv().multiply(maAt).multiply(matB).done()
   const [[a, b, c]] = math.transpose(fit).valueOf();
   const z = a * x + b * y + c;
-  return z + approche + pillHeight - probeHeight;
+  return z + suctionCupHeight + approche + pillHeight - probeHeight;
 }
