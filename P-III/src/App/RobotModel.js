@@ -126,6 +126,8 @@ class RobotModel{
       }
     } = _conf_.HIGH_LEVEL_API_CONF;
 
+    console.log( height, speed, acc, dcc);
+
     const depth = getDepthForXY(this.location.x, this.location.y);  
 
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} 0 ${this.roll}`);
