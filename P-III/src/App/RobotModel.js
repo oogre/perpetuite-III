@@ -118,7 +118,7 @@ class RobotModel{
     const { 
       physical : {
         approche :{
-          height:approcheHeight,
+          height,
           speed,
           acc,
           dcc
@@ -126,12 +126,11 @@ class RobotModel{
       }
     } = _conf_.HIGH_LEVEL_API_CONF;
 
-    
     const depth = getDepthForXY(this.location.x, this.location.y);  
 
     await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} 0 ${this.roll}`);
     await wait(125);
-    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - approcheHeight} ${this.roll}`);
+    await this.CoreAPI(`Go -- ${this.location.x} ${this.location.y} ${depth - height} ${this.roll}`);
     await this.setSpeed(speed);
     await this.setAcceleration(acc);
     await this.setDecceleration(dcc);
