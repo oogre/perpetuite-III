@@ -108,17 +108,6 @@ class RobotModel{
   }
 
   async touch(x, y){
-    const { 
-      physical : {
-        approche :{
-          height:approcheHeight,
-          speed,
-          acc,
-          dcc
-        }
-      }
-    } = _conf_.HIGH_LEVEL_API_CONF;
-    
     const depth = getDepthForXY(x, y);  
     await this.go(x, y);
     await this.go(x, y, depth);
@@ -129,7 +118,7 @@ class RobotModel{
     const { 
       physical : {
         approche :{
-          height,
+          height:approcheHeight,
           speed,
           acc,
           dcc
