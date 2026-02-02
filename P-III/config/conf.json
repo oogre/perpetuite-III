@@ -47,7 +47,7 @@
         "offset" : ["[PIII_PATH]/data/xDrift.json","[PIII_PATH]/data/yDrift.json"],
         "rotate" : -1.83
       },
-      "suction_cup_height" : 8,
+      "suction_cup_height" : 7,
       "probe_height" : 23,
       "pill_size_mm" : 9,
       "pill_size_px" : 75.611,
