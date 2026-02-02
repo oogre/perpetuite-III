@@ -56,7 +56,7 @@ It runs 'P-III.core.api' script who drive the robot of the installation
 				
 				Log.warn("onTable : ", rx, ry);
 				const z = getDepthForXY(rx, ry);
-				await RobotHelper.Go({xpos:rx, ypos:ry, zpos: z+1, wpos:0, speed : 10});
+				await RobotHelper.Go({xpos:rx, ypos:ry, zpos: z, wpos:0, speed : 10});
 				await RobotHelper.WaitProbe();
 				await RobotHelper.Go({xpos:rx, ypos:ry, zpos: 0, wpos:0, speed : 10});
 				
