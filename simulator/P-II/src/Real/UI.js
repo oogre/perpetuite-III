@@ -33,11 +33,11 @@ export default class RealUI extends BaseUI{
 
 		});
 		ctx.resetTransform();
-		ctx.setTransform(matrix);
-		if(this.image.src){
-			ctx.drawImage(this.image, -50, -50, 100, 100);	
-		}
-		ctx.resetTransform();
+		// ctx.setTransform(matrix);
+		// if(this.image.src){
+		// 	ctx.drawImage(this.image, -50, -50, 100, 100);	
+		// }
+		// ctx.resetTransform();
 
 		
 		this.fire('updated', canvas);

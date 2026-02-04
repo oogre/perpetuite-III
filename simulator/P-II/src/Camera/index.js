@@ -20,18 +20,31 @@ const call = async (request)=>{
 	if (result.status == "success"){
 		return result.data;
 	}else{
+		console.log(response);
 		throw new Error(response);
 	}
 }
 
 export default class Camera {
-	constructor(target){
+	constructor(conf, target){
+		this.conf = conf;
 		this._target = target;
 		this._offset = new Vector3();
 	}
 	
 	set offset(value){
 		this._offset = value;
+	}
+
+	get fov(){
+		// this.conf.offset[0]
+		// this.conf.offset[1]
+		return [
+			-1 * (this.conf.width/2) / this._offset.z, 
+			-1 * (this.conf.height/2) / this._offset.z, 
+			 1 * (this.conf.width/2) / this._offset.z, 
+			 1 * (this.conf.height/2) / this._offset.z, 
+		]
 	}
 
 	pointToWorldLocation([x, y], canvas){
@@ -62,6 +75,7 @@ export default class Camera {
 						image: canvas.toDataURL().split(',')[1]
 					});
 					const rawData = await call(CAMERA_CONFIG.API);
+
 					const data = rawData
 						.sort(()=>Math.random()-0.5)
 						.map((desc, id)=>{
@@ -70,6 +84,12 @@ export default class Camera {
 								contour : this.contourToWorldLocation(desc.contour, canvas),
 								box : this.boxToWorldLocation(desc.box, canvas)
 							}
+						}).filter(({box:[x, y, w, h]})=>{
+							return 	true || (
+									x + w - this._offset.x > this.fov[0] && 
+									x - w - this._offset.x < this.fov[2] && 
+									y + h - this._offset.y > this.fov[1] && 
+									y - h - this._offset.y < this.fov[3])
 						});
 					resolve(data);
 				} catch (error) {

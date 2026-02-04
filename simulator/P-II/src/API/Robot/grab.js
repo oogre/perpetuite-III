@@ -2,6 +2,7 @@
 
 import {Robot_go} from './go.js';
 import {Camera_capture} from './../Camera';
+import {Memory_clean, Memory_get} from './../Memory';
 
 
 export const Robot_grab = async ({robot, real, memory, camera, image, forbidden})=>{
@@ -9,19 +10,14 @@ export const Robot_grab = async ({robot, real, memory, camera, image, forbidden}
 		console.log("Already grabbing");
 		return false;
 	}
-	const beforeCollection = await Camera_capture({robot, camera, memory, image, forbidden}, true)
-	
-	const pillSouvenir = memory.getByLocation(robot._location);
-	const isPillSouvenirExists = pillSouvenir!==undefined;
-	const targetedPill = beforeCollection.getByLocation(robot._location);
-	const isTargetedPillExists = targetedPill!==undefined;
-	
-	if(isPillSouvenirExists){
-		memory.set.delete(pillSouvenir);	
-	}else{
-		console.log(pillSouvenir, "NOT DELETED")
+	const isMemoryCleanBefore = Memory_clean({memory}, robot._location)
+	if(!isMemoryCleanBefore){
+		throw new Error("MEMORY IS A MESS BEFORE");
 	}
+	const beforeCollection = await Camera_capture({robot, camera, memory, image, forbidden})
 	
+	const targetedPill = Memory_get({memory:beforeCollection}, robot._location);
+	const isTargetedPillExists = targetedPill!==undefined;
 	if(isTargetedPillExists){
 		await Robot_go({robot}, targetedPill.location);
 	}else{
@@ -30,9 +26,13 @@ export const Robot_grab = async ({robot, real, memory, camera, image, forbidden}
 	}
 	
 	await real.delete(targetedPill);
-	
-	const afterCollection = await Camera_capture({robot, camera, memory, image, forbidden}, true)
-	const isRemoved = afterCollection.set.get(targetedPill) === null;
+
+	const isMemoryCleanAfter = Memory_clean({memory}, robot._location)
+	if(!isMemoryCleanAfter){
+		throw new Error("MEMORY IS A MESS AFTER");
+	}
+	const afterCollection = await Camera_capture({robot, camera, memory, image, forbidden})
+	const isRemoved = Memory_get({memory:afterCollection}, targetedPill) === null
 	if(!isRemoved){
 		console.log("pill Is not Removed");
 		return false;

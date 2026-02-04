@@ -47,7 +47,7 @@ const memory = new Memory(config.pills);
 
 const forbidden = new Forbidden(config.forbidden);
 
-const camera = new Camera(real.ui);
+const camera = new Camera(config.camera, real.ui);
 
 const engine = new Engine(50);
 engine.register(robot);
@@ -59,8 +59,6 @@ ui.register(real.ui);
 ui.register(robot.ui);
 ui.register(memory.ui);
 ui.register(forbidden.ui);
-
-
 
 const uiPreview = new UI_Manager(config.windowPreview);
 uiPreview.register(image.ui);
@@ -74,7 +72,8 @@ const api = new API({
 	real,
 	cmd,
 	grid,
-	image
+	image,
+	table
 });
 
 // const demon = new Demon({real, grid});

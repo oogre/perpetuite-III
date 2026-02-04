@@ -16,21 +16,32 @@ export default class Real extends Pills{
 	creatPillAtRandomFreeLocation(){
 		let location = this.grid.getRandomCellLocation();
 		const pill = this.createPill({
-			box :[ location.x, location.y, this.conf.radius.value, this.conf.radius.value]
+			box :[ location.x, location.y, this.conf.radius.value*2, this.conf.radius.value*2]
 		});
 		return this.add(pill);
 	}
 
 	async delete(pill){
-		const toDelete = this.getByLocation(pill.location);
-		const deleted = this.set.delete(toDelete);
+		const deleted = super.delete(pill);
 		// wait for UI to be updated
 		let t = null;
 		await new Promise(resolve=>{
 			t = resolve;
-			this.ui.on("updated", resolve);
+			this.ui.on("updated", t);
 		});
 		this.ui.off("updated", t);
 		return deleted;
+	}
+
+
+	async add(pill){
+		super.add(pill);
+		let t = null;
+		await new Promise(resolve=>{
+			t = resolve;
+			this.ui.on("updated", t);
+		});
+		this.ui.off("updated", t);
+
 	}
 }

@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import fs from 'fs-extra';
+import ColorCli from "cli-color";
 
 const {
 	TITLE,
@@ -25,6 +26,9 @@ const {
 	PILL_MIN_CIRCULARITY,
 	PILL_MIN_RADIUS,
 	PILL_MAX_RADIUS,
+	MEMORY_PILL_SIZE,
+	MEMORY_PILL_MIN_RADIUS,
+	MEMORY_PILL_MAX_RADIUS,
 	FORBIDDEN_DEBUG,
 	FORBIDDEN_SIZE,
 	FORBIDDEN_MIN_RADIUS,
@@ -33,7 +37,11 @@ const {
 	FORBIDDEN_LOCK_DURATION,
 	GRID_DENSITY,
 	GRID_SIZE,
+	GRID_MIN_RADIUS,
+	GRID_MAX_RADIUS,
 	GRID_DEBUG,
+	CAMERA_OFFSET_X,
+	CAMERA_OFFSET_Y,
 	GENERATOR_OFFSET_PATH,
 	COMMANDS_PATH,
 	CV_IMAGE_PATH,
@@ -58,6 +66,14 @@ export default {
 		x : parseInt(PREVIEW_X),
 		y : parseInt(PREVIEW_Y), 
 	},
+	camera:{
+		width: parseInt(UI_WIDTH),
+		height: parseInt(UI_HEIGHT),
+		offset : [
+			parseInt(CAMERA_OFFSET_X),
+			parseInt(CAMERA_OFFSET_Y)
+		],
+	},
 	robot : {
 		maxSpeed : parseInt(ROBOT_MAX_SPEED),
 		radius : parseInt(ROBOT_RADIUS),
@@ -81,13 +97,16 @@ export default {
 		colors : [
 			{
 				name : "red",
-				rgb : [127,  73,  61]
+				rgb : [127,  73,  61],
+				style : ColorCli.black.bgRed
 			},{
 				name : "yellow",
-				rgb : [100, 100,  61]
+				rgb : [100, 100,  61],
+				style : ColorCli.black.bgYellow
 			},{
 				name : "blue",
-				rgb : [ 66,  70,  80]
+				rgb : [ 66,  70,  80],
+				style : ColorCli.black.bgBlue
 			}
 		]
 	},
@@ -127,8 +146,8 @@ export default {
 			min : parseFloat(PILL_MIN_CIRCULARITY)
 		},
 		radius : {
-			min : Number.MIN_SAFE_INTEGER,
-			max : Number.MAX_SAFE_INTEGER,
+			min : parseInt(GRID_MIN_RADIUS),
+			max : parseInt(GRID_MAX_RADIUS),
 			value : parseInt(GRID_SIZE),
 		},
 	},

@@ -121,8 +121,17 @@ export default class ImageManager extends EventsManager{
 				`${this.conf.imageDestPath}/${t2.getFullYear()}/${String(t2.getMonth()+1).padStart(2, '0')}.${String(t2.getDate()).padStart(2, '0')}/${t2.getHours()}/${fileName}`
 			];
 		})
+		.filter(([srcFile, destFile])=>{
+			return fs.existsSync(srcFile);
+		})
 		.map(async ([srcFile, destFile])=>{
-			return await fs.move(srcFile, destFile, { overwrite: true });
+			try{
+				return await fs.move(srcFile, destFile, { overwrite: true });	
+			}catch(error){
+				console.log(srcFile);
+				console.log(destFile);
+				console.log(error);
+			}
 		});
 	}
 }

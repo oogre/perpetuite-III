@@ -14,6 +14,10 @@ export default class MemoryUI extends BaseUI{
 
 		this.parent.set.forEach(pill=>{
 			ctx.setTransform(matrix);
+			ctx.strokeStyle="white";
+			ctx.lineWidth = 0.2;
+			ctx.stroke(pill.path);
+			/*
 			ctx.translate(pill.x, pill.y);
 			ctx.strokeStyle = "white";
 			ctx.lineWidth = 0.1;
@@ -23,6 +27,7 @@ export default class MemoryUI extends BaseUI{
 				pill.size[0], 
 				pill.size[1]
 			);
+
 			if(pill.isLocked){
 				const t1 = pill._timeAtUsedToDraw
 				const dT = Math.min(this.parent.conf.lockDuration, t0-t1);
@@ -33,6 +38,7 @@ export default class MemoryUI extends BaseUI{
 				ctx.lineWidth = 0.5;
 				ctx.stroke();
 			}
+			*/
 		});
 		ctx.resetTransform();
 	}

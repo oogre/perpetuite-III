@@ -1,6 +1,14 @@
 import { Vector3 } from 'vecteur/3d';
 import { LimitedColorPaletteGenerator } from './../tools/Color.js';
 import conf from './../config.js';
+import Area from "./../Area";
+import ColorCli from "cli-color";
+
+const positiontyle = (...args)=>{
+	args.push("]");
+	args.unshift("[");
+	return ColorCli.black.bgWhite(...args);
+}
 
 const xySqDistTo = (a, b) => {
 	const dx = a.x - b.x;
@@ -8,11 +16,11 @@ const xySqDistTo = (a, b) => {
 	return dx * dx + dy * dy;
 }
 
-export default class PillModel {
+export default class PillModel extends Area{
 	static Color = LimitedColorPaletteGenerator(conf.pills.colors);
 	constructor(conf){
+		super([]);
 		this.conf = conf;
-		this._contour = [];
 		this._location = new Vector3(0, 0, 0);
 		this._color = new PillModel.Color();
 		this._size = [0, 0];
@@ -27,12 +35,6 @@ export default class PillModel {
 	lock(){
 		this._timeAtUsedToDraw = new Date().getTime();
 	}
-	get contour(){
-		return this._contour;
-	}
-	set contour(array){
-		this._contour = array;
-	}
 	get isLocked(){
 		return new Date().getTime()-this._timeAtUsedToDraw<this.conf.lockDuration;
 	}
@@ -41,6 +43,12 @@ export default class PillModel {
 	}
 	get location(){
 		return this._location;
+	}
+	get positionStyled(){
+		return positiontyle(`${this.location.x.toFixed(2)}, ${this.location.y.toFixed(2)}`);
+	}
+	get colorStyled(){
+		return PillModel.Color.style(this.color.name);
 	}
 	get hash(){
 		return `${Math.round(this._location.x)} ${Math.round(this._location.y)}`;
@@ -91,6 +99,6 @@ export default class PillModel {
 		return this._location.xyDistTo(otherLocation);
 	}
 	toString(){
-		return `${this._color.name} ${this.x.toFixed(2)} ${this.y.toFixed(2)}`
+		return `${this._color.name} ${this.x.toFixed(2)} ${this.y.toFixed(2)} ${this.area.toFixed(2)} ${this.radius.toFixed(2)}`
 	}
 }

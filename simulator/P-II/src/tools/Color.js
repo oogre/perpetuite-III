@@ -1,5 +1,6 @@
 import {getRandomItem} from './helpers.js'
 import {isString, isArrayRGB} from './validators.js';
+import ColorCli from "cli-color";
 
 // the following functions are based off of the pseudocode
 // found on www.easyrgb.com
@@ -82,6 +83,11 @@ export const deltaE = (labA, labB)=>{
 	}]
 */
 
+
+
+
+
+
 export const LimitedColorPaletteGenerator = (palette)=>{
 	return class LimitedColorPalette {
 		static NAMED_COLOR = palette;	
@@ -92,7 +98,17 @@ export const LimitedColorPaletteGenerator = (palette)=>{
 		static getRandomColorValue = ()=>{
 			return getRandomItem(palette).rgb
 		}
-
+		static style = (...args)=>{
+			args.push(" ");
+			args.unshift(" ");
+			const {style} = palette.find(({name})=>{
+				return args.includes(name); 
+			});
+			if(style){
+				return style(...args);
+			}
+			return `-${args.join(' ')}-`;
+		}
 		static getName = (rgb)=>{
 			const lab = rgb2lab(rgb);
 			return palette.sort((a, b)=>{

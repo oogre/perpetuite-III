@@ -24,6 +24,7 @@
     "@lucio/graham-scan": "^1.0.0",
     "@napi-rs/canvas": "^0.1.68",
     "@velipso/polybool": "^2.0.11",
+    "cli-color": "^2.0.4",
     "collections": "^5.1.13",
     "enum": "^3.0.4",
     "events-manager": "^1.1.2",
