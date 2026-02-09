@@ -1,4 +1,4 @@
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './Vector3.js';
 import { Vector2 } from 'vecteur/2d';
 
 export const isString = v =>typeof v === 'string' || v instanceof String;

@@ -73,11 +73,12 @@ export default {
 			parseInt(CAMERA_OFFSET_X),
 			parseInt(CAMERA_OFFSET_Y)
 		],
+		margin : 4*parseFloat(PILL_SIZE),
 	},
 	robot : {
 		maxSpeed : parseInt(ROBOT_MAX_SPEED),
 		radius : parseInt(ROBOT_RADIUS),
-		pillSize : parseInt(PILL_SIZE),
+		pillSize : parseFloat(PILL_SIZE),
 		origin : [parseFloat(ROBOT_ORIGIN_X), parseFloat(ROBOT_ORIGIN_Y), parseFloat(ROBOT_ORIGIN_Z)],
 		flip : [parseFloat(ROBOT_FLIP_X), parseFloat(ROBOT_FLIP_Y), parseFloat(ROBOT_FLIP_Z)]
 	},
@@ -91,7 +92,7 @@ export default {
 		radius : {
 			min : parseFloat(PILL_MIN_RADIUS),
 			max : parseFloat(PILL_MAX_RADIUS),
-			value : parseInt(PILL_SIZE),
+			value : parseFloat(PILL_SIZE),
 		},
 		lockDuration : parseInt(PILL_LOCK_DURATION),
 		colors : [
@@ -163,7 +164,7 @@ export default {
 		radius : {
 			min : parseFloat(PILL_MIN_RADIUS),
 			max : parseFloat(PILL_MAX_RADIUS),
-			value : parseInt(PILL_SIZE),
+			value : parseFloat(PILL_SIZE),
 		},
 	},
 	player : {

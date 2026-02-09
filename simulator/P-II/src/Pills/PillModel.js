@@ -1,4 +1,4 @@
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './../tools/Vector3.js';
 import { LimitedColorPaletteGenerator } from './../tools/Color.js';
 import conf from './../config.js';
 import Area from "./../Area";
@@ -99,6 +99,6 @@ export default class PillModel extends Area{
 		return this._location.xyDistTo(otherLocation);
 	}
 	toString(){
-		return `${this._color.name} ${this.x.toFixed(2)} ${this.y.toFixed(2)} ${this.area.toFixed(2)} ${this.radius.toFixed(2)}`
+		return `${this._color.name} ${this.x.toFixed(2)} ${this.y.toFixed(2)} ${this.area.toFixed(2)} ${this.circularity.toFixed(2)}`
 	}
 }

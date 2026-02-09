@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './../tools/Vector3.js';
 import PatternGenerator from "./../PatternGenerator"
 import Pills, {PillModel} from "./../Pills";
 import {isString} from "./../tools/validators.js";

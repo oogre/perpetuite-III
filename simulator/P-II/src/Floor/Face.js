@@ -1,5 +1,5 @@
 import {lerp} from "./../tools/math.js";
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './../tools/Vector3.js';
 const math = require("mathjs");
 import { Path2D } from '@napi-rs/canvas';
 

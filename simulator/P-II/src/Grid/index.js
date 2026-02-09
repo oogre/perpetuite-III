@@ -1,5 +1,5 @@
 import GridUI from "./UI.js"
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './../tools/Vector3.js';
 import Pills from "./../Pills";
 
 

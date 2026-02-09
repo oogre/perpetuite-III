@@ -1,4 +1,4 @@
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './../tools/Vector3.js';
 import { Vector2 } from 'vecteur/2d';
 import {EventsManager} from "events-manager"
 import PromiseHelper from "./../tools/PromiseHelper.js";

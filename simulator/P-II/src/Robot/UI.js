@@ -26,12 +26,13 @@ export default class RobotUI extends BaseUI{
 		ctx.font = "4px serif";
 		ctx.fillStyle = "white";
 		ctx.translate(this.headSize/2 + 3, -this.headSize/2);
+		ctx.textAlign = "left";
+		ctx.translate(0, -3);
   		ctx.fillText(this.parent.position, 0, 0);
   		ctx.translate(0, 6);
   		ctx.fillText(this.parent.positionOnTable, 0, 0);
-  		ctx.setTransform(matrix);
   		ctx.translate(0, 6);
-  		ctx.fillText(this.parent.colorName, 0, 0);
+  		ctx.fillText(this.parent._actionDesc[0], 0, 0);
   		ctx.setTransform(matrix);
 
 

@@ -4,16 +4,15 @@ import Area from "./../Area";
 
 export default class Forbidden{
 	constructor(conf){
+		this.conf = conf;
 		this.ui = new ForbiddenUI(this);
 		this.areas = [];
 	}
 
-
-
 	addEach(collection){
 		const now = new Date().getTime();
 		this.areas = this.areas.filter(({createdAt})=>{
-			return now - createdAt > 10000;
+			return now - createdAt > this.conf.lockDuration;
 		});
 
 		for(const item of collection){

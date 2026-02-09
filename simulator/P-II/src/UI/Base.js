@@ -1,4 +1,4 @@
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './../tools/Vector3.js';
 import {EventsManager} from "events-manager"
 
 export default class BaseUI extends EventsManager{

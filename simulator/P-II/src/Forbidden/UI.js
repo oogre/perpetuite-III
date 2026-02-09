@@ -16,7 +16,7 @@ export default class Forbidden extends BaseUI{
 		const now = new Date().getTime();
 		this.parent.areas.forEach(item=>{
 			if(item.path){
-				ctx.strokeStyle=`rgba(255, 0, 0, ${1 - ((now - item.createdAt)/10000)} )`;
+				ctx.strokeStyle=`rgba(255, 0, 0, ${now - item.createdAt / this.parent.conf.lockDuration} )`;
 				ctx.stroke(item.path);
 			}
 			

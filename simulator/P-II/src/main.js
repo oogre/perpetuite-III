@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import config from "./config.js";
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './tools/Vector3.js';
 import readline from "readline"
 import Engine from "./tools/Engine.js";
 import API from "./API";

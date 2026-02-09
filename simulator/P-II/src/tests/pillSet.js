@@ -3,8 +3,6 @@
 
 import Pills from "./../Pills"
 import PillModel from "./../Pills/PillModel.js"
-
-import { Vector3 } from 'vecteur/3d';
 import {getRandomLocationOnCircle, lerp} from "./../tools/math.js";
 
 

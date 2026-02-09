@@ -1,4 +1,3 @@
-import { Vector3 } from 'vecteur/3d';
 import {halfCircleFromPoints} from "./../tools/math.js";
 import {isLocation, isPath} from "./../tools/validators.js";
 import RobotBase from "./Base.js";
@@ -9,8 +8,16 @@ export default class Robot extends RobotBase{
 		super(conf);
 		this.path = [];
 		this.grabbedPill = null;
-		this.colorName = "";
+		this._actionDesc = [""];
 		this.hoverDangerousPlace = false;
+	}
+
+	set actionDesc(value){
+		this._actionDesc.unshift(value);
+	}
+
+	actionDescPop(){
+		this._actionDesc.shift();
 	}
 
 	async go(target){

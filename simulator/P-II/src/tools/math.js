@@ -1,4 +1,5 @@
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './Vector3.js';
+
 import {isLocation} from "./validators.js";
 
 export const TAU = 2 * Math.PI;

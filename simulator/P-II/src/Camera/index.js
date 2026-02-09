@@ -1,4 +1,4 @@
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './../tools/Vector3.js';
 import {delay} from "./../tools/helpers.js";
 
 
@@ -36,17 +36,6 @@ export default class Camera {
 		this._offset = value;
 	}
 
-	get fov(){
-		// this.conf.offset[0]
-		// this.conf.offset[1]
-		return [
-			-1 * (this.conf.width/2) / this._offset.z, 
-			-1 * (this.conf.height/2) / this._offset.z, 
-			 1 * (this.conf.width/2) / this._offset.z, 
-			 1 * (this.conf.height/2) / this._offset.z, 
-		]
-	}
-
 	pointToWorldLocation([x, y], canvas){
 		return [
 			(x - canvas.width/2)/this._offset.z - this._offset.x, 
@@ -77,21 +66,20 @@ export default class Camera {
 					const rawData = await call(CAMERA_CONFIG.API);
 
 					const data = rawData
-						.sort(()=>Math.random()-0.5)
+						.filter(({box:[x, y, w, h]})=>{
+							return 	x - 2*this.conf.margin > 0 && 
+									y - 2*this.conf.margin > 0 && 
+									x + 2*this.conf.margin < this.conf.width && 
+									y + 2*this.conf.margin < this.conf.height
+						})
 						.map((desc, id)=>{
 							return {
 								...desc,
 								contour : this.contourToWorldLocation(desc.contour, canvas),
 								box : this.boxToWorldLocation(desc.box, canvas)
 							}
-						}).filter(({box:[x, y, w, h]})=>{
-							return 	true || (
-									x + w - this._offset.x > this.fov[0] && 
-									x - w - this._offset.x < this.fov[2] && 
-									y + h - this._offset.y > this.fov[1] && 
-									y - h - this._offset.y < this.fov[3])
 						});
-					resolve(data);
+					resolve(data.sort(()=>Math.random()-0.5));
 				} catch (error) {
 					reject(error);
 				}

@@ -2,26 +2,26 @@ import {Camera_capture} from './../Camera';
 import {Memory_get, Memory_clean} from './../Memory';
 
 
-export const Robot_drop = async ({robot, real, memory, camera, image, forbidden})=>{
-	if(robot.grabbedPill===null){
-		console.log("Nothing to drop");
+export const Robot_drop = async (BASE)=>{
+	if(BASE.robot.grabbedPill===null){
+		throw new Error("Nothing to drop");
 		return false;
 	}
-	Memory_clean({memory}, robot._location)
-	await Camera_capture({robot, camera, memory, image, forbidden})
+	Memory_clean(BASE, BASE.robot._location)
+	await Camera_capture(BASE)
 	
-	const targetedArea = Memory_get({memory}, robot._location);
+	const targetedArea = Memory_get(BASE, BASE.robot._location);
 	const isTargetedAreaEmpty = targetedArea===undefined;
 	if(!isTargetedAreaEmpty){
-		console.log("DropZone is occupied");
+		throw new Error("DropZone is occupied");
 		return false;	
 	}
 
-	robot.grabbedPill.location = robot._location;
-	await real.add(robot.grabbedPill);
-	robot.grabbedPill = null;
+	BASE.robot.grabbedPill.location = BASE.robot._location;
+	await BASE.real.add(BASE.robot.grabbedPill);
+	BASE.robot.grabbedPill = null;
 
-	await Camera_capture({robot, camera, memory, image, forbidden})
+	await Camera_capture(BASE)
 
 	return true;
 }

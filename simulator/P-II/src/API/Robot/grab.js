@@ -5,39 +5,42 @@ import {Camera_capture} from './../Camera';
 import {Memory_clean, Memory_get} from './../Memory';
 
 
-export const Robot_grab = async ({robot, real, memory, camera, image, forbidden})=>{
-	if(robot.grabbedPill!==null){
-		console.log("Already grabbing");
+export const Robot_grab = async (BASE, depth=0)=>{
+	if(depth >= 5 ){
+		throw new Error("Error grabbing");
+	}
+
+	if(BASE.robot.grabbedPill!==null){
+		throw new Error("Already grabbing");
 		return false;
 	}
-	const isMemoryCleanBefore = Memory_clean({memory}, robot._location)
+	const isMemoryCleanBefore = Memory_clean(BASE, BASE.robot._location)
 	if(!isMemoryCleanBefore){
 		throw new Error("MEMORY IS A MESS BEFORE");
 	}
-	const beforeCollection = await Camera_capture({robot, camera, memory, image, forbidden})
+	const beforeCollection = await Camera_capture(BASE)
 	
-	const targetedPill = Memory_get({memory:beforeCollection}, robot._location);
+	const targetedPill = Memory_get({memory:beforeCollection}, BASE.robot._location);
 	const isTargetedPillExists = targetedPill!==undefined;
 	if(isTargetedPillExists){
-		await Robot_go({robot}, targetedPill.location);
+		await Robot_go(BASE, targetedPill.location);
 	}else{
-		console.log("pill Is not Present")
-		return false;
+		throw new Error("pill Is not Present");
 	}
 	
-	await real.delete(targetedPill);
+	await BASE.real.delete(targetedPill);
 
-	const isMemoryCleanAfter = Memory_clean({memory}, robot._location)
+	const isMemoryCleanAfter = Memory_clean(BASE, BASE.robot._location)
 	if(!isMemoryCleanAfter){
 		throw new Error("MEMORY IS A MESS AFTER");
 	}
-	const afterCollection = await Camera_capture({robot, camera, memory, image, forbidden})
+	const afterCollection = await Camera_capture(BASE)
 	const isRemoved = Memory_get({memory:afterCollection}, targetedPill) === null
 	if(!isRemoved){
 		console.log("pill Is not Removed");
-		return false;
+		return await Robot_grab(BASE, depth+1);
 	}
 
-	robot.grabbedPill = targetedPill;
+	BASE.robot.grabbedPill = targetedPill;
 	return true;
 }

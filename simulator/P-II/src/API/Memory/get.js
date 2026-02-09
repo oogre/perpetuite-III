@@ -1,6 +1,6 @@
 
 import {isLocation, isBox, isString} from "./../../tools/validators.js";
-import { Vector3 } from 'vecteur/3d';
+import { Vector3 } from './../../tools/Vector3.js';
 
 export const Memory_get = ({memory}, location)=>{
 	if(memory.isPill(location)){

@@ -1,7 +1,6 @@
 import Face from "./Face.js";
 import FloorUI from "./UI.js";
-import { Vector3 } from 'vecteur/3d';
-
+import { Vector3 } from './../tools/Vector3.js';
 
 export default class Floor{
 	constructor({probes, triangles}){
@@ -11,6 +10,9 @@ export default class Floor{
 			return new Face(probes[p1], probes[p2], probes[p3])
 		});
 		this.focusFace = this.faces[0];
+	}
+	get pointToExplore(){
+		return [...this.points, ...this.faces.map(({centroid})=>centroid)]
 	}
 	getOverlapingFace(location){
 		return this.faces.filter(face=>{
