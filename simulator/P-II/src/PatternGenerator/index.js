@@ -30,7 +30,7 @@ export default class PatternGenerator{
 	
 	async getNextPattern(){
 		const res = await call(`./Generator/main.py ${this.offset}`);
-		this.offset += 10;
+		this.offset += 1;
 		return await Jimp.read(`./data/patterns/draw.diff.png`);
 	}
 }

@@ -12,7 +12,7 @@ export default class Forbidden{
 	addEach(collection){
 		const now = new Date().getTime();
 		this.areas = this.areas.filter(({createdAt})=>{
-			return now - createdAt > this.conf.lockDuration;
+			return now - createdAt < this.conf.lockDuration;
 		});
 
 		for(const item of collection){

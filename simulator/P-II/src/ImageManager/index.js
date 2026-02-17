@@ -57,14 +57,13 @@ export default class ImageManager extends EventsManager{
 			await this.nextHour();
 			this.allImages = await this.readFolder(`${this.conf.imageDestPath}/${this.allYears[this.currentYear]}/${this.allDays[this.currentDay]}/${this.allHours[this.currentHour]}`);
 			this.allImages = this.allImages.map((fileName)=>{
-				const [rX, rY, rZ, rT] = fileName.replace(".png", "").split(" ");
-				const time = parseInt(rT);
+				const [rT, rX, rY, rZ] = fileName.replace(".png", "").split(" ");
 				return [
 					`${process.env.PWD}/${this.conf.imageDestPath}/${this.allYears[this.currentYear]}/${this.allDays[this.currentDay]}/${this.allHours[this.currentHour]}/${fileName}`,
-					parseFloat(rX), parseFloat(rY), parseFloat(rT)
+					parseInt(rT), parseFloat(rX), parseFloat(rY)
 				];
-			}).sort(([aP, aX, aY, aT], [bP, bX, bY, bT])=>{
-				return parseInt(aT)-parseInt(bT);
+			}).sort(([aP, aT, aX, aY], [bP, bT, bX, bY])=>{
+				return aT-bT;
 			});
 			this.currentImage = 0;
 		}
@@ -99,22 +98,40 @@ export default class ImageManager extends EventsManager{
 		return raw.filter(name=>!name.startsWith("."));
 	}
 
-	async listImageToTransportFromSourceToDest(){
+	async listImageToTransport(){
 		const t0 = new Date().getTime();
 		const files = await fs.readdir(this.conf.imageSourcePath);
 		return files.map(fileName =>{
-			const [rX, rY, rZ, rT] = fileName.replace(".png", "").split(" ");
+			const [rT, rX, rY, rZ] = fileName.replace(".png", "").split(" ");
 			const time = parseInt(rT);
 			return [
 				fileName,
-				parseFloat(rX), parseFloat(rY), parseFloat(rT)
+				parseFloat(rT), parseFloat(rX), parseFloat(rY)
 			]
 		})
 	}
 
+	async removeImageFromSource(){
+		const list = await this.listImageToTransport();
+		await list.map(([fileName, t1, x, y])=>{
+			return `${this.conf.imageSourcePath}/${fileName}`;
+		})
+		.filter((srcFile)=>{
+			return fs.existsSync(srcFile);
+		})
+		.map(async (srcFile)=>{
+			try{
+				return await fs.remove(srcFile);	
+			}catch(error){
+				console.log(srcFile);
+				console.log(error);
+			}
+		});
+	}
+
 	async transportImageFromSourceToDest(){
-		const list = await this.listImageToTransportFromSourceToDest();
-		await list.map(([fileName, x, y, t1])=>{
+		const list = await this.listImageToTransport();
+		await list.map(([fileName, t1, x, y])=>{
 			const t2 = new Date(t1);
 			return [
 				`${this.conf.imageSourcePath}/${fileName}`,

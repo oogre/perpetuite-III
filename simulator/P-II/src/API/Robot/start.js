@@ -10,9 +10,9 @@ let frameChronos = 0;
 export const Robot_start = async (BASE)=>{
 	BASE.hasToLoop = true;
 	const startedAt = new Date();
-	console.log(`Start at : ${startedAt.getHours()}:${startedAt.getMinutes()}`)
+	console.log(`Start at : ${startedAt.getHours().toString().padStart(2, '0')}:${startedAt.getMinutes().toString().padStart(2, '0')}`)
 	
-	//await Robot_explore(BASE);
+	await Robot_explore(BASE);
 
 	BASE.frameChronos = new Chronos();
 	
@@ -22,5 +22,7 @@ export const Robot_start = async (BASE)=>{
 		console.log(error);
 	}
 	const stopedAt = new Date();
-	console.log(`Stoped at : ${stopedAt.getHours()}:${stopedAt.getMinutes()}`)
+	console.log(`Stoped at : ${stopedAt.getHours().toString().padStart(2, '0')}:${stopedAt.getMinutes().toString().padStart(2, '0')}`)
+	const runDuration = stopedAt - startedAt;
+	console.log(`Last run duration : ${Math.floor(runDuration/1000)} s.`)
 }

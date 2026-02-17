@@ -34,7 +34,7 @@ export default class Demon{
 	unlock(){
 		const pills = this.BASE.real.pills.toArray();
 		const A = pills[Math.floor(Math.random() * pills.length)];
-		A.unlock();
+		//A.unlock();
 	}
 
 	async update(deltaTime){

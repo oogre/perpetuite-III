@@ -9,8 +9,6 @@ export const Memory_set = ({memory, forbidden}, rawData)=>{
 	
 	const [notPills, pills] = data.reduce((acc, item)=>{
 		const isPill = localPills.isLargeLikeAPill(item) && localPills.isRound(item);
-
-
 		const id = +isPill;
 		acc[id].push(item);
 		return acc

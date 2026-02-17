@@ -11,16 +11,16 @@ export default class Forbidden extends BaseUI{
 		this.parent = parent;
 	}
 
-	draw(ctx){
-		super.draw(ctx);
+	draw(ctx, canvas){
+		const viewPort = super.draw(ctx, canvas);
 		const now = new Date().getTime();
-		this.parent.areas.forEach(item=>{
-			if(item.path){
-				ctx.strokeStyle=`rgba(255, 0, 0, ${now - item.createdAt / this.parent.conf.lockDuration} )`;
-				ctx.stroke(item.path);
-			}
-			
-		});
+
+		this.parent.areas
+			.filter(({path, box})=>path && viewPort.contains(box))
+			.forEach(({path, createdAt})=>{
+				ctx.strokeStyle=`rgba(255, 0, 0, ${now - createdAt / this.parent.conf.lockDuration} )`;
+				ctx.stroke(path);
+			});
 		ctx.resetTransform();
 	}
 }

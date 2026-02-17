@@ -7,6 +7,7 @@
     "build": "./scripts/build.sh",
     "start": "./scripts/start.sh",
     "start.player": "./scripts/start.player.sh",
+    "start.camera": "./scripts/start.camera.sh",
     "stop": "./scripts/stop.sh"
   },
   "keywords": [],

@@ -21,7 +21,7 @@ export default class ImageUI extends BaseUI{
 			ctx.translate(this.x, this.y);
 			ctx.translate(-100, -100);
 			ctx.fillStyle = "rgba(0,0,0,1)";
-			ctx.fillRect(0, 0, 200, 200);
+			ctx.fillRect(10, 10, 180, 180);
 			ctx.drawImage(this.image, 0, 0, 200, 200);
 			ctx.resetTransform();
 			this.fire("done");	

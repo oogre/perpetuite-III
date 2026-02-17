@@ -3,6 +3,8 @@ import { Path2D } from '@napi-rs/canvas';
 import PIP from "robust-point-in-polygon";
 import polybool from '@velipso/polybool';
 import GrahamScan from '@lucio/graham-scan';
+import { Vector3 } from './../tools/Vector3.js';
+
 
 let clipper;
 
@@ -11,12 +13,29 @@ ClipperLib.loadNativeClipperLibInstanceAsync(
 ).then(_c=>clipper=_c);
 
 export default class Area {
-	constructor(_points=[]){
+	constructor(_points=[], color=[0, 0, 0]){
 		this._points = [];
 		this._path = new Path2D();
-		this.contour = _points;
-		this.createdAt = new Date().getTime();
 		this._area = 0;
+		this._length = 0;
+		this._color = color;
+		this._circularity = 0;
+		this._centroid = new Vector3(0, 0, 0);
+		this._size = [0, 0];
+		this._box = [0, 0, 0, 0];
+		this.createdAt = new Date().getTime();
+		this.lockedAt = -1;
+		this.contour = _points;
+	}
+
+	get isLock(){
+		return this.lockedAt!=-1;
+	}
+	lock(){
+		this.lockedAt = new Date().getTime();
+	}
+	unlock(){
+		this.lockedAt = -1;
 	}
 	get contour(){
 		return this._points;
@@ -37,15 +56,26 @@ export default class Area {
 			}else{
 				this._path.lineTo(x, y);
 			}
-			var addX = x;
-			var addY = points[id == points.length-1? 0 : id+1].y;
-			var subX = points[id == points.length-1? 0 : id+1].x;
-			var subY = y;
-			this._area += (addX * addY * 0.5);
-			this._area -= (subX * subY * 0.5);
+			let currentPoint = new Vector3(x, y, 0);
+			let nextPointId = id == points.length-1? 0 : id+1;
+			let nextPoint = new Vector3(points[nextPointId][0], points[nextPointId][1], 0);
+			this._area += (currentPoint.x * nextPoint.y * 0.5);
+			this._area -= (nextPoint.x * currentPoint.y * 0.5);
+			this._centroid.add([x, y, 0]);
+			this._length += Vector3.sub(currentPoint, nextPoint).length()
 		});
-		this._area = Math.abs(this._area);
+
+		const minX = Math.min(...points.map(([x])=>x));
+		const maxX = Math.max(...points.map(([x])=>x));
+		const minY = Math.min(...points.map(([y])=>y));
+		const maxY = Math.max(...points.map(([y])=>y));
+
+		this._box = {x : maxX, y : maxY, x1 : minX, y1 : minY};
+		this._size = [maxX - minX, maxY - minY];
 		this._path.closePath();
+		this._area = Math.abs(this._area);
+		this._centroid.div(points.length);
+		this._circularity = Math.PI * 4 * this._area/(this._length*this._length);
 	}
 	get path(){
 		return this._path;
@@ -60,8 +90,52 @@ export default class Area {
 	get area(){
 		return this._area;
 	}
+
 	set area(value){
 		this._area = value;
+	}
+
+	get location(){
+		return this._centroid;
+	}
+
+	set location([x, y, z=0]){
+		return this._centroid = new Vector3(x, y, z);
+	}
+
+	get x(){
+		return this._centroid.x;
+	}
+	get y(){
+		return this._centroid.y;
+	}
+	get z(){
+		return this._centroid.z;
+	}
+
+	get circularity(){
+		return this._circularity;
+	}
+	set circularity(value){
+		return this._circularity = value;
+	}
+
+	set size([w, h]){
+		this._size[0] = w;
+		this._size[1] = h;
+	}
+	get size(){
+		return this._size;
+	}
+	get box(){
+		return this._box;
+	}
+
+	set color([r, g, b]){
+		this._color = [r, g, b];
+	}
+	get color(){
+		return this._color;
 	}
 
 	inflate(dist){
@@ -79,8 +153,6 @@ export default class Area {
 				endType: ClipperLib.EndType.ClosedPolygon
 			}]
 		});
-
-
 		this.contour = offsetted.map(({x, y})=>[x/scale, y/scale]);
 		return this;
 	}
@@ -92,5 +164,8 @@ export default class Area {
 	}
 	isIntersect(other){
 		return this.union(other).length == 1;
+	}
+	toString(){
+		return `${this.location.x.toFixed(2)} ${this.location.y.toFixed(2)} ${this.area.toFixed(2)} ${this.circularity.toFixed(2)}`;
 	}
 }

@@ -28,8 +28,12 @@ export default class API extends EventsManager{
 
 		Object.keys(Actions).forEach(key=>{
 			this.on(key, async (...data)=>{
-				const result = await Actions[key](controllables, ...data);
-				console.log(result);
+				try{
+					const result = await Actions[key](controllables, ...data);
+					console.log(result);
+				}catch(error){
+					console.log(error);
+				}
 			});
 		});
 	}

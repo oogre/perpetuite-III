@@ -17,3 +17,7 @@ export const Memory_get = ({memory}, location)=>{
 	}
 	return memory.set.map(pill=>pill.toString()).join("\n")
 }
+
+export const Real_get = ({real}, location)=>{
+	return Memory_get({memory:real}, location);
+}

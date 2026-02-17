@@ -1,32 +1,10 @@
 import { Vector3 } from './../tools/Vector3.js';
 import {delay} from "./../tools/helpers.js";
+import BaseCamera from "./Base.js";
 
-
-const CAMERA_CONFIG = {
-	API : [
-		'http://localhost:8000/upload', 
-		{
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			}
-		}
-	]
-}
-
-const call = async (request)=>{
-	const response = await fetch(...request);
-	const result = await response.json();
-	if (result.status == "success"){
-		return result.data;
-	}else{
-		console.log(response);
-		throw new Error(response);
-	}
-}
-
-export default class Camera {
+export default class Camera extends BaseCamera{
 	constructor(conf, target){
+		super()
 		this.conf = conf;
 		this._target = target;
 		this._offset = new Vector3();
@@ -59,12 +37,7 @@ export default class Camera {
 				await delay(10);
 				this._target.off("updated", captureAdapter);
 				try {
-					CAMERA_CONFIG.API[1].body = JSON.stringify({
-						filename: name,
-						image: canvas.toDataURL().split(',')[1]
-					});
-					const rawData = await call(CAMERA_CONFIG.API);
-
+					const rawData = await this.sendImage(name, canvas.toDataURL().split(',')[1])
 					const data = rawData
 						.filter(({box:[x, y, w, h]})=>{
 							return 	x - 2*this.conf.margin > 0 && 

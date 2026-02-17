@@ -22,7 +22,10 @@ export default class Real extends Pills{
 	}
 
 	async delete(pill){
-		const deleted = super.delete(pill);
+		const toDelete = super.getByLocation(pill.location)
+		const deleted = super.delete(toDelete);
+		this.ui.redraw();
+
 		// wait for UI to be updated
 		let t = null;
 		await new Promise(resolve=>{
@@ -36,6 +39,8 @@ export default class Real extends Pills{
 
 	async add(pill){
 		super.add(pill);
+		this.ui.redraw();
+
 		let t = null;
 		await new Promise(resolve=>{
 			t = resolve;

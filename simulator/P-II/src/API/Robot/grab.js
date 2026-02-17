@@ -14,7 +14,8 @@ export const Robot_grab = async (BASE, depth=0)=>{
 		throw new Error("Already grabbing");
 		return false;
 	}
-	const isMemoryCleanBefore = Memory_clean(BASE, BASE.robot._location)
+
+	const isMemoryCleanBefore = Memory_clean(BASE, BASE.robot._location);
 	if(!isMemoryCleanBefore){
 		throw new Error("MEMORY IS A MESS BEFORE");
 	}
@@ -25,22 +26,24 @@ export const Robot_grab = async (BASE, depth=0)=>{
 	if(isTargetedPillExists){
 		await Robot_go(BASE, targetedPill.location);
 	}else{
-		throw new Error("pill Is not Present");
+		console.log("pill Is not Present");
+		return false;
 	}
 	
-	await BASE.real.delete(targetedPill);
+	const realPill = Memory_get({memory:BASE.real}, BASE.robot._location);
+	await BASE.real.delete(realPill);
+	BASE.robot.grabbedPill = realPill;
 
 	const isMemoryCleanAfter = Memory_clean(BASE, BASE.robot._location)
 	if(!isMemoryCleanAfter){
 		throw new Error("MEMORY IS A MESS AFTER");
 	}
-	const afterCollection = await Camera_capture(BASE)
+	const afterCollection = await Camera_capture(BASE, true)
 	const isRemoved = Memory_get({memory:afterCollection}, targetedPill) === null
 	if(!isRemoved){
 		console.log("pill Is not Removed");
 		return await Robot_grab(BASE, depth+1);
 	}
 
-	BASE.robot.grabbedPill = targetedPill;
 	return true;
 }

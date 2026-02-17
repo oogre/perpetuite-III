@@ -89,6 +89,7 @@ export default class RobotBase extends EventsManager{
 				.mult(targetDamping)
 		);
 
+		this._location = this._target.clone();
 
 		if(await this._reached.isPending()){
 			if(this._move.lengthSq()<0.1){

@@ -6,8 +6,8 @@ export default class FloorUI extends BaseUI{
 		this.parent = parent;
 	}
 	
-	draw(ctx){
-		super.draw(ctx);
+	draw(ctx, canvas){
+		super.draw(ctx, canvas);
 		
 		// ctx.scale(0.1, 0.1);
 		ctx.lineWidth = 0.1;

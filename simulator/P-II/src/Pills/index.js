@@ -15,9 +15,6 @@ const getDefault = () => {
 	return null;
 }
 
-
-
-
 export default class Pills{
 	constructor(conf={}){
 		this.set = new FastSet([], contentEquals, contentHash, getDefault);
@@ -36,6 +33,13 @@ export default class Pills{
 		p.area = p.area || (w * h * 0.25 * Math.PI);
 		return p;
 	}
+
+	fromArea(area){
+		const p = new PillModel(this.conf, area.inflate(1));
+		p.color = area.color;
+		return p;
+	}
+
 	isPill(pill){
 		let result = pill instanceof PillModel;
 		if(this.conf.debug && !result)console.log(`This is not a PillModel instance : `, pill);
@@ -74,9 +78,9 @@ export default class Pills{
 			.map(item=>this.add(item));
 	}
 	delete(item){
-    	const toDelete = this.getByLocation(item.location);
-    	if(!!toDelete)
-    		return this.set.delete(toDelete);
+    	if(!!item){
+    		return this.set.deleteAll(item);
+		}
     	return false;
 	}
 	deleteEach(collection){
