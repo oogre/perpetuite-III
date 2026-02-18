@@ -34,7 +34,7 @@
         [ -338,   91 ],
         [ -247,  247 ],
         [  -91,  338 ],
-        [    0,    0 ]
+        [    0,    1 ]
       ]
     },
     "physical" : {
@@ -47,7 +47,7 @@
         "offset" : ["[PIII_PATH]/data/xDrift.json","[PIII_PATH]/data/yDrift.json"],
         "rotate" : -1.83
       },
-      "suction_cup_height" : 5,
+      "suction_cup_height" : 2,
       "probe_height" : 23,
       "pill_size_mm" : 9,
       "pill_size_px" : 75.611,
@@ -76,7 +76,7 @@
       
       "approche" : {
         "height" : 5,
-        "oldHeight" : 10,
+        "oldHeight" : 5,
         "speed" : 20,
         "acc" : 10,
         "dcc" : 10

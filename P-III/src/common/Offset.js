@@ -13,6 +13,7 @@ const {
         yDriftPath
       ],
     },
+    suction_cup_height: suctionCupHeight,
     probe_height:probeHeight, 
     pill_HEIGHT:pillHeight, 
     approche:{
@@ -27,7 +28,6 @@ const {
 const zProbs = fs.readJsonSync(probesPath);
 const xDrifts = fs.readJsonSync(xDriftPath);
 const yDrifts = fs.readJsonSync(yDriftPath);
-
 
 
 const getPlaneNormal = (p1, p2, p3) => {
@@ -97,7 +97,10 @@ const getIntersection=(point, set)=>{
 
 export const getDepthFor = (point)=>{
   const [x, y, z] = getIntersection(point, zProbs);
-  return [x, y, z + approche + pillHeight - probeHeight]
+  return [x, y, z + suctionCupHeight + approche + pillHeight - probeHeight]
+
+
+ //z + suctionCupHeight + approche + pillHeight - probeHeight;
 }
 
 export const getOffsetFor = (point)=>{

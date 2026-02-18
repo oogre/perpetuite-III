@@ -10,7 +10,8 @@ import fs from 'fs-extra';
 import _conf_ from './../../common/config.js';
 import * as RobotHelper from './../../common/CoreApiHelper.js';
 import Command from './../../common/CommandHelper.js';
-import { getDepthFor } from './../../common/Offset.js';
+//import { getDepthFor } from './../../common/Offset.js';
+import {getDepthForXY} from './../../common/moveLimit.js';
 import {$, wait, subProcessTrigger} from './../../common/tools.js';
 
 import Log from './../../common/Log.js';
@@ -21,9 +22,21 @@ const {
 				xDriftPath,
 				yDriftPath
 			]
+		},
+		approche:{
+			height:approche
 		}
 	}
 } = _conf_.HIGH_LEVEL_API_CONF;
+
+const { 
+	zProbe:{
+		probe_points:probePoints, 
+		save_path:savePath
+	}
+} = _conf_.HIGH_LEVEL_API_CONF;
+
+
 
 Command({
 	name : "P-III.xyDrift",
@@ -40,66 +53,24 @@ It runs 'P-III.core.api' script who drive the robot of the installation
 			await RobotHelper.HighPower(true, debug);
 			await RobotHelper.GoHome(debug);
 			
-			const probePoints = [
-        [0,  0], 
-        ...(
-          new Array(6).fill(0).map((_, k, {length})=>{
-            const alpha = k * (Math.PI * 2)/length;
-            const r = 100;
-            return [r * Math.cos(alpha), r * Math.sin(alpha)];
-          })
-        ),
-        ...(
-          new Array(6).fill(0).map((_, k, {length})=>{
-            const alpha = (k+0.5) * (Math.PI * 2)/length;
-            const r = 200;
-            return [r * Math.cos(alpha), r * Math.sin(alpha)];
-          })
-        ),
-        ...(
-          new Array(6).fill(0).map((_, k, {length})=>{
-            const alpha = (k) * (Math.PI * 2)/length;
-            const r = 300;
-            return [r * Math.cos(alpha), r * Math.sin(alpha)];
-          })
-        ),
-        ...(
-          new Array(6).fill(0).map((_, k, {length})=>{
-            const alpha = (k+0.5) * (Math.PI * 2)/length;
-            const r = 400;
-            return [r * Math.cos(alpha), r * Math.sin(alpha)];
-          })
-        ),
-        ...(
-          new Array(6).fill(0).map((_, k, {length})=>{
-            const alpha = (k) * (Math.PI * 2)/length;
-            const r = 500;
-            return [r * Math.cos(alpha), r * Math.sin(alpha)];
-          })
-        ),
-        ...(
-          new Array(12).fill(0).map((_, k, {length})=>{
-            const alpha = (k+0.5) * (Math.PI * 2)/length;
-            const r = 600;
-            return [r * Math.cos(alpha), r * Math.sin(alpha)];
-          })
-        ),
-      ]
+			
 
 			for(const [x, y] of probePoints){
+				console.log(x, y);
 				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0});
 			}
 			let xDrifts = [];
 			let yDrifts = [];
 			let {promise, trig, kill} = subProcessTrigger(`P-III.cv`,  []);
 			for(const [x, y] of probePoints){
-				const [a, b, z] = getDepthFor([x, y]);
+				const z = getDepthForXY(x, y);
 				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0});
 				await RobotHelper.Gripper(0);
 				await RobotHelper.WaitProbe();
 				await RobotHelper.Go({xpos:x, ypos:y, zpos: z, wpos:0, speed : 10});
 				await RobotHelper.Gripper(1);
-				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0});
+				await wait(1000);
+				await RobotHelper.Go({xpos:x, ypos:y, zpos:0, wpos:0, speed : 2});
 				try{
 					const rawData = await trig(" ");
 					const [data] = JSON.parse(rawData);

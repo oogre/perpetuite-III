@@ -32,6 +32,9 @@ ln -s $(pwd)/release/robot/highLevelAPI/P-III.zProbe /usr/local/bin/P-III.zProbe
 echo "create symLink /usr/local/bin/P-III.getZforXY"
 ln -s $(pwd)/release/robot/highLevelAPI/P-III.getZforXY /usr/local/bin/P-III.getZforXY
 
+echo "create symLink /usr/local/bin/P-III.xyDrift"
+ln -s $(pwd)/release/robot/highLevelAPI/P-III.xyDrift /usr/local/bin/P-III.xyDrift
+
 echo "create symLink /usr/local/bin/P-III.goHome"
 ln -s $(pwd)/release/robot/highLevelAPI/P-III.goHome /usr/local/bin/P-III.goHome
 
