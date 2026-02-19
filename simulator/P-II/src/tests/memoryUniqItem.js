@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+
+
 var tmp = ``.split("\n").map(e=>{
 	const [color, x, y] = e.split(" ");
 	return {

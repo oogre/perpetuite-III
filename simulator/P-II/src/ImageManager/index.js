@@ -24,7 +24,7 @@ export default class ImageManager extends EventsManager{
 	async onDone(){
 		try{
 			this.ui.image = null;
-			const [path, x, y] = await this.nextImagePath();	
+			const [path, t, x, y] = await this.nextImagePath();	
 			this.image = new Image();
 			this.image.src = await fs.readFile(path)
 			this.x = x;

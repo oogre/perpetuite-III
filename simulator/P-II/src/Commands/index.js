@@ -24,12 +24,12 @@ export default class Commands{
 
 	async getTask(colorName){
 		if(!fs.pathExistsSync(this.conf.commandsPath)){
-			await this.genTaskList();
+			this.taskList = await this.genTaskList();
 		}
 		let list = fs.readFileSync(this.conf.commandsPath,"utf8").split("\n");
 
 		if(list.length<=1){
-			await this.genTaskList();
+			this.taskList = await this.genTaskList();
 			list = fs.readFileSync(this.conf.commandsPath,"utf8").split("\n");
 		}
 		
@@ -104,7 +104,7 @@ export default class Commands{
 			}).filter(pill=>!!pill)
 		);
 
-		const groupedItems = list.set.group((item)=>{
+		let groupedItems = list.set.group((item)=>{
 			return `${
 				Math.round(Math.round(item.x / 50)*50)
 			} ${
@@ -117,6 +117,11 @@ export default class Commands{
 		}).map(([hash, group])=>{
 			return group.map(pill=>pill.toString()).join("\n");
 		});
-		this.taskList = groupedItems;
+
+		if(groupedItems.length == 0){
+			groupedItems = await this.genTaskList();
+		}
+
+		return groupedItems;
 	}
 }

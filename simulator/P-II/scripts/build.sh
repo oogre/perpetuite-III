@@ -3,6 +3,10 @@ npx babel --verbose --out-dir ./release/ ./src/
 chmod +x ./release/main.js
 chmod +x ./release/player.js
 
+
+chmod +x ./release/tests/*
+
+
 rm -r ./release/P-II
 ln -s ./main.js ./release/P-II
 
