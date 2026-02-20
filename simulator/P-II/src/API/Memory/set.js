@@ -2,8 +2,6 @@ import Pills from "./../../Pills";
 
 
 export const Memory_set = ({memory, forbidden}, rawData)=>{
-
-	
 	const localPills = new Pills(memory.conf);
 	const data = rawData.map(data=>localPills.createPill(data));
 	

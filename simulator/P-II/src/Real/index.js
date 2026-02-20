@@ -1,6 +1,6 @@
-import Pills from "./../Pills";
+import Pills, {PillModel} from "./../Pills";
 import RealUI from './UI.js';
-
+import fs from 'fs-extra';
 
 export default class Real extends Pills{
 	constructor(conf, {grid}){
@@ -13,6 +13,29 @@ export default class Real extends Pills{
 			}
 		}
 	}
+
+	save(){
+		const list = this.set.map(pill=>pill.toString());
+		fs.writeFileSync(this.conf.pillSavePath, `${list.join("\n")}`, "utf8");		
+	}
+
+	load(){
+		let list = fs.readFileSync(this.conf.pillSavePath,"utf8").split("\n");
+		if(list.length==0){
+			return "NOTHING TO LOAD";
+		}
+		this.set.clear();
+		return list.map(rawTask=>{
+			const [color, x, y] = rawTask.split(" ");
+			return this.add(
+				this.createPill({
+					box:[parseFloat(x), parseFloat(y)], 
+					avgRGB: (new PillModel.Color(color)).rgb
+				})
+			);
+		});
+	}
+
 	creatPillAtRandomFreeLocation(){
 		let location = this.grid.getRandomCellLocation();
 		const pill = this.createPill({

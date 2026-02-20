@@ -21,6 +21,13 @@ export default class API extends EventsManager{
 					return Number.isNaN(f) ? p : f;
 				})
 			);
+			this.fire(
+				`${tool}`, 
+				[action, ...parameters].map(p=>{
+					const f = parseFloat(p);
+					return Number.isNaN(f) ? p : f;
+				})
+			);
 		});
 		this.rl.once('close', () => {
 

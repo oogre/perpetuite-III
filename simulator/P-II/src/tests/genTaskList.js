@@ -19,6 +19,9 @@ const cmd = new Commands({
 const test = async ()=>{
 	const res = await cmd.genTaskList();
 	console.log(res);
+
+
+
 }
 
 

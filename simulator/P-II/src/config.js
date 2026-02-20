@@ -26,6 +26,7 @@ const {
 	PILL_MIN_CIRCULARITY,
 	PILL_MIN_RADIUS,
 	PILL_MAX_RADIUS,
+	PILL_SAVE_PATH,
 	MEMORY_PILL_SIZE,
 	MEMORY_PILL_MIN_RADIUS,
 	MEMORY_PILL_MAX_RADIUS,
@@ -109,7 +110,8 @@ export default {
 				rgb : [ 66,  70,  80],
 				style : ColorCli.black.bgBlue
 			}
-		]
+		],
+		pillSavePath : PILL_SAVE_PATH
 	},
 	forbidden : {
 		debug : parseInt(FORBIDDEN_DEBUG)==1,

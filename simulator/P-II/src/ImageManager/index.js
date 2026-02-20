@@ -65,7 +65,7 @@ export default class ImageManager extends EventsManager{
 			}).sort(([aP, aT, aX, aY], [bP, bT, bX, bY])=>{
 				return aT-bT;
 			});
-			this.currentImage = 0;
+			this.currentImage = Math.max(0, this.allImages.length-1000);
 		}
 		return this.allImages[this.currentImage];
 	}
