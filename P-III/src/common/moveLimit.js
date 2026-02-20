@@ -8,6 +8,7 @@
 import fs from 'fs-extra';
 const math = require("mathjs");
 import {constrain} from './tools.js';
+import {getDepthFor} from './Offset.js';
 import _conf_ from './config.js';
 import Vector from './Vector.js';
 
@@ -95,7 +96,8 @@ export const moveLimit = ({xpos=limitters.x.value, ypos=limitters.y.value, zpos=
 	if(vh.length() > radius){
 		[xpos, ypos] = vh.unit().multiply(radius).toArray();
 	}
-	const minDepth = getDepthForXY(xpos, ypos);
+	//const minDepth = getDepthForXY(xpos, ypos);
+	const [x, y, minDepth] = getDepthFor([xpos, ypos]);
 	return {
 		s : constrain(limitters.speed.min, limitters.speed.max, speed),
 		a : constrain(limitters.acc.min, limitters.acc.max, acc),
