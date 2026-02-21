@@ -14,17 +14,16 @@ export default class ImageUI extends BaseUI{
 
 		ctx.scale(0.75, 0.75);
 
-		const matrix = ctx.getTransform();
+		
 		
 		if(this.image !=null){
-			ctx.setTransform(matrix);
 			ctx.translate(this.x, this.y);
 			ctx.translate(-100, -100);
 			ctx.fillStyle = "rgba(0,0,0,1)";
 			ctx.fillRect(10, 10, 180, 180);
-			ctx.drawImage(this.image, 0, 0, 200, 200);
-			ctx.resetTransform();
+			ctx.drawImage(this.image, 0, 0, 200, 200);-
 			this.fire("done");	
 		}
+		ctx.resetTransform();
 	}
 }

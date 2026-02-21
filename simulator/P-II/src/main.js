@@ -32,10 +32,12 @@ const table = new Floor(config.floor);
 const real = new Real(config.pills, {grid});
 
 const robot = new Robot(config.robot);
-robot.on("locationChange initilized", location => {
+robot.on("locationChange initilized", ([location, roll]) => {
 	ui.forAllRegistered( item =>{
 		item.offset = location;
+		item.roll = roll;
 	});
+	
 	camera.offset = location;
 	robot.intersection = table.toFloorLocation(location.clone().mult(new Vector3(-1, -1, 1)));
 	robot.hoverDangerousPlace = forbidden.isHover(location.clone().mult(new Vector3(-1, -1, 1)));
@@ -102,6 +104,8 @@ const api = new API({
 // }));
 
 
+
+real.load();
 
 
 

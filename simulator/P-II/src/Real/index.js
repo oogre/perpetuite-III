@@ -19,21 +19,22 @@ export default class Real extends Pills{
 		fs.writeFileSync(this.conf.pillSavePath, `${list.join("\n")}`, "utf8");		
 	}
 
-	load(){
+	async load(){
 		let list = fs.readFileSync(this.conf.pillSavePath,"utf8").split("\n");
 		if(list.length==0){
 			return "NOTHING TO LOAD";
 		}
 		this.set.clear();
-		return list.map(rawTask=>{
-			const [color, x, y] = rawTask.split(" ");
-			return this.add(
+		return await Promise.all(list.map(async rawTask=>{
+			const [color, x, y, lockedAt] = rawTask.split(" ");
+			return await this.add(
 				this.createPill({
+					lockedAt,
 					box:[parseFloat(x), parseFloat(y)], 
 					avgRGB: (new PillModel.Color(color)).rgb
 				})
 			);
-		});
+		}));
 	}
 
 	creatPillAtRandomFreeLocation(){

@@ -23,8 +23,9 @@ export default class Pills{
 		this.conf.minArea = this.conf.radius.min * this.conf.radius.min * Math.PI;
 		this.conf.maxArea = this.conf.radius.max * this.conf.radius.max * Math.PI;		
 	}
-	createPill({contour=[], circularity=1, box:[x=0, y=0, w=this.conf.radius.value*2, h=this.conf.radius.value*2], avgRGB=(new PillModel.Color()).rgb}){
+	createPill({contour=[], circularity=1, box:[x=0, y=0, w=this.conf.radius.value*2, h=this.conf.radius.value*2], avgRGB=(new PillModel.Color()).rgb, lockedAt=-1}){
 		const p = new PillModel(this.conf);
+		p.lockedAt = lockedAt;
 		p.contour = contour;
 		p.location = [x, y];
 		p.color = avgRGB;

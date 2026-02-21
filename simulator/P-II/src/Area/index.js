@@ -166,6 +166,6 @@ export default class Area {
 		return this.union(other).length == 1;
 	}
 	toString(){
-		return `${this.location.x.toFixed(2)} ${this.location.y.toFixed(2)} ${this.area.toFixed(2)} ${this.circularity.toFixed(2)}`;
+		return `${this.location.x.toFixed(2)} ${this.location.y.toFixed(2)} ${this.lockedAt}`;
 	}
 }

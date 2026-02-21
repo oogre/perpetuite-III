@@ -26,5 +26,5 @@ export const Robot_start = async (BASE)=>{
 	console.log(`Stoped at : ${stopedAt.getHours().toString().padStart(2, '0')}:${stopedAt.getMinutes().toString().padStart(2, '0')}`)
 	const runDuration = stopedAt - startedAt;
 	console.log(`Last run duration : ${Math.floor(runDuration/1000)} s.`)
-	Real_save();
+	Real_save(BASE);
 }

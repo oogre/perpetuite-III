@@ -9,9 +9,11 @@ export const inverseLerp = (a, b, v) => {
   return (v - a) / (b - a);
 }
 
-export const shortAngle = (from, to)=>{
-  var difference = to - from % TAU
-  return ((2 * difference) % TAU) - difference
+export const degToRag = 1/360 * TAU
+
+export const shortAngle = (from, to, MAX=TAU)=>{
+  var difference = to - from % MAX
+  return ((2 * difference) % MAX) - difference
 }
 
 export const lerpAngle = (from, to, weight)=>{

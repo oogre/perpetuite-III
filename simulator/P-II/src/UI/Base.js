@@ -4,8 +4,9 @@ import {EventsManager} from "events-manager"
 class ViewPort{
 	constructor(){
 		this._data = [0, 0, 0, 0];
-		this._size = [0, 0]
-		this._offset = [0, 0, 1]
+		this._size = [0, 0];
+		this._offset = [0, 0, 1];
+		
 	}
 
 	get x(){
@@ -52,14 +53,20 @@ export default class BaseUI extends EventsManager{
 		super();
 		this.hasToClear = hasToClear;
 		this._viewPort = new ViewPort();
+		this._roll = 0;
+	}
+	set roll(value){
+		this._roll = value;
 	}
 	set offset(value){
 		this._viewPort.offset = value;
 	}
 	draw(ctx, canvas){
 		this._viewPort.size = canvas;
+		ctx.rotate(this._roll);
 		ctx.scale(this._viewPort.z, this._viewPort.z);
 		ctx.translate(this._viewPort.x, this._viewPort.y);
+		
 		return this._viewPort;
 	}
 }

@@ -59,6 +59,6 @@ export default class PillModel extends Area{
 	}
 	
 	toString(){
-		return `${this._color.name} ${super.toString()} ${this.hash} `
+		return `${this._color.name} ${super.toString()}`
 	}
 }

@@ -12,13 +12,18 @@ const {
 	PREVIEW_X,
 	PREVIEW_Y,
 	ROBOT_RADIUS,
+	ROBOT_MIN_ROLL,
+	ROBOT_MAX_ROLL,
 	ROBOT_MAX_SPEED,
+	ROBOT_SPEED,
 	ROBOT_ORIGIN_X,
 	ROBOT_ORIGIN_Y,
 	ROBOT_ORIGIN_Z,
+	ROBOT_ORIGIN_W,
 	ROBOT_FLIP_X,
 	ROBOT_FLIP_Y,
 	ROBOT_FLIP_Z,
+	ROBOT_FLIP_W,
 	PILL_DEBUG,
 	PILL_COUNT,
 	PILL_SIZE,
@@ -77,11 +82,16 @@ export default {
 		margin : 4*parseFloat(PILL_SIZE),
 	},
 	robot : {
+		
+
+		minRoll : parseInt(ROBOT_MIN_ROLL),
+		maxRoll : parseInt(ROBOT_MAX_ROLL),
+		speed : parseInt(ROBOT_SPEED),
 		maxSpeed : parseInt(ROBOT_MAX_SPEED),
 		radius : parseInt(ROBOT_RADIUS),
 		pillSize : parseFloat(PILL_SIZE),
-		origin : [parseFloat(ROBOT_ORIGIN_X), parseFloat(ROBOT_ORIGIN_Y), parseFloat(ROBOT_ORIGIN_Z)],
-		flip : [parseFloat(ROBOT_FLIP_X), parseFloat(ROBOT_FLIP_Y), parseFloat(ROBOT_FLIP_Z)]
+		origin : [parseFloat(ROBOT_ORIGIN_X), parseFloat(ROBOT_ORIGIN_Y), parseFloat(ROBOT_ORIGIN_Z), parseFloat(ROBOT_ORIGIN_W)],
+		flip : [parseFloat(ROBOT_FLIP_X), parseFloat(ROBOT_FLIP_Y), parseFloat(ROBOT_FLIP_Z), parseFloat(ROBOT_FLIP_W)]
 	},
 	pills : {
 		debug : parseInt(PILL_DEBUG)==1,
