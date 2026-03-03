@@ -1,4 +1,4 @@
-import { Vector3 } from './../tools/Vector3.js';
+import { Vector3 } from './../tools/Vector.js';
 import {delay} from "./../tools/helpers.js";
 import BaseCamera from "./Base.js";
 

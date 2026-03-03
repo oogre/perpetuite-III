@@ -1,5 +1,5 @@
 import GridUI from "./UI.js"
-import { Vector3 } from './../tools/Vector3.js';
+import { Vector2 } from './../tools/Vector.js';
 import Pills from "./../Pills";
 
 
@@ -14,7 +14,7 @@ export default class Grid extends Pills{
 		const getPosition = ([x, y]) => {
 			x = ( x + (y%2 == 0 ? 0.5 : 0) ) * offsetX - conf.positionRadius;
 			y = y * offsetY - conf.positionRadius
-			return new Vector3(x, y, 0);
+			return new Vector2(x, y);
 		}
 		this.addEach(
 			new Array(vCount * hCount)

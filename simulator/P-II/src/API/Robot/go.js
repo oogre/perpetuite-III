@@ -1,9 +1,9 @@
 
-import { Vector3 } from './../../tools/Vector3.js';
+import { Vector4 } from './../../tools/Vector.js';
 import { Robot_roll } from './roll.js';
 
 export const Robot_go = async ({robot}, location)=>{
-
-	await robot.go(new Vector3(...location));
+	const dest = new Vector4(...location, robot._location.z, robot._location.w);
+	await robot.go(dest);
 	return true;
 }

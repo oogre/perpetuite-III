@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { Vector3 } from './../tools/Vector3.js';
+import { Vector2 } from './../tools/Vector.js';
 import PatternGenerator from "./../PatternGenerator"
 import Pills, {PillModel} from "./../Pills";
 import {isString} from "./../tools/validators.js";
@@ -75,13 +75,13 @@ export default class Commands{
 	async genTaskList(){
 		const img = await this.patterGen.getNextPattern();
 		const locationToDraw = (location)=>{
-			const toImageSize = new Vector3(img.bitmap.width, img.bitmap.height, 1);
-			const normalize = new Vector3(this.conf.positionRadius * 2, this.conf.positionRadius * 2, 1);
-			const offsetLocation = new Vector3(this.conf.positionRadius, this.conf.positionRadius, 0);
+			const toImageSize = new Vector2(img.bitmap.width, img.bitmap.height);
+			const normalize = new Vector2(this.conf.positionRadius * 2, this.conf.positionRadius * 2);
+			const offsetLocation = new Vector2(this.conf.positionRadius, this.conf.positionRadius);
 			return location.clone()
-				.add(this.conf.positionRadius, this.conf.positionRadius, 0)
-				.mult(toImageSize)
-				.div(normalize);
+				.add(this.conf.positionRadius, this.conf.positionRadius)
+				.multiply(toImageSize)
+				.divide(normalize);
 		}		
 		const list = new Pills(this.conf);
 		list.addEach(

@@ -1,4 +1,4 @@
-import { Vector3 } from './Vector3.js';
+import { Vector2 } from './Vector.js';
 
 import {isLocation} from "./validators.js";
 
@@ -29,13 +29,13 @@ export const getRandomLocationOnCircle = (radius)=>{
     let r = Math.pow(Math.random(), 0.5) * radius;
     let x = r * Math.sin(alpha);
     let y = r * Math.cos(alpha);
-    return new Vector3(x, y, 0);
+    return new Vector2(x, y);
 }
 
 export const halfCircleFromPoints=(start, stop, direction)=>{
-  const lineMove = Vector3.sub(start, stop);
-    const radius = lineMove.length()/2;
-    const alphaStart = lineMove.hAngle();
+    const lineMove = start.clone().subtract(stop);
+    const radius = lineMove.magnitude()/2;
+    const alphaStart = lineMove.horizontalAngle();
     const alphaStop = alphaStart + direction * Math.PI;
     return arc(start, radius, alphaStart, alphaStop);
 }

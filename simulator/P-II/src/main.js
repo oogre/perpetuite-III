@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import config from "./config.js";
-import { Vector3 } from './tools/Vector3.js';
 import readline from "readline"
 import Engine from "./tools/Engine.js";
 import API from "./API";
@@ -32,15 +31,13 @@ const table = new Floor(config.floor);
 const real = new Real(config.pills, {grid});
 
 const robot = new Robot(config.robot);
-robot.on("locationChange initilized", ([location, roll]) => {
+robot.on("locationChange initilized", ([offset, location]) => {
 	ui.forAllRegistered( item =>{
-		item.offset = location;
-		item.roll = roll;
+		item.offset = offset;
 	});
-	
-	camera.offset = location;
-	robot.intersection = table.toFloorLocation(location.clone().mult(new Vector3(-1, -1, 1)));
-	robot.hoverDangerousPlace = forbidden.isHover(location.clone().mult(new Vector3(-1, -1, 1)));
+	camera.offset = offset;
+	robot.intersection = table.toFloorLocation(location);
+	robot.hoverDangerousPlace = forbidden.isHover(location);
 });
 
 robot.on("initilized", async ()=>{});

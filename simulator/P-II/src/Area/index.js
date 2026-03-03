@@ -3,7 +3,7 @@ import { Path2D } from '@napi-rs/canvas';
 import PIP from "robust-point-in-polygon";
 import polybool from '@velipso/polybool';
 import GrahamScan from '@lucio/graham-scan';
-import { Vector3 } from './../tools/Vector3.js';
+import { Vector2 } from './../tools/Vector.js';
 
 
 let clipper;
@@ -20,7 +20,7 @@ export default class Area {
 		this._length = 0;
 		this._color = color;
 		this._circularity = 0;
-		this._centroid = new Vector3(0, 0, 0);
+		this._centroid = new Vector2(0, 0);
 		this._size = [0, 0];
 		this._box = [0, 0, 0, 0];
 		this.createdAt = new Date().getTime();
@@ -50,19 +50,21 @@ export default class Area {
 		this._points = points;
 		this._path = new Path2D();
 		this._area = 0;
+		const currentPoint = new Vector2();
+		const nextPoint = new Vector2();
 		points.forEach(([x, y], id)=>{
 			if(id==0){
 				this._path.moveTo(x, y);
 			}else{
 				this._path.lineTo(x, y);
 			}
-			let currentPoint = new Vector3(x, y, 0);
 			let nextPointId = id == points.length-1? 0 : id+1;
-			let nextPoint = new Vector3(points[nextPointId][0], points[nextPointId][1], 0);
+			currentPoint.set(x, y);
+			nextPoint.set(points[nextPointId][0], points[nextPointId][1]);
 			this._area += (currentPoint.x * nextPoint.y * 0.5);
 			this._area -= (nextPoint.x * currentPoint.y * 0.5);
-			this._centroid.add([x, y, 0]);
-			this._length += Vector3.sub(currentPoint, nextPoint).length()
+			this._centroid.add(currentPoint);
+			this._length += currentPoint.clone().sub(nextPoint).length()
 		});
 
 		const minX = Math.min(...points.map(([x])=>x));
@@ -74,7 +76,7 @@ export default class Area {
 		this._size = [maxX - minX, maxY - minY];
 		this._path.closePath();
 		this._area = Math.abs(this._area);
-		this._centroid.div(points.length);
+		this._centroid.divideScalar(points.length);
 		this._circularity = Math.PI * 4 * this._area/(this._length*this._length);
 	}
 	get path(){
@@ -99,8 +101,8 @@ export default class Area {
 		return this._centroid;
 	}
 
-	set location([x, y, z=0]){
-		return this._centroid = new Vector3(x, y, z);
+	set location([x, y]){
+		return this._centroid = new Vector2(x, y);
 	}
 
 	get x(){

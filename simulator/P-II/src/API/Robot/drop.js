@@ -1,5 +1,6 @@
 import {Camera_capture} from './../Camera';
 import {Memory_get, Memory_clean} from './../Memory';
+import { Vector2 } from './../../tools/Vector.js';
 
 const MAX_SECURITY = false;
 
@@ -20,7 +21,7 @@ export const Robot_drop = async (BASE)=>{
 		}
 	}
 	
-	BASE.robot.grabbedPill.location = BASE.robot._location;
+	BASE.robot.grabbedPill.location = new Vector2(...BASE.robot._location);
 	await BASE.real.add(BASE.robot.grabbedPill);
 	BASE.robot.grabbedPill = null;
 
