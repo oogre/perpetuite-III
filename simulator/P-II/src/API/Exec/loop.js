@@ -1,9 +1,10 @@
-import {Robot_put} from "./put.js";
+import {Exec_task} from "./task.js";
 import Chronos from "./../../tools/Chronos.js"
 import {delay} from "./../../tools/helpers.js"
 
-export const Robot_loop = async (BASE)=>{
-	// if(!BASE.hasToLoop) return;
+export const Exec_loop = async (BASE)=>{
+	if(!BASE.hasToLoop) return;
+	BASE.robot.actionDesc = `Exec loop`;
 	console.log("");
 	if(BASE.cmd.length==1){
 		BASE.frameChronos.interval();
@@ -12,9 +13,9 @@ export const Robot_loop = async (BASE)=>{
 	console.log(`Still : ${BASE.cmd.length} tasks`);
 	const taskChrono = new Chronos();
 	const task = await BASE.cmd.getTask();
-	await Robot_put(BASE, task.toString().split(" "));
-	await delay(500);
+	await Exec_task(BASE, [task.color.name, task.location.x, task.location.y]);
 	taskChrono.interval();
 	console.log(`Duration : ${taskChrono.duration}s.`);
-	await Robot_loop(BASE);
+	BASE.robot.actionDescPop();
+	await Exec_loop(BASE);
 }

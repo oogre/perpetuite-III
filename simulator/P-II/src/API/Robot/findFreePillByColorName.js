@@ -4,10 +4,10 @@ import {Robot_explore} from './explore.js';
 import {Memory_get, Memory_unlock} from './../Memory';
 import {Robot_whatsBelow, AT_DROPZONE} from './whatsBelow.js';
 import PillModel from "./../../Pills/PillModel";
+import { Vector2 } from './../../tools/Vector.js';
 
 
 export const Robot_findFreePillByColorName = async(BASE, colorName, depth=0)=>{
-	console.log(depth);
 	if(depth>2){
 		throw new Error("Unlock loop");
 	}
@@ -23,7 +23,13 @@ export const Robot_findFreePillByColorName = async(BASE, colorName, depth=0)=>{
 	const pills = Memory_get(BASE, [colorName]);
 	const freePills = pills.filter(pill=>!pill.isLock);
 	if(freePills.length>0){
-		const pillInMemory = freePills.toArray()[Math.floor(Math.random()*freePills.length)];
+
+		const toolVec = new Vector2();
+		const pillInMemory = freePills.toArray()
+			.sort((a, b)=> toolVec.subVectors(a.location, BASE.robot._location).lengthSq() - toolVec.subVectors(b.location, BASE.robot._location).lengthSq())[0];
+
+
+		// const pillInMemory = freePills.toArray()[Math.floor(Math.random()*freePills.length)];
 		await Robot_go(BASE, pillInMemory.location);
 
 		const below = await Robot_whatsBelow(BASE, pillInMemory.color.name);
