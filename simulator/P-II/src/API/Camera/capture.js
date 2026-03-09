@@ -5,6 +5,8 @@ import {Memory_set} from './../Memory';
 
 
 export const Camera_capture = async ({robot, camera, memory, image, forbidden}, transport=false)=>{
+	robot.actionDesc = `Camera capture`;
+	
 	const captureName = `${new Date().getTime()} ${robot.position}.png`;
 	const rawData = await camera.capture(captureName);
 	if(transport){
@@ -35,5 +37,6 @@ export const Camera_capture = async ({robot, camera, memory, image, forbidden}, 
 	memory.deleteEach(unSafePills);	
 	localPills.addEach(safePills);
 	memory.addEach(safePills);
+	robot.actionDescPop();
 	return localPills
 }

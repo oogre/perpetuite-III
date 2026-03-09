@@ -10,5 +10,5 @@ export * from './start.js';
 export * from './stop.js';
 export * from './whatsBelow.js';
 export * from './roll.js';
-
+export * from './put.js';
 

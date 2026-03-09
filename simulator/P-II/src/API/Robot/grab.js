@@ -6,6 +6,8 @@ import {Memory_clean, Memory_get} from './../Memory';
 
 
 export const Robot_grab = async (BASE, depth=0)=>{
+	BASE.robot.actionDesc = `Robot grab`;
+	
 	if(depth >= 5 ){
 		throw new Error("Error grabbing");
 	}
@@ -44,6 +46,6 @@ export const Robot_grab = async (BASE, depth=0)=>{
 		console.log("pill Is not Removed");
 		return await Robot_grab(BASE, depth+1);
 	}
-
+	BASE.robot.actionDescPop();
 	return true;
 }

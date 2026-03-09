@@ -6,5 +6,6 @@ export * from './Real';
 export * from './Image';
 export * from './Forbidden';
 export * from './Move';
+export * from './Exec';
 
 

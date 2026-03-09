@@ -7,16 +7,18 @@ import PillModel from "./../../Pills/PillModel";
 
 
 export const Robot_findFreePillByColorName = async(BASE, colorName, depth=0)=>{
-	if(depth>0){
-		console.log(`Unlock all ${PillModel.Color.style(colorName)} pill`);
-		Memory_unlock(BASE, [colorName]);
-	}else if(depth==1){
-		await Robot_explore(BASE);
-	}
-
-	if(depth>1){
+	console.log(depth);
+	if(depth>2){
 		throw new Error("Unlock loop");
 	}
+	else if(depth==2){
+		await Robot_explore(BASE);
+	}
+	else if(depth>0){
+		console.log(`Unlock all ${PillModel.Color.style(colorName)} pill`);
+		Memory_unlock(BASE, [colorName]);
+	}
+	
 	
 	const pills = Memory_get(BASE, [colorName]);
 	const freePills = pills.filter(pill=>!pill.isLock);

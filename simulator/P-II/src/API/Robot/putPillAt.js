@@ -12,8 +12,6 @@ export const Robot_putPillAt = async(BASE, task, targetPill=null, depth=1)=>{
 	BASE.robot.actionDesc = `${task.toString()}`;
 	LOG(`Put ${task.color.style} @ ${task.location.style}`);
 	
-	console.log(task.location);
-
 	await Robot_go(BASE, task.location);
 	let cleanResult = await Robot_cleanForColor(BASE, task.color.name, targetPill, depth)
 	
@@ -21,7 +19,7 @@ export const Robot_putPillAt = async(BASE, task, targetPill=null, depth=1)=>{
 		case CLEAN_RESULT.GOOD:
 			Memory_lock(BASE, task.location);
 		case CLEAN_RESULT.NO_GO :
-			LOG(`Put ${task.color.style} @ ${task.location.style} : ${cleanResult == CLEAN_RESULT.GOOD ? "DONE" : "PASS" }`);
+			LOG(`${cleanResult == CLEAN_RESULT.GOOD ? "DONE" : "PASS" } ${task.color.style} @ ${task.location.style}`);
 			BASE.robot.actionDescPop();
 			return true;
 	}
@@ -41,7 +39,7 @@ export const Robot_putPillAt = async(BASE, task, targetPill=null, depth=1)=>{
 	await Robot_drop(BASE);
 	
 	Memory_lock(BASE, task.location);
-	LOG(`Put ${task.color.style} @ ${task.location.style} : DONE`);
+	LOG(`DONE ${task.color.style} @ ${task.location.style}`);
 	BASE.robot.actionDescPop();
 	return true;
 }

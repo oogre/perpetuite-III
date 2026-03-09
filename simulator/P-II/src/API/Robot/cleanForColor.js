@@ -1,6 +1,7 @@
 import {Robot_putPillAt} from './putPillAt.js';
+import {Robot_go} from './go.js';
 import {Robot_whatsBelow, AT_DROPZONE} from './whatsBelow.js';
-import {Memory_get} from './../Memory';
+import {Memory_get, Memory_list} from './../Memory';
 import PillModel from "./../../Pills/PillModel";
 import Enum from 'enum';
 
@@ -8,8 +9,17 @@ export const CLEAN_RESULT = new Enum(['NO_GO', 'GOOD', 'EMPTY', 'WRONG']);
 
 
 export const Robot_cleanForColor = async (BASE, colorName, targetPill=null, depth=0)=>{
+	
+	const pillsAtLocation = await Memory_list(BASE, [BASE.robot._location.x, BASE.robot._location.y, BASE.memory.conf.radius.value*3, BASE.memory.conf.radius.value*3]);
+
+	if(pillsAtLocation.length>1){
+		for(const pill of pillsAtLocation){
+			const subTaskII = await BASE.cmd.getTask(pill.color.name);
+			await Robot_putPillAt(BASE, subTaskII, pill, depth+1);
+		}
+	}
 	const result = await Robot_whatsBelow(BASE, colorName);
-	// console.log(result.toString())
+	
 	switch(result){
 		case AT_DROPZONE.EMPTY : 
 			return CLEAN_RESULT.EMPTY;
@@ -28,6 +38,7 @@ export const Robot_cleanForColor = async (BASE, colorName, targetPill=null, dept
 			//fallback on WRONG_COLOR
 
 		case AT_DROPZONE.WRONG_COLOR:
+			// const origin = BASE.robot._location.clone();
 			const pill = await Memory_get(BASE, BASE.robot._location);
 			const subTaskII = await BASE.cmd.getTask(pill.color.name);
 			await Robot_putPillAt(BASE, subTaskII, pill, depth+1);

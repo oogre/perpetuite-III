@@ -5,6 +5,8 @@ import { Vector2 } from './../../tools/Vector.js';
 const MAX_SECURITY = false;
 
 export const Robot_drop = async (BASE)=>{
+	BASE.robot.actionDesc = `Robot drop`;
+
 	if(BASE.robot.grabbedPill===null){
 		throw new Error("Nothing to drop");
 		return false;
@@ -26,6 +28,6 @@ export const Robot_drop = async (BASE)=>{
 	BASE.robot.grabbedPill = null;
 
 	await Camera_capture(BASE, true);
-
+	BASE.robot.actionDescPop();
 	return true;
 }
