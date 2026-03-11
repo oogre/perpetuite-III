@@ -1,6 +1,6 @@
 import {Robot_go} from './go.js';
 import {Camera_capture} from './../Camera';
-import { Vector2 } from './../../tools/Vector.js';
+import { Vector2, Vector4 } from './../../tools/Vector.js';
 
 export const Robot_explore = async (BASE)=>{
 	BASE.robot.actionDesc = `Explore`;
@@ -15,7 +15,7 @@ export const Robot_explore = async (BASE)=>{
 			}
 		});
 	for(const [x, y] of points){
-		await Robot_go(BASE, [x, y, 0, 0]);
+		await Robot_go(BASE, new Vector4(x, y, 0, 0));
 		await Camera_capture(BASE);	
 	}
 	BASE.robot.actionDescPop();

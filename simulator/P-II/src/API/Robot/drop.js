@@ -11,11 +11,11 @@ export const Robot_drop = async (BASE)=>{
 		throw new Error("Nothing to drop");
 		return false;
 	}
-
+	const robotLocation = BASE.robot.location2D;
 	if(MAX_SECURITY){
-		Memory_clean(BASE, BASE.robot._location)
+		Memory_clean(BASE, robotLocation)
 		await Camera_capture(BASE)
-		const targetedArea = Memory_get(BASE, BASE.robot._location);
+		const targetedArea = Memory_get(BASE, robotLocation);
 		const isTargetedAreaEmpty = targetedArea===undefined;
 		if(!isTargetedAreaEmpty){
 			throw new Error("DropZone is occupied");
@@ -23,7 +23,7 @@ export const Robot_drop = async (BASE)=>{
 		}
 	}
 	
-	BASE.robot.grabbedPill.location = new Vector2(...BASE.robot._location);
+	BASE.robot.grabbedPill.location = robotLocation;
 	await BASE.real.add(BASE.robot.grabbedPill);
 	BASE.robot.grabbedPill = null;
 

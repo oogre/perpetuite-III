@@ -5,12 +5,12 @@ export const AT_DROPZONE = new Enum(['NO_GO', 'GOOD_COLOR', 'EMPTY', 'WRONG_COLO
 
 export const Robot_whatsBelow = async(BASE, colorName)=>{
 	const justCapturedPills = await Camera_capture(BASE);
-	const pill = justCapturedPills.getByLocation(BASE.robot._location);
+	const pill = justCapturedPills.getByLocation(BASE.robot.location2D);
 
-	if(BASE.robot.hoverDangerousPlace){
-		return AT_DROPZONE.NO_GO;
-	}else if(pill === undefined){
+	if(pill === undefined){
 		return AT_DROPZONE.EMPTY;
+	}else if(BASE.forbidden.isIntersect(pill)){
+		return AT_DROPZONE.NO_GO;
 	}else if(pill.color.name !== colorName){
 		return AT_DROPZONE.WRONG_COLOR;
 	}else{

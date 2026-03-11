@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import fs from 'fs-extra';
 import ColorCli from "cli-color";
-
+import { Vector4 } from './tools/Vector.js';
 const {
 	TITLE,
 	PREVIEW,
@@ -11,6 +11,10 @@ const {
 	UI_Y,
 	PREVIEW_X,
 	PREVIEW_Y,
+	FLIP_X,
+	FLIP_Y,
+	FLIP_Z,
+	FLIP_W,
 	ROBOT_RADIUS,
 	ROBOT_MIN_ROLL,
 	ROBOT_MAX_ROLL,
@@ -20,10 +24,7 @@ const {
 	ROBOT_ORIGIN_Y,
 	ROBOT_ORIGIN_Z,
 	ROBOT_ORIGIN_W,
-	ROBOT_FLIP_X,
-	ROBOT_FLIP_Y,
-	ROBOT_FLIP_Z,
-	ROBOT_FLIP_W,
+	ROBOT_MAX_Z,
 	PILL_DEBUG,
 	PILL_COUNT,
 	PILL_SIZE,
@@ -51,13 +52,15 @@ const {
 	GENERATOR_OFFSET_PATH,
 	COMMANDS_PATH,
 	CV_IMAGE_PATH,
-	PLAYER_IMAGE_PATH
-
+	PLAYER_IMAGE_PATH,
+	PROBE_POINTS_PATH,
+	Z_VALUES_PATH
 } = dotenv.config().parsed;
 
-let rawZProbes = fs.readFileSync(`${__dirname}/../data/zProbes.json`, "utf8");
+
 
 export default {
+	flipAxis : new Vector4(parseFloat(FLIP_X), parseFloat(FLIP_Y), parseFloat(FLIP_Z), parseFloat(FLIP_W)),
 	window : {
 		title: TITLE,
 		width: parseInt(UI_WIDTH),
@@ -82,16 +85,14 @@ export default {
 		margin : 4*parseFloat(PILL_SIZE),
 	},
 	robot : {
-		
-
+		maxZ : parseInt(ROBOT_MAX_Z),
 		minRoll : parseInt(ROBOT_MIN_ROLL),
 		maxRoll : parseInt(ROBOT_MAX_ROLL),
 		speed : parseInt(ROBOT_SPEED),
 		maxSpeed : parseInt(ROBOT_MAX_SPEED),
 		radius : parseInt(ROBOT_RADIUS),
 		pillSize : parseFloat(PILL_SIZE),
-		origin : [parseFloat(ROBOT_ORIGIN_X), parseFloat(ROBOT_ORIGIN_Y), parseFloat(ROBOT_ORIGIN_Z), parseFloat(ROBOT_ORIGIN_W)],
-		flip : [parseFloat(ROBOT_FLIP_X), parseFloat(ROBOT_FLIP_Y), parseFloat(ROBOT_FLIP_Z), parseFloat(ROBOT_FLIP_W)]
+		origin : [parseFloat(ROBOT_ORIGIN_X), parseFloat(ROBOT_ORIGIN_Y), parseFloat(ROBOT_ORIGIN_Z), parseFloat(ROBOT_ORIGIN_W)]
 	},
 	pills : {
 		debug : parseInt(PILL_DEBUG)==1,
@@ -137,7 +138,8 @@ export default {
 		lockDuration : parseInt(FORBIDDEN_LOCK_DURATION),
 	},
 	floor : {
-		probes : JSON.parse(rawZProbes),
+		probePointsPath : PROBE_POINTS_PATH,
+		zValuesPath : Z_VALUES_PATH,
 		triangles : [
     		[ 0, 12,  1], [12, 13,  1], [ 1, 13,  2], [13, 14,  2], 
     		[ 2, 14,  3], [14, 15,  3], [15,  4,  3], [15, 16,  4], 

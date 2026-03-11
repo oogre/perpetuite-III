@@ -4,7 +4,7 @@ import {lerp} from "./../../tools/math.js";
 //Log.info("Random x y z w adjustment");
 export const Move_boogie = async ({robot})=>{
 	const ptLen = Math.floor(lerp(2, 5, Math.random()));
-	const origin = robot._location.clone();
+	const origin = robot.location4D;
 	const work = origin.clone()
 	for(let i = 0 ; i < ptLen ; i++){
 		const amp = lerp(10, 40, Math.random());

@@ -78,8 +78,10 @@ export default class Commands{
 			const toImageSize = new Vector2(img.bitmap.width, img.bitmap.height);
 			const normalize = new Vector2(this.conf.positionRadius * 2, this.conf.positionRadius * 2);
 			const offsetLocation = new Vector2(this.conf.positionRadius, this.conf.positionRadius);
+
+
 			return location.clone()
-				.add(this.conf.positionRadius, this.conf.positionRadius)
+				.addScalar(this.conf.positionRadius)
 				.multiply(toImageSize)
 				.divide(normalize);
 		}		
@@ -114,7 +116,8 @@ export default class Commands{
 			// RANDOMIZE SUBGROUP
 			group = group.sort(()=>Math.random()-0.5);
 			return [hash, group]
-		}).map(([hash, group])=>{
+		}).sort(()=>Math.random()-0.5)
+		.map(([hash, group])=>{
 			return group.map(pill=>pill.toString()).join("\n");
 		});
 

@@ -19,25 +19,27 @@ export const Robot_findFreePillByColorName = async(BASE, colorName, depth=0)=>{
 		Memory_unlock(BASE, [colorName]);
 	}
 	
-	
-	const pills = Memory_get(BASE, [colorName]);
-	const freePills = pills.filter(pill=>!pill.isLock);
-	if(freePills.length>0){
-
+	const coloredPills = Memory_get(BASE, [colorName]);
+	const unlockColoredPills = coloredPills.filter(pill=>!pill.isLock);
+	if(unlockColoredPills.length>0){
 		const toolVec = new Vector2();
-		const pillInMemory = freePills.toArray()
-			.sort((a, b)=> toolVec.subVectors(a.location, BASE.robot._location).lengthSq() - toolVec.subVectors(b.location, BASE.robot._location).lengthSq())[0];
-
-
-		// const pillInMemory = freePills.toArray()[Math.floor(Math.random()*freePills.length)];
-		await Robot_go(BASE, pillInMemory.location);
-
-		const below = await Robot_whatsBelow(BASE, pillInMemory.color.name);
-		if(below == AT_DROPZONE.GOOD_COLOR) {
-			return pillInMemory;
+		const robotLocation = BASE.robot.location2D;
+		const distToRobot = (pill)=>{
+			return toolVec.subVectors(pill.location, robotLocation).lengthSq();
 		}
-		console.log(`My souvenir is ${pillInMemory.color.style} actual pill color is not... going deeper`);
-		BASE.memory.delete(pillInMemory);
+		const unlockColoredPillsStortedByDistance = unlockColoredPills.toArray()
+			.sort((a, b)=> distToRobot(a) - distToRobot(b));
+		const id = Math.floor(Math.pow(Math.random(), 10) * unlockColoredPillsStortedByDistance.length);
+		const selectedPill = unlockColoredPillsStortedByDistance[id];
+
+		await Robot_go(BASE, selectedPill.location);
+
+		const below = await Robot_whatsBelow(BASE, selectedPill.color.name);
+		if(below == AT_DROPZONE.GOOD_COLOR) {
+			return selectedPill;
+		}
+		console.log(`My souvenir is ${selectedPill.color.style} actual pill color is not... going deeper`);
+		BASE.memory.delete(selectedPill);
 	}
 	return await Robot_findFreePillByColorName(BASE, colorName, depth+1)
 }

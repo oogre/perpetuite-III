@@ -7,7 +7,7 @@ import {Memory_set} from './../Memory';
 export const Camera_capture = async ({robot, camera, memory, image, forbidden}, transport=false)=>{
 	robot.actionDesc = `Camera capture`;
 	
-	const captureName = `${new Date().getTime()} ${robot.position}.png`;
+	const captureName = `${new Date().getTime()} ${robot.location4D}.png`;
 	const rawData = await camera.capture(captureName);
 	if(transport){
 		await image.transportImageFromSourceToDest();	

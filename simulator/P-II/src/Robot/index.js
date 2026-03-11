@@ -12,6 +12,10 @@ export default class Robot extends RobotBase{
 		this.hoverDangerousPlace = false;
 	}
 
+	get actionDesc(){
+		return this._actionDesc[0];
+	}
+
 	set actionDesc(value){
 		this._actionDesc.unshift(value);
 	}

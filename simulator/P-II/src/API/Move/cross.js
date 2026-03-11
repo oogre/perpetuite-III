@@ -1,26 +1,41 @@
 
 import { Robot_go } from "./../Robot";
-import { Vector4 } from './../../tools/Vector.js';
-import { lerp } from "./../../tools/math.js";
+import { Vector3, Vector4 } from './../../tools/Vector.js';
 
 
-export const Move_cross = async ({robot})=>{
-// 	const origin = robot._location.clone()
-	
-// 	new Vector3(1, 0, 0)
+export const Move_cross = async (BASE)=>{
+  const path = [];
+  const origin = BASE.robot.location4D;
+  const work = new Vector3(origin.x, origin.y, 0);
+  
+  path.push(new Vector4(origin.x, origin.y, BASE.table.toFloorLocation(origin).z, origin.w));
 
-// 	 let p0 = Vector.Right().rotate(Vector.Up(), Math.random()*2*Math.PI).multiply(limitters.radius.value);
-  // p0.z = getDepthForXY(p0.x, p0.y) + 10;
-  // let p1 = p0.clone().rotate(Vector.Up(), Math.PI);
-  // p1.z = getDepthForXY(p1.x, p1.y) + 10;
-  // let p2 = p1.clone().rotate(Vector.Up(), Math.PI*0.5);
-  // p2.z = getDepthForXY(p2.x, p2.y) + 10;
-  // let p3 = p2.clone().rotate(Vector.Up(), Math.PI);
-  // p3.z = getDepthForXY(p3.x, p3.y) + 10;
-  // return [p0, p1, p2, p3]
+  work.setLength(BASE.robot.conf.radius);
 
+  work.z = 0;
+  work.applyAxisAngle(Vector3.DOWN, Math.PI);
+  work.z = BASE.table.toFloorLocation(work).z;
+  path.push(new Vector4(...work, origin.w));
+  
+  work.z = 0;
+  work.applyAxisAngle(Vector3.DOWN, Math.PI/2);
+  work.z = BASE.table.toFloorLocation(work).z;
+  path.push(new Vector4(...work, origin.w));
+  
+  work.z = 0;
+  work.applyAxisAngle(Vector3.DOWN, Math.PI);
+  work.z = BASE.table.toFloorLocation(work).z;
+  path.push(new Vector4(...work, origin.w));
+  
+  work.z = 0;
+  work.applyAxisAngle(Vector3.DOWN, -Math.PI/2);
+  work.z = BASE.table.toFloorLocation(work).z;
+  path.push(new Vector4(...work, origin.w));
+  
+  path.push(path[0]);
+  path.push(new Vector4(...origin));
 
+  console.log(path);
 
-// 	await Robot_go({robot}, origin);
 	return true;
 }

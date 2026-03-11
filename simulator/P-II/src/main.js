@@ -9,59 +9,51 @@ import Real from "./Real";
 import Robot from "./Robot";
 import Memory from "./Memory";
 import Forbidden from "./Forbidden";
-
 import Camera from "./Camera";
 import Floor from "./Floor";
 import Grid from "./Grid";
 import Commands from "./Commands";
 import ImageManager from "./ImageManager";
+import {axisCorrection} from "./tools/correction.js";
 
-import Demon from "./Demon"
 
 process.title = config.window.title;
 
+
+
 const image = new ImageManager(config.player);
-
 const grid = new Grid(config.grid);
-
-const cmd = new Commands(config.commands, {grid})
-
+const cmd = new Commands(config.commands, {grid});
 const table = new Floor(config.floor);
-
 const real = new Real(config.pills, {grid});
-
 const robot = new Robot(config.robot);
-robot.on("locationChange initilized", ([offset, location]) => {
-	ui.forAllRegistered( item =>{
-		item.offset = offset;
+	robot.on("locationChange initilized", (location) => {
+		const offset = axisCorrection(location, config.flipAxis);
+		ui.forAllRegistered( item =>{
+			item.offset = offset;
+		});
+		camera.offset = offset;
+		robot.positionOnTable = table.toFloorLocation(location);
+		robot.hoverDangerousPlace = forbidden.isHover(location);
 	});
-	camera.offset = offset;
-	robot.intersection = table.toFloorLocation(location);
-	robot.hoverDangerousPlace = forbidden.isHover(location);
-});
-
-robot.on("initilized", async ()=>{});
 
 const memory = new Memory(config.pills);
-
 const forbidden = new Forbidden(config.forbidden);
-
 const camera = new Camera(config.camera, real.ui);
-
 const engine = new Engine(50);
-engine.register(robot);
+	engine.register(robot);
 
 const ui = new UI_Manager(config.window);
-ui.register(grid.ui);
-ui.register(table.ui);
-ui.register(real.ui);
-ui.register(robot.ui);
-ui.register(memory.ui);
-ui.register(forbidden.ui);
+	ui.register(grid.ui);
+	ui.register(table.ui);
+	ui.register(real.ui);
+	ui.register(robot.ui);
+	ui.register(memory.ui);
+	ui.register(forbidden.ui);
 
 const uiPreview = new UI_Manager(config.windowPreview);
-uiPreview.register(image.ui);
-uiPreview.register(image.uiFrame);
+	uiPreview.register(image.ui);
+	uiPreview.register(image.uiFrame);
 
 const api = new API({
 	robot,
@@ -74,33 +66,6 @@ const api = new API({
 	image,
 	table
 });
-
-// const demon = new Demon({real, grid});
-// const engineDemon = new Engine(50);
-// engineDemon.register(demon);
-
-
-
-
-
-
-// real.add(real.createPill({
-// 	box :[ -30, -30, real.conf.radius.value, real.conf.radius.value]
-// }));
-
-// real.add(real.createPill({
-// 	box :[ 0, 0, real.conf.radius.value, real.conf.radius.value]
-// }));
-
-// real.add(real.createPill({
-// 	box :[ real.conf.radius.value, 0, real.conf.radius.value, real.conf.radius.value]
-// }));
-
-// real.add(real.createPill({
-// 	box :[ 0, real.conf.radius.value, real.conf.radius.value, real.conf.radius.value]
-// }));
-
-
 
 real.load();
 

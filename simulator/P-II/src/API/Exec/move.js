@@ -28,15 +28,14 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 	const visiblePills = await Camera_capture(BASE);
 	
 	// 	NOGO :
-	if(BASE.robot.hoverDangerousPlace){
+	if(BASE.forbidden.isIntersect(pill)){
 		LOG(`NOGO`);
 		const subTaskI = await BASE.cmd.getTask(pill.color.name);
 		await Exec_move(BASE, pill, subTaskI.location, depth);
 		return;
 	}
 	const pills = visiblePills.getByBox([
-		BASE.robot._location.x, 
-		BASE.robot._location.y, 
+		...BASE.robot.location2D, 
 		visiblePills.conf.radius.value*3, 
 		visiblePills.conf.radius.value*3
 	]);

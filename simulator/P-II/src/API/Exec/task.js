@@ -13,13 +13,14 @@ import {Exec_move} from "./move.js";
 // 		PILL.COLOR != Color :
 // 			return SET Color at XY
 // 	MOVE PILL to XY
-export const Exec_task = async(BASE, [colorName=(new PillModel.Color()).name, x=BASE.robot._location.x, y=BASE.robot._location.y], depth=1)=>{
+export const Exec_task = async(BASE, [colorName=(new PillModel.Color()).name, x=BASE.robot.location2D.x, y=BASE.robot.location2D.y], depth=1)=>{
 	const task = new Pills(BASE.cmd.conf).createPill({
 		avgRGB : (new PillModel.Color(colorName)).rgb,
 		box:[x, y]
 	});
+	
 	const pill = await Robot_findFreePillByColorName(BASE, task.color.name);
-	if(BASE.robot.hoverDangerousPlace){
+	if(BASE.forbidden.isIntersect(pill)){
 		return Exec_task(BASE, [colorName, x, y]);
 	}
 	if(!pill){

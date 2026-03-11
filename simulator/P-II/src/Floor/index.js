@@ -1,15 +1,37 @@
+import fs from 'fs-extra';
 import Face from "./Face.js";
 import FloorUI from "./UI.js";
 import { Ray } from 'THREE';
 import { Vector3 } from './../tools/Vector.js';
 
-
 export default class Floor{
-	constructor({probes, triangles}){
+	constructor(conf){
+		this.conf = conf;
+		if(!fs.pathExistsSync(this.conf.probePointsPath)){
+			throw new Error("Floor probe points not configured!")
+		}
+
+		const rawPoints = JSON.parse(fs.readFileSync(this.conf.probePointsPath,"utf8"));
+		this.points = rawPoints.map(([x, y])=>new Vector3(x, y, 0));
+	
+		if(!fs.pathExistsSync(this.conf.zValuesPath)){
+			throw new Error("Floor probe z values not configured!")
+		}
+
+		const zValues = JSON.parse(fs.readFileSync(this.conf.zValuesPath,"utf8"));
+		if(this.points.length != zValues.length){
+			throw new MyError("Floor probe z values wrong configured!")
+		}
+
+		this.points = this.points.map((point, id)=> {
+			point.z = zValues[id];
+			return point;
+		});
+
 		this.ui = new FloorUI(this);
-		this.points = probes;
-		this.faces = triangles.map(([p1, p2, p3])=>{
-			return new Face(probes[p1], probes[p2], probes[p3])
+		
+		this.faces = conf.triangles.map(([p1, p2, p3])=>{
+			return new Face(this.points[p1], this.points[p2], this.points[p3])
 		});
 		this.ray = new Ray(undefined, Vector3.DOWN);
 		this.focusFace = this.faces[0];
@@ -42,7 +64,7 @@ export default class Floor{
 		return face;
 	}
 	toFloorLocation(location){
-		this.ray.origin.set(location.x, location.y, location.z);
+		this.ray.origin.set(location.x, location.y, 0);
 		this.focusFace = this.getOverlapingFace();
 		if(!this.focusFace){
 			this.focusFace = this.getClosestFace();
