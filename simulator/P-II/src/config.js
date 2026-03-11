@@ -15,6 +15,8 @@ const {
 	FLIP_Y,
 	FLIP_Z,
 	FLIP_W,
+	ROBOT_HOST,
+	ROBOT_PORT,
 	ROBOT_RADIUS,
 	ROBOT_MIN_ROLL,
 	ROBOT_MAX_ROLL,
@@ -85,6 +87,11 @@ export default {
 		margin : 4*parseFloat(PILL_SIZE),
 	},
 	robot : {
+		network: {
+			host: ROBOT_HOST,
+			port: parseInt(ROBOT_PORT),
+			timeout: 30000
+		},
 		maxZ : parseInt(ROBOT_MAX_Z),
 		minRoll : parseInt(ROBOT_MIN_ROLL),
 		maxRoll : parseInt(ROBOT_MAX_ROLL),

@@ -1,3 +1,5 @@
+import {isBool} from "./validators.js";
+
 export const getRandomItem = (arr) => {
     const index = Math.floor(Math.random() * arr.length);
     return arr[index];
@@ -32,4 +34,22 @@ export const spacer = (count=0, char="-")=>{
 
 export const spacedLog = (count=0, char="-")=>{
   return (...data)=>console.log(`${spacer(count, char)}`, ...data);
+}
+
+export const stringToBoolean = (n) => {
+  if(isBool(n))return n;
+  switch(n?.toLowerCase()?.trim()){
+    case "true":
+    case "1":
+    case "yes":
+      return true;
+    case "false":
+    case "0":
+    case "no":
+    case null:
+    case undefined:
+      return false;
+    default :
+      JSON.parse(n);
+  }
 }

@@ -17,10 +17,8 @@ export default class RobotBase extends EventsManager{
 		this._location = new Vector4(0, 0, 0, 0);
 		this._move = new Vector4(0, 0, 0, 0);
 		this._locationProjectedOnTable = this._location.clone()
-		
 		this._isInit = false;
 		this.ui = new RobotUI(this);
-		
 		this._reached = new PromiseHelper(()=>{
 			this.fire('locationReached', this.offset);
 		});

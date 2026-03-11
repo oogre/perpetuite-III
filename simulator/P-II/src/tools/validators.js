@@ -15,3 +15,12 @@ export const isLocation = v => {
 export const isNumber = v => Number(v)===v;
 export const isBox = v => (Array.isArray(v) && v.length!=0 && v.length===4 && v.every(i=>Number(i)===i));
 export const isPath = v => Array.isArray(v) && v.every(item=>isLocation(item));
+
+export const isFnc = (n) => n instanceof Function;
+export const isBool = (n) => typeof n == "boolean";
+export const isArray = (n) => Array.isArray(n);
+export const isFloat = (n) => n === +n && n !== (n|0);
+export const isInteger = (n) => n === +n && n === (n|0);
+//export const isNumber = (n) => isFloat(n) || isInteger(n);
+export const isBuffer = (n) => Buffer.isBuffer(n);
+export const isObject = (n) => (typeof n === "object" || typeof n === 'function') && (n !== null);
