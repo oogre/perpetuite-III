@@ -1,6 +1,6 @@
 
-import { Robot_go } from "./../Robot";
-import { Vector3, Vector4 } from './../../tools/Vector.js';
+import { Robot_go } from "./../../Robot";
+import { Vector3, Vector4 } from './../../../tools/Vector.js';
 
 
 export const Move_cross = async (BASE)=>{

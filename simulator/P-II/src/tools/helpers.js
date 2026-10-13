@@ -36,6 +36,13 @@ export const spacedLog = (count=0, char="-")=>{
   return (...data)=>console.log(`${spacer(count, char)}`, ...data);
 }
 
+export const getRandomOne = (object)=>{
+  const keys = Object.keys(object);
+  const keyId = Math.floor(Math.random()*keys.length);
+  const key = keys[keyId];
+  return object[key];
+}
+
 export const stringToBoolean = (n) => {
   if(isBool(n))return n;
   switch(n?.toLowerCase()?.trim()){

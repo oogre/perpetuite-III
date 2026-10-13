@@ -13,21 +13,21 @@ export default class Robot extends RobotBase {
 		this.hoverDangerousPlace = false;
 
 
-		RobotController(this.conf.network)
-			.Follow(
-				new Array(10)
-				.fill(0)
-				.map(()=>
-					new Vector4(
-						Math.random()*600 - 300, 
-						Math.random()*600 - 300, 
-						Math.random()*-200, 
-						Math.random()*80 - 40
-					)
-				)
-			)
-			.then(data=>console.log(data))
-			.catch(error=>console.log(error))
+		// RobotController(this.conf.network)
+		// 	.Follow(
+		// 		new Array(10)
+		// 		.fill(0)
+		// 		.map(()=>
+		// 			new Vector4(
+		// 				Math.random()*600 - 300, 
+		// 				Math.random()*600 - 300, 
+		// 				Math.random()*-200, 
+		// 				Math.random()*80 - 40
+		// 			)
+		// 		)
+		// 	)
+		// 	.then(data=>console.log(data))
+		// 	.catch(error=>console.log(error))
 	}
 
 	get actionDesc(){

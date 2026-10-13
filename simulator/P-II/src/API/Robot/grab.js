@@ -3,6 +3,8 @@
 import {Robot_go} from './go.js';
 import {Camera_capture} from './../Camera';
 import {Memory_clean, Memory_get} from './../Memory';
+import * as Hunting from './../Move/Hunting';
+import {getRandomOne} from './../../tools/helpers.js';
 
 
 export const Robot_grab = async (BASE, depth=0)=>{
@@ -21,6 +23,12 @@ export const Robot_grab = async (BASE, depth=0)=>{
 	if(!isMemoryCleanBefore){
 		throw new Error("MEMORY IS A MESS BEFORE");
 	}
+
+	if(Math.random()<0.1){
+		const move = getRandomOne(Hunting);
+		await move(BASE);
+	}
+	
 	const beforeCollection = await Camera_capture(BASE)
 	
 	const targetedPill = Memory_get({memory:beforeCollection}, robotLocationBefore);
