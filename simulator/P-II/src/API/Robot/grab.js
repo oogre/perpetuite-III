@@ -1,14 +1,22 @@
 
 
 import {Robot_go} from './go.js';
+import {Robot_gripper} from './gripper.js';
+import {Robot_catch} from './catch.js';
 import {Camera_capture} from './../Camera';
 import {Memory_clean, Memory_get} from './../Memory';
 import * as Hunting from './../Move/Hunting';
-import {getRandomOne} from './../../tools/helpers.js';
+import {getRandomOne, delay} from './../../tools/helpers.js';
+import {isArray, isInteger} from './../../tools/validators.js';
 
 
-export const Robot_grab = async (BASE, depth=0)=>{
-	BASE.robot.actionDesc = `Robot grab`;
+
+export const Robot_grab = async (BASE, depth)=>{
+	if(!isInteger(depth)){
+		depth = 0;
+	}
+
+	BASE.robot.actionDesc = `Robot grab ${depth}`;
 	
 	if(depth >= 5 ){
 		throw new Error("Error grabbing");
@@ -30,8 +38,7 @@ export const Robot_grab = async (BASE, depth=0)=>{
 	}
 	
 	const beforeCollection = await Camera_capture(BASE)
-	
-	const targetedPill = Memory_get({memory:beforeCollection}, robotLocationBefore);
+	const targetedPill = Memory_get({memory:beforeCollection}, BASE.robot.location2D);
 	const isTargetedPillExists = targetedPill!==undefined;
 	if(isTargetedPillExists){
 		await Robot_go(BASE, targetedPill.location);
@@ -39,18 +46,20 @@ export const Robot_grab = async (BASE, depth=0)=>{
 		console.log("pill Is not Present");
 		return false;
 	}
-	const robotLocationAfter = BASE.robot.location2D;
-	const realPill = Memory_get({memory:BASE.real}, robotLocationAfter);
-	await BASE.real.delete(realPill);
-	BASE.robot.grabbedPill = realPill;
 
-	const isMemoryCleanAfter = Memory_clean(BASE, robotLocationAfter)
+	await Robot_catch(BASE);
+	
+	const isMemoryCleanAfter = Memory_clean(BASE, BASE.robot.location2D)
 	if(!isMemoryCleanAfter){
 		throw new Error("MEMORY IS A MESS AFTER");
 	}
 	const afterCollection = await Camera_capture(BASE, true)
+
+	console.log(Memory_get({memory:afterCollection}, targetedPill));
+
 	const isRemoved = Memory_get({memory:afterCollection}, targetedPill) === null
 	if(!isRemoved){
+		await Robot_gripper(BASE, false);
 		console.log("pill Is not Removed");
 		return await Robot_grab(BASE, depth+1);
 	}

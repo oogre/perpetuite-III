@@ -7,20 +7,22 @@ import {inverseLerp, lerp, shortAngle, TAU, degToRag} from "./../tools/math.js";
 import {isLocation} from "./../tools/validators.js";
 import Toggle from "./../tools/Toggle.js";
 import RobotUI from "./UI.js";
+import RobotController from "./Controller";
 
 export default class RobotBase extends EventsManager{
 	constructor(conf){
 		super();
 		this.conf = conf;
+		this.controller = new RobotController(conf.network);
 		this._speed = this.conf.speed;
-		this._target = new Vector4(...conf.origin);
+		this._target = new Vector4(...conf.origin);		
 		this._location = new Vector4(0, 0, 0, 0);
 		this._move = new Vector4(0, 0, 0, 0);
 		this._locationProjectedOnTable = this._location.clone()
 		this._isInit = false;
 		this.ui = new RobotUI(this);
 		this._reached = new PromiseHelper(()=>{
-			this.fire('locationReached', this.offset);
+			this.fire('locationReached', this.location4D.clone());
 		});
 	}
 	get location2D(){
@@ -38,6 +40,22 @@ export default class RobotBase extends EventsManager{
 	get positionOnTable(){
 		return `${this._locationProjectedOnTable}`;
 	}
+
+	async setSeed(value){
+		await this.controller.Speed(value);
+	}
+
+	async setAcceleration(value){
+		await this.controller.Acc(value);
+	}
+
+	async setDeceleration(value){
+		await this.controller.Dcc(value);
+	}
+
+	async setGripper(value){
+		await this.controller.Gripper(value);
+	}
 	
 	async go(targetValue){
 		if (!isLocation(targetValue)) {
@@ -48,44 +66,51 @@ export default class RobotBase extends EventsManager{
 			this._reached.reject();
 		}
 
-		await delay(10);
+		// await delay(10);
 
 		this._target.copy(targetValue);
+		if(!this.conf.simulation){
+			await this.controller.Go(this._target);
+		}
+
 		this._reached.reset();
 		return this._reached.promise;
 	}
 
 	async update(deltaTime, now){
-		
-		const bellCurve = (curveWidth, x)=>{
-			const width = lerp(4, 1.01, curveWidth);
-			return 1-Math.pow(width, -1 * x);
-		};
-		const damping = (value)=>{
-			const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
-			return bellCurve(Math.pow(speedAsFloat, 0.05), value);
-		}
-
 		this._move.set(...this._target).sub(this._location);
-		this._move.w = shortAngle(this._location.w, this._target.w, 360);
-		this._location.add(
-			this._move
-				.clone()
-				.normalize()
-				.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
-			);
-		this._location.w %= 360;
 
 		if(await this._reached.isPending()){
+			if(this.conf.simulation){
+				const bellCurve = (curveWidth, x)=>{
+					const width = lerp(4, 1.01, curveWidth);
+					return 1-Math.pow(width, -1 * x);
+				};
+				const damping = (value)=>{
+					const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
+					return bellCurve(Math.pow(speedAsFloat, 0.05), value);
+				}
+				this._move.w = shortAngle(this._location.w, this._target.w, 360);
+				this._location.add(
+					this._move
+						.clone()
+						.normalize()
+						.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
+				);
+				this._location.w %= 360;
+			}else{
+				const t = await this.controller.GetPosition();
+				this._location.copy(new Vector4(...t));
+			}
+
 			if(this._move.lengthSq()<0.1){
-				this._reached.resolve();
 				if(!this._isInit){
 					this._isInit = true;
 					this.fire('initilized', this.location4D.clone());
 				}
-			}else{
-				this.fire('locationChange', this.location4D.clone());
+				this._reached.resolve();
 			}
+			this.fire('locationChange', this.location4D.clone());
 		}
 	}
 }

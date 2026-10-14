@@ -5,6 +5,7 @@ import { Vector4 } from './tools/Vector.js';
 const {
 	TITLE,
 	PREVIEW,
+	SIMULATION,
 	UI_WIDTH,
 	UI_HEIGHT,
 	UI_X,
@@ -27,8 +28,16 @@ const {
 	ROBOT_ORIGIN_Z,
 	ROBOT_ORIGIN_W,
 	ROBOT_MAX_Z,
+	ROBOT_DEFAULT_SPEED,
+	ROBOT_DEFAULT_ACC,
+	ROBOT_DEFAULT_DCC,
+	ROBOT_APPROCHE_SPEED,
+	ROBOT_APPROCHE_ACC,
+	ROBOT_APPROCHE_DCC,
+	ROBOT_APPROCHE_DIST,
 	PILL_DEBUG,
 	PILL_COUNT,
+	PILL_DEPTH,
 	PILL_SIZE,
 	PILL_LOCK_DURATION,
 	PILL_MIN_CIRCULARITY,
@@ -87,6 +96,7 @@ export default {
 		margin : 4*parseFloat(PILL_SIZE),
 	},
 	robot : {
+		simulation : parseInt(SIMULATION)==1,
 		network: {
 			host: ROBOT_HOST,
 			port: parseInt(ROBOT_PORT),
@@ -99,12 +109,24 @@ export default {
 		maxSpeed : parseInt(ROBOT_MAX_SPEED),
 		radius : parseInt(ROBOT_RADIUS),
 		pillSize : parseFloat(PILL_SIZE),
-		origin : [parseFloat(ROBOT_ORIGIN_X), parseFloat(ROBOT_ORIGIN_Y), parseFloat(ROBOT_ORIGIN_Z), parseFloat(ROBOT_ORIGIN_W)]
+		origin : [parseFloat(ROBOT_ORIGIN_X), parseFloat(ROBOT_ORIGIN_Y), parseFloat(ROBOT_ORIGIN_Z), parseFloat(ROBOT_ORIGIN_W)],
+		default : {
+			speed : parseInt(ROBOT_DEFAULT_SPEED),
+			acc : parseInt(ROBOT_DEFAULT_ACC),
+			dcc : parseInt(ROBOT_DEFAULT_DCC),
+		},
+		approche : {
+			speed : parseInt(ROBOT_APPROCHE_SPEED),
+			acc : parseInt(ROBOT_APPROCHE_ACC),
+			dcc : parseInt(ROBOT_APPROCHE_DCC),
+			dist : parseInt(ROBOT_APPROCHE_DIST),
+		},
 	},
 	pills : {
 		debug : parseInt(PILL_DEBUG)==1,
 		count : parseInt(PILL_COUNT),
 		positionRadius : parseInt(ROBOT_RADIUS),
+		depth: parseInt(PILL_DEPTH),
 		circularity : {
 			min : parseFloat(PILL_MIN_CIRCULARITY)
 		},

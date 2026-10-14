@@ -1,0 +1,106 @@
+--- a/src/robot/coreAPI/Communication.js
++++ b/src/robot/coreAPI/Communication.js
+@@ -17,7 +17,8 @@
+ 		try{
+ 			let timer;
+ 			const client = net.createConnection(NETWORK_CONF, () => {
+-				client.write(req.toString());
++				// the server reads one request per line
++				client.write(req.toString().trim() + "\n");
+ 			});
+ 
+ 			client.on('data', (data) => {
+--- a/src/App/RobotModel.js
++++ b/src/App/RobotModel.js
+@@ -9,7 +9,8 @@
+ import {getChoreographicMove, getAdjustmentMoves} from './ChoreographicModel.js';
+ import Vector from './../common/Vector.js';
+ import {getArc} from './../common/Path.js';
+-import {wait, Call, constrain, $pipe, lerp} from './../common/tools.js';
++import {wait, constrain, lerp} from './../common/tools.js';
++import {CoreApi, followStream} from './../robot/coreAPI/Client.js';
+ import _conf_ from './../common/config.js';
+ import {getDepthForXY, limitters} from './../common/moveLimit.js';
+ import _ from "underscore";
+@@ -27,7 +28,7 @@
+     this.speed = undefined;
+     this.acc = undefined;
+     this.dcc = undefined;
+-    this.CoreAPI = Call(`P-III.core.api`, {debug:_conf_.DEBUG});
++    this.CoreAPI = CoreApi({debug:_conf_.DEBUG}); // persistent socket, no more `P-III.core.api` process per command
+   }
+ 
+   toString(){
+@@ -190,7 +191,7 @@
+   async goArc(x, y, z = 0){
+     const smoothness =  Math.random();
+     const path = getArc({start:this.location, stop:new Vector(x, y, z), smooth:lerp(3, 10,smoothness)});
+-    const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
++    const {stdin, kill, promise} = followStream();
+     for(const pt of path){
+       stdin.write(`${pt.join(' ')}\n`);
+       await wait(lerp(300, 200, smoothness));
+--- a/src/App/ChoreographicModel.js
++++ b/src/App/ChoreographicModel.js
+@@ -7,13 +7,14 @@
+ 
+ import Vector from './../common/Vector.js';
+ import {getArc, getMechanicalSheep, getJitter, getCross} from './../common/Path.js';
+-import {wait, wait2, $pipe, lerp} from './../common/tools.js';
++import {wait, wait2, lerp} from './../common/tools.js';
++import {followStream} from './../robot/coreAPI/Client.js';
+ import {limitters, moveLimit} from './../common/moveLimit.js';
+ import _ from "underscore";
+ import Log from './../common/Log.js';
+ 
+ const adjustmentSender = async (path, timeout=1000, beforeKill=100, afterKill=100) =>{
+-	const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
++	const {stdin, kill, promise} = followStream();
+ 	const interval = (timeout - beforeKill - afterKill) / path.length;
+ 	for(const pt of path){
+ 		stdin.write(`${pt.join(' ')}\n`);
+@@ -80,7 +81,7 @@
+ const choreographicMoves = [
+   async () => {
+     Log.info("Cross choreographic");
+-    const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
++    const {stdin, kill, promise} = followStream();
+     let path = getCross();
+     let pt;
+     for(pt of path){
+@@ -93,7 +94,7 @@
+   },
+   async () => {
+     Log.info("getMechanicalSheep choreographic");
+-    const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
++    const {stdin, kill, promise} = followStream();
+     let path = getMechanicalSheep();
+     let pt;
+     for(pt of path){
+@@ -110,7 +111,7 @@
+   },
+   async ({location}) => {
+     Log.info("jitter choreographic");
+-    const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
++    const {stdin, kill, promise} = followStream();
+     let path = getJitter(location);
+     for(const pt of path){
+       stdin.write(`${pt.join(' ')}\n`);
+@@ -121,7 +122,7 @@
+   },
+   async ({location}) => {
+     Log.info("goArc choreographic");
+-    const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
++    const {stdin, kill, promise} = followStream();
+     let old = location;
+     let count = Math.random() * 10;
+     while(count-- > 0){
+@@ -142,7 +143,7 @@
+   },
+   async ({location}) => {
+     Log.info("goArc choreographic");
+-    const {stdin, kill, promise} = $pipe('P-III.core.api', 'Follow');
++    const {stdin, kill, promise} = followStream();
+     let old = location;
+     let count = Math.random() * 10;
+     while(count-- > 0){

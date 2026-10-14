@@ -1,7 +1,6 @@
 import {halfCircleFromPoints} from "./../tools/math.js";
 import {isLocation, isPath} from "./../tools/validators.js";
 import RobotBase from "./Base.js";
-import RobotController from "./Controller";
 import { Vector4 } from './../tools/Vector.js';
 
 export default class Robot extends RobotBase {
@@ -11,8 +10,6 @@ export default class Robot extends RobotBase {
 		this.grabbedPill = null;
 		this._actionDesc = [""];
 		this.hoverDangerousPlace = false;
-
-
 		// RobotController(this.conf.network)
 		// 	.Follow(
 		// 		new Array(10)
@@ -45,7 +42,7 @@ export default class Robot extends RobotBase {
 	async go(target){
 		if (!isLocation(target)) {
 			throw new Error("go should receive a Vector3 or an array");	
-		}	
+		}
 		await super.go(target);
 	}
 
