@@ -45,6 +45,10 @@ export default class RobotBase extends EventsManager{
 		await this.controller.Speed(value);
 	}
 
+	async setHighPower(value){
+		await this.controller.HighPower(value);
+	}
+
 	async setAcceleration(value){
 		await this.controller.Acc(value);
 	}

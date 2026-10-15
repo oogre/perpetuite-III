@@ -7,15 +7,10 @@ import {Camera_capture} from './../Camera';
 import {Memory_clean, Memory_get} from './../Memory';
 import * as Hunting from './../Move/Hunting';
 import {getRandomOne, delay} from './../../tools/helpers.js';
-import {isArray, isInteger} from './../../tools/validators.js';
 
 
-
-export const Robot_grab = async (BASE, depth)=>{
-	if(!isInteger(depth)){
-		depth = 0;
-	}
-
+export const Robot_grab = async (BASE, [depth=0]=[])=>{
+	
 	BASE.robot.actionDesc = `Robot grab ${depth}`;
 	
 	if(depth >= 5 ){
@@ -60,10 +55,10 @@ export const Robot_grab = async (BASE, depth)=>{
 
 	const isRemoved = Memory_get({memory:afterCollection}, targetedPill) === null
 	if(!isRemoved){
-		await Robot_gripper(BASE, false);
+		await Robot_gripper(BASE, [false]);
 		console.log("pill Is not Removed");
 		await delay(1500);
-		return await Robot_grab(BASE, depth+1);
+		return await Robot_grab(BASE, [depth+1]);
 	}
 	BASE.robot.actionDescPop();
 	return true;

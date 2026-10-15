@@ -17,18 +17,18 @@ export const Robot_release = async (BASE)=>{
 		const targetZ = target.z;
 		target.z += tableDepth + BASE.real.conf.depth;
 		await Robot_go(BASE, target);
-		await Robot_gripper(BASE, false);
+		await Robot_gripper(BASE, [false]);
 
 		target.z += BASE.robot.conf.approche.dist;
-		await Robot_speed(BASE, BASE.robot.conf.approche.speed);
-		await Robot_acc(BASE, BASE.robot.conf.approche.acc);
-		await Robot_dcc(BASE, BASE.robot.conf.approche.acc);
+		await Robot_speed(BASE, [BASE.robot.conf.approche.speed]);
+		await Robot_acc(BASE, [BASE.robot.conf.approche.acc]);
+		await Robot_dcc(BASE, [BASE.robot.conf.approche.acc]);
 		await Robot_go(BASE, target);
 		
 		target.z = targetZ;
-		await Robot_speed(BASE, BASE.robot.conf.default.speed);
-		await Robot_acc(BASE, BASE.robot.conf.default.acc);
-		await Robot_dcc(BASE, BASE.robot.conf.default.acc);
+		await Robot_speed(BASE, [BASE.robot.conf.default.speed]);
+		await Robot_acc(BASE, [BASE.robot.conf.default.acc]);
+		await Robot_dcc(BASE, [BASE.robot.conf.default.acc]);
 		await Robot_go(BASE, target);
 	}
 	BASE.robot.actionDescPop();
