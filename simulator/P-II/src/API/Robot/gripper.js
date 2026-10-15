@@ -1,8 +1,8 @@
 
-export const Robot_gripper = async (BASE, value)=>{
-	BASE.robot.actionDesc = `Robot Gripper ${value}`;
-	await BASE.robot.setGripper(value);	
-	BASE.robot.actionDescPop();
+export const Robot_gripper = async ({robot}, value)=>{
+	robot.actionDesc = `Robot Gripper ${value}`;
+	await robot.setGripper(value);	
+	robot.actionDescPop();
 	return true;
 }
 

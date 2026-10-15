@@ -53,14 +53,16 @@ export const Robot_grab = async (BASE, depth)=>{
 	if(!isMemoryCleanAfter){
 		throw new Error("MEMORY IS A MESS AFTER");
 	}
+	
 	const afterCollection = await Camera_capture(BASE, true)
-
-	console.log(Memory_get({memory:afterCollection}, targetedPill));
+	
+	await delay(300);
 
 	const isRemoved = Memory_get({memory:afterCollection}, targetedPill) === null
 	if(!isRemoved){
 		await Robot_gripper(BASE, false);
 		console.log("pill Is not Removed");
+		await delay(1500);
 		return await Robot_grab(BASE, depth+1);
 	}
 	BASE.robot.actionDescPop();

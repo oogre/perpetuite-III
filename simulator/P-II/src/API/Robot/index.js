@@ -9,5 +9,6 @@ export * from './acc.js';
 export * from './dcc.js';
 export * from './gripper.js';
 export * from './catch.js';
+export * from './release.js';
 
 

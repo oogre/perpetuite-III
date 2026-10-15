@@ -4,7 +4,6 @@ import {Robot_acc} from './acc.js';
 import {Robot_dcc} from './dcc.js';
 import {Robot_gripper} from './gripper.js';
 import {Memory_get} from './../Memory';
-import {delay} from './../../tools/helpers.js';
 
 export const Robot_catch = async (BASE)=>{
 	BASE.robot.actionDesc = `Robot Catch`;
@@ -25,15 +24,12 @@ export const Robot_catch = async (BASE)=>{
 		await Robot_acc(BASE, BASE.robot.conf.approche.acc);
 		await Robot_dcc(BASE, BASE.robot.conf.approche.acc);
 		await Robot_go(BASE, target);
-
-		await delay(1000);
-
+		
 		target.z = targetZ;
 		await Robot_speed(BASE, BASE.robot.conf.default.speed);
 		await Robot_acc(BASE, BASE.robot.conf.default.acc);
 		await Robot_dcc(BASE, BASE.robot.conf.default.acc);
 		await Robot_go(BASE, target);
-		await delay(1000);
 	}
 	BASE.robot.actionDescPop();
 	return true;
