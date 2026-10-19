@@ -94,7 +94,7 @@ export default class RobotBase extends EventsManager{
 	async update(deltaTime, now){
 		this._move.set(...this._target).sub(this._location);
 		if(await this._reached.isPending()){
-
+			console.log("Pending");
 			if(this.conf.simulation){
 				console.log(this.conf.simulation);
 				const bellCurve = (curveWidth, x)=>{
@@ -116,6 +116,7 @@ export default class RobotBase extends EventsManager{
 			}else{
 				const t = await this.controller.GetPosition();
 				this._location.copy(new Vector4(...t));
+				console.log(this._location);
 			}
 
 			if(this._move.lengthSq()<0.2){
@@ -124,6 +125,7 @@ export default class RobotBase extends EventsManager{
 					this.fire('initilized', this.location4D.clone());
 				}
 				this._reached.resolve();
+				console.log("done");
 			}
 			this.fire('locationChange', this.location4D.clone());
 		}
