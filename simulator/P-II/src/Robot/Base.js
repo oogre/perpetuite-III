@@ -84,7 +84,7 @@ export default class RobotBase extends EventsManager{
 
 
 		if(!this.conf.simulation){
-			await this.controller.Go(this._target);
+			this.controller.Go(this._target);
 		}
 
 		this._reached.reset();
@@ -117,6 +117,7 @@ export default class RobotBase extends EventsManager{
 				const t = await this.controller.GetPosition();
 				this._location.copy(new Vector4(...t));
 			}
+
 			if(this._move.lengthSq()<0.2){
 				if(!this._isInit){
 					this._isInit = true;
