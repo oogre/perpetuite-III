@@ -12,6 +12,8 @@ export default class RealUI extends BaseUI{
 		this.image = new Image();
 		fs.readFile(`${process.env.PWD}/data/notWelcomObject.png`).then(data=>{
 			this.image.src = data	
+		}).catch(error=>{
+			console.log("THere is no notWelcomObject");
 		});
 		this._hasToRedraw = true;
 	}
