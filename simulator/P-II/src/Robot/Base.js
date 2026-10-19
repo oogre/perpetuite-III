@@ -62,7 +62,9 @@ export default class RobotBase extends EventsManager{
 	}
 
 	async getPosition(){
+		console.log("getPosition");
 		const t = await this.controller.GetPosition();
+		console.log(t);
 		return new Vector4(...t);
 	}
 
