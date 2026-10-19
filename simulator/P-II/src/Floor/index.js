@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import Face from "./Face.js";
 import FloorUI from "./UI.js";
-import { Ray } from 'THREE';
+import { Ray } from 'three';
 import { Vector3 } from './../tools/Vector.js';
 
 export default class Floor{
