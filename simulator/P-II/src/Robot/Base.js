@@ -81,7 +81,10 @@ export default class RobotBase extends EventsManager{
 		// await delay(10);
 
 		this._target.copy(targetValue);
+
+
 		if(!this.conf.simulation){
+			console.log("no Sim", this._target);
 			await this.controller.Go(this._target);
 		}
 

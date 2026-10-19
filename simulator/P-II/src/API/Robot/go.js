@@ -16,7 +16,13 @@ export const Robot_go = async (BASE, location)=>{
 
 	const origin = BASE.robot.location4D;
 	const dest = Robot_limitter(BASE, new Vector4(...location, origin.z, origin.w));
+
+	console.log(`Robot go ${dest}`)
+
 	const move = new Vector4().subVectors(origin, dest);
+
+
+	console.log(`Robot move ${move}`)
 	if(move.lengthSq() > 0.1){
 		await BASE.robot.go(dest);	
 	}
