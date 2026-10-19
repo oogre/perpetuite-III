@@ -1,6 +1,6 @@
 #!/usr/bin/env zx
 
-const appPath = 'C:/Users/32495/Desktop/perpetuite-III';
+const appPath = '/mnt/c/Users/32495/Desktop/perpetuite-III';
 
 // $.verbose = false;
 
@@ -39,12 +39,13 @@ const waitForAceReady = async () =>{
 
 const runAce = async () => {
 	console.log("Run Ace");
-	$`Ace.exe server=ace@43434`;
+	const AceDirectory = `/mnt/c/Program\ Files\ \(x86\)/Omron/ACE\ 3.8/bin`;
+	$`${AceDirectory}/Ace.exe server=ace@43434`;
 	await wait(10000);
 	const AceAPI = `${appPath}/ACE.3.8/driver.perpetuite3.ace.awp`;
-	$`Ace.exe client datafile=${AceAPI}`;
+	$`${AceDirectory}/Ace.exe client datafile=${AceAPI}`;
 	await waitForAceReady();
-	$`Ace.exe client culture=fr-LU loadui="/Src/Interface Homme Machine"`;
+	$`${AceDirectory}/Ace.exe client culture=fr-LU loadui="/Src/Interface Homme Machine"`;
 	// try{
 	// 	await $`P-III.core.api HighPower -- 0`;
 	// }catch(error){}
