@@ -1,6 +1,6 @@
 import {lerp} from "./../tools/math.js";
 import { Vector3 } from './../tools/Vector.js';
-import { Triangle, Plane } from 'THREE';
+import { Triangle, Plane } from 'three';
 import { Path2D } from '@napi-rs/canvas';
 
 export default class Face{
