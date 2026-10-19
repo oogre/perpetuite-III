@@ -4,7 +4,7 @@ import {
 	Vector4 as Vec4, 
 	Vector3 as Vec3, 
 	Vector2 as Vec2
-} from 'THREE';
+} from 'three';
 
 
 
