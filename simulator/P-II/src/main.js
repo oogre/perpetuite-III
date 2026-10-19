@@ -27,33 +27,33 @@ const cmd = new Commands(config.commands, {grid});
 const table = new Floor(config.floor);
 const real = new Real(config.pills, {grid});
 const robot = new Robot(config.robot);
-	robot.on("locationChange initilized", (location) => {
-		const offset = axisCorrection(location, config.flipAxis);
-		ui.forAllRegistered( item =>{
-			item.offset = offset;
-		});
-		camera.offset = offset;
-		robot.positionOnTable = table.toFloorLocation(location);
-		robot.hoverDangerousPlace = forbidden.isHover(location);
-	});
+	// robot.on("locationChange initilized", (location) => {
+	// 	const offset = axisCorrection(location, config.flipAxis);
+	// 	ui.forAllRegistered( item =>{
+	// 		item.offset = offset;
+	// 	});
+	// 	camera.offset = offset;
+	// 	robot.positionOnTable = table.toFloorLocation(location);
+	// 	robot.hoverDangerousPlace = forbidden.isHover(location);
+	// });
 
 const memory = new Memory(config.pills);
 const forbidden = new Forbidden(config.forbidden);
 const camera = new Camera(config.camera, real.ui);
 const engine = new Engine(50);
-	engine.register(robot);
+	// engine.register(robot);
 
 const ui = new UI_Manager(config.window);
-	ui.register(grid.ui);
-	ui.register(table.ui);
-	ui.register(real.ui);
-	ui.register(robot.ui);
-	ui.register(memory.ui);
-	ui.register(forbidden.ui);
+	// ui.register(grid.ui);
+	// ui.register(table.ui);
+	// ui.register(real.ui);
+	// ui.register(robot.ui);
+	// ui.register(memory.ui);
+	// ui.register(forbidden.ui);
 
-const uiPreview = new UI_Manager(config.windowPreview);
-	uiPreview.register(image.ui);
-	uiPreview.register(image.uiFrame);
+// const uiPreview = new UI_Manager(config.windowPreview);
+// 	uiPreview.register(image.ui);
+// 	uiPreview.register(image.uiFrame);
 
 const api = new API({
 	robot,
