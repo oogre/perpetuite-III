@@ -16,6 +16,10 @@ import Commands from "./Commands";
 import ImageManager from "./ImageManager";
 import {axisCorrection} from "./tools/correction.js";
 
+import fs from 'fs';
+process.on('unhandledRejection', e => fs.appendFileSync('/tmp/p2-hb.log', `UNHANDLED ${e && e.stack || e}\n`));
+setInterval(() => fs.appendFileSync('/tmp/p2-hb.log', `${Date.now()}\n`), 500);
+
 
 process.title = config.window.title;
 
