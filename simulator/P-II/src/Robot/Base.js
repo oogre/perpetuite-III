@@ -93,42 +93,42 @@ export default class RobotBase extends EventsManager{
 	}
 
 	async update(deltaTime, now){
-		this._move.set(...this._target).sub(this._location);
+		// this._move.set(...this._target).sub(this._location);
 		console.log(now);
-		if(await this._reached.isPending()){
+		// if(await this._reached.isPending()){
 
-			if(this.conf.simulation){
-				console.log(this.conf.simulation);
-				const bellCurve = (curveWidth, x)=>{
-					const width = lerp(4, 1.01, curveWidth);
-					return 1-Math.pow(width, -1 * x);
-				};
-				const damping = (value)=>{
-					const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
-					return bellCurve(Math.pow(speedAsFloat, 0.05), value);
-				}
-				this._move.w = shortAngle(this._location.w, this._target.w, 360);
-				this._location.add(
-					this._move
-						.clone()
-						.normalize()
-						.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
-				);
-				this._location.w %= 360;
-			}else{
-				console.log("GetPosition");
-				const t = await this.controller.GetPosition();
-				this._location.copy(new Vector4(...t));
-			}
+		// 	if(this.conf.simulation){
+		// 		console.log(this.conf.simulation);
+		// 		const bellCurve = (curveWidth, x)=>{
+		// 			const width = lerp(4, 1.01, curveWidth);
+		// 			return 1-Math.pow(width, -1 * x);
+		// 		};
+		// 		const damping = (value)=>{
+		// 			const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
+		// 			return bellCurve(Math.pow(speedAsFloat, 0.05), value);
+		// 		}
+		// 		this._move.w = shortAngle(this._location.w, this._target.w, 360);
+		// 		this._location.add(
+		// 			this._move
+		// 				.clone()
+		// 				.normalize()
+		// 				.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
+		// 		);
+		// 		this._location.w %= 360;
+		// 	}else{
+		// 		console.log("GetPosition");
+		// 		const t = await this.controller.GetPosition();
+		// 		this._location.copy(new Vector4(...t));
+		// 	}
 			
-			if(this._move.lengthSq()<0.1){
-				if(!this._isInit){
-					this._isInit = true;
-					this.fire('initilized', this.location4D.clone());
-				}
-				this._reached.resolve();
-			}
-			this.fire('locationChange', this.location4D.clone());
-		}
+		// 	if(this._move.lengthSq()<0.1){
+		// 		if(!this._isInit){
+		// 			this._isInit = true;
+		// 			this.fire('initilized', this.location4D.clone());
+		// 		}
+		// 		this._reached.resolve();
+		// 	}
+		// 	this.fire('locationChange', this.location4D.clone());
+		// }
 	}
 }
