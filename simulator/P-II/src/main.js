@@ -17,6 +17,9 @@ import ImageManager from "./ImageManager";
 import {axisCorrection} from "./tools/correction.js";
 
 
+process.on('SIGINT', ()=>process.exit(0));
+process.on('SIGTERM', ()=>process.exit(0));
+
 process.title = config.window.title;
 
 const image = new ImageManager(config.player);
@@ -70,5 +73,3 @@ real.load();
 
 
 
-process.on('SIGINT', ()=>process.exit(0));
-process.on('SIGTERM', ()=>process.exit(0));
