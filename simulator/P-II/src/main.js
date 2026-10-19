@@ -25,7 +25,6 @@ const table = new Floor(config.floor);
 const real = new Real(config.pills, {grid});
 const robot = new Robot(config.robot);
 	robot.on("locationChange initilized", (location) => {
-		console.log("locationChange", location);
 		const offset = axisCorrection(location, config.flipAxis);
 		ui.forAllRegistered( item =>{
 			item.offset = offset;
