@@ -41,7 +41,7 @@ export default class UI_Manager extends Engine{
 		});
 		const { data } = mainCtx.getImageData(0, 0, this._canvas.width, this._canvas.width);
 		const buffer = Buffer.from(data.buffer, data.byteOffset, data.byteLength); // aucune copie
-		this._window.render(this._canvas.width, this._canvas.width, this._canvas.width, this._canvas.width * 4, 'rgba32', buffer);
+		this._window.render(this._canvas.width, this._canvas.width, this._canvas.width * 4, 'rgba32', buffer);
 
 		// const buffer = Buffer.from(mainCtx.getImageData(0, 0, this._canvas.width, this._canvas.width).data)
 		// this._window.render(this._canvas.width, this._canvas.width, this._canvas.width * 4, 'rgba32', buffer)
