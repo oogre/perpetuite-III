@@ -3,13 +3,17 @@ import { Vector2 } from './../../tools/Vector.js';
 
 export const Robot_limitter = (BASE, location)=>{
 
-	console.log(BASE.robot.conf);
+
 	const horizontalTarget = new Vector2(...location);
 	if(horizontalTarget.lengthSq() > BASE.robot.conf.radius * BASE.robot.conf.radius){
 		horizontalTarget.setLength(BASE.robot.conf.radius);
 	}
 
 
+	console.log(location);
+	console.log(BASE.table);
+	console.log(BASE.table.toFloorLocation(location));
+	console.log(BASE.table.toFloorLocation(location).z);
 
 	location.x = horizontalTarget.x;
 	location.y = horizontalTarget.y;
