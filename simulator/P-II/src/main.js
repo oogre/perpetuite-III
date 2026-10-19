@@ -38,7 +38,7 @@ const robot = new Robot(config.robot);
 const memory = new Memory(config.pills);
 const forbidden = new Forbidden(config.forbidden);
 const camera = new Camera(config.camera, real.ui);
-const engine = new Engine(50);
+const engine = new Engine(500);
 	engine.register(robot);
 
 const ui = new UI_Manager(config.window);
