@@ -46,6 +46,7 @@ export default class RobotUI extends BaseUI{
   		}
 
 		ctx.strokeStyle="green";
+		ctx.beginPath();
 		ctx.moveTo(0, 0);
 		ctx.lineTo(this.parent._move.x, this.parent._move.y);
 		ctx.stroke();

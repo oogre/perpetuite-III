@@ -16,11 +16,6 @@ import Commands from "./Commands";
 import ImageManager from "./ImageManager";
 import {axisCorrection} from "./tools/correction.js";
 
-import fs from 'fs';
-process.on('unhandledRejection', e => fs.appendFileSync('/tmp/p2-hb.log', `UNHANDLED ${e && e.stack || e}\n`));
-setInterval(() => fs.appendFileSync('/tmp/p2-hb.log', `${Date.now()}\n`), 500);
-
-
 process.title = config.window.title;
 
 const image = new ImageManager(config.player);
@@ -43,34 +38,34 @@ const robot = new Robot(config.robot);
 const memory = new Memory(config.pills);
 const forbidden = new Forbidden(config.forbidden);
 //const camera = new Camera(config.camera, real.ui);
-const engine = new Engine(500);
+const engine = new Engine(50);
 	engine.register(robot);
 
-const ui = new UI_Manager(config.window);
-	ui.register(grid.ui);
-	ui.register(table.ui);
-	ui.register(real.ui);
-	ui.register(robot.ui);
-	ui.register(memory.ui);
-	ui.register(forbidden.ui);
+// const ui = new UI_Manager(config.window);
+// 	ui.register(grid.ui);
+// 	ui.register(table.ui);
+// 	ui.register(real.ui);
+// 	ui.register(robot.ui);
+// 	ui.register(memory.ui);
+// 	ui.register(forbidden.ui);
 
 // const uiPreview = new UI_Manager(config.windowPreview);
 // 	uiPreview.register(image.ui);
 // 	uiPreview.register(image.uiFrame);
 
-const api = new API({
-	robot,
-	//camera,
-	memory,
-	forbidden,
-	real,
-	cmd,
-	grid,
-	image,
-	table
-});
+// const api = new API({
+// 	robot,
+// 	camera,
+// 	memory,
+// 	forbidden,
+// 	real,
+// 	cmd,
+// 	grid,
+// 	image,
+// 	table
+// });
 
-real.load();
+// real.load();
 
 
 
