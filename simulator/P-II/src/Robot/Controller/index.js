@@ -88,6 +88,7 @@ export default class Robot{
 		let index;
 		while((index = this.buffer.indexOf("\n")) >= 0){
 			const line = this.buffer.slice(0, index).trim();
+			console.log(line);
 			this.buffer = this.buffer.slice(index + 1);
 			if(line === "") continue;
 			const entry = this.pending.shift();
@@ -114,16 +115,19 @@ export default class Robot{
 
 	// send a Request object, resolves with the reply Request
 	async send(req){
+		console.log(req);
 		const socket = await this._connect();
 		return new Promise((resolve, reject)=>{
 			const entry = {resolve, reject};
 			entry.timer = setTimeout(()=>{
 				// A reply that never comes would shift every following reply.
 				// Start again from a clean connection.
+				console.log("Timeout");
 				reject(new Error("Timeout"));
 				socket.destroy();
 			}, this.timeout);
 			this.pending.push(entry);
+			console.log(req.trim());
 			socket.write(req.trim() + "\n");
 		});
 	}
