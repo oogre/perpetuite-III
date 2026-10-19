@@ -1,15 +1,15 @@
 #!/usr/bin/env zx
 
 
-const translateAddress = async (address)=>{
-	return (await $`wslpath -u ${address}`).stdout.trim()
+const translateAddress = async (address, destination)=>{
+	return (await $`wslpath ${destination=="ubuntu"?"-u" : "-w"} ${address}`).stdout.trim()
 }
 
 
-const AutoHotkeyPath =  await translateAddress(`C:/Program\ Files/AutoHotkey/AutoHotkey.exe`);
-const AcePath = await translateAddress(`C:/Program\ Files\ \(x86\)/Omron/ACE\ 3.8/bin/Ace.exe`);
-const DriverPath = await translateAddress('~/perpetuite-III/driver.perpetuite3.ace.awp');
-const FakeUserPath = await translateAddress('~/perpetuite-III/simulator/P-II/scripts');
+const AutoHotkeyPath =  await translateAddress(`C:/Program\ Files/AutoHotkey/AutoHotkey.exe`, "ubuntu");
+const AcePath = await translateAddress(`C:/Program\ Files\ \(x86\)/Omron/ACE\ 3.8/bin/Ace.exe`, "ubuntu");
+const DriverPath = await translateAddress('~/perpetuite-III/driver.perpetuite3.ace.awp', "windows");
+const FakeUserPath = await translateAddress('~/perpetuite-III/simulator/P-II/scripts', "windows");
 
 
 console.log(AutoHotkeyPath);
