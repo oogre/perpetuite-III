@@ -39,7 +39,7 @@ export default class UI_Manager extends Engine{
 			this._registered[id].draw(subCtx, layer);
 			mainCtx.drawImage(subCtx, 0, 0);
 		});
-		const { data } = ctx.getImageData(0, 0, this._canvas.width, this._canvas.width);
+		const { data } = mainCtx.getImageData(0, 0, this._canvas.width, this._canvas.width);
 		const buffer = Buffer.from(data.buffer, data.byteOffset, data.byteLength); // aucune copie
 		this._window.render(this._canvas.width, this._canvas.width, this._canvas.width, this._canvas.width * 4, 'rgba32', buffer);
 
