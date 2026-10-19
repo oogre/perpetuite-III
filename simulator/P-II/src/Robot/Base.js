@@ -115,11 +115,10 @@ export default class RobotBase extends EventsManager{
 				);
 				this._location.w %= 360;
 			}else{
-				console.log("GetPosition");
 				const t = await this.controller.GetPosition();
 				this._location.copy(new Vector4(...t));
 			}
-
+			console.log(this._move);
 			if(this._move.lengthSq()<0.1){
 				if(!this._isInit){
 					this._isInit = true;
