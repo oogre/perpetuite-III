@@ -1,6 +1,6 @@
 #!/usr/bin/env zx
-
-const appPath = '/mnt/c/Users/32495/Desktop/perpetuite-III';
+const AceDirectory = `/mnt/c/Program\ Files\ \(x86\)/Omron/ACE\ 3.8/bin`;
+const DriverPath = 'C:/Users/32495/Desktop/perpetuite-III/ACE.3.8/driver.perpetuite3.ace.awp';
 
 // $.verbose = false;
 
@@ -39,11 +39,10 @@ const waitForAceReady = async () =>{
 
 const runAce = async () => {
 	console.log("Run Ace");
-	const AceDirectory = `/mnt/c/Program\ Files\ \(x86\)/Omron/ACE\ 3.8/bin`;
+	
 	$`${AceDirectory}/Ace.exe server=ace@43434`;
 	await wait(10000);
-	const AceAPI = `${appPath}/ACE.3.8/driver.perpetuite3.ace.awp`;
-	$`${AceDirectory}/Ace.exe client datafile=${AceAPI}`;
+	$`${AceDirectory}/Ace.exe client datafile=${DriverPath}`;
 	await waitForAceReady();
 	$`${AceDirectory}/Ace.exe client culture=fr-LU loadui="/Src/Interface Homme Machine"`;
 	// try{
