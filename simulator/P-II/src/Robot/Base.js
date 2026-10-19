@@ -84,7 +84,6 @@ export default class RobotBase extends EventsManager{
 
 
 		if(!this.conf.simulation){
-			console.log("no Sim", this._target);
 			await this.controller.Go(this._target);
 		}
 
@@ -118,8 +117,7 @@ export default class RobotBase extends EventsManager{
 				const t = await this.controller.GetPosition();
 				this._location.copy(new Vector4(...t));
 			}
-			console.log(this._move.lengthSq());
-			if(this._move.lengthSq()<0.1){
+			if(this._move.lengthSq()<0.2){
 				if(!this._isInit){
 					this._isInit = true;
 					this.fire('initilized', this.location4D.clone());
