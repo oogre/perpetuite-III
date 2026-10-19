@@ -19,8 +19,6 @@ import {axisCorrection} from "./tools/correction.js";
 
 process.title = config.window.title;
 
-
-
 const image = new ImageManager(config.player);
 const grid = new Grid(config.grid);
 const cmd = new Commands(config.commands, {grid});
