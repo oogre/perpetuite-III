@@ -61,11 +61,19 @@ def createCamera():
 
     # set exposure gain and white balance to auto
     cam.ExposureAuto.set(False)
-    cam.ExposureTime.set(15000.0)
+    cam.ExposureTime.set(10000.0)
     cam.GainAuto.set(False)
     # cam.Gain.set(21.0)
-    cam.Gain.set(24.0)
+    cam.Gain.set(20.0)
     # cam.LightSourcePreset.set(2)
+
+    #cam.ExposureAuto.set(False)
+    #cam.ExposureTime.set(15000.0)
+    #cam.GainAuto.set(False)
+    ## cam.Gain.set(21.0)
+    #cam.Gain.set(24.0)
+    ## cam.LightSourcePreset.set(2)
+
 
     # set the acq buffer count
     cam.data_stream[0].set_acquisition_buffer_number(3)
