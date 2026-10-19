@@ -60,6 +60,12 @@ export default class RobotBase extends EventsManager{
 	async setGripper(value){
 		await this.controller.Gripper(value);
 	}
+
+	async getPosition(){
+		const t = await this.controller.GetPosition();
+		return new Vector4(...t);
+	}
+
 	
 	async go(targetValue){
 		if (!isLocation(targetValue)) {
