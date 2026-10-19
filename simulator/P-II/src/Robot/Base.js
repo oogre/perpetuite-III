@@ -96,7 +96,9 @@ export default class RobotBase extends EventsManager{
 		this._move.set(...this._target).sub(this._location);
 		console.log(now);
 		if(await this._reached.isPending()){
+
 			if(this.conf.simulation){
+				console.log(this.conf.simulation);
 				const bellCurve = (curveWidth, x)=>{
 					const width = lerp(4, 1.01, curveWidth);
 					return 1-Math.pow(width, -1 * x);
@@ -114,11 +116,11 @@ export default class RobotBase extends EventsManager{
 				);
 				this._location.w %= 360;
 			}else{
-				console.log(".");
+				console.log("GetPosition");
 				const t = await this.controller.GetPosition();
 				this._location.copy(new Vector4(...t));
 			}
-
+			
 			if(this._move.lengthSq()<0.1){
 				if(!this._isInit){
 					this._isInit = true;
