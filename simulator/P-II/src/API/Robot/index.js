@@ -11,3 +11,4 @@ export * from './gripper.js';
 export * from './catch.js';
 export * from './release.js';
 export * from './HighPower.js';
+export * from './position.js';
