@@ -7,7 +7,7 @@ import BaseUI from "./Base.js";
 export default class UI_Manager extends Engine{
 	constructor(conf){
 		super();
-		this._window = sdl.video.createWindow(conf);
+		this._window = sdl.video.createWindow({...conf, vsync: false});
 
 		this._window.setPosition(conf.x, conf.y);
 
@@ -39,8 +39,12 @@ export default class UI_Manager extends Engine{
 			this._registered[id].draw(subCtx, layer);
 			mainCtx.drawImage(subCtx, 0, 0);
 		});
-		const buffer = Buffer.from(mainCtx.getImageData(0, 0, this._canvas.width, this._canvas.width).data)
-		this._window.render(this._canvas.width, this._canvas.width, this._canvas.width * 4, 'rgba32', buffer)
+		const { data } = ctx.getImageData(0, 0, this._canvas.width, this._canvas.width);
+		const buffer = Buffer.from(data.buffer, data.byteOffset, data.byteLength); // aucune copie
+		this._window.render(this._canvas.width, this._canvas.width, this._canvas.width, this._canvas.width * 4, 'rgba32', buffer);
+
+		// const buffer = Buffer.from(mainCtx.getImageData(0, 0, this._canvas.width, this._canvas.width).data)
+		// this._window.render(this._canvas.width, this._canvas.width, this._canvas.width * 4, 'rgba32', buffer)
 	}
 	
 	get window(){

@@ -41,13 +41,13 @@ const forbidden = new Forbidden(config.forbidden);
 const engine = new Engine(50);
 	engine.register(robot);
 
-// const ui = new UI_Manager(config.window);
-// 	ui.register(grid.ui);
-// 	ui.register(table.ui);
-// 	ui.register(real.ui);
-// 	ui.register(robot.ui);
-// 	ui.register(memory.ui);
-// 	ui.register(forbidden.ui);
+const ui = new UI_Manager(config.window);
+	ui.register(grid.ui);
+	ui.register(table.ui);
+	ui.register(real.ui);
+	ui.register(robot.ui);
+	ui.register(memory.ui);
+	ui.register(forbidden.ui);
 
 // const uiPreview = new UI_Manager(config.windowPreview);
 // 	uiPreview.register(image.ui);
