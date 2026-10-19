@@ -1,16 +1,21 @@
 #!/usr/bin/env zx
 
 $.verbose = true;
-const translateAddress = async (address, destination)=>{
-	return (await $`wslpath ${destination=="ubuntu"?"-u" : "-w"} ${address}`).stdout.trim()
+
+const home = os.homedir()
+
+const translateAddress = async (address, destination) => {
+  const flag = destination === "ubuntu" ? "-u" : "-w"
+  return (await $`wslpath ${flag} ${address}`).stdout.trim()
 }
 
 
-const AutoHotkeyPath =  await translateAddress(`C:/Program\ Files/AutoHotkey/AutoHotkey.exe`, "ubuntu");
-const AcePath = await translateAddress(`C:/Program\ Files\ \(x86\)/Omron/ACE\ 3.8/bin/Ace.exe`, "ubuntu");
-const DriverPath = await translateAddress('~/perpetuite-III/driver.perpetuite3.ace.awp', "windows");
-const FakeUserPath = await translateAddress('~/perpetuite-III/simulator/P-II/scripts', "windows");
-
+const [AutoHotkeyPath, AcePath, DriverPath, FakeUserPath] = await Promise.all([
+  translateAddress('C:/Program Files/AutoHotkey/AutoHotkey.exe', "ubuntu"),
+  translateAddress('C:/Program Files (x86)/Omron/ACE 3.8/bin/Ace.exe', "ubuntu"),
+  translateAddress(path.join(home, 'perpetuite-III/driver.perpetuite3.ace.awp'), "windows"),
+  translateAddress(path.join(home, 'perpetuite-III/simulator/P-II/scripts'), "windows"),
+])
 
 console.log(AutoHotkeyPath);
 console.log(AcePath);
