@@ -55,7 +55,7 @@ const engine = new Engine(50);
 
 const api = new API({
 	robot,
-	camera,
+	// camera,
 	memory,
 	forbidden,
 	real,
