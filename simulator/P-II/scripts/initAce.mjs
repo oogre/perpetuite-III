@@ -1,6 +1,6 @@
 #!/usr/bin/env zx
 
-const AutoHotkeyPath =  $`wslpath -w C:/Program\ Files/AutoHotkey/AutoHotkey.exe`;
+const AutoHotkeyPath =  await $`wslpath -w C:/Program\ Files/AutoHotkey/AutoHotkey.exe`;
 const AcePath = `C:/Program\ Files\ \(x86\)/Omron/ACE\ 3.8/bin/Ace.exe`;
 const DriverPath = '/home/perpetuite/perpetuite-III/driver.perpetuite3.ace.awp';
 const FakeUserPath = '/home/perpetuite/perpetuite-III/simulator/P-II/scripts';
