@@ -16,6 +16,16 @@ import Commands from "./Commands";
 import ImageManager from "./ImageManager";
 import {axisCorrection} from "./tools/correction.js";
 
+
+import fs from 'fs';
+const hb = fs.openSync(`${process.env.HOME}/p2-hb.log`, 'a');
+setInterval(() => {
+  const m = process.memoryUsage();
+  fs.writeSync(hb, `${Date.now()} rss=${m.rss/1e6|0}MB heap=${m.heapUsed/1e6|0}MB ext=${m.external/1e6|0}MB ab=${m.arrayBuffers/1e6|0}MB\n`);
+  fs.fsyncSync(hb);
+  if (m.rss > 2e9) { console.error('RSS > 2 Go, arrêt'); process.exit(1); }
+}, 1000);
+
 process.title = config.window.title;
 
 const image = new ImageManager(config.player);
