@@ -2,13 +2,8 @@
 
 
 const translateAddress = async (address)=>{
-	return (await $`wslpath -u ${winPath}`).stdout.trim()
+	return (await $`wslpath -u ${address}`).stdout.trim()
 }
-
-
-const winPath = 'C:/Program Files/AutoHotkey/AutoHotkey.exe'
-const ahk = (await $`wslpath -u ${winPath}`).stdout.trim()
-
 
 
 const AutoHotkeyPath =  await translateAddress(`C:/Program\ Files/AutoHotkey/AutoHotkey.exe`);
