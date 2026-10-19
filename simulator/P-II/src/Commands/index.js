@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { Vector3 } from 'vecteur/3d';
+import { Vector2 } from './../tools/Vector.js';
 import PatternGenerator from "./../PatternGenerator"
 import Pills, {PillModel} from "./../Pills";
 import {isString} from "./../tools/validators.js";
@@ -24,12 +24,12 @@ export default class Commands{
 
 	async getTask(colorName){
 		if(!fs.pathExistsSync(this.conf.commandsPath)){
-			await this.genTaskList();
+			this.taskList = await this.genTaskList();
 		}
 		let list = fs.readFileSync(this.conf.commandsPath,"utf8").split("\n");
 
 		if(list.length<=1){
-			await this.genTaskList();
+			this.taskList = await this.genTaskList();
 			list = fs.readFileSync(this.conf.commandsPath,"utf8").split("\n");
 		}
 		
@@ -75,13 +75,15 @@ export default class Commands{
 	async genTaskList(){
 		const img = await this.patterGen.getNextPattern();
 		const locationToDraw = (location)=>{
-			const toImageSize = new Vector3(img.bitmap.width, img.bitmap.height, 1);
-			const normalize = new Vector3(this.conf.positionRadius * 2, this.conf.positionRadius * 2, 1);
-			const offsetLocation = new Vector3(this.conf.positionRadius, this.conf.positionRadius, 0);
+			const toImageSize = new Vector2(img.bitmap.width, img.bitmap.height);
+			const normalize = new Vector2(this.conf.positionRadius * 2, this.conf.positionRadius * 2);
+			const offsetLocation = new Vector2(this.conf.positionRadius, this.conf.positionRadius);
+
+
 			return location.clone()
-				.add(this.conf.positionRadius, this.conf.positionRadius, 0)
-				.mult(toImageSize)
-				.div(normalize);
+				.addScalar(this.conf.positionRadius)
+				.multiply(toImageSize)
+				.divide(normalize);
 		}		
 		const list = new Pills(this.conf);
 		list.addEach(
@@ -104,7 +106,7 @@ export default class Commands{
 			}).filter(pill=>!!pill)
 		);
 
-		const groupedItems = list.set.group((item)=>{
+		let groupedItems = list.set.group((item)=>{
 			return `${
 				Math.round(Math.round(item.x / 50)*50)
 			} ${
@@ -114,9 +116,15 @@ export default class Commands{
 			// RANDOMIZE SUBGROUP
 			group = group.sort(()=>Math.random()-0.5);
 			return [hash, group]
-		}).map(([hash, group])=>{
+		}).sort(()=>Math.random()-0.5)
+		.map(([hash, group])=>{
 			return group.map(pill=>pill.toString()).join("\n");
 		});
-		this.taskList = groupedItems;
+
+		if(groupedItems.length == 0){
+			groupedItems = await this.genTaskList();
+		}
+
+		return groupedItems;
 	}
 }

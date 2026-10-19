@@ -20,16 +20,27 @@ export default class Pills{
 		this.set = new FastSet([], contentEquals, contentHash, getDefault);
 		this.conf = conf;
 		this.conf.maxPositionSqRadius = this.conf.positionRadius * this.conf.positionRadius;
+		this.conf.minArea = this.conf.radius.min * this.conf.radius.min * Math.PI;
+		this.conf.maxArea = this.conf.radius.max * this.conf.radius.max * Math.PI;		
 	}
-	createPill({contour=[], circularity=1, box:[x=0, y=0, w=this.conf.radius.value, h=this.conf.radius.value], avgRGB=(new PillModel.Color()).rgb}){
+	createPill({contour=[], circularity=1, box:[x=0, y=0, w=this.conf.radius.value*2, h=this.conf.radius.value*2], avgRGB=(new PillModel.Color()).rgb, lockedAt=-1}){
 		const p = new PillModel(this.conf);
+		p.lockedAt = lockedAt;
 		p.contour = contour;
 		p.location = [x, y];
 		p.color = avgRGB;
 		p.size = [w, h];
 		p.circularity = circularity;
+		p.area = p.area || (w * h * 0.25 * Math.PI);
 		return p;
 	}
+
+	fromArea(area){
+		const p = new PillModel(this.conf, area.inflate(1));
+		p.color = area.color;
+		return p;
+	}
+
 	isPill(pill){
 		let result = pill instanceof PillModel;
 		if(this.conf.debug && !result)console.log(`This is not a PillModel instance : `, pill);
@@ -46,7 +57,7 @@ export default class Pills{
 		return result;
 	}
 	isLargeLikeAPill(pill){
-		let result = pill.radius > this.conf.radius.min && pill.radius < this.conf.radius.max;
+		let result = pill.area > this.conf.minArea && pill.area < this.conf.maxArea;
 		if(this.conf.debug && !result)console.log(`This is not in size range : `, pill);
 		return result;
 	}
@@ -67,6 +78,16 @@ export default class Pills{
 		return collection
 			.map(item=>this.add(item));
 	}
+	delete(item){
+    	if(!!item){
+    		return this.set.deleteAll(item);
+		}
+    	return false;
+	}
+	deleteEach(collection){
+		return collection
+			.map(item=>this.delete(item));
+	}
 	find(callback){
 		return this.set.toArray().find((...p)=>callback(...p));
 	}
@@ -74,7 +95,7 @@ export default class Pills{
 		const tmp = this.createPill({box:[location.x, location.y]});
 		return this.set.get(tmp) || this.find( pill => contentEquals(pill, tmp));
 	}
-	getByBox(box=[x=0, y=0, w=this.conf.radius.value, h=this.conf.radius.value]){
+	getByBox(box=[x=0, y=0, w=this.conf.radius.value*2, h=this.conf.radius.value*2]){
 		const tmp = this.createPill({box});
 		return this.set.filter( pill => contentEquals(pill, tmp)).toArray();
 	}

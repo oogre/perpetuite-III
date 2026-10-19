@@ -1,6 +1,6 @@
-import Pills from "./../Pills";
+import Pills, {PillModel} from "./../Pills";
 import RealUI from './UI.js';
-
+import fs from 'fs-extra';
 
 export default class Real extends Pills{
 	constructor(conf, {grid}){
@@ -13,24 +13,64 @@ export default class Real extends Pills{
 			}
 		}
 	}
+
+	save(){
+		const list = this.set.map(pill=>pill.toString());
+		fs.writeFileSync(this.conf.pillSavePath, `${list.join("\n")}`, "utf8");		
+	}
+
+	async load(){
+		let list = fs.readFileSync(this.conf.pillSavePath,"utf8").split("\n");
+		if(list.length==0){
+			return "NOTHING TO LOAD";
+		}
+		this.set.clear();
+		return await Promise.all(list.map(async rawTask=>{
+			const [color, x, y, lockedAt] = rawTask.split(" ");
+			return await this.add(
+				this.createPill({
+					lockedAt,
+					box:[parseFloat(x), parseFloat(y)], 
+					avgRGB: (new PillModel.Color(color)).rgb
+				})
+			);
+		}));
+	}
+
 	creatPillAtRandomFreeLocation(){
 		let location = this.grid.getRandomCellLocation();
 		const pill = this.createPill({
-			box :[ location.x, location.y, this.conf.radius.value, this.conf.radius.value]
+			box :[ location.x, location.y, this.conf.radius.value*2, this.conf.radius.value*2]
 		});
 		return this.add(pill);
 	}
 
 	async delete(pill){
-		const toDelete = this.getByLocation(pill.location);
-		const deleted = this.set.delete(toDelete);
+		const toDelete = super.getByLocation(pill.location)
+		const deleted = super.delete(toDelete);
+		this.ui.redraw();
+
 		// wait for UI to be updated
 		let t = null;
 		await new Promise(resolve=>{
 			t = resolve;
-			this.ui.on("updated", resolve);
+			this.ui.on("updated", t);
 		});
 		this.ui.off("updated", t);
 		return deleted;
+	}
+
+
+	async add(pill){
+		super.add(pill);
+		this.ui.redraw();
+
+		let t = null;
+		await new Promise(resolve=>{
+			t = resolve;
+			this.ui.on("updated", t);
+		});
+		this.ui.off("updated", t);
+
 	}
 }

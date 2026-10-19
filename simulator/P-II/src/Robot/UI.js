@@ -11,7 +11,21 @@ export default class RobotUI extends BaseUI{
 	}
 
 	draw(ctx){
-		ctx.scale(this.parent.offset.z, this.parent.offset.z);
+		const matrix = ctx.getTransform();
+		ctx.font = "20px serif";
+		ctx.fillStyle = "white";
+		ctx.translate(this._viewPort.z * this.headSize/2, this._viewPort.z * -this.headSize/2);
+		ctx.textAlign = "left";
+		ctx.translate(0, -10);
+  		ctx.fillText(this.parent.location4D, 0, 0);
+  		ctx.translate(0, 20);
+  		ctx.fillText(this.parent.positionOnTable, 0, 0);
+  		ctx.translate(0, 20);
+  		ctx.fillText(this.parent.actionDesc, 0, 0);
+  		ctx.setTransform(matrix);
+
+		ctx.scale(this._viewPort.z, this._viewPort.z);
+
 		ctx.lineWidth = 0.2;
 		if(this.parent.hoverDangerousPlace){
 			ctx.strokeStyle = "red";
@@ -22,18 +36,6 @@ export default class RobotUI extends BaseUI{
 		ctx.strokeRect(-this.headSize/2, 0, this.headSize, 0);
 		ctx.strokeRect(0, -this.headSize/2, 0, this.headSize);
 
-		const matrix = ctx.getTransform();
-		ctx.font = "4px serif";
-		ctx.fillStyle = "white";
-		ctx.translate(this.headSize/2 + 3, -this.headSize/2);
-  		ctx.fillText(this.parent.position, 0, 0);
-  		ctx.translate(0, 6);
-  		ctx.fillText(this.parent.positionOnTable, 0, 0);
-  		ctx.setTransform(matrix);
-  		ctx.translate(0, 6);
-  		ctx.fillText(this.parent.colorName, 0, 0);
-  		ctx.setTransform(matrix);
-
 
   		if(this.parent.grabbedPill){
   			const pill = this.parent.grabbedPill;
@@ -43,11 +45,11 @@ export default class RobotUI extends BaseUI{
       		ctx.fill();
   		}
 
-		// ctx.strokeStyle="green";
-		// ctx.moveTo(0, 0);
-		// ctx.lineTo(this._move[0], this._move[1]);
-		// ctx.stroke();
-
+		ctx.strokeStyle="green";
+		ctx.moveTo(0, 0);
+		ctx.lineTo(this.parent._move.x, this.parent._move.y);
+		ctx.stroke();
+		;
 		// ctx.strokeStyle="green";
 		// ctx.moveTo(0, 0);
 		// for(const [x, y] of this._path){

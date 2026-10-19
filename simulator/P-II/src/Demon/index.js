@@ -1,5 +1,4 @@
-import { Vector3 } from 'vecteur/3d';
-
+import { Vector3 } from './../tools/Vector.js';
 
 
 export default class Demon{
@@ -15,11 +14,11 @@ export default class Demon{
 	}
 
 	move(){
-		const pills = this.BASE.real.pills.toArray();
-		const A = pills[Math.floor(Math.random() * pills.length)];
-		this.BASE.real.pills.delete(A);
-		A.location.add(new Vector3().randomize(new Vector3(-1, -1, -1), new Vector3(1, 1, 1)).normalize().mult(2));
-		this.BASE.real.pills.add(A);
+		// const pills = this.BASE.real.pills.toArray();
+		// const A = pills[Math.floor(Math.random() * pills.length)];
+		// this.BASE.real.pills.delete(A);
+		// A.location.add(new Vector3().randomize(new Vector3(-1, -1, -1), new Vector3(1, 1, 1)).normalize().mult(2));
+		// this.BASE.real.pills.add(A);
 	}
 
 	remove(){
@@ -35,7 +34,7 @@ export default class Demon{
 	unlock(){
 		const pills = this.BASE.real.pills.toArray();
 		const A = pills[Math.floor(Math.random() * pills.length)];
-		A.unlock();
+		//A.unlock();
 	}
 
 	async update(deltaTime){

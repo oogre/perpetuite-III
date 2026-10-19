@@ -1,43 +1,65 @@
 
 
 import {Robot_go} from './go.js';
+import {Robot_gripper} from './gripper.js';
+import {Robot_catch} from './catch.js';
 import {Camera_capture} from './../Camera';
+import {Memory_clean, Memory_get} from './../Memory';
+import * as Hunting from './../Move/Hunting';
+import {getRandomOne, delay} from './../../tools/helpers.js';
 
 
-export const Robot_grab = async ({robot, real, memory, camera, image, forbidden})=>{
-	if(robot.grabbedPill!==null){
-		console.log("Already grabbing");
+export const Robot_grab = async (BASE, [depth=0]=[])=>{
+	
+	BASE.robot.actionDesc = `Robot grab ${depth}`;
+	
+	if(depth >= 5 ){
+		throw new Error("Error grabbing");
+	}
+
+	if(BASE.robot.grabbedPill!==null){
+		throw new Error("Already grabbing");
 		return false;
 	}
-	const beforeCollection = await Camera_capture({robot, camera, memory, image, forbidden}, true)
+	const robotLocationBefore = BASE.robot.location2D;
+	const isMemoryCleanBefore = Memory_clean(BASE, robotLocationBefore);
+	if(!isMemoryCleanBefore){
+		throw new Error("MEMORY IS A MESS BEFORE");
+	}
+
+	if(Math.random()<0.1){
+		const move = getRandomOne(Hunting);
+		await move(BASE);
+	}
 	
-	const pillSouvenir = memory.getByLocation(robot._location);
-	const isPillSouvenirExists = pillSouvenir!==undefined;
-	const targetedPill = beforeCollection.getByLocation(robot._location);
+	const beforeCollection = await Camera_capture(BASE)
+	const targetedPill = Memory_get({memory:beforeCollection}, BASE.robot.location2D);
 	const isTargetedPillExists = targetedPill!==undefined;
-	
-	if(isPillSouvenirExists){
-		memory.set.delete(pillSouvenir);	
-	}else{
-		console.log(pillSouvenir, "NOT DELETED")
-	}
-	
 	if(isTargetedPillExists){
-		await Robot_go({robot}, targetedPill.location);
+		await Robot_go(BASE, targetedPill.location);
 	}else{
-		console.log("pill Is not Present")
-		return false;
-	}
-	
-	await real.delete(targetedPill);
-	
-	const afterCollection = await Camera_capture({robot, camera, memory, image, forbidden}, true)
-	const isRemoved = afterCollection.set.get(targetedPill) === null;
-	if(!isRemoved){
-		console.log("pill Is not Removed");
+		console.log("pill Is not Present");
 		return false;
 	}
 
-	robot.grabbedPill = targetedPill;
+	await Robot_catch(BASE);
+	
+	const isMemoryCleanAfter = Memory_clean(BASE, BASE.robot.location2D)
+	if(!isMemoryCleanAfter){
+		throw new Error("MEMORY IS A MESS AFTER");
+	}
+	
+	const afterCollection = await Camera_capture(BASE, true)
+	
+	await delay(300);
+
+	const isRemoved = Memory_get({memory:afterCollection}, targetedPill) === null
+	if(!isRemoved){
+		await Robot_gripper(BASE, [false]);
+		console.log("pill Is not Removed");
+		await delay(1500);
+		return await Robot_grab(BASE, [depth+1]);
+	}
+	BASE.robot.actionDescPop();
 	return true;
 }

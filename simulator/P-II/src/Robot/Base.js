@@ -1,105 +1,120 @@
-import { Vector3 } from 'vecteur/3d';
-import { Vector2 } from 'vecteur/2d';
+import { Vector4, Vector3, Vector2 } from './../tools/Vector.js';
+
 import {EventsManager} from "events-manager"
 import PromiseHelper from "./../tools/PromiseHelper.js";
-import {inverseLerp, lerp} from "./../tools/math.js";
+import {delay} from "./../tools/helpers.js";
+import {inverseLerp, lerp, shortAngle, TAU, degToRag} from "./../tools/math.js";
 import {isLocation} from "./../tools/validators.js";
 import Toggle from "./../tools/Toggle.js";
 import RobotUI from "./UI.js";
-
-const xySqDistTo = (a, b) => {
-	const dx = a.x - b.x;
-	const dy = a.y - b.y;
-	return dx * dx + dy * dy;
-}
-
-const xyLimit = (target, length)=>{
-	const hTarget = new Vector2(...target);
-	hTarget.limit(length);
-	return new Vector3(hTarget.x, hTarget.y, target.z)
-}
+import RobotController from "./Controller";
 
 export default class RobotBase extends EventsManager{
 	constructor(conf){
 		super();
 		this.conf = conf;
-		this._speed = 500;
-		this._target = new Vector3(...conf.origin);
-		this._flipAxis = new Vector3(...conf.flip);
-
-		this._location = new Vector3(0, 0, 0);
+		this.controller = new RobotController(conf.network);
+		this._speed = this.conf.speed;
+		this._target = new Vector4(...conf.origin);		
+		this._location = new Vector4(0, 0, 0, 0);
+		this._move = new Vector4(0, 0, 0, 0);
 		this._locationProjectedOnTable = this._location.clone()
-
-		this._move = new Vector3(0, 0, 0);
-		
 		this._isInit = false;
 		this.ui = new RobotUI(this);
-		
 		this._reached = new PromiseHelper(()=>{
-			this.fire('locationReached', this.offset);
+			this.fire('locationReached', this.location4D.clone());
 		});
 	}
-	get position(){
-		return `${this._location.x.toFixed(2)} ${this._location.y.toFixed(2)} ${this._location.z.toFixed(2)}`;
+	get location2D(){
+		return new Vector2(...this._location);
 	}
-	get offset(){
-		const offset = this._location.clone().mult(this._flipAxis);
-		offset.setZ(1500/(offset.z+300));
-		return offset;
+	get location3D(){
+		return new Vector3(...this._location);
 	}
-	set intersection(value){
+	get location4D(){
+		return new Vector4(...this._location);
+	}
+	set positionOnTable(value){
 		this._locationProjectedOnTable = value;
 	}
 	get positionOnTable(){
-		return `${this._locationProjectedOnTable.z.toFixed(2)}`;
+		return `${this._locationProjectedOnTable}`;
 	}
+
+	async setSeed(value){
+		await this.controller.Speed(value);
+	}
+
+	async setHighPower(value){
+		await this.controller.HighPower(value);
+	}
+
+	async setAcceleration(value){
+		await this.controller.Acc(value);
+	}
+
+	async setDeceleration(value){
+		await this.controller.Dcc(value);
+	}
+
+	async setGripper(value){
+		await this.controller.Gripper(value);
+	}
+	
 	async go(targetValue){
-
 		if (!isLocation(targetValue)) {
-			throw new Error("Set target of Robot should receive a Vector3 or an array");	
+			throw new Error("Set target of Robot should receive a Vector4 or an array");	
 		}
-
-		const horizontalTarget = new Vector2(...targetValue);
-		horizontalTarget.limit(this.conf.radius);
-		targetValue.setX(horizontalTarget.x);
-		targetValue.setY(horizontalTarget.y);
-
+		
 		if(await this._reached.isPending()){
 			this._reached.reject();
 		}
-		this._target.set(targetValue);
+
+		// await delay(10);
+
+		this._target.copy(targetValue);
+		if(!this.conf.simulation){
+			await this.controller.Go(this._target);
+		}
+
 		this._reached.reset();
 		return this._reached.promise;
 	}
 
-	async update(deltaTime){
-		this._move = Vector3.sub(this._target, this._location);
-		const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
-		const bellCurve = (curveWidth, x)=>{
-			const width = lerp(4, 1.01, curveWidth);
-			return 1-Math.pow(width, -1 * x);
-		};
-		const targetDamping = bellCurve(Math.pow(speedAsFloat, 0.05), this._move.length())
-		this._location.add(
-			this._move
-				.clone()
-				.normalize()
-				.mult(deltaTime)
-				.mult(this._speed)
-				.mult(targetDamping)
-		);
-
+	async update(deltaTime, now){
+		this._move.set(...this._target).sub(this._location);
 
 		if(await this._reached.isPending()){
+			if(this.conf.simulation){
+				const bellCurve = (curveWidth, x)=>{
+					const width = lerp(4, 1.01, curveWidth);
+					return 1-Math.pow(width, -1 * x);
+				};
+				const damping = (value)=>{
+					const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
+					return bellCurve(Math.pow(speedAsFloat, 0.05), value);
+				}
+				this._move.w = shortAngle(this._location.w, this._target.w, 360);
+				this._location.add(
+					this._move
+						.clone()
+						.normalize()
+						.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
+				);
+				this._location.w %= 360;
+			}else{
+				const t = await this.controller.GetPosition();
+				this._location.copy(new Vector4(...t));
+			}
+
 			if(this._move.lengthSq()<0.1){
-				this._reached.resolve();
 				if(!this._isInit){
 					this._isInit = true;
-					this.fire('initilized', this.offset);
+					this.fire('initilized', this.location4D.clone());
 				}
-			}else{
-				this.fire('locationChange', this.offset);
+				this._reached.resolve();
 			}
+			this.fire('locationChange', this.location4D.clone());
 		}
 	}
 }

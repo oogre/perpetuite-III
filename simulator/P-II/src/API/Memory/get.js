@@ -1,10 +1,13 @@
 
 import {isLocation, isBox, isString} from "./../../tools/validators.js";
-import { Vector3 } from 'vecteur/3d';
+import { Vector4 } from './../../tools/Vector.js';
 
-export const Memory_get = ({robot, camera, memory}, location)=>{
+export const Memory_get = ({memory}, location)=>{
+	if(memory.isPill(location)){
+		return memory.set.get(location);
+	}
 	if(isLocation(location)){
-		return memory.getByLocation(new Vector3(...location));
+		return memory.getByLocation(new Vector4(...location));
 	}
 	if(isBox(location)){
 		return memory.getByBox(location);
@@ -14,3 +17,9 @@ export const Memory_get = ({robot, camera, memory}, location)=>{
 	}
 	return memory.set.map(pill=>pill.toString()).join("\n")
 }
+
+
+export const Memory_list = ({memory}, location)=>{
+	return memory.getByBox(location);
+}
+

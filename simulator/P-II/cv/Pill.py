@@ -16,11 +16,11 @@ class Pill:
 
         self.cnt = contour.squeeze().tolist()
         M = cv2.moments(contour)
-        self.area = M["m00"]
-        self.perimeter = cv2.arcLength(contour, True)
-        self.circularity = getCircularity(self.area, self.perimeter)
+        # self.area = M["m00"]
+        # self.perimeter = cv2.arcLength(contour, True)
+        # self.circularity = getCircularity(self.area, self.perimeter)
         # self.isPill= self.area > 2200 and self.area < 3150 and self.circularity > 0.75
-        self.centroid = (M["m10"]/M["m00"], M["m01"]/M["m00"])
+        # self.centroid = (M["m10"]/M["m00"], M["m01"]/M["m00"])
         x, y, w, h = cv2.boundingRect(contour)
         self.bBox = {"x":int(x-inflateFactor/2), "y":int(y-inflateFactor/2), "w":w+inflateFactor, "h":h+inflateFactor}
         self.pBox = {"x":x, "y":y, "w":w+inflateFactor, "h":h+inflateFactor}
@@ -39,8 +39,8 @@ class Pill:
     def toObj(self):
         return {
             "contour" : self.cnt,
-            "area" : self.area,
-            "circularity" : self.circularity,
+            # "area" : self.area,
+            # "circularity" : self.circularity,
             # "box" : [float("{:.2f}".format(self.centroid[0])), float("{:.2f}".format(self.centroid[1])), self.bBox["w"], self.bBox["h"]],
             "box" : [self.bBox["x"]+self.bBox["w"]/2, self.bBox["y"]+self.bBox["h"]/2, self.bBox["w"], self.bBox["h"]],
             "avgRGB" : [self.avgRGB[2], self.avgRGB[1], self.avgRGB[0]]

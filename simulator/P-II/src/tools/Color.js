@@ -1,5 +1,6 @@
 import {getRandomItem} from './helpers.js'
 import {isString, isArrayRGB} from './validators.js';
+import ColorCli from "cli-color";
 
 // the following functions are based off of the pseudocode
 // found on www.easyrgb.com
@@ -82,6 +83,11 @@ export const deltaE = (labA, labB)=>{
 	}]
 */
 
+
+
+
+
+
 export const LimitedColorPaletteGenerator = (palette)=>{
 	return class LimitedColorPalette {
 		static NAMED_COLOR = palette;	
@@ -92,14 +98,30 @@ export const LimitedColorPaletteGenerator = (palette)=>{
 		static getRandomColorValue = ()=>{
 			return getRandomItem(palette).rgb
 		}
-
+		static style = (...args)=>{
+			args.push(" ");
+			args.unshift(" ");
+			const {style} = palette.find(({name})=>{
+				return args.includes(name); 
+			});
+			if(style){
+				return style(...args);
+			}
+			return `-${args.join(' ')}-`;
+		}
 		static getName = (rgb)=>{
+			LimitedColorPaletteGenerator.get(rgb).name;
+		}
+		static getStyle = (rgb)=>{
+			LimitedColorPaletteGenerator.get(rgb).style;
+		}
+		static get = (rgb)=>{
 			const lab = rgb2lab(rgb);
 			return palette.sort((a, b)=>{
 				const dA = deltaE(lab, rgb2lab(a.rgb));
 				const dB = deltaE(lab, rgb2lab(b.rgb));
 				return dA - dB;
-			})[0].name;
+			})[0];
 		}
 
 		constructor(param){
@@ -120,13 +142,18 @@ export const LimitedColorPaletteGenerator = (palette)=>{
 				throw new Error("Color Constructor Error");
 			}
 			this._rgb = rgb;
-			this._name = LimitedColorPalette.getName(this._rgb)
+			const color = LimitedColorPalette.get(this._rgb);
+			this._name = color.name;
+			this._style = color.style;
 		}
 		get rgb(){
 			return this._rgb;
 		}
 		get name(){
 			return this._name;
+		}
+		get style(){
+			return this._style(` ${this._name} `);
 		}
 	}
 }

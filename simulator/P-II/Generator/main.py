@@ -43,8 +43,8 @@ def genImage(w=75, h=75, offset=0) :
 	m3 = curve(pnoise2(3, offset * 0.003))
 	for y in range(0, h):
 		for x in range(0, w):
-			r = x * 0.01
-			s = y * 0.01
+			r = x * 0.0175
+			s = y * 0.0175
 			c1 = pnoise3(0 + r*m1, 0 + s*m1, offset * 0.005)
 			c2 = pnoise3(1 + r*m2, 1 + s*m2, offset * 0.006)
 			c3 = pnoise3(2 + r*m3, 2 + s*m3, offset * 0.007)
@@ -96,7 +96,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "loop" :
 		oldImg = curImg.copy()
 		curImg = genImage(w=width, h=height, offset=offset)
 		moveImg = diff(curImg, oldImg, w=width, h=height)
-		offset += 10
+		offset += 1
 		if not display(moveImg):
 			break
 else :

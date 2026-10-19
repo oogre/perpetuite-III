@@ -35,7 +35,7 @@ export default class UI_Manager extends Engine{
 				subCtx.clearRect(0, 0, layer.width, layer.height);
 				subCtx.setTransform(matrix);
 			}
-			subCtx.translate(layer.width>>1, layer.height>>1);
+			subCtx.translate(layer.width*0.5, layer.height*0.5);
 			this._registered[id].draw(subCtx, layer);
 			mainCtx.drawImage(subCtx, 0, 0);
 		});

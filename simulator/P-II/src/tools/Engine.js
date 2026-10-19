@@ -12,7 +12,7 @@ export default class Engine{
 		const now = new Date().getTime();
 		const deltaTime = (now-this._lastFrameAt)*0.001;
 		this._registered.forEach((item, id)=>{
-			item.update(deltaTime);
+			item.update(deltaTime, now);
 		});
 		this._lastFrameAt = now;
 	}

@@ -21,6 +21,13 @@ export default class API extends EventsManager{
 					return Number.isNaN(f) ? p : f;
 				})
 			);
+			this.fire(
+				`${tool}`, 
+				[action, ...parameters].map(p=>{
+					const f = parseFloat(p);
+					return Number.isNaN(f) ? p : f;
+				})
+			);
 		});
 		this.rl.once('close', () => {
 
@@ -28,8 +35,12 @@ export default class API extends EventsManager{
 
 		Object.keys(Actions).forEach(key=>{
 			this.on(key, async (...data)=>{
-				const result = await Actions[key](controllables, ...data);
-				console.log(result);
+				try{
+					const result = await Actions[key](controllables, ...data);
+					console.log(result);
+				}catch(error){
+					console.log(error);
+				}
 			});
 		});
 	}
