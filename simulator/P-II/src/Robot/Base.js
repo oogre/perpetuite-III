@@ -62,9 +62,7 @@ export default class RobotBase extends EventsManager{
 	}
 
 	async getPosition(){
-		console.log("getPosition");
 		const t = await this.controller.GetPosition();
-		console.log(t);
 		return new Vector4(...t);
 	}
 
@@ -77,14 +75,9 @@ export default class RobotBase extends EventsManager{
 		if(await this._reached.isPending()){
 			this._reached.reject();
 		}
-
-		// await delay(10);
-
 		this._target.copy(targetValue);
-
-
 		if(!this.conf.simulation){
-			this.controller.Go(this._target);
+			await this.controller.Go(this._target);
 		}
 
 		this._reached.reset();
@@ -94,9 +87,7 @@ export default class RobotBase extends EventsManager{
 	async update(deltaTime, now){
 		this._move.set(...this._target).sub(this._location);
 		if(await this._reached.isPending()){
-			console.log("Pending");
 			if(this.conf.simulation){
-				console.log(this.conf.simulation);
 				const bellCurve = (curveWidth, x)=>{
 					const width = lerp(4, 1.01, curveWidth);
 					return 1-Math.pow(width, -1 * x);
@@ -116,7 +107,6 @@ export default class RobotBase extends EventsManager{
 			}else{
 				const t = await this.controller.GetPosition();
 				this._location.copy(new Vector4(...t));
-				console.log(this._location);
 			}
 
 			if(this._move.lengthSq()<0.2){
@@ -125,7 +115,6 @@ export default class RobotBase extends EventsManager{
 					this.fire('initilized', this.location4D.clone());
 				}
 				this._reached.resolve();
-				console.log("done");
 			}
 			this.fire('locationChange', this.location4D.clone());
 		}
