@@ -1,6 +1,6 @@
 #!/usr/bin/env zx
 
-
+$.verbose = true;
 const translateAddress = async (address, destination)=>{
 	return (await $`wslpath ${destination=="ubuntu"?"-u" : "-w"} ${address}`).stdout.trim()
 }
@@ -19,7 +19,7 @@ console.log(FakeUserPath);
 
 
 
-// // $.verbose = false;
+
 
 // const wait = async t => new Promise(r => setTimeout(()=>r(), t));
 
