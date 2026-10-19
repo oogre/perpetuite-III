@@ -94,7 +94,6 @@ export default class RobotBase extends EventsManager{
 
 	async update(deltaTime, now){
 		this._move.set(...this._target).sub(this._location);
-		console.log(now);
 		if(await this._reached.isPending()){
 
 			if(this.conf.simulation){
@@ -120,7 +119,7 @@ export default class RobotBase extends EventsManager{
 				const t = await this.controller.GetPosition();
 				this._location.copy(new Vector4(...t));
 			}
-			
+
 			if(this._move.lengthSq()<0.1){
 				if(!this._isInit){
 					this._isInit = true;
