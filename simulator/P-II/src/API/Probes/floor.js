@@ -13,7 +13,7 @@ export const Probes_floor = async (BASE)=>{
 		await Robot_go(BASE, new Vector4(x, y, 0, 0))
 		await BASE.robot.controller.WaitProbe();
 		const {z} = await Probes_ground(BASE);
-		floorProbes.push(pointProbes);
+		floorProbes.push(z);
 	};
 	BASE.robot.actionDescPop();
 
