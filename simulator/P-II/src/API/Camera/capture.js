@@ -7,14 +7,16 @@ import {Memory_set} from './../Memory';
 
 export const Camera_capture = async (BASE, transport=false)=>{
 	BASE.robot.actionDesc = `Camera capture`;
-	
+	console.log("Camera capture");
 	const captureName = `${new Date().getTime()} ${BASE.robot.location4D}.png`;
 	const rawData = await BASE.camera.capture(captureName);
-	if(transport){
-		await BASE.image.transportImageFromSourceToDest();	
-	}else{
-		await BASE.image.removeImageFromSource();	
-	}
+
+	console.log(rawData);
+	// if(transport){
+	// 	await BASE.image.transportImageFromSourceToDest();	
+	// }else{
+	// 	await BASE.image.removeImageFromSource();	
+	// }
 	
 	const areas = rawData.map(item=>new Area(item.contour, item.avgRGB))
 	const localPills = new Pills(BASE.memory.conf);
