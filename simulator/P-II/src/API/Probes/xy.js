@@ -1,6 +1,6 @@
 import { Vector4 } from './../../tools/Vector.js';
 import {Robot_go} from '../Robot/go.js';
-import {Robot_gripper} from '../Robot/go.js';
+import {Robot_gripper} from '../Robot/gripper.js';
 import {Camera_capture} from './../Camera';
 
 export const Probes_xy = async (BASE)=>{
