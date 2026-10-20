@@ -539,13 +539,19 @@ def main():
     CTX.grabber.start()
     CTX.archiver.start()
 
+    log('GRABBER ARCHIVER STARTED')
+
     def on_term(*_):
         raise KeyboardInterrupt  # kill / systemd : meme arret propre que Ctrl+C
     signal.signal(signal.SIGTERM, on_term)
 
+    log('SERVER LAUNCHING')
+
     httpd = Server((cfg.host, cfg.port), Handler)
     log('P-II.camera sur http://%s:%d  (%s)  archive : %s' % (
         cfg.host, cfg.port, 'camera simulee' if cfg.simulate else 'camera Daheng', cfg.archive_dir))
+
+    log(cfg.host, cfg.port)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
