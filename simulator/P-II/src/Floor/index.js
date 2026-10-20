@@ -18,7 +18,7 @@ export default class Floor{
 			throw new Error("Floor probe z values not configured!")
 		}
 
-		const zValues = JSON.parse(fs.readFileSync(this.conf.zValuesPath,"utf8"));
+		const zValues = JSON.parse(fs.readFileSync(this.conf.zValuesPath,"utf8")).map(z=>z-this.conf.probeHeight);
 		if(this.points.length != zValues.length){
 			throw new MyError("Floor probe z values wrong configured!")
 		}

@@ -67,6 +67,7 @@ const {
 	COMMANDS_PATH,
 	CV_IMAGE_PATH,
 	PLAYER_IMAGE_PATH,
+	PROBE_HEIGHT,
 	PROBE_POINTS_PATH,
 	Z_VALUES_PATH
 } = dotenv.config().parsed;
@@ -172,6 +173,7 @@ export default {
 		lockDuration : parseInt(FORBIDDEN_LOCK_DURATION),
 	},
 	floor : {
+		probeHeight : parseInt(PROBE_HEIGHT),
 		probePointsPath : PROBE_POINTS_PATH,
 		zValuesPath : Z_VALUES_PATH,
 		triangles : [
