@@ -3,8 +3,8 @@ import {Robot_limitter, Robot_go, Robot_gripper} from '../Robot';
 import {Camera_capture} from './../Camera';
 import {delay} from './../../tools/helpers.js';
 
-export const Probes_xy = async (BASE)=>{
-	const location = Robot_limitter(BASE, new Vector4(...BASE.grid.getRandomCellLocation(), -300, 0));
+export const Probes_xy = async (BASE, location)=>{
+	const location = Robot_limitter(BASE, new Vector4(...location, -300, 0));
 	console.log(location);
 	await BASE.robot.setSeed(BASE.robot.conf.default.speed);
 	await BASE.robot.setAcceleration(BASE.robot.conf.default.acc);
@@ -13,10 +13,10 @@ export const Probes_xy = async (BASE)=>{
 	await Robot_gripper(BASE, [1]);
 	await BASE.robot.controller.WaitProbe();
 	await Robot_go(BASE, new Vector4(location.x, location.y, location.z, 0));
-	await BASE.robot.setDeceleration(1);
+	await BASE.robot.setDeceleration(100);
 	await Robot_go(BASE, location);
 	await Robot_gripper(BASE, [0]);
-	await BASE.robot.setAcceleration(1);
+	await BASE.robot.setAcceleration(100);
 	await BASE.robot.setDeceleration(BASE.robot.conf.default.acc);
 	await Robot_go(BASE, new Vector4(location.x, location.y, location.z+5, 0));
 	await BASE.robot.setAcceleration(BASE.robot.conf.default.acc);
