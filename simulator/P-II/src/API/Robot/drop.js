@@ -26,7 +26,7 @@ export const Robot_drop = async (BASE)=>{
 	
 	await Robot_release(BASE);
 
-	await Camera_capture(BASE, true);
+	await Camera_capture(BASE, [true]);
 	BASE.robot.actionDescPop();
 	return true;
 }

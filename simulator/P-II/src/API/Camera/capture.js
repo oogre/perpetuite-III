@@ -5,13 +5,13 @@ import {Memory_set} from './../Memory';
 
 
 
-export const Camera_capture = async (BASE, transport=false)=>{
+export const Camera_capture = async (BASE, [transport=false]=[])=>{
 	BASE.robot.actionDesc = `Camera capture`;
-	console.log("Camera capture");
+	console.log(`Camera capture ${transport}`);
 	const captureName = `${new Date().getTime()} ${BASE.robot.location4D}.png`;
-	const rawData = await BASE.camera.capture(captureName);
+	const rawData = await BASE.camera.capture(captureName, transport);
 
-	console.log(rawData);
+	
 	// if(transport){
 	// 	await BASE.image.transportImageFromSourceToDest();	
 	// }else{

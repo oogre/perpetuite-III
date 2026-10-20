@@ -49,7 +49,7 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 		throw new Error("MEMORY IS A MESS AFTER");
 	}
 	
-	const afterCollection = await Camera_capture(BASE, true)
+	const afterCollection = await Camera_capture(BASE, [true])
 	
 	await delay(300);
 
