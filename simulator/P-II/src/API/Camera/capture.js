@@ -34,5 +34,5 @@ export const Camera_capture = async (BASE, [transport=false]=[])=>{
 	localPills.addEach(safePills);
 	BASE.memory.addEach(safePills);
 	BASE.robot.actionDescPop();
-	return localPills
+	return localPills;
 }
