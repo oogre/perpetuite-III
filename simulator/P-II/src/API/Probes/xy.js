@@ -22,6 +22,6 @@ export const Probes_xy = async ({robot})=>{
 	await BASE.robot.setAcceleration(BASE.robot.conf.default.acc);
 	await BASE.robot.setDeceleration(BASE.robot.conf.default.dcc);
 	await Robot_go(BASE, new Vector4(location.x, location.y, 0, 0));
-	await Camera_capture(BASE)
+	return await Camera_capture(BASE);
 }
 
