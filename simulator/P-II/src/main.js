@@ -5,7 +5,7 @@ import readline from "readline"
 import Engine from "./tools/Engine.js";
 import API from "./API";
 import UI_Manager from "./UI";
-import Real from "./Real";
+// import Real from "./Real";
 import Robot from "./Robot";
 import Memory from "./Memory";
 import Forbidden from "./Forbidden";
@@ -22,7 +22,7 @@ const image = new ImageManager(config.player);
 const grid = new Grid(config.grid);
 const cmd = new Commands(config.commands, {grid});
 const table = new Floor(config.floor);
-const real = new Real(config.pills, {grid});
+// const real = new Real(config.pills, {grid});
 const robot = new Robot(config.robot);
 	robot.on("locationChange initilized", (location) => {
 		const offset = axisCorrection(location, config.flipAxis);
@@ -36,7 +36,7 @@ const robot = new Robot(config.robot);
 
 const memory = new Memory(config.pills);
 const forbidden = new Forbidden(config.forbidden);
-const camera = new Camera(config.camera, real.ui);
+const camera = new Camera(config.camera);
 
 if(config.camera.src === 'camera'){
 	camera.keepAlive(); // le serveur camera s'arrête avec P-II (voir Camera/Base.js)
@@ -48,7 +48,7 @@ const engine = new Engine(50);
 const ui = new UI_Manager(config.window);
 	ui.register(grid.ui);
 	ui.register(table.ui);
-	ui.register(real.ui);
+	// ui.register(real.ui);
 	ui.register(robot.ui);
 	ui.register(memory.ui);
 	ui.register(forbidden.ui);
@@ -62,14 +62,14 @@ const api = new API({
 	camera,
 	memory,
 	forbidden,
-	real,
+	// real,
 	cmd,
 	grid,
 	image,
 	table
 });
 
-real.load();
+// real.load();
 
 
 
