@@ -97,7 +97,7 @@ export default {
 			parseInt(CAMERA_OFFSET_Y)
 		],
 		margin : 4*parseFloat(PILL_SIZE),
-		url : CAMERA_HOST+":"+parseInt(CAMERA_PORT),
+		url : "http://"+CAMERA_HOST+":"+parseInt(CAMERA_PORT),
 		src: CAMERA_SRC
 	},
 	robot : {
