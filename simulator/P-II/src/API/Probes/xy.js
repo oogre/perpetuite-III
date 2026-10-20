@@ -12,7 +12,7 @@ export const Probes_xy = async (BASE)=>{
 	await Robot_go(BASE, new Vector4(location.x, location.y, 0, 0));
 	await Robot_gripper(BASE, [1]);
 	await BASE.robot.controller.WaitProbe();
-	await Robot_go(BASE, new Vector4(location.x, location.y, location, 0));
+	await Robot_go(BASE, new Vector4(location.x, location.y, location.z, 0));
 	await BASE.robot.setDeceleration(1);
 	await Robot_go(BASE, location);
 	await Robot_gripper(BASE, [0]);
