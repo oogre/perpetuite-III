@@ -3,3 +3,4 @@ release/*
 package-lock.json
 
 cv/__pycache__/*
+log/*

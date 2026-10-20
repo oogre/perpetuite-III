@@ -100,12 +100,14 @@ def parse_args():
 
 # ----------------------------------------------------------------------------- cameras
 def use_vendored_gxipy(cfg):
-    """Place le gxipy de P-III en tete de sys.path (comme liveCV.py, qui l'importait depuis son propre dossier).
+    """Choisit le gxipy a utiliser : --gxipy-path, sinon un dossier gxipy/ a cote de ce script, sinon celui de P-III
+    (comme liveCV.py, qui l'importait depuis son propre dossier).
 
     Le paquet pip `open-gxipy` 2.0.x attend un pilote Galaxy recent (GXGetInterfaceNum) et plante avec
     un pilote plus ancien : NameError: gx_get_interface_number."""
     candidates = [Path(cfg.gxipy_path)] if cfg.gxipy_path else []
     here = Path(__file__).resolve()
+    candidates.append(here.parent)  # un dossier gxipy/ a cote du script passe avant tout le reste
     if len(here.parents) > 3:
         candidates.append(here.parents[3] / 'P-III' / 'src' / 'computerVision')
     for c in candidates:
@@ -144,7 +146,6 @@ class DahengCamera:
         cam.data_stream[0].set_acquisition_buffer_number(3)
         cam.stream_on()
         self.cam = cam
-        log('Camera OK')
         return True
 
     @property
@@ -432,7 +433,6 @@ class Handler(BaseHTTPRequestHandler):
         json_response(self, 200, {})
 
     def do_GET(self):
-        log("GET received");
         if self.path == '/health':
             cfg, grabber, archiver = CTX.cfg, CTX.grabber, CTX.archiver
             free = None
@@ -457,7 +457,6 @@ class Handler(BaseHTTPRequestHandler):
         json_response(self, 200, {'status': 'success', 'routes': ['POST /capture', 'POST /upload', 'GET /health']})
 
     def do_POST(self):
-        log("POST received");
         t0 = time.monotonic()
         try:
             length = int(self.headers.get('Content-Length') or 0)
@@ -522,38 +521,33 @@ class Server(ThreadingHTTPServer):
 
 
 def main():
-    log('MAIN')
     cfg = parse_args()
     cv2.setNumThreads(max(1, (os.cpu_count() or 2) - 1))  # laisse un coeur a Node
     CTX.cfg = cfg
     if cfg.simulate:
         CTX.camera = FakeCamera()
     else:
+        where = use_vendored_gxipy(cfg)
         try:
             CTX.camera = DahengCamera(cfg.exposure, cfg.gain)
         except Exception as e:
             log("Impossible de charger gxipy : %r" % e)
             log("  -> pilote Daheng Galaxy installe ? gxipy trouve dans P-III/src/computerVision ? (option --gxipy-path)")
             sys.exit(1)
+        log('gxipy :', getattr(CTX.camera.gx, '__file__', '?'), '(local)' if where else '(pip)')
     CTX.grabber = Grabber(CTX.camera)
     CTX.archiver = Archiver(cfg)
     CTX.capture_lock = threading.Lock()
     CTX.grabber.start()
     CTX.archiver.start()
 
-    log('GRABBER ARCHIVER STARTED')
-
     def on_term(*_):
         raise KeyboardInterrupt  # kill / systemd : meme arret propre que Ctrl+C
     signal.signal(signal.SIGTERM, on_term)
 
-    log('SERVER LAUNCHING')
-
     httpd = Server((cfg.host, cfg.port), Handler)
     log('P-II.camera sur http://%s:%d  (%s)  archive : %s' % (
         cfg.host, cfg.port, 'camera simulee' if cfg.simulate else 'camera Daheng', cfg.archive_dir))
-
-    log(cfg.host, cfg.port)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
