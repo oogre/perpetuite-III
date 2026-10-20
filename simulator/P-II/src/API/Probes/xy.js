@@ -3,8 +3,8 @@ import {Robot_limitter, Robot_go, Robot_gripper} from '../Robot';
 import {Camera_capture} from './../Camera';
 import {delay} from './../../tools/helpers.js';
 
-export const Probes_xy = async (BASE, destination)=>{
-	const location = Robot_limitter(BASE, new Vector4(...destination, -300, 0));
+export const Probes_xy = async (BASE, [x, y])=>{
+	const location = Robot_limitter(BASE, new Vector4(x, y, -300, 0));
 	console.log(location);
 	await BASE.robot.setSeed(BASE.robot.conf.default.speed);
 	await BASE.robot.setAcceleration(BASE.robot.conf.default.acc);
