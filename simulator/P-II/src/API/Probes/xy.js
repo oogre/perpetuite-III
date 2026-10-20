@@ -3,8 +3,9 @@ import {Robot_go} from '../Robot/go.js';
 import {Robot_gripper} from '../Robot/go.js';
 import {Camera_capture} from './../Camera';
 
-export const Probes_xy = async ({robot})=>{
+export const Probes_xy = async (BASE)=>{
 	const location = new Vector4(...BASE.grid.getRandomCellLocation(), -300, 0);
+	console.log(location);
 	await BASE.robot.setSeed(BASE.robot.conf.default.speed);
 	await BASE.robot.setAcceleration(BASE.robot.conf.default.acc);
 	await BASE.robot.setDeceleration(BASE.robot.conf.default.dcc);
