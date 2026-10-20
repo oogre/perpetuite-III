@@ -1,7 +1,5 @@
 import { Vector4 } from './../../tools/Vector.js';
-import {Robot_go} from '../Robot/go.js';
-import { Robot_limitter } from './limitter.js';
-import {Robot_gripper} from '../Robot/gripper.js';
+import {Robot_limitter, Robot_go, Robot_gripper} from '../Robot';
 import {Camera_capture} from './../Camera';
 import {delay} from './../../tools/helpers.js';
 
