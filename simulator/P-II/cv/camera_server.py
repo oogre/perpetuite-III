@@ -546,7 +546,11 @@ class Handler(BaseHTTPRequestHandler):
             return json_response(self, 400, {'status': 'error', 'message': 'JSON invalide : %s' % e})
         cfg = CTX.cfg
         filename = data.get('filename') or ('%d.png' % int(time.time() * 1000))
+
+
         archive = bool(data.get('archive'))
+
+        log("archive", data.get('archive'), bool(data.get('archive')), archive)
         timing = {}
         try:
             if self.path == '/capture':
