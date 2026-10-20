@@ -14,6 +14,7 @@ export default class BaseCamera{
 	}
 	async isRunning(){
 		try{
+			console.log(`${this.conf.url}/health`);
 			const response = await fetch(`${this.conf.url}/health`, {signal : AbortSignal.timeout(1000)});
 			return response.ok;
 		}catch(error){
