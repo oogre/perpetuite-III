@@ -144,6 +144,7 @@ class DahengCamera:
         cam.data_stream[0].set_acquisition_buffer_number(3)
         cam.stream_on()
         self.cam = cam
+        log('Camera OK')
         return True
 
     @property
@@ -519,20 +520,19 @@ class Server(ThreadingHTTPServer):
 
 
 def main():
+    log('MAIN')
     cfg = parse_args()
     cv2.setNumThreads(max(1, (os.cpu_count() or 2) - 1))  # laisse un coeur a Node
     CTX.cfg = cfg
     if cfg.simulate:
         CTX.camera = FakeCamera()
     else:
-        where = use_vendored_gxipy(cfg)
         try:
             CTX.camera = DahengCamera(cfg.exposure, cfg.gain)
         except Exception as e:
             log("Impossible de charger gxipy : %r" % e)
             log("  -> pilote Daheng Galaxy installe ? gxipy trouve dans P-III/src/computerVision ? (option --gxipy-path)")
             sys.exit(1)
-        log('gxipy :', getattr(CTX.camera.gx, '__file__', '?'), '(P-III)' if where else '(pip)')
     CTX.grabber = Grabber(CTX.camera)
     CTX.archiver = Archiver(cfg)
     CTX.capture_lock = threading.Lock()
