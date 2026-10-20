@@ -15,8 +15,8 @@ export default class Camera extends BaseCamera{
 
 	pointToWorldLocation([x, y], canvas){
 		return [
-			(x - canvas.width/2)/this._offset.z - this._offset.x, 
-			(y - canvas.height/2)/this._offset.z - this._offset.y, 
+			(x - canvas.width/2)/this._offset.z - this._offset.x - this.conf.offset[0], 
+			(y - canvas.height/2)/this._offset.z - this._offset.y - this.conf.offset[0], 
 		]
 	}
 	contourToWorldLocation(contour, canvas){
