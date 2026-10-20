@@ -48,19 +48,19 @@ export default class Camera extends BaseCamera{
 	}
 
 	// archive=true : garder une image réduite dans data/archive (le `transport` de Camera_capture)
-	async capture(name){
+	async capture(name, archive){
 		const data = this.conf.src === 'camera'
-			? await this.captureFromCamera(name)
+			? await this.captureFromCamera(name, archive)
 			: await this.captureFromSimulation(name);
 		return data.sort(()=>Math.random()-0.5);
 	}
 
 	// Vraie caméra : pas d'attente du rendu, une seule requête (prise + analyse + archive).
-	async captureFromCamera(name){
+	async captureFromCamera(name, archive){
 		// le robot est à l'arrêt quand on capture : on fige sa position avant l'aller-retour réseau
 		// le serveur renvoie ses coordonnées dans un repère width x height (--size, 1000 par défaut)
 		const canvas = {width : this.conf.width, height : this.conf.height};
-		const rawData = await this.grab(name);
+		const rawData = await this.grab(name, archive);
 		return this.toWorld(rawData, canvas);
 	}
 
