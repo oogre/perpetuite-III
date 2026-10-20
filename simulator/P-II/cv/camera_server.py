@@ -432,6 +432,7 @@ class Handler(BaseHTTPRequestHandler):
         json_response(self, 200, {})
 
     def do_GET(self):
+        log("GET received");
         if self.path == '/health':
             cfg, grabber, archiver = CTX.cfg, CTX.grabber, CTX.archiver
             free = None
@@ -456,6 +457,7 @@ class Handler(BaseHTTPRequestHandler):
         json_response(self, 200, {'status': 'success', 'routes': ['POST /capture', 'POST /upload', 'GET /health']})
 
     def do_POST(self):
+        log("POST received");
         t0 = time.monotonic()
         try:
             length = int(self.headers.get('Content-Length') or 0)
