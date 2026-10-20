@@ -43,6 +43,17 @@ import cv2
 import numpy as np
 
 try:
+    sys.stdout.reconfigure(line_buffering=True, encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(line_buffering=True, encoding='utf-8', errors='replace')
+except Exception:
+    pass
+
+
+def log(*args):
+    print(time.strftime('%H:%M:%S'), *args, flush=True)
+
+
+try:
     import setproctitle
     setproctitle.setproctitle('P-II.camera')
 except ImportError:  # optionnel, sert seulement a retrouver le processus avec pgrep
@@ -65,6 +76,9 @@ def parse_args():
     # camera
     p.add_argument('--exposure', type=float, default=float(env('CAM_EXPOSURE', 10000.0)), help='microsecondes')
     p.add_argument('--gain', type=float, default=float(env('CAM_GAIN', 20.0)))
+    p.add_argument('--gxipy-path', default=env('CAM_GXIPY_PATH', ''),
+                   help="dossier qui CONTIENT gxipy/. Defaut : P-III/src/computerVision (le gxipy que liveCV.py utilisait) "
+                        "si on le trouve, sinon le gxipy installe avec pip")
     p.add_argument('--settle-ms', type=int, default=int(env('CAM_SETTLE_MS', 0)),
                    help='attente supplementaire (vibrations) avant la prise')
     p.add_argument('--grab-timeout', type=float, default=float(env('CAM_GRAB_TIMEOUT', 3.0)), help='secondes')
@@ -85,6 +99,22 @@ def parse_args():
 
 
 # ----------------------------------------------------------------------------- cameras
+def use_vendored_gxipy(cfg):
+    """Place le gxipy de P-III en tete de sys.path (comme liveCV.py, qui l'importait depuis son propre dossier).
+
+    Le paquet pip `open-gxipy` 2.0.x attend un pilote Galaxy recent (GXGetInterfaceNum) et plante avec
+    un pilote plus ancien : NameError: gx_get_interface_number."""
+    candidates = [Path(cfg.gxipy_path)] if cfg.gxipy_path else []
+    here = Path(__file__).resolve()
+    if len(here.parents) > 3:
+        candidates.append(here.parents[3] / 'P-III' / 'src' / 'computerVision')
+    for c in candidates:
+        if (c / 'gxipy' / '__init__.py').exists():
+            sys.path.insert(0, str(c))
+            return str(c)
+    return None
+
+
 class DahengCamera:
     """Exactement les reglages de liveCV.py (createCamera)."""
 
@@ -103,7 +133,7 @@ class DahengCamera:
             return False
         cam = self.manager.open_device_by_index(1)
         if cam.PixelColorFilter.is_implemented() is False:
-            print('Camera monochrome non supportee')
+            log('Camera monochrome non supportee')
             cam.close_device()
             return False
         cam.TriggerMode.set(gx.GxSwitchEntry.OFF)  # acquisition continue
@@ -191,18 +221,36 @@ class Grabber(threading.Thread):
         self._halt = threading.Event()
         self.frames = 0
         self.reconnects = 0
+        self.last_error = None
 
     def run(self):
+        state = [None]
+
+        def say(key, message):  # un message par changement d'etat, pas un toutes les secondes
+            if state[0] != key:
+                state[0] = key
+                log('Camera :', message)
+
         while not self._halt.is_set():
-            if not self.camera.is_open:
-                if not self.camera.open():
-                    self._halt.wait(1.0)  # pas de camera : on re-essaie chaque seconde
+            try:
+                if not self.camera.is_open:
+                    if not self.camera.open():
+                        say('absent', 'aucune camera trouvee (nouvel essai chaque seconde)')
+                        self._halt.wait(1.0)
+                        continue
+                    self.reconnects += 1
+                    say('ok', 'ouverte, flux demarre')
+                raw = self.camera.grab()
+                if raw is None:  # meme logique que liveCV.py : on referme et on rouvre
+                    self.camera.close()
+                    say('lost', "plus d'image, on la rouvre")
+                    self._halt.wait(0.2)
                     continue
-                self.reconnects += 1
-            raw = self.camera.grab()
-            if raw is None:  # meme logique que liveCV.py : on referme et on rouvre
+            except Exception as e:  # une erreur du SDK ne doit JAMAIS tuer ce thread en silence
                 self.camera.close()
-                self._halt.wait(0.2)
+                self.last_error = repr(e)
+                say('error:' + repr(e), 'erreur %r (nouvel essai dans 1 s)' % e)
+                self._halt.wait(1.0)
                 continue
             with self._cond:
                 self._frame = (time.monotonic(), raw)
@@ -329,7 +377,7 @@ class Archiver(threading.Thread):
                     self.prune()
             except Exception as e:  # ne jamais tuer le thread
                 self.last_error = str(e)
-                print('Archive :', e)
+                log('Archive :', e)
 
     def prune(self):
         limit = self.cfg.archive_max_mb * 1024 * 1024
@@ -400,6 +448,7 @@ class Handler(BaseHTTPRequestHandler):
                 'cameraOpen': bool(grabber.camera.is_open),
                 'frames': grabber.frames,
                 'reconnects': grabber.reconnects,
+                'cameraError': grabber.last_error,
                 'archive': {'written': archiver.written, 'dropped': archiver.dropped,
                             'queued': archiver.q.qsize(), 'lastError': archiver.last_error, 'freeMB': free},
             })
@@ -457,7 +506,7 @@ class Handler(BaseHTTPRequestHandler):
         except (BrokenPipeError, ConnectionResetError):
             pass
         except Exception as e:
-            print('Erreur :', repr(e))
+            log('Erreur :', repr(e))
             try:
                 json_response(self, 500, {'status': 'error', 'message': str(e)})
             except Exception:
@@ -473,7 +522,17 @@ def main():
     cfg = parse_args()
     cv2.setNumThreads(max(1, (os.cpu_count() or 2) - 1))  # laisse un coeur a Node
     CTX.cfg = cfg
-    CTX.camera = FakeCamera() if cfg.simulate else DahengCamera(cfg.exposure, cfg.gain)
+    if cfg.simulate:
+        CTX.camera = FakeCamera()
+    else:
+        where = use_vendored_gxipy(cfg)
+        try:
+            CTX.camera = DahengCamera(cfg.exposure, cfg.gain)
+        except Exception as e:
+            log("Impossible de charger gxipy : %r" % e)
+            log("  -> pilote Daheng Galaxy installe ? gxipy trouve dans P-III/src/computerVision ? (option --gxipy-path)")
+            sys.exit(1)
+        log('gxipy :', getattr(CTX.camera.gx, '__file__', '?'), '(P-III)' if where else '(pip)')
     CTX.grabber = Grabber(CTX.camera)
     CTX.archiver = Archiver(cfg)
     CTX.capture_lock = threading.Lock()
@@ -485,12 +544,12 @@ def main():
     signal.signal(signal.SIGTERM, on_term)
 
     httpd = Server((cfg.host, cfg.port), Handler)
-    print('P-II.camera sur http://%s:%d  (%s)  archive : %s' % (
+    log('P-II.camera sur http://%s:%d  (%s)  archive : %s' % (
         cfg.host, cfg.port, 'camera simulee' if cfg.simulate else 'camera Daheng', cfg.archive_dir))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print('Arret')
+        log('Arret')
     finally:
         httpd.server_close()
         CTX.grabber.stop()

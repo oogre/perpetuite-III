@@ -4,55 +4,57 @@ const _exec = util.promisify(exec)
 import {delay} from "./../tools/helpers.js";
 
 export default class BaseCamera{
-	static CAMERA_CONFIG = {
-		API : [
-			'http://localhost:8000/upload', 
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				}
-			}
-		]
-	};
+	constructor(conf){
+		this.conf = conf;
+	}
 	async start(){
-		await _exec(`npm run start.camera`);
 		console.log("Restart camera");
+		await _exec(`npm run start.camera`);
 		await delay(1000);
 	}
 	async isRunning(){
 		try{
-			const {stdout, stderr} =  await _exec(`pgrep -f "P-II.camera"; echo $?`)
-			if(stdout === "1\n"){
-				throw new Error("P-II.camera is not running");
-			}
-			return true;
+			const response = await fetch(`${this.conf.url}/health`, {signal : AbortSignal.timeout(1000)});
+			return response.ok;
 		}catch(error){
 			return false;
 		}
 	}
-	async call(request, tryCounter=0){
-		
+	async ensureRunning(){
+		if(await this.isRunning())return;
+		await this.start();
+	}
+	// POST JSON. Réessaie 3 fois (en vérifiant que le serveur tourne), puis lève l'erreur.
+	// (avant : une réponse {status:"error"} relançait l'appel sans limite)
+	async post(path, body, tryCounter=0){
 		try{
-			const response = await fetch(...request);
+			const response = await fetch(`${this.conf.url}${path}`, {
+				method : 'POST',
+				headers : {'Content-Type' : 'application/json'},
+				body : JSON.stringify(body),
+				signal : AbortSignal.timeout(10000)
+			});
 			const result = await response.json();
-			if (result.status == "success"){
+			if(result.status == "success"){
 				return result.data;
 			}
+			throw new Error(result.message ?? `HTTP ${response.status}`);
 		}catch(error){
-			console.log(error.message);
-			if(tryCounter>3){
-				throw new Error(error);
+			if(tryCounter >= 3){
+				throw error;
 			}
+			console.log(`[camera] ${error.message} (retry ${tryCounter+1}/3)`);
+			await delay(200*(tryCounter+1));
+			await this.ensureRunning();
+			return this.post(path, body, tryCounter+1);
 		}
-		return this.call(request, tryCounter+1);	
 	}
+	// simulation : envoie une image (base64) à analyser
 	async sendImage(filename, image){
-		if(!await this.isRunning()){
-			await this.start();
-		}
-		BaseCamera.CAMERA_CONFIG.API[1].body = JSON.stringify({filename,image});
-		return await this.call(BaseCamera.CAMERA_CONFIG.API);
+		return this.post('/upload', {filename, image});
 	}
-
+	// vraie caméra : le serveur prend l'image, l'analyse et, si archive=true, l'archive réduite
+	async grab(filename, archive=false){
+		return this.post('/capture', {filename, archive});
+	}
 }

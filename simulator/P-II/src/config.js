@@ -60,6 +60,9 @@ const {
 	GRID_DEBUG,
 	CAMERA_OFFSET_X,
 	CAMERA_OFFSET_Y,
+	CAMERA_HOST,
+	CAMERA_PORT,
+	CAMERA_SRC,
 	GENERATOR_OFFSET_PATH,
 	COMMANDS_PATH,
 	CV_IMAGE_PATH,
@@ -94,6 +97,8 @@ export default {
 			parseInt(CAMERA_OFFSET_Y)
 		],
 		margin : 4*parseFloat(PILL_SIZE),
+		url : CAMERA_URL+":"+parseInt(CAMERA_PORT),
+		src: CAMERA_SRC
 	},
 	robot : {
 		simulation : parseInt(SIMULATION)==1,

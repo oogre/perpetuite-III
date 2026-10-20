@@ -9,7 +9,7 @@ import Real from "./Real";
 import Robot from "./Robot";
 import Memory from "./Memory";
 import Forbidden from "./Forbidden";
-//import Camera from "./Camera";
+import Camera from "./Camera";
 import Floor from "./Floor";
 import Grid from "./Grid";
 import Commands from "./Commands";
@@ -29,14 +29,14 @@ const robot = new Robot(config.robot);
 		ui.forAllRegistered( item =>{
 			item.offset = offset;
 		});
-		//camera.offset = offset;
+		camera.offset = offset;
 		robot.positionOnTable = table.toFloorLocation(location);
 		robot.hoverDangerousPlace = forbidden.isHover(location);
 	});
 
 const memory = new Memory(config.pills);
 const forbidden = new Forbidden(config.forbidden);
-//const camera = new Camera(config.camera, real.ui);
+const camera = new Camera(config.camera, real.ui);
 const engine = new Engine(50);
 	engine.register(robot);
 
@@ -54,7 +54,7 @@ const ui = new UI_Manager(config.window);
 
 const api = new API({
 	robot,
-	// camera,
+	camera,
 	memory,
 	forbidden,
 	real,

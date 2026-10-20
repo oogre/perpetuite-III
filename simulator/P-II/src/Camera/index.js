@@ -4,8 +4,7 @@ import BaseCamera from "./Base.js";
 
 export default class Camera extends BaseCamera{
 	constructor(conf, target){
-		super()
-		this.conf = conf;
+		super(conf);
 		this._target = target;
 		this._offset = new Vector3();
 	}
@@ -30,6 +29,59 @@ export default class Camera extends BaseCamera{
 			h/this._offset.z 
 		]
 	}
+	// écarte les formes trop près du bord de l'image, puis passe contours et boîtes dans le repère du monde
+	toWorld(rawData, canvas){
+		return rawData
+			.filter(({box:[x, y, w, h]})=>{
+				return 	x - 2*this.conf.margin > 0 && 
+						y - 2*this.conf.margin > 0 && 
+						x + 2*this.conf.margin < this.conf.width && 
+						y + 2*this.conf.margin < this.conf.height
+			})
+			.map((desc)=>{
+				return {
+					...desc,
+					contour : this.contourToWorldLocation(desc.contour, canvas),
+					box : this.boxToWorldLocation(desc.box, canvas)
+				}
+			});
+	}
+
+	// archive=true : garder une image réduite dans data/archive (le `transport` de Camera_capture)
+	async capture(name){
+		const data = this.conf.src === 'camera'
+			? await this.captureFromCamera(name)
+			: await this.captureFromSimulation(name);
+		return data.sort(()=>Math.random()-0.5);
+	}
+
+	// Vraie caméra : pas d'attente du rendu, une seule requête (prise + analyse + archive).
+	async captureFromCamera(name){
+		// le robot est à l'arrêt quand on capture : on fige sa position avant l'aller-retour réseau
+		// le serveur renvoie ses coordonnées dans un repère width x height (--size, 1000 par défaut)
+		const canvas = {width : this.conf.width, height : this.conf.height};
+		const rawData = await this.grab(name);
+		return this.toWorld(rawData, canvas);
+	}
+
+	// Simulation : comportement d'origine (on attend que le canvas soit redessiné, puis on l'envoie).
+	async captureFromSimulation(name){
+		return new Promise((resolve, reject)=>{		
+			const captureProcess = async (name, canvas)=>{
+				await delay(10);
+				this._target.off("updated", captureAdapter);
+				try {
+					const rawData = await this.sendImage(name, canvas.toDataURL().split(',')[1]);
+					resolve(this.toWorld(rawData, canvas));
+				} catch (error) {
+					reject(error);
+				}
+			}
+			const captureAdapter = (canvas)=>captureProcess(name, canvas)
+			this._target.on("updated", captureAdapter);
+		});
+	}
+ 
 
 	async capture(name){
 		return new Promise((resolve, reject)=>{		
