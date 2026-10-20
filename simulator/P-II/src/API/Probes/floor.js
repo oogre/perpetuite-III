@@ -1,12 +1,11 @@
 import { Vector4 } from './../../tools/Vector.js';
+
 import {Probes_ground} from './ground.js';
 import {Robot_go} from '../Robot/go.js';
 
 export const Probes_floor = async (BASE)=>{
-	console.log(BASE.table.points)
-
-	BASE.table.points.forEach(point=>{
-		console.log(point);
+	BASE.table.points.forEach(({x, y})=>{
+		console.log(new Vector4(x, y, 0, 0));
 	//	await Robot_go(Base)
 	});
 	return true;
