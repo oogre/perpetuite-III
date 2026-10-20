@@ -25,6 +25,10 @@ export const Probes_xy = async (BASE)=>{
 	await BASE.robot.setAcceleration(BASE.robot.conf.default.acc);
 	await BASE.robot.setDeceleration(BASE.robot.conf.default.dcc);
 	await Robot_go(BASE, new Vector4(location.x, location.y, 0, 0));
-	return await Camera_capture(BASE).set.toArray();
+	const pillList = await Camera_capture(BASE);
+	console.log(pillList);
+	console.log(pillList.set);
+	console.log(pillList.set.toArray());
+	return pillList.set.toArray();
 }
 
