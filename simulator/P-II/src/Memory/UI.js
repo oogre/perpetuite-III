@@ -13,7 +13,7 @@ export default class MemoryUI extends BaseUI{
 
 		this.parent.set
 			.filter(viewPort.contains.bind(viewPort))
-			.forEach(({path, isLock})=>{
+			.forEach(({x, y, path, isLock, color})=>{
 				ctx.setTransform(matrix);
 				if(isLock){
 					ctx.strokeStyle="red";
@@ -22,7 +22,14 @@ export default class MemoryUI extends BaseUI{
 				}
 				ctx.lineWidth = 0.2;
 				ctx.stroke(path);
+
+				ctx.translate(x, y);
+				ctx.beginPath();
+				ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+				ctx.fillStyle = `rgb(${color.rgb[0]}, ${color.rgb[1]}, ${color.rgb[2]})`;
+				ctx.fill(path);
 			});
+
 		ctx.resetTransform();
 	}
 }
