@@ -2,7 +2,7 @@
 export const Probes_ground = async ({robot})=>{
 
 	console.log(`Probes ground ${robot.location4D}`);
-	robot.actionDesc = `Probes ground ${value}`;
+	robot.actionDesc = `Probes ground ${robot.location4D}`;
 	await robot.controller.ZProbe(robot.location4D);	
 	robot.actionDescPop();
 	return true;
