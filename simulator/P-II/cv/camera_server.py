@@ -442,8 +442,10 @@ class Archiver(threading.Thread):
             try:
                 small = cv2.resize(img, (self.cfg.archive_size,) * 2, interpolation=cv2.INTER_AREA)
                 dest = self.path_for(filename)
+                log(dest)
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 tmp = dest.with_name('.' + dest.name)  # ImageManager ignore les noms qui commencent par un point
+                log(tmp)
                 if not cv2.imwrite(str(tmp), small, [cv2.IMWRITE_JPEG_QUALITY, self.cfg.archive_quality]):
                     raise IOError('cv2.imwrite a echoue : ' + str(tmp))
                 os.replace(tmp, dest)
