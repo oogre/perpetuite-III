@@ -109,7 +109,7 @@ export default class RobotBase extends EventsManager{
 				this._location.copy(new Vector4(...t));
 			}
 
-			if(this._move.lengthSq()<0.2){
+			if(this._move.lengthSq()<0.3){
 				if(!this._isInit){
 					this._isInit = true;
 					this.fire('initilized', this.location4D.clone());
