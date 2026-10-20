@@ -5,8 +5,7 @@ import {Robot_go} from '../Robot/go.js';
 
 export const Probes_floor = async (BASE)=>{
 	for(const {x,y} of BASE.table.points){
-		console.log(new Vector4(x, y, 0, 0))
-		//await Robot_go(BASE, new Vector4(x, y, 0, 0))
+		await Robot_go(BASE, new Vector4(x, y, 0, 0))
 	};
 	return true;
 
