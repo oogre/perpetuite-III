@@ -83,34 +83,34 @@ export default class Camera extends BaseCamera{
 	}
  
 
-	async capture(name){
-		return new Promise((resolve, reject)=>{		
-			const captureProcess = async (name, canvas)=>{
-				await delay(10);
-				this._target.off("updated", captureAdapter);
-				try {
-					const rawData = await this.sendImage(name, canvas.toDataURL().split(',')[1])
-					const data = rawData
-						.filter(({box:[x, y, w, h]})=>{
-							return 	x - 2*this.conf.margin > 0 && 
-									y - 2*this.conf.margin > 0 && 
-									x + 2*this.conf.margin < this.conf.width && 
-									y + 2*this.conf.margin < this.conf.height
-						})
-						.map((desc, id)=>{
-							return {
-								...desc,
-								contour : this.contourToWorldLocation(desc.contour, canvas),
-								box : this.boxToWorldLocation(desc.box, canvas)
-							}
-						});
-					resolve(data.sort(()=>Math.random()-0.5));
-				} catch (error) {
-					reject(error);
-				}
-			}
-			const captureAdapter = (canvas)=>captureProcess(name, canvas)
-			this._target.on("updated", captureAdapter);
-		});
-	}
+	// async capture(name){
+	// 	return new Promise((resolve, reject)=>{		
+	// 		const captureProcess = async (name, canvas)=>{
+	// 			await delay(10);
+	// 			this._target.off("updated", captureAdapter);
+	// 			try {
+	// 				const rawData = await this.sendImage(name, canvas.toDataURL().split(',')[1])
+	// 				const data = rawData
+	// 					.filter(({box:[x, y, w, h]})=>{
+	// 						return 	x - 2*this.conf.margin > 0 && 
+	// 								y - 2*this.conf.margin > 0 && 
+	// 								x + 2*this.conf.margin < this.conf.width && 
+	// 								y + 2*this.conf.margin < this.conf.height
+	// 					})
+	// 					.map((desc, id)=>{
+	// 						return {
+	// 							...desc,
+	// 							contour : this.contourToWorldLocation(desc.contour, canvas),
+	// 							box : this.boxToWorldLocation(desc.box, canvas)
+	// 						}
+	// 					});
+	// 				resolve(data.sort(()=>Math.random()-0.5));
+	// 			} catch (error) {
+	// 				reject(error);
+	// 			}
+	// 		}
+	// 		const captureAdapter = (canvas)=>captureProcess(name, canvas)
+	// 		this._target.on("updated", captureAdapter);
+	// 	});
+	// }
 }
