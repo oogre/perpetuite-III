@@ -1,4 +1,4 @@
-import {exec} from 'child_process';
+import {exec, spawnSync} from 'child_process';
 import util from 'util';
 const _exec = util.promisify(exec)
 import {delay} from "./../tools/helpers.js";
@@ -11,6 +11,23 @@ export default class BaseCamera{
 		console.log("Restart camera");
 		await _exec(`CAMERA_URL=${this.conf.url} npm run start.camera`);
 		await delay(1000);
+	}
+	// Le serveur camera ne doit pas survivre à P-II.
+	//  - P-II se termine (fin normale, process.exit, SIGINT/SIGTERM, exception non rattrapée) : événement `exit`,
+	//    on envoie POST /shutdown tout de suite. L'appel est synchrone : c'est la seule façon de le terminer pendant `exit`.
+	//  - P-II est tué net (kill -9, plantage natif, machine éteinte) : plus de ping, et le serveur
+	//    s'arrête seul après `--idle-exit` secondes (start.camera.sh le lance avec 30 s).
+	keepAlive(interval=5000){
+		if(this._keepAlive)return;
+		this._keepAlive = setInterval(()=>{
+			fetch(`${this.conf.url}/health`, {signal : AbortSignal.timeout(2000)}).catch(()=>{});
+		}, interval);
+		this._keepAlive.unref(); // ce timer ne retient pas le processus
+	}
+	shutdownSync(){
+		try{
+			spawnSync('curl', ['-s', '-m', '2', '-X', 'POST', `${this.conf.url}/shutdown`], {stdio : 'ignore'});
+		}catch(error){}
 	}
 	async isRunning(){
 		try{

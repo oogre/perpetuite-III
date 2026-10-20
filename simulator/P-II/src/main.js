@@ -37,6 +37,11 @@ const robot = new Robot(config.robot);
 const memory = new Memory(config.pills);
 const forbidden = new Forbidden(config.forbidden);
 const camera = new Camera(config.camera, real.ui);
+
+if(config.camera.src === 'camera'){
+	camera.keepAlive(); // le serveur camera s'arrête avec P-II (voir Camera/Base.js)
+}
+
 const engine = new Engine(50);
 	engine.register(robot);
 
@@ -68,7 +73,7 @@ real.load();
 
 
 
-
+process.on('exit', ()=>camera.shutdownSync());
 process.on('SIGINT', ()=>process.exit(0));
 process.on('SIGTERM', ()=>process.exit(0));
 

@@ -6,6 +6,7 @@
 #   journal         : log/camera.log  (le serveur y ecrit lui-meme ; ce qui sort avant lui y arrive aussi)
 #   options serveur : npm run start.camera -- --simulate
 #   CAMERA_URL      : adresse du serveur, pour savoir s'il tourne deja (defaut http://localhost:8000)
+#   CAMERA_IDLE_EXIT: secondes sans requete avant que le serveur s'arrete seul (defaut 30, 0 = jamais)
 #   CAMERA_PYTHON   : interpreteur (defaut : python.exe sous WSL s'il existe -> camera Daheng sous Windows,
 #                     sinon python3)
 
@@ -26,11 +27,13 @@ if [ -z "$PY" ]; then
 fi
 
 SCRIPT=cv/camera_server.py
-ARGS=()
+# Le serveur s'arrete seul si P-II ne donne plus signe de vie (P-II envoie un ping toutes les 5 s) : CAMERA_IDLE_EXIT, 30 s
+# par defaut, 0 = jamais. Les options passees a ce script viennent apres et l'emportent.
+ARGS=(--idle-exit "${CAMERA_IDLE_EXIT:-30}")
 case "$PY" in
 	*.exe)
 		SCRIPT=$(wslpath -w "$PWD/cv/camera_server.py")
-		ARGS=(--host 0.0.0.0)               # joignable depuis WSL
+		ARGS+=(--host 0.0.0.0)              # joignable depuis WSL
 		;;
 esac
 

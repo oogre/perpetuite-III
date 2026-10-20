@@ -23,6 +23,12 @@ Routes (JSON, comme l'ancien server.py)
   POST /upload  {"filename": "...", "image": "<base64>", "archive": false}
         -> meme analyse sur une image fournie (mode simulation de P-II, inchange)
   GET  /health  -> etat de la camera, du thread d'archivage et du disque
+  POST /shutdown -> arrete proprement le serveur (la camera est refermee)
+
+Arret automatique
+  --idle-exit N  : s'arrete seul si aucune requete (meme un simple GET /health) pendant N secondes.
+                   P-II envoie un ping toutes les 5 s tant qu'il tourne : s'il est tue ou plante, le serveur le suit.
+                   0 (defaut) = jamais.
 """
 import argparse
 import base64
@@ -39,9 +45,10 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-import cv2
-import numpy as np
-
+# ----------------------------------------------------------------------------- journal
+# Mis en place AVANT les imports lourds : une erreur d'import (cv2 absent...) arrive aussi dans le fichier.
+# Par defaut : P-II/log/camera.log (a cote de cv/). Ecran en plus si on est dans un terminal.
+# Autre fichier : --log-file chemin  (ou CAM_LOG_FILE).  Pas de fichier : --log-file -
 try:
     sys.stdout.reconfigure(line_buffering=True, encoding='utf-8', errors='replace')
     sys.stderr.reconfigure(line_buffering=True, encoding='utf-8', errors='replace')
@@ -49,8 +56,70 @@ except Exception:
     pass
 
 
+class Tee:
+    def __init__(self, console, file):
+        self.file = file
+        self.console = console if console is not None and console.isatty() else None  # lance en arriere-plan : pas d'ecran
+
+    def write(self, text):
+        try:
+            self.file.write(text)
+            self.file.flush()
+        except Exception:
+            pass
+        if self.console is not None:
+            try:
+                self.console.write(text)
+            except Exception:
+                pass
+        return len(text)
+
+    def flush(self):
+        try:
+            self.file.flush()
+            if self.console is not None:
+                self.console.flush()
+        except Exception:
+            pass
+
+    def isatty(self):
+        return False
+
+
+def default_log_file():
+    return str(Path(__file__).resolve().parent.parent / 'log' / 'camera.log')
+
+
+def setup_log_file():
+    path = os.environ.get('CAM_LOG_FILE')
+    for i, a in enumerate(sys.argv):
+        if a == '--log-file' and i + 1 < len(sys.argv):
+            path = sys.argv[i + 1]
+        elif a.startswith('--log-file='):
+            path = a.split('=', 1)[1]
+    if path is None:
+        path = default_log_file()
+    if path in ('', '-'):
+        return None
+    try:
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        f = open(path, 'a', encoding='utf-8', errors='replace', buffering=1)
+    except OSError as e:
+        print('Journal impossible (%s) : %s' % (path, e))
+        return None
+    sys.stdout = Tee(sys.stdout, f)
+    sys.stderr = Tee(sys.stderr, f)
+    return path
+
+
+LOG_FILE = setup_log_file()
+
+import cv2
+import numpy as np
+
+
 def log(*args):
-    print(time.strftime('%H:%M:%S'), *args, flush=True)
+    print(time.strftime('%Y-%m-%d %H:%M:%S'), *args, flush=True)
 
 
 try:
@@ -71,6 +140,10 @@ def parse_args():
     p.add_argument('--port', type=int, default=int(env('CAM_PORT', 8000)))
     p.add_argument('--host', default=env('CAM_HOST', '127.0.0.1'),
                    help="'0.0.0.0' pour etre joignable depuis WSL quand ce script tourne sous Windows")
+    p.add_argument('--log-file', default=env('CAM_LOG_FILE', default_log_file()),
+                   help="journal (defaut P-II/log/camera.log, '-' = ecran seulement)")
+    p.add_argument('--idle-exit', type=float, default=float(env('CAM_IDLE_EXIT', 0)),
+                   help="s'arrete apres N secondes sans aucune requete (0 = jamais)")
     p.add_argument('--simulate', action='store_true', default=env('CAM_SIMULATE', '0') == '1',
                    help='fausse camera (scene de pilules synthetique)')
     # camera
@@ -369,11 +442,8 @@ class Archiver(threading.Thread):
             try:
                 small = cv2.resize(img, (self.cfg.archive_size,) * 2, interpolation=cv2.INTER_AREA)
                 dest = self.path_for(filename)
-
-                log(dest)
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 tmp = dest.with_name('.' + dest.name)  # ImageManager ignore les noms qui commencent par un point
-                log(tmp)
                 if not cv2.imwrite(str(tmp), small, [cv2.IMWRITE_JPEG_QUALITY, self.cfg.archive_quality]):
                     raise IOError('cv2.imwrite a echoue : ' + str(tmp))
                 os.replace(tmp, dest)
@@ -433,9 +503,11 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
     def do_OPTIONS(self):
+        CTX.last_seen = time.monotonic()
         json_response(self, 200, {})
 
     def do_GET(self):
+        CTX.last_seen = time.monotonic()
         if self.path == '/health':
             cfg, grabber, archiver = CTX.cfg, CTX.grabber, CTX.archiver
             free = None
@@ -457,10 +529,14 @@ class Handler(BaseHTTPRequestHandler):
                 'archive': {'written': archiver.written, 'dropped': archiver.dropped,
                             'queued': archiver.q.qsize(), 'lastError': archiver.last_error, 'freeMB': free},
             })
-        json_response(self, 200, {'status': 'success', 'routes': ['POST /capture', 'POST /upload', 'GET /health']})
+        json_response(self, 200, {'status': 'success', 'routes': ['POST /capture', 'POST /upload', 'POST /shutdown', 'GET /health']})
 
     def do_POST(self):
-        t0 = time.monotonic()
+        t0 = CTX.last_seen = time.monotonic()
+        if self.path == '/shutdown':
+            json_response(self, 200, {'status': 'success', 'message': 'arret'})
+            log('Arret demande (POST /shutdown)')
+            return CTX.request_stop()
         try:
             length = int(self.headers.get('Content-Length') or 0)
             data = json.loads(self.rfile.read(length).decode('utf-8') or '{}')
@@ -507,7 +583,6 @@ class Handler(BaseHTTPRequestHandler):
                 'timing': timing,
             })
             if archive:  # apres la reponse : le robot n'attend pas le disque
-                log(filename, frame)
                 CTX.archiver.submit(filename, frame)
         except (BrokenPipeError, ConnectionResetError):
             pass
@@ -550,13 +625,34 @@ def main():
     signal.signal(signal.SIGTERM, on_term)
 
     httpd = Server((cfg.host, cfg.port), Handler)
+    CTX.last_seen = time.monotonic()  # (les requetes du script de demarrage comptent aussi)
+    CTX.stopping = threading.Event()
+
+    def request_stop():
+        # httpd.shutdown() attend la fin de serve_forever() : on ne peut pas l'appeler depuis le thread qui sert la requete
+        if not CTX.stopping.is_set():
+            CTX.stopping.set()
+            threading.Thread(target=httpd.shutdown, daemon=True).start()
+    CTX.request_stop = request_stop
+
+    def idle_watchdog():
+        while not CTX.stopping.wait(1.0):
+            idle = time.monotonic() - CTX.last_seen
+            if idle > cfg.idle_exit:
+                log("Aucune requete depuis %d s : arret (--idle-exit %g)" % (idle, cfg.idle_exit))
+                request_stop()
+    if cfg.idle_exit > 0:
+        threading.Thread(target=idle_watchdog, daemon=True, name='idle-watchdog').start()
+    log('journal :', LOG_FILE or '(ecran seulement)')
     log('P-II.camera sur http://%s:%d  (%s)  archive : %s' % (
         cfg.host, cfg.port, 'camera simulee' if cfg.simulate else 'camera Daheng', cfg.archive_dir))
     try:
         httpd.serve_forever()
+        log('Arret')
     except KeyboardInterrupt:
         log('Arret')
     finally:
+        CTX.stopping.set()
         httpd.server_close()
         CTX.grabber.stop()
         CTX.grabber.join(timeout=3)
