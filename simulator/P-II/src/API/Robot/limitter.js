@@ -10,7 +10,7 @@ export const Robot_limitter = (BASE, location)=>{
 
 	target.x = horizontalTarget.x;
 	target.y = horizontalTarget.y;
-	target.z = Math.min(BASE.robot.conf.maxZ, Math.max(BASE.table.toFloorLocation(horizontalTarget).z, target.z));
+	target.z = Math.min(BASE.robot.conf.maxZ, Math.max(BASE.table.toFloorLocation(horizontalTarget).z + BASE.memory.conf.depth, target.z));
 	target.w = Math.min(BASE.robot.conf.maxRoll, Math.max(BASE.robot.conf.minRoll, target.w % 360));
 	return target;
 }
