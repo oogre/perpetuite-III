@@ -24,6 +24,7 @@ export const Probes_test = async (BASE)=>{
 		await Robot_catch(BASE);
 		await Memory_clear(BASE);
 		await Robot_gripper(BASE, [true]);
+		await BASE.robot.controller.WaitProbe();
 	}
 	return true;
 }
