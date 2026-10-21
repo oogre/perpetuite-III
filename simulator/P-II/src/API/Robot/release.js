@@ -5,6 +5,7 @@ import {Robot_dcc} from './dcc.js';
 import {Robot_gripper} from './gripper.js';
 import {Robot_limitter} from './limitter.js';
 import { Vector4 } from './../../tools/Vector.js';
+import {delay} from './../../tools/helpers.js';
 
 export const Robot_release = async (BASE)=>{
 	BASE.robot.actionDesc = `Robot Release`;
@@ -22,6 +23,7 @@ export const Robot_release = async (BASE)=>{
 		await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 		await Robot_go(BASE, pillLocation);
 		await Robot_gripper(BASE, [false]);
+		await delay(200);
 		await Robot_acc(BASE, [1]);
 		await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 		await Robot_go(BASE, overPillLocation);
