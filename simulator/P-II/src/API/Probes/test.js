@@ -19,8 +19,9 @@ export const Probes_test = async (BASE)=>{
 		await delay(1000);
 		if(!await Robot_grab(BASE)){
 			await Robot_gripper(BASE, [true]);
+			await Memory_clean(BASE, [0, 0, 1200, 1200]);
 			await BASE.robot.controller.WaitProbe();
-			Memory_clean(BASE, [0, 0, 1200, 1200]);
+
 		}
 		await BASE.robot.controller.WaitProbe();
 	}
