@@ -10,9 +10,13 @@ export const Probes_test = async (BASE)=>{
 	await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 	await Robot_gripper(BASE, [true]);
 	await BASE.robot.controller.WaitProbe();
-	const points = [BASE.table.pointToExplore[0], BASE.table.pointToExplore[0], BASE.table.pointToExplore[0], BASE.table.pointToExplore[0], BASE.table.pointToExplore[0]].sort(()=>Math.random()-0.5)
-	for(const pos of points){
-		const location = new Vector4(pos.x, pos.y, 0, 0);
+	
+
+	let point = BASE.table.pointToExplore[0];
+
+	for(let i = 0 ; i < 4 ; i ++){
+		const location = new Vector4(point.x, point.y, 0, 0);
+
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
 		await Robot_go(BASE, location);
@@ -28,8 +32,10 @@ export const Probes_test = async (BASE)=>{
 		const grabLocation = BASE.robot.location4D;
 		await Memory_clear(BASE);
 		
-		console.log(`asked : ${location}`)
-		console.log(`above : ${robotLocation}`)
+		location.x = grabLocation.x;
+		location.y = grabLocation.y;
+
+		
 		console.log(`pill : ${pillLocation}`)
 		console.log(`grabbed : ${grabLocation}`)
 
