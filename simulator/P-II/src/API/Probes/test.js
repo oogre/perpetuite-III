@@ -1,9 +1,6 @@
 import { Vector4 } from './../../tools/Vector.js';
 import { Robot_go, Robot_grab, Robot_drop, Robot_speed, Robot_acc, Robot_dcc, Robot_gripper } from '../Robot';
-import {Robot_speed} from './speed.js';
-import {Robot_acc} from './acc.js';
-import {Robot_dcc} from './dcc.js';
-
+import {delay} from './../../tools/helpers.js';
 
 export const Probes_test = async (BASE)=>{
 
@@ -17,6 +14,7 @@ export const Probes_test = async (BASE)=>{
 	for(const id of list){
 		await Robot_go(BASE, new Vector4(...BASE.grid.getRandomCellLocation(), 0, 0));
 		await Robot_drop(BASE);
+		await delay(2000);
 		await Robot_grab(BASE);
 	}
 	return true;
