@@ -27,13 +27,12 @@ export const Probes_test = async (BASE)=>{
 		await Robot_grab(BASE);
 		const grabLocation = BASE.robot.location4D;
 		await Memory_clear(BASE);
-		await Robot_gripper(BASE, [false]);
-
+		
 		console.log(`asked : ${location}`)
 		console.log(`above : ${robotLocation}`)
 		console.log(`pill : ${pillLocation}`)
 		console.log(`grabbed : ${grabLocation}`)
-		break;
+
 	}
 	return true;
 }
