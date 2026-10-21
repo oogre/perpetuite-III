@@ -11,7 +11,7 @@ export const Probes_test = async (BASE)=>{
 	await Robot_gripper(BASE, [true]);
 	await BASE.robot.controller.WaitProbe();
 
-	for(const pos of BASE.table.pointToExplore()){
+	for(const pos of BASE.table.pointToExplore){
 		await Robot_go(BASE, new Vector4(pos.x, pos.y, 0, 0));
 		await Robot_drop(BASE);
 		await delay(1000);
