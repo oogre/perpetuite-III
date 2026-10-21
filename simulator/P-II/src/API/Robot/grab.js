@@ -29,10 +29,10 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 		throw new Error("MEMORY IS A MESS BEFORE");
 	}
 
-	if(Math.random()<0.1){
-		const move = getRandomOne(Hunting);
-		await move(BASE);
-	}
+	// if(Math.random()<0.1){
+	// 	const move = getRandomOne(Hunting);
+	// 	await move(BASE);
+	// }
 	
 	const beforeCollection = await Camera_capture(BASE)
 	const targetedPill = Memory_get({memory:beforeCollection}, BASE.robot.location2D);
