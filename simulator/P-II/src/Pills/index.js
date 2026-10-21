@@ -19,7 +19,7 @@ export default class Pills{
 	constructor(conf={}){
 		this.set = new FastSet([], contentEquals, contentHash, getDefault);
 		this.conf = conf;
-		this.conf.maxPositionSqRadius = this.conf.positionRadius * this.conf.positionRadius;
+		this.conf.maxPositionSqRadius = (this.conf.positionRadius + 30) * (this.conf.positionRadius + 30);
 		this.conf.minArea = this.conf.radius.min * this.conf.radius.min * Math.PI;
 		this.conf.maxArea = this.conf.radius.max * this.conf.radius.max * Math.PI;		
 	}
