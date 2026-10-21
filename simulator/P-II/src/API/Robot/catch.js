@@ -17,15 +17,17 @@ export const Robot_catch = async (BASE)=>{
 		await Robot_go(BASE, new Vector4(...BASE.robot.location2D, 0, 0));
 		const baseLocation = BASE.robot.location4D;
 		const pillLocation = Robot_limitter(BASE, new Vector4(baseLocation.x, baseLocation.y, -300, baseLocation.w));
-		const overPillLocation = new Vector4(pillLocation.x, pillLocation.y, pillLocation.z+5, pillLocation.w);
+		const overPillLocation = new Vector4(pillLocation.x, pillLocation.y, pillLocation.z+10, pillLocation.w);
 		await Robot_speed(BASE, [BASE.robot.conf.default.speed]);
 		await Robot_acc(BASE, [BASE.robot.conf.default.acc]);
 		await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 		await Robot_go(BASE, pillLocation);
 		await Robot_gripper(BASE, [true]);
+		await Robot_speed(BASE, [1]);
 		await Robot_acc(BASE, [1]);
 		await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 		await Robot_go(BASE, overPillLocation);
+		await Robot_speed(BASE, [BASE.robot.conf.default.speed]);
 		await Robot_acc(BASE, [BASE.robot.conf.default.acc]);
 		await Robot_go(BASE, baseLocation);
 	}
