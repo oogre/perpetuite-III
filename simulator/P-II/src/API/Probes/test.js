@@ -21,10 +21,9 @@ export const Probes_test = async (BASE)=>{
 		if(Memory_get(BASE, []).split("\n") == 0){
 			return false;
 		}
-		await Robot_catch(BASE);
+		await Robot_grab(BASE);
 		await Memory_clear(BASE);
 		await Robot_gripper(BASE, [true]);
-		await BASE.robot.controller.WaitProbe();
 	}
 	return true;
 }
