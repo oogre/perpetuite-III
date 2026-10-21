@@ -22,6 +22,7 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 			return false;
 		}
 	}
+	
 
 	const robotLocationBefore = BASE.robot.location2D;
 	const isMemoryCleanBefore = Memory_clean(BASE, robotLocationBefore);
