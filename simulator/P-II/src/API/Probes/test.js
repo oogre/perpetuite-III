@@ -16,18 +16,23 @@ export const Probes_test = async (BASE)=>{
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
 		await Robot_go(BASE, location);
-		await robotLocation = Base.robot.location4D;
+		const robotLocation = Base.robot.location4D;
 		await delay(1000);
 		await Robot_drop(BASE);
-		await pillLocation = Base.robot.location4D;
+		const pillLocation = Base.robot.location4D;
 		console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
 		if(Memory_get(BASE, []).split("\n") == 0){
 			return false;
 		}
 		await Robot_grab(BASE);
-		await grabLocation = Base.robot.location4D;
+		const grabLocation = Base.robot.location4D;
 		await Memory_clear(BASE);
 		await Robot_gripper(BASE, [false]);
+
+		console.log(`asked : ${location}`)
+		console.log(`above : ${robotLocation}`)
+		console.log(`pill : ${pillLocation}`)
+		console.log(`grabbed : ${grabLocation}`)
 		break;
 	}
 	return true;
