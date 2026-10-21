@@ -4,8 +4,9 @@ import { Vector2, Vector4 } from './../../tools/Vector.js';
 export const Robot_limitter = (BASE, location)=>{
 	const target = new Vector4(...location);
 	const horizontalTarget = new Vector2(...target);
-	if(horizontalTarget.lengthSq() > BASE.robot.conf.radius * BASE.robot.conf.radius){
-		horizontalTarget.setLength(BASE.robot.conf.radius);
+	const r = BASE.robot.conf.radius - 30;
+	if(horizontalTarget.lengthSq() > r * r){
+		horizontalTarget.setLength(r);
 	}
 
 	target.x = horizontalTarget.x;
