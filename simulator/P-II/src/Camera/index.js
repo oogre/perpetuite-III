@@ -28,7 +28,7 @@ export default class Camera extends BaseCamera{
 	}
 
 	pointToWorldLocation([x, y], canvas){
-		return correctMeasure([
+		return this.correctMeasure([
 			((x - canvas.width/2)/this._offset.z - this._offset.x - this.conf.offset[0]), 
 			((y - canvas.height/2)/this._offset.z - this._offset.y - this.conf.offset[1]), 
 		]);
@@ -132,12 +132,12 @@ export default class Camera extends BaseCamera{
 	inverseCorrection([tx, ty]) {
 		let x = tx, y = ty;
 		for (let it = 0; it < 30; it++) {
-			const [fx, fy] = correctMeasure([x, y]);
+			const [fx, fy] = this.correctMeasure([x, y]);
 			const ex = fx - tx, ey = fy - ty;
 			if (Math.hypot(ex, ey) < 1e-9) break;
 			const h = 1e-3;
-			const [ax, ay] = correctMeasure([x + h, y]);
-			const [bx, by] = correctMeasure([x, y + h]);
+			const [ax, ay] = this.correctMeasure([x + h, y]);
+			const [bx, by] = this.correctMeasure([x, y + h]);
 			const a = (ax - fx) / h, c = (ay - fy) / h, b = (bx - fx) / h, d = (by - fy) / h;
 			const det = a * d - b * c;
 			x -= (d * ex - b * ey) / det;
