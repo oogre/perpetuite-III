@@ -12,26 +12,21 @@ export const Robot_release = async (BASE)=>{
 		await BASE.real.add(BASE.robot.grabbedPill);
 		BASE.robot.grabbedPill = null;
 	}else{
-		const {z:tableDepth} = BASE.table.toFloorLocation(BASE.robot.location2D);
-		const target = BASE.robot.location4D;
-		const targetZ = target.z;
-		target.z += tableDepth + BASE.real.conf.depth;
-		await Robot_go(BASE, target);
+		await Robot_go(BASE, new Vector4(...BASE.robot.location2D, 0, 0));
+		const baseLocation = BASE.robot.location4D;
+		const pillLocation = Robot_limitter(BASE, new Vector4(baseLocation.x, baseLocation.y, -300, baseLocation.w));
+		const overPillLocation = new Vector4(pillLocation.x, pillLocation.y, pillLocation.z+5, pillLocation.w);
+		await Robot_speed(BASE, BASE.robot.conf.default.speed);
+		await Robot_acc(BASE, BASE.robot.conf.default.acc);
+		await Robot_dcc(1);
+		await Robot_go(BASE, pillLocation);
 		await Robot_gripper(BASE, [false]);
-
-		target.z += BASE.robot.conf.approche.dist;
-		await Robot_speed(BASE, [BASE.robot.conf.approche.speed]);
-		await Robot_acc(BASE, [BASE.robot.conf.approche.acc]);
-		await Robot_dcc(BASE, [BASE.robot.conf.approche.acc]);
-		await Robot_go(BASE, target);
-		
-		target.z = targetZ;
-		await Robot_speed(BASE, [BASE.robot.conf.default.speed]);
-		await Robot_acc(BASE, [BASE.robot.conf.default.acc]);
-		await Robot_dcc(BASE, [BASE.robot.conf.default.acc]);
-		await Robot_go(BASE, target);
+		await Robot_acc(1);
+		await Robot_dcc(BASE, BASE.robot.conf.default.acc);
+		await Robot_go(BASE, overPillLocation);
+		await Robot_acc(BASE, BASE.robot.conf.default.acc);
+		await Robot_go(BASE, baseLocation);
 	}
 	BASE.robot.actionDescPop();
 	return true;
 }
-

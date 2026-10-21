@@ -16,11 +16,13 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	if(depth >= 5 ){
 		throw new Error("Error grabbing");
 	}
-
-	if(BASE.robot.grabbedPill!==null){
-		throw new Error("Already grabbing");
-		return false;
+	if(BASE.robot.conf.simulation){
+		if(BASE.robot.grabbedPill!==null){
+			throw new Error("Already grabbing");
+			return false;
+		}
 	}
+	
 	const robotLocationBefore = BASE.robot.location2D;
 	const isMemoryCleanBefore = Memory_clean(BASE, robotLocationBefore);
 	if(!isMemoryCleanBefore){
