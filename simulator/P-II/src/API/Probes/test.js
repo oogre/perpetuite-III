@@ -12,10 +12,10 @@ export const Probes_test = async (BASE)=>{
 	await BASE.robot.controller.WaitProbe();
 	
 
-	let point = BASE.table.pointToExplore[0];
+	
 
 	for(let i = 0 ; i < 4 ; i ++){
-		const location = new Vector4(point.x, point.y, 0, 0);
+		const location = new Vector4(250, 250, 0, 0);
 
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
@@ -32,8 +32,8 @@ export const Probes_test = async (BASE)=>{
 		const grabLocation = BASE.robot.location4D;
 		await Memory_clear(BASE);
 		
-		point.x = grabLocation.x;
-		point.y = grabLocation.y;
+		location.x = grabLocation.x;
+		location.y = grabLocation.y;
 
 		
 		console.log(`pill : ${pillLocation}`)
