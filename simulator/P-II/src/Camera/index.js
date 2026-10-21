@@ -124,7 +124,7 @@ export default class Camera extends BaseCamera{
 		const r = Math.hypot(x, y);
 		const k = r > R_MAX ? R_MAX / r : 1;
 		const [cx, cy] = [x * k, y * k];
-		const [px, py] = poly(cx, cy);
+		const [px, py] = this.poly(cx, cy);
 		return [x + (px - cx), y + (py - cy)];
 	}
  
