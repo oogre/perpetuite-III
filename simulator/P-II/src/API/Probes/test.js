@@ -15,7 +15,7 @@ export const Probes_test = async (BASE)=>{
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
 		await Robot_go(BASE, new Vector4(pos.x, pos.y, 0, 0));
-		await delay(4000);
+		await delay(1000);
 		await Robot_drop(BASE);
 		console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
 		if(Memory_get(BASE, []).split("\n") == 0){

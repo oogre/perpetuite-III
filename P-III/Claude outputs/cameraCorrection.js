@@ -1,57 +1,45 @@
-// Correction continue (polynôme d'ordre 3) de la position mesurée par la caméra (mm).
-// Ajustée par moindres carrés sur 122 points (séries 2 et 4, disque de rayon ~570 mm).
-//   x' = sum(CX[k] * m[k]),  y' = sum(CY[k] * m[k])
-//   m = [1, y, x, y^2, x*y, x^2, y^3, x*y^2, x^2*y, x^3]   (x, y en mm, mesurés)
-// Résidu : 1.02 mm RMS / 2.6 mm max (9.6 mm RMS avant correction).
-// Validation croisée entre séries : 1.14 et 1.25 mm (affine : 1.54 mm).
-// Valable dans le disque r <= ~600 mm ; au-delà le polynôme extrapole, ne pas s'y fier.
-export const CAMERA_CORRECTION = {
-  CX: [
-    -1.9586074467651526,
-    -0.00021062720356934057,
-    0.979331498912172,
-    -6.932383331558457e-07,
-    2.4491316075956907e-06,
-    4.4968989081741297e-07,
-    1.9682051394817726e-09,
-    -1.6643790704213064e-08,
-    1.6647364178429672e-10,
-    -5.73307813153754e-09,
-  ],
-  CY: [
-    0.195808678084596,
-    1.021937200233724,
-    0.00026472105029262595,
-    -2.3144948582721947e-06,
-    4.016122330619239e-06,
-    -4.705208603397103e-07,
-    5.291587722979668e-09,
-    3.726986642293866e-09,
-    -4.206292511291398e-08,
-    9.141706651152546e-10,
-  ],
-};
+// Correction continue (polynôme d'ordre 5) mesure caméra -> position réelle, en mm.
+// Ajustée par moindres carrés sur 122 mesures (2 passages x 61 positions, disque r <= 570 mm).
+// Validation « nouvelle position » (leave-one-position-out) : 0.88 mm RMS, 1.9 mm max
+// (affine : 1.56 mm RMS, 4.0 mm max ; ordre 3 : 1.21 mm RMS). Plancher de répétabilité ~0.76 mm.
+//   x' = sum_k CX[k] * (x/S)^i_k * (y/S)^j_k   avec (i_k, j_k) = TERMS[k]
+// Entrée : position BRUTE (sans aucune autre correction caméra).
+// Hors du disque r > R_MAX, le déplacement est maintenu constant (pas d'extrapolation polynomiale).
+export const S = 500.0;
+export const R_MAX = 600;
+export const TERMS = [[0, 0], [0, 1], [1, 0], [0, 2], [1, 1], [2, 0], [0, 3], [1, 2], [2, 1], [3, 0], [0, 4], [1, 3], [2, 2], [3, 1], [4, 0], [0, 5], [1, 4], [2, 3], [3, 2], [4, 1], [5, 0]];
+export const CX = [-1.3943163932121343,-0.658968370093286,487.2546134985148,-1.3551914480838692,0.6706461483079189,-2.905533314708386,1.8637954689041765,3.256639932569749,1.5407446812422132,6.31391316694245,0.5847674965024554,0.024395398869872867,2.710128728789624,-0.11678424758800399,2.231005971725406,-0.9107538172572456,-2.450709185222624,-2.572156534989666,-7.462938153392112,-0.5208431634056466,-4.048323138242138];
+export const CY = [-0.19882760434195657,514.4933129573985,-1.3169555058831988,0.956983602308225,2.630971469578887,1.304212014589833,-11.959841988346227,5.214956830476133,-8.696284443243313,3.8242000123320503,-0.7614923597044717,-2.45484195049327,-3.7551002403145968,-0.6839122584328325,-0.6402975316851861,8.005823612556318,-2.977101474227403,12.019606609604713,-5.088890712205999,-1.6362645624722305,-2.015017829230936];
 
-const monomials = (x, y) => [1, y, x, y * y, x * y, x * x, y ** 3, x * y * y, x * x * y, x ** 3];
-
-/** mesure caméra -> position réelle */
-export function correctMeasure([x, y], k = CAMERA_CORRECTION) {
-  const m = monomials(x, y);
+function poly(x, y) {
   let ox = 0, oy = 0;
-  for (let i = 0; i < m.length; i++) { ox += k.CX[i] * m[i]; oy += k.CY[i] * m[i]; }
+  const a = x / S, b = y / S;
+  for (let k = 0; k < TERMS.length; k++) {
+    const m = Math.pow(a, TERMS[k][0]) * Math.pow(b, TERMS[k][1]);
+    ox += CX[k] * m; oy += CY[k] * m;
+  }
   return [ox, oy];
 }
 
-/** position voulue -> position qui serait mesurée (inverse par Newton, convergence < 1e-9 mm) */
-export function inverseCorrection([tx, ty], k = CAMERA_CORRECTION) {
+/** mesure caméra -> position réelle */
+export function correctMeasure([x, y]) {
+  const r = Math.hypot(x, y);
+  const k = r > R_MAX ? R_MAX / r : 1;
+  const [cx, cy] = [x * k, y * k];
+  const [px, py] = poly(cx, cy);
+  return [x + (px - cx), y + (py - cy)];
+}
+
+/** position réelle -> position qui serait mesurée (inverse par Newton) */
+export function inverseCorrection([tx, ty]) {
   let x = tx, y = ty;
-  for (let it = 0; it < 20; it++) {
-    const [fx, fy] = correctMeasure([x, y], k);
+  for (let it = 0; it < 30; it++) {
+    const [fx, fy] = correctMeasure([x, y]);
     const ex = fx - tx, ey = fy - ty;
     if (Math.hypot(ex, ey) < 1e-9) break;
     const h = 1e-3;
-    const [ax, ay] = correctMeasure([x + h, y], k);
-    const [bx, by] = correctMeasure([x, y + h], k);
+    const [ax, ay] = correctMeasure([x + h, y]);
+    const [bx, by] = correctMeasure([x, y + h]);
     const a = (ax - fx) / h, c = (ay - fy) / h, b = (bx - fx) / h, d = (by - fy) / h;
     const det = a * d - b * c;
     x -= (d * ex - b * ey) / det;
