@@ -20,7 +20,7 @@ export const Robot_catch = async (BASE)=>{
 		const overPillLocation = new Vector4(pillLocation.x, pillLocation.y, pillLocation.z+5, pillLocation.w);
 		await Robot_speed(BASE, [BASE.robot.conf.default.speed]);
 		await Robot_acc(BASE, [BASE.robot.conf.default.acc]);
-		await Robot_dcc([1]);
+		await Robot_dcc(BASE, [1]);
 		await Robot_go(BASE, pillLocation);
 		await Robot_gripper(BASE, [true]);
 		await Robot_acc(BASE, [1]);
