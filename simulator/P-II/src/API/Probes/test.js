@@ -12,6 +12,8 @@ export const Probes_test = async (BASE)=>{
 	await BASE.robot.controller.WaitProbe();
 	const points = [...BASE.table.pointToExplore, ...BASE.table.pointToExplore, ...BASE.table.pointToExplore, ...BASE.table.pointToExplore, ...BASE.table.pointToExplore].sort(()=>Math.random()-0.5)
 	for(const pos of points){
+		await Robot_acc(BASE, [25]);
+		await Robot_dcc(BASE, [25]);
 		await Robot_go(BASE, new Vector4(pos.x, pos.y, 0, 0));
 		await delay(2000);
 		await Robot_drop(BASE);
@@ -19,7 +21,6 @@ export const Probes_test = async (BASE)=>{
 		await Robot_catch(BASE);
 		await Memory_clear(BASE);
 		await Robot_gripper(BASE, [true]);
-		await delay(2000);
 	}
 	return true;
 }
