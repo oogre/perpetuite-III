@@ -84,7 +84,6 @@ export default class Camera extends BaseCamera{
  
 	/** mesure caméra -> position réelle */
 	correctMeasure([x, y], k = this.conf.correction) {
-		console.log(k.A, x, k.B, y, k.TX, k.C, x, k.D, y, k.TY);
 		return [k.A * x + k.B * y + k.TX, k.C * x + k.D * y + k.TY];
 	}
  
