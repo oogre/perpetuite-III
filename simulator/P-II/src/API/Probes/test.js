@@ -16,11 +16,10 @@ export const Probes_test = async (BASE)=>{
 		await delay(1000);
 		await Robot_drop(BASE);
 		console.log(BASE.robot.location2D, await Memory_get(BASE, []));
-		await Robot_grab(BASE);
+		await Robot_catch(BASE);
 		await Memory_clear(BASE);
-		await delay(1000);
-		//await Robot_gripper(BASE, [true]);
-		//await BASE.robot.controller.WaitProbe();
+		await Robot_gripper(BASE, [true]);
+		await BASE.robot.controller.WaitProbe();
 	}
 	return true;
 }
