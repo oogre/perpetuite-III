@@ -4,9 +4,9 @@ import {delay} from './../../tools/helpers.js';
 
 export const Probes_test = async (BASE)=>{
 
-	await Robot_speed(BASE, BASE.robot.conf.default.speed);
-	await Robot_acc(BASE, BASE.robot.conf.default.acc);
-	await Robot_dcc(BASE, BASE.robot.conf.default.dcc);
+	await Robot_speed(BASE, [BASE.robot.conf.default.speed]);
+	await Robot_acc(BASE, [BASE.robot.conf.default.acc]);
+	await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 	await Robot_gripper(BASE, [true]);
 	await BASE.robot.controller.WaitProbe();
 
