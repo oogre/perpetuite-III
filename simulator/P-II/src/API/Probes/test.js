@@ -32,8 +32,8 @@ export const Probes_test = async (BASE)=>{
 		const grabLocation = BASE.robot.location4D;
 		await Memory_clear(BASE);
 		
-		location.x = grabLocation.x;
-		location.y = grabLocation.y;
+		point.x = grabLocation.x;
+		point.y = grabLocation.y;
 
 		
 		console.log(`pill : ${pillLocation}`)
