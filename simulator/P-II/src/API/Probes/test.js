@@ -18,7 +18,9 @@ export const Probes_test = async (BASE)=>{
 		console.log(BASE.robot.location2D, await Memory_get(BASE, []));
 		await delay(1000);
 		if(!await Robot_grab(BASE)){
-			await Memory_clean(BASE, [0, 0, 1200, 1200]);
+			const [c, x, y] = (await Memory_get(BASE, [])).split(" ");
+			console.log(x, y);
+			await Memory_clean(BASE, new Vector2(parseFloat(x), parseFloat(y)));
 			await Robot_gripper(BASE, [true]);
 			await BASE.robot.controller.WaitProbe();
 
