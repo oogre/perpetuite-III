@@ -1,6 +1,7 @@
 import { Vector4, Vector2 } from './../../tools/Vector.js';
 import { Robot_go, Robot_grab, Robot_drop, Robot_speed, Robot_acc, Robot_dcc, Robot_gripper } from '../Robot';
 import {delay} from './../../tools/helpers.js';
+import {Memory_get} from './../Memory';
 
 export const Probes_test = async (BASE)=>{
 
@@ -14,9 +15,10 @@ export const Probes_test = async (BASE)=>{
 	for(const pos of list){
 		await Robot_go(BASE, new Vector4(...pos, 0, 0));
 		await Robot_drop(BASE);
+		console.log(pos, await Memory_get(BASE));
 		await delay(1000);
 		if(!await Robot_grab(BASE)){
-			return false;		
+			await BASE.robot.controller.WaitProbe();
 		}
 	}
 	return true;
