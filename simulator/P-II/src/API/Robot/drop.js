@@ -1,6 +1,5 @@
 import {Camera_capture} from './../Camera';
 import {Memory_get, Memory_clean} from './../Memory';
-import { Vector2 } from './../../tools/Vector.js';
 import {Robot_release} from './release.js';
 
 const MAX_SECURITY = false;

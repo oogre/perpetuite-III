@@ -4,6 +4,7 @@ import {Robot_acc} from './acc.js';
 import {Robot_dcc} from './dcc.js';
 import {Robot_gripper} from './gripper.js';
 import {Memory_get} from './../Memory';
+import { Vector4 } from './../../tools/Vector.js';
 
 export const Robot_catch = async (BASE)=>{
 	BASE.robot.actionDesc = `Robot Catch`;
