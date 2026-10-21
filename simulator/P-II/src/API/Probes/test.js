@@ -18,8 +18,9 @@ export const Probes_test = async (BASE)=>{
 		console.log(pos, await Memory_get(BASE, []));
 		await delay(1000);
 		if(!await Robot_grab(BASE)){
-			await BASE.robot.controller.WaitProbe();
+			return false;
 		}
+		await BASE.robot.controller.WaitProbe();
 	}
 	return true;
 }
