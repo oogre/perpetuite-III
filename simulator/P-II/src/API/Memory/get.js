@@ -3,6 +3,7 @@ import {isLocation, isBox, isString} from "./../../tools/validators.js";
 import { Vector4 } from './../../tools/Vector.js';
 
 export const Memory_get = ({memory}, location)=>{
+	console.log("Memory_get", location);
 	if(memory.isPill(location)){
 		return memory.set.get(location);
 	}
