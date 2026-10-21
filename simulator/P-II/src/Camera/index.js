@@ -14,10 +14,6 @@ export default class Camera extends BaseCamera{
 	}
 
 	pointToWorldLocation([x, y], canvas){
-		console.log(this.correctMeasure([
-			((x - canvas.width/2)/this._offset.z - this._offset.x - this.conf.offset[0]), 
-			((y - canvas.height/2)/this._offset.z - this._offset.y - this.conf.offset[1]), 
-		]));
 		return this.correctMeasure([
 			((x - canvas.width/2)/this._offset.z - this._offset.x - this.conf.offset[0]), 
 			((y - canvas.height/2)/this._offset.z - this._offset.y - this.conf.offset[1]), 
@@ -88,6 +84,7 @@ export default class Camera extends BaseCamera{
  
 	/** mesure caméra -> position réelle */
 	correctMeasure([x, y], k = this.conf.correction) {
+		console.log(x, y, k)
 		return [k.A * x + k.B * y + k.TX, k.C * x + k.D * y + k.TY];
 	}
  

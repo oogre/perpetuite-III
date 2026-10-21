@@ -105,9 +105,9 @@ export default {
 		correction : {
   			A: parseFloat(CAMERA_CORRECTION_A), 
   			B: parseFloat(CAMERA_CORRECTION_B), 
-  			C : parseFloat(CAMERA_CORRECTION_C),
+  			C: parseFloat(CAMERA_CORRECTION_C),
   			TX: parseFloat(CAMERA_CORRECTION_TX),
-  			TY : parseFloat(CAMERA_CORRECTION_TY)
+  			TY: parseFloat(CAMERA_CORRECTION_TY)
   		},
 		margin : 4*parseFloat(PILL_SIZE),
 		url : "http://"+CAMERA_HOST+":"+parseInt(CAMERA_PORT),
