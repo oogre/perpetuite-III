@@ -94,8 +94,8 @@ export default {
 		width: parseInt(UI_WIDTH),
 		height: parseInt(UI_HEIGHT),
 		offset : [
-			parseInt(CAMERA_OFFSET_X),
-			parseInt(CAMERA_OFFSET_Y)
+			parseFloat(CAMERA_OFFSET_X),
+			parseFloat(CAMERA_OFFSET_Y)
 		],
 		margin : 4*parseFloat(PILL_SIZE),
 		url : "http://"+CAMERA_HOST+":"+parseInt(CAMERA_PORT),
