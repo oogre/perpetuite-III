@@ -11,12 +11,11 @@ export const Probes_test = async (BASE)=>{
 	await Robot_gripper(BASE, [true]);
 	await BASE.robot.controller.WaitProbe();
 
-	//const list = new Array(10).fill(0).map((_, id)=> new Vector2((id * 110) - 550  , 0));
-	const list = new Array(1).fill(0).map((_, id)=> new Vector2(0  , 0));
+	const list = new Array(10).fill(0).map((_, id)=> new Vector2((id * 100) - 550  , 0));
 	for(const pos of list){
 		await Robot_go(BASE, new Vector4(...pos, 0, 0));
 		await Robot_drop(BASE);
-		console.log(pos, await Memory_get(BASE, []));
+		console.log(BASE.robot.location2D, await Memory_get(BASE, []));
 		await delay(1000);
 		if(!await Robot_grab(BASE)){
 			return false;
