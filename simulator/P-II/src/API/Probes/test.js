@@ -15,7 +15,9 @@ export const Probes_test = async (BASE)=>{
 		await Robot_go(BASE, new Vector4(...BASE.grid.getRandomCellLocation(), 0, 0));
 		await Robot_drop(BASE);
 		await delay(2000);
-		await Robot_grab(BASE);
+		if(!await Robot_grab(BASE)){
+			return false;		
+		}
 	}
 	return true;
 }
