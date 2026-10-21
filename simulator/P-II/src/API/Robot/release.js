@@ -23,7 +23,7 @@ export const Robot_release = async (BASE)=>{
 		await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 		await Robot_go(BASE, pillLocation);
 		await Robot_gripper(BASE, [false]);
-		await delay(200);
+		await delay(400);
 		await Robot_acc(BASE, [1]);
 		await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 		await Robot_go(BASE, overPillLocation);
