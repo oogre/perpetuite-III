@@ -1,4 +1,4 @@
-import { Vector4 } from './../../tools/Vector.js';
+import { Vector4, Vector2 } from './../../tools/Vector.js';
 import { Robot_go, Robot_grab, Robot_drop, Robot_speed, Robot_acc, Robot_dcc, Robot_gripper } from '../Robot';
 import {delay} from './../../tools/helpers.js';
 
