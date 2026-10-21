@@ -1,7 +1,7 @@
 import { Vector4, Vector2 } from './../../tools/Vector.js';
 import { Robot_go, Robot_grab, Robot_drop, Robot_speed, Robot_acc, Robot_dcc, Robot_gripper } from '../Robot';
 import {delay} from './../../tools/helpers.js';
-import {Memory_get, Memory_clean} from './../Memory';
+import {Memory_get, Memory_clear} from './../Memory';
 
 export const Probes_test = async (BASE)=>{
 
@@ -18,12 +18,8 @@ export const Probes_test = async (BASE)=>{
 		console.log(BASE.robot.location2D, await Memory_get(BASE, []));
 		await delay(1000);
 		if(!await Robot_grab(BASE)){
-			const [c, x, y] = (await Memory_get(BASE, [])).split(" ");
-			console.log(x, y);
-			await Memory_clean(BASE, new Vector2(parseFloat(x), parseFloat(y)));
+			await Memory_clear(BASE);
 			await Robot_gripper(BASE, [true]);
-			await BASE.robot.controller.WaitProbe();
-
 		}
 		await BASE.robot.controller.WaitProbe();
 	}
