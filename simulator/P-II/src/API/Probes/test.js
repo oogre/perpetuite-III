@@ -10,11 +10,11 @@ export const Probes_test = async (BASE)=>{
 	await Robot_gripper(BASE, [true]);
 	await BASE.robot.controller.WaitProbe();
 
-	const list = new Array(10).fill(0);
-	for(const id of list){
-		await Robot_go(BASE, new Vector4(...BASE.grid.getRandomCellLocation(), 0, 0));
+	const list = new Array(10).fill(0).map((_, id)=> new Vector2((id * 110) - 550  , 0));
+	for(const pos of list){
+		await Robot_go(BASE, new Vector4(...pos, 0, 0));
 		await Robot_drop(BASE);
-		await delay(2000);
+		await delay(1000);
 		if(!await Robot_grab(BASE)){
 			return false;		
 		}
