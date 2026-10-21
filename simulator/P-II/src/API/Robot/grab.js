@@ -22,7 +22,7 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 			return false;
 		}
 	}
-	
+
 	const robotLocationBefore = BASE.robot.location2D;
 	const isMemoryCleanBefore = Memory_clean(BASE, robotLocationBefore);
 	if(!isMemoryCleanBefore){
@@ -54,8 +54,9 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	const afterCollection = await Camera_capture(BASE, [true])
 	
 	await delay(300);
-
-	const isRemoved = Memory_get({memory:afterCollection}, targetedPill) === null
+	const tmp = Memory_get({memory:afterCollection}, targetedPill);
+	console.log("Must be null : ", tmp);
+	const isRemoved = tmp === null
 	if(!isRemoved){
 		await Robot_gripper(BASE, [false]);
 		console.log("pill Is not Removed");
