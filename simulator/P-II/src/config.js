@@ -60,6 +60,11 @@ const {
 	GRID_DEBUG,
 	CAMERA_OFFSET_X,
 	CAMERA_OFFSET_Y,
+	CAMERA_CORRECTION_A,
+	CAMERA_CORRECTION_B,
+	CAMERA_CORRECTION_C,
+	CAMERA_CORRECTION_TX,
+	CAMERA_CORRECTION_TY,
 	CAMERA_HOST,
 	CAMERA_PORT,
 	CAMERA_SRC,
@@ -97,6 +102,13 @@ export default {
 			parseFloat(CAMERA_OFFSET_X),
 			parseFloat(CAMERA_OFFSET_Y)
 		],
+		correction : {
+  			A: parseFloat(CAMERA_CORRECTION_A), 
+  			B: parseFloat(CAMERA_CORRECTION_B), 
+  			C : parseFloat(CAMERA_CORRECTION_C),
+  			TX: parseFloat(CAMERA_CORRECTION_TX),
+  			TY : parseFloat(CAMERA_CORRECTION_TY)
+  		},
 		margin : 4*parseFloat(PILL_SIZE),
 		url : "http://"+CAMERA_HOST+":"+parseInt(CAMERA_PORT),
 		src: CAMERA_SRC

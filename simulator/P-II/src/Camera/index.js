@@ -14,10 +14,10 @@ export default class Camera extends BaseCamera{
 	}
 
 	pointToWorldLocation([x, y], canvas){
-		return [
+		return this.correctMeasure([
 			((x - canvas.width/2)/this._offset.z - this._offset.x - this.conf.offset[0])*1.0, 
 			((y - canvas.height/2)/this._offset.z - this._offset.y - this.conf.offset[1])*1.00, 
-		]
+		])
 	}
 	contourToWorldLocation(contour, canvas){
 		return contour.map(([x, y])=>this.pointToWorldLocation([x, y], canvas));
@@ -82,6 +82,17 @@ export default class Camera extends BaseCamera{
 		});
 	}
  
+	/** mesure caméra -> position réelle */
+	correctMeasure([x, y], k = this.conf.correction) {
+		return [k.A * x + k.B * y + k.TX, k.C * x + k.D * y + k.TY];
+	}
+ 
+	/** position voulue -> position à mesurer/commander (inverse exact) */
+	inverseCorrection([x, y], k = this.conf.correction) {
+		const det = k.A * k.D - k.B * k.C;
+		const dx = x - k.TX, dy = y - k.TY;
+		return [(k.D * dx - k.B * dy) / det, (-k.C * dx + k.A * dy) / det];
+	}
 
 	// async capture(name){
 	// 	return new Promise((resolve, reject)=>{		
