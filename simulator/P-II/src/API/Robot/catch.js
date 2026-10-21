@@ -3,6 +3,7 @@ import {Robot_speed} from './speed.js';
 import {Robot_acc} from './acc.js';
 import {Robot_dcc} from './dcc.js';
 import {Robot_gripper} from './gripper.js';
+import {Robot_limitter} from './limitter.js';
 import {Memory_get} from './../Memory';
 import { Vector4 } from './../../tools/Vector.js';
 
