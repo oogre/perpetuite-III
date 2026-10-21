@@ -15,7 +15,7 @@ export const Probes_test = async (BASE)=>{
 	for(const pos of list){
 		await Robot_go(BASE, new Vector4(...pos, 0, 0));
 		await Robot_drop(BASE);
-		console.log(pos, await Memory_get(BASE));
+		console.log(pos, await Memory_get(BASE, []));
 		await delay(1000);
 		if(!await Robot_grab(BASE)){
 			await BASE.robot.controller.WaitProbe();
