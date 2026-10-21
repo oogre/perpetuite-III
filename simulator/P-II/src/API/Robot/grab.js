@@ -55,7 +55,6 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	
 	await delay(300);
 	const tmp = Memory_get({memory:afterCollection}, targetedPill);
-	console.log("Must be null : ", tmp);
 	const isRemoved = tmp === null
 	if(!isRemoved){
 		await Robot_gripper(BASE, [false]);
