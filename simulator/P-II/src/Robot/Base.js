@@ -104,9 +104,11 @@ export default class RobotBase extends EventsManager{
 						.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
 				);
 				this._location.w %= 360;
+				this.fire('locationChange', this.location4D.clone());	
 			}else{
 				const t = await this.controller.GetPosition();
 				this._location.copy(new Vector4(...t));
+				this.fire('locationChange', this.location4D.clone());	
 			}
 
 			if(this._move.lengthSq()<0.3){
@@ -114,12 +116,8 @@ export default class RobotBase extends EventsManager{
 					this._isInit = true;
 					this.fire('initilized', this.location4D.clone());
 				}
-				this.fire('locationChange', this.location4D.clone());	
 				this._reached.resolve();	
-			}else{
-				this.fire('locationChange', this.location4D.clone());	
 			}
-			
 		}
 	}
 }
