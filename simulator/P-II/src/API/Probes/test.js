@@ -33,7 +33,7 @@ export const Probes_test = async (BASE)=>{
 		await Memory_clear(BASE);
 
 		for(let i = 0 ; i < 3 ; i ++){
-			const rLocation = BASE.robot.location4D;
+			const rLocation = new Vector4(...pillLocation);
 			rLocation.x += (Math.random()-0.5 * 2) * 25;
 			rLocation.y += (Math.random()-0.5 * 2) * 25;
 			await Robot_go(BASE, rLocation);
