@@ -29,7 +29,7 @@ export const Probes_test = async (BASE)=>{
 			console.log("Memory problem");
 			return false;
 		}
-		Robot_grab
+		
 		// const pillLocation = BASE.robot.location4D;
 		// 
 		// console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
