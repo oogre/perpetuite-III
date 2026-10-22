@@ -13,14 +13,13 @@ export const Probes_test = async (BASE)=>{
 	await Robot_gripper(BASE, [true]);
 
 	const points = [BASE.table.pointToExplore].sort(()=>Math.random()-0.5)
-	console.log("points");
-	console.log(points);
-	console.log("endPoints");
 	
+
 	await BASE.robot.controller.WaitProbe();
 
 	for(const pos of points){
 		const location = new Vector4(pos.x, pos.y, 0, 0);
+		console.log(`GO to : ${location}`);
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
 		await Robot_go(BASE, location);
@@ -28,6 +27,7 @@ export const Probes_test = async (BASE)=>{
 		await Robot_drop(BASE);
 		const pillLocation = BASE.robot.location4D;
 		if(Memory_get(BASE, []).split("\n") == 0){
+			console.log("Memory problem");
 			return false;
 		}
 		console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
@@ -35,8 +35,8 @@ export const Probes_test = async (BASE)=>{
 
 		for(let i = 0 ; i < 3 ; i ++){
 			const rLocation = BASE.robot.location4D;
-			rLocation.x += (Math.random()-0.5 * 2) * 100;
-			rLocation.y += (Math.random()-0.5 * 2) * 100;
+			rLocation.x += (Math.random()-0.5 * 2) * 50;
+			rLocation.y += (Math.random()-0.5 * 2) * 50;
 			await Robot_go(BASE, rLocation);
 			await Camera_capture(BASE, [true])
 			console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
