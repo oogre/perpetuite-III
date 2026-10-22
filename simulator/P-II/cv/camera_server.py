@@ -401,6 +401,8 @@ def to_analysis_frame(img, cfg):
         img = cv2.resize(img, (cfg.size, cfg.size), interpolation=cv2.INTER_AREA)
     if cfg.rotate != 'none':
         img = cv2.rotate(img, ROTATIONS[cfg.rotate])
+        
+    img = cv2.flip(img, 1)          # miroir gauche-droite : u -> 1000 - u
     return img
 
 
