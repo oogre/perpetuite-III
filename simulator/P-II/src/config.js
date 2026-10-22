@@ -39,6 +39,7 @@ const {
 	PILL_COUNT,
 	PILL_DEPTH,
 	PILL_SIZE,
+	PILL_EXTRA_RADIUS_POSITION,
 	PILL_LOCK_DURATION,
 	PILL_MIN_CIRCULARITY,
 	PILL_MIN_RADIUS,
@@ -145,7 +146,7 @@ export default {
 	pills : {
 		debug : parseInt(PILL_DEBUG)==1,
 		count : parseInt(PILL_COUNT),
-		positionRadius : parseInt(ROBOT_RADIUS),
+		positionRadius : parseInt(ROBOT_RADIUS) + parseInt(PILL_EXTRA_RADIUS_POSITION),
 		depth: parseInt(PILL_DEPTH),
 		circularity : {
 			min : parseFloat(PILL_MIN_CIRCULARITY)
