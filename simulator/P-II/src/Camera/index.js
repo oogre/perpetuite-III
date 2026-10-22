@@ -28,30 +28,30 @@ export default class Camera extends BaseCamera{
 	}
 
 	pointToWorldLocation([x, y], canvas){
-		// Matrice image -> monde mesurée sur 5 images d'une pastille fixe (mm/px, repère 1000x1000 à offset.z = 5 px/mm).
-		// Elle contient l'inversion de l'axe x, l'échelle réelle (≈5,35 px/mm) et la rotation de la caméra (≈2,3°).
-		const NXX = -0.1848, NXY = -0.0068;
-		const NYX = -0.0082, NYY =  0.1884;
+		// // Matrice image -> monde mesurée sur 5 images d'une pastille fixe (mm/px, repère 1000x1000 à offset.z = 5 px/mm).
+		// // Elle contient l'inversion de l'axe x, l'échelle réelle (≈5,35 px/mm) et la rotation de la caméra (≈2,3°).
+		// const NXX = -0.1848, NXY = -0.0068;
+		// const NYX = -0.0082, NYY =  0.1884;
 
-		// Pour une autre hauteur que z = 0, offset.z change : on met la matrice à l'échelle.
-		const k = 5 / this._offset.z;
+		// // Pour une autre hauteur que z = 0, offset.z change : on met la matrice à l'échelle.
+		// const k = 5 / this._offset.z;
 
-		const u = x - canvas.width  / 2;
-		const v = y - canvas.height / 2;
+		// const u = x - canvas.width  / 2;
+		// const v = y - canvas.height / 2;
 
-		const dx = (NXX * u + NXY * v) * k;
-		const dy = (NYX * u + NYY * v) * k;
+		// const dx = (NXX * u + NXY * v) * k;
+		// const dy = (NYX * u + NYY * v) * k;
 
-		// même convention que votre version : -this._offset.x/y donne la pose du robot
-		return [
-			-this._offset.x + dx - this.conf.offset[0],
-			-this._offset.y + dy - this.conf.offset[1],
-		];
+		// // même convention que votre version : -this._offset.x/y donne la pose du robot
+		// return [
+		// 	-this._offset.x + dx - this.conf.offset[0],
+		// 	-this._offset.y + dy - this.conf.offset[1],
+		// ];
 
-		// return this.correctMeasure([
-		// 	((x - canvas.width/2)/this._offset.z - this._offset.x - this.conf.offset[0]), 
-		// 	((y - canvas.height/2)/this._offset.z - this._offset.y - this.conf.offset[1]), 
-		// ]);
+		return this.correctMeasure([
+			((x - canvas.width/2)/this._offset.z - this._offset.x - this.conf.offset[0]), 
+			((y - canvas.height/2)/this._offset.z - this._offset.y - this.conf.offset[1]), 
+		]);
 	}
 	contourToWorldLocation(contour, canvas){
 		return contour.map(([x, y])=>this.pointToWorldLocation([x, y], canvas));
