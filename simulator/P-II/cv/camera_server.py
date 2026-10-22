@@ -164,7 +164,7 @@ def parse_args():
                    help="cote de l'image analysee (1000 = le repere du canvas de P-II)")
     # archivage
     p.add_argument('--archive-dir', default=env('CAM_ARCHIVE_DIR', str(root / 'data' / 'archive')))
-    p.add_argument('--archive-size', type=int, default=int(env('CAM_ARCHIVE_SIZE', 640)), help='cote en pixels')
+    p.add_argument('--archive-size', type=int, default=int(env('CAM_ARCHIVE_SIZE', 1000)), help='cote en pixels')
     p.add_argument('--archive-quality', type=int, default=int(env('CAM_ARCHIVE_QUALITY', 80)), help='JPEG 1-100')
     p.add_argument('--archive-max-mb', type=int, default=int(env('CAM_ARCHIVE_MAX_MB', 0)),
                    help="plafond du dossier d'archive, les plus anciennes sont supprimees (0 = pas de plafond)")
