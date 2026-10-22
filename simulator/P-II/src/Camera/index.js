@@ -25,7 +25,7 @@ export default class Camera extends BaseCamera{
 			(y - canvas.height/2) / this._offset.z - this._offset.y - this.conf.offset[1],
 		];
 		const R = [-this._offset.x, -this._offset.y];   // pose du robot à la capture
-		return correctMeasure(R, m);
+		return this.correctMeasure(R, m);
 
 		// return this.correctMeasure([
 		// 	((x - canvas.width/2)/this._offset.z - this._offset.x - this.conf.offset[0]), 
