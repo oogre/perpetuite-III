@@ -1,4 +1,4 @@
-import { Vector3 } from './../tools/Vector.js';
+import { Vector3, Vector3 } from './../tools/Vector.js';
 import {delay} from "./../tools/helpers.js";
 import {lerp, inverseLerp} from "./../tools/math.js";
 import BaseCamera from "./Base.js";
@@ -26,12 +26,18 @@ export default class Camera extends BaseCamera{
 		// return this.correctMeasure(R, m);
 		//- this._offset.x Robot mm
 		// - this._offset.y Robot mm
-		//  - this.conf.offset[0] Camera 
-		// - this.conf.offset[1] Camera
-		return [
-			(x - canvas.width /2)/this._offset.z - this.conf.offset[0] - this._offset.x, 
-			(y - canvas.height/2)/this._offset.z - this.conf.offset[1] - this._offset.y, 
-		];
+		// this.conf.offset[0] Camera X offset en px
+		// this.conf.offset[1] Camera Y offset en px
+
+		new Vector2(x, y)
+		const robot  = new Vector2(-this._offset.x, -this._offset.y);
+		// pixel de la buse dans l'image : centre + CAMERA_OFFSET (en px)
+		const nozzle = new Vector2(canvas.width  / 2 + this.conf.offset[0],
+	    	                       canvas.height / 2 + this.conf.offset[1]);
+		// (pixel - buse) / (px/mm) + position du robot
+		const point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
+
+		return [...point];
 	}
 
 	
