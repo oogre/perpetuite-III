@@ -1,11 +1,7 @@
 import { Vector3 } from './../tools/Vector.js';
 import {delay} from "./../tools/helpers.js";
+import {lerp, inverseLerp} from "./../tools/helpers.js";
 import BaseCamera from "./Base.js";
-
-
-const S = 500, R_MAX = 600;
-const CX = [-0.987617, -0.008953, -0.214890, -0.201859, 0.389939, 0.370022, -1.392187, 0.403421];
-const CY = [-0.016037,  0.964163, -0.633618,  0.134105, 0.778323, 0.173550,  2.458774, 0.384898];
 
 
 export default class Camera extends BaseCamera{
@@ -33,8 +29,8 @@ export default class Camera extends BaseCamera{
 		//  - this.conf.offset[0] Camera 
 		// - this.conf.offset[1] Camera
 		return [
-			((x - canvas.width/2)/this._offset.z), 
-			((y - canvas.height/2)/this._offset.z), 
+			((x - canvas.width/2 )/this._offset.z * lerp(1, 0.98, inverseLerp(0, 600, Math.abs(this._offset.x))) - this.conf.offset[0], 
+			((y - canvas.height/2)/this._offset.z * lerp(1, 1.02, inverseLerp(0, 600, Math.abs(this._offset.y))) - this.conf.offset[1], 
 		];
 	}
 	contourToWorldLocation(contour, canvas){
