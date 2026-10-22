@@ -2,7 +2,7 @@ import { Vector3, Vector2 } from './../tools/Vector.js';
 import {delay} from "./../tools/helpers.js";
 import {lerp, inverseLerp} from "./../tools/math.js";
 import BaseCamera from "./Base.js";
-
+import { Matrix3 } from 'three';
 
 export default class Camera extends BaseCamera{
 	constructor(conf, target){
@@ -24,14 +24,23 @@ export default class Camera extends BaseCamera{
 		const CX = [1.62461, -0.46814, -0.22730, 0.16088, 511.28408, -1.12015, 4.45855, -0.96683, 0.00411, 3.29986];
 		const CY = [0.16602, 512.25061, -0.33041, 2.72413, -0.25409, 0.86310, 0.87391, -0.33965, -6.96755, 0.63758];
 
-		new Vector2(x, y)
-		const robot  = new Vector2(-this._offset.x, -this._offset.y);
-		// pixel de la buse dans l'image : centre + CAMERA_OFFSET (en px)
-		const nozzle = new Vector2(canvas.width  / 2 + this.conf.offset[0],
-	    	                       canvas.height / 2 + this.conf.offset[1]);
-		// (pixel - buse) / (px/mm) + position du robot
-		let point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
+		// const robot  = new Vector2(-this._offset.x, -this._offset.y);
+		// // pixel de la buse dans l'image : centre + CAMERA_OFFSET (en px)
+		// const nozzle = new Vector2(canvas.width  / 2 + this.conf.offset[0],
+	    // 	                       canvas.height / 2 + this.conf.offset[1]);
+		// // (pixel - buse) / (px/mm) + position du robot
+		// let point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
 
+		const PX_PER_MM = 5.3205, ROT = -0.0118;  
+		const M = new Matrix3()
+			.multiply(new Matrix3().makeTranslation(-this._offset.x, -this._offset.y))
+			.multiply(new Matrix3().makeScale(1 / PX_PER_MM, 1 / PX_PER_MM))
+			.multiply(new Matrix3().makeRotation(-ROT))
+			.multiply(new Matrix3().makeTranslation(-(canvas.width / 2 + this.conf.offset[0]),
+			                                        -(canvas.height / 2 + this.conf.offset[1])));
+		let point = new Vector2(x, y).applyMatrix3(M);
+
+		
 		// 2) polynôme : d'ordre 3
 		const a = point.x / S, b = point.y / S;
 		const t = [1, b, b*b, b*b*b, a, a*b, a*b*b, a*a, a*a*b, a*a*a];
