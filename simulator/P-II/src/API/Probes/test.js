@@ -12,7 +12,7 @@ export const Probes_test = async (BASE)=>{
 	await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 	await Robot_gripper(BASE, [true]);
 	await BASE.robot.controller.WaitProbe();
-	const points = [BASE.table.pointToExplore[0]].sort(()=>Math.random()-0.5)
+	const points = [BASE.table.pointToExplore].sort(()=>Math.random()-0.5)
 	
 	for(const pos of points){
 		const location = new Vector4(pos.x, pos.y, 0, 0);
