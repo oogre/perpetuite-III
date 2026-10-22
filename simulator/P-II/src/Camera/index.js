@@ -15,30 +15,49 @@ export default class Camera extends BaseCamera{
 		this._offset = value;
 	}
 
-	pointToWorldLocation([x, y], canvas){
-		// console.log("PTW", x, y, canvas.width, canvas.height, this._offset.x, this._offset.y, this._offset.z, this.conf.offset);
+	// pointToWorldLocation([x, y], canvas){
+	// 	// console.log("PTW", x, y, canvas.width, canvas.height, this._offset.x, this._offset.y, this._offset.z, this.conf.offset);
 
-		// const m = [
-		// 	(x - canvas.width/2)  / this._offset.z - this._offset.x - this.conf.offset[0],
-		// 	(y - canvas.height/2) / this._offset.z - this._offset.y - this.conf.offset[1],
-		// ];
-		// const R = [-this._offset.x, -this._offset.y];   // pose du robot à la capture
-		// return this.correctMeasure(R, m);
-		//- this._offset.x Robot mm
-		// - this._offset.y Robot mm
-		//  - this.conf.offset[0] Camera 
-		// - this.conf.offset[1] Camera
+	// 	// const m = [
+	// 	// 	(x - canvas.width/2)  / this._offset.z - this._offset.x - this.conf.offset[0],
+	// 	// 	(y - canvas.height/2) / this._offset.z - this._offset.y - this.conf.offset[1],
+	// 	// ];
+	// 	// const R = [-this._offset.x, -this._offset.y];   // pose du robot à la capture
+	// 	// return this.correctMeasure(R, m);
+	// 	//- this._offset.x Robot mm
+	// 	// - this._offset.y Robot mm
+	// 	//  - this.conf.offset[0] Camera 
+	// 	// - this.conf.offset[1] Camera
+	// 	return [
+	// 		(x - canvas.width /2)/this._offset.z - this.conf.offset[0] - this._offset.x, 
+	// 		(y*lerp(1, 1.02, inverseLerp(0, 600, Math.abs(this._offset.y))) - canvas.height/2)/this._offset.z - this.conf.offset[1] - this._offset.y, 
+	// 	];
+	// }
+
+	
+	pixelToWorld([u, v], canvas){
+		const SCALE_X = 1.082, SCALE_Y = 1.061;   // échelle réelle = z * SCALE (≈5,41 et 5,30 px/mm mesurés)
+		const DRIFT_X = 0.0211, DRIFT_Y = 0.0187; // adaptation en fonction de la position du robot (≈1,9 %)
+
+		// pixel de la buse dans l'image (là où se trouve une pastille posée sous la buse, robot au centre)
+		const un = canvas.width*0.5 + this._offset.z * this.conf.offset[0];
+		const vn = canvas.height*0.5 + this._offset.z * this.conf.offset[1];
+		// décalage pastille - buse, en mm (l'axe x de l'image est inversé par rapport à x du robot)
+		const dx = -(u - un) / (this._offset.z * SCALE_X);
+		const dy =  (v - vn) / (this._offset.z * SCALE_Y);
+		// la pastille apparaît trop près du centre de la table de ~1,9 % de la position du robot
 		return [
-			(x*lerp(1, 0.88, inverseLerp(0, 600, Math.abs(this._offset.x))) - canvas.width /2)/this._offset.z - this.conf.offset[0] - this._offset.x, 
-			(y*lerp(1, 1.02, inverseLerp(0, 600, Math.abs(this._offset.y))) - canvas.height/2)/this._offset.z - this.conf.offset[1] - this._offset.y, 
+			this._offset.x + dx + DRIFT_X * rx,
+			this._offset.y + dy + DRIFT_Y * ry,
 		];
 	}
+
 	contourToWorldLocation(contour, canvas){
-		return contour.map(([x, y])=>this.pointToWorldLocation([x, y], canvas));
+		return contour.map(([x, y])=>this.pixelToWorld([x, y], canvas));
 	}
 	boxToWorldLocation([x, y, w, h], canvas){
 		return [
-			...this.pointToWorldLocation([x, y], canvas),
+			...this.pixelToWorld([x, y], canvas),
 			w/this._offset.z, 
 			h/this._offset.z 
 		]
