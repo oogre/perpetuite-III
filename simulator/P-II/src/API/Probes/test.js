@@ -12,7 +12,7 @@ export const Probes_test = async (BASE)=>{
 	await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 	await Robot_gripper(BASE, [true]);
 
-	const points = [BASE.table.pointToExplore].sort(()=>Math.random()-0.5)
+	const points = BASE.table.pointToExplore.sort(()=>Math.random()-0.5)
 	
 
 	await BASE.robot.controller.WaitProbe();
