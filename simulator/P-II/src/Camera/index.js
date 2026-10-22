@@ -47,8 +47,8 @@ export default class Camera extends BaseCamera{
 		const dy =  (v - vn) / (this._offset.z * SCALE_Y);
 		// la pastille apparaît trop près du centre de la table de ~1,9 % de la position du robot
 		return [
-			this._offset.x + dx + DRIFT_X * this._offset.x,
-			this._offset.y + dy + DRIFT_Y * this._offset.y,
+			-1 * this._offset.x + dx + DRIFT_X * this._offset.x,
+			 1 * this._offset.y + dy + DRIFT_Y * this._offset.y,
 		];
 	}
 
