@@ -101,7 +101,7 @@ export default class Camera extends BaseCamera{
 	// Retourne la position réelle de la pastille dans le repère du robot (mm).
 	// Modèle : T = R + A·(m−R) + b + champ quadratique en R. Ajusté sur 61 pastilles / 242 mesures.
 	
-	correctMeasure([rx, ry], [mx, my]) => {
+	correctMeasure([rx, ry], [mx, my]){
 		const r = Math.hypot(rx, ry);
 		const k = r > R_MAX ? R_MAX / r : 1;      // on reste dans la zone ajustée
 		const a = rx * k / S, b = ry * k / S;
