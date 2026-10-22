@@ -20,19 +20,22 @@ export default class Camera extends BaseCamera{
 	}
 
 	pointToWorldLocation([x, y], canvas){
-		console.log("PTW", x, y, canvas.width, canvas.height, this._offset.x, this._offset.y, this._offset.z, this.conf.offset);
-		
-		const m = [
-			(x - canvas.width/2)  / this._offset.z - this._offset.x - this.conf.offset[0],
-			(y - canvas.height/2) / this._offset.z - this._offset.y - this.conf.offset[1],
-		];
-		const R = [-this._offset.x, -this._offset.y];   // pose du robot à la capture
-		return this.correctMeasure(R, m);
+		// console.log("PTW", x, y, canvas.width, canvas.height, this._offset.x, this._offset.y, this._offset.z, this.conf.offset);
 
-		// return this.correctMeasure([
-		// 	((x - canvas.width/2)/this._offset.z - this._offset.x - this.conf.offset[0]), 
-		// 	((y - canvas.height/2)/this._offset.z - this._offset.y - this.conf.offset[1]), 
-		// ]);
+		// const m = [
+		// 	(x - canvas.width/2)  / this._offset.z - this._offset.x - this.conf.offset[0],
+		// 	(y - canvas.height/2) / this._offset.z - this._offset.y - this.conf.offset[1],
+		// ];
+		// const R = [-this._offset.x, -this._offset.y];   // pose du robot à la capture
+		// return this.correctMeasure(R, m);
+		//- this._offset.x Robot mm
+		// - this._offset.y Robot mm
+		//  - this.conf.offset[0] Camera 
+		// - this.conf.offset[1] Camera
+		return this.correctMeasure([
+			((x - canvas.width/2)/this._offset.z), 
+			((y - canvas.height/2)/this._offset.z), 
+		]);
 	}
 	contourToWorldLocation(contour, canvas){
 		return contour.map(([x, y])=>this.pointToWorldLocation([x, y], canvas));
