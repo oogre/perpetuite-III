@@ -28,9 +28,9 @@ export const Probes_test = async (BASE)=>{
 			return false;
 		}
 		const theoricalPillLocation = BASE.robot.location2D;
-		const mathPillLocation = await Memory_get(BASE, BASE.robot.location2D):
+		const mathPillLocation = await Memory_get(BASE, BASE.robot.location2D);
 		
-		rows.push([...theoricalPillLocation, ...mathPillLocation.location])
+		rows.push([...theoricalPillLocation, ...mathPillLocation.location]);
 		
 		await Robot_catch(BASE);
 		await BASE.robot.controller.WaitProbe();
