@@ -32,10 +32,10 @@ export default class Camera extends BaseCamera{
 		// - this._offset.y Robot mm
 		//  - this.conf.offset[0] Camera 
 		// - this.conf.offset[1] Camera
-		return this.correctMeasure([
+		return [
 			((x - canvas.width/2)/this._offset.z), 
 			((y - canvas.height/2)/this._offset.z), 
-		]);
+		];
 	}
 	contourToWorldLocation(contour, canvas){
 		return contour.map(([x, y])=>this.pointToWorldLocation([x, y], canvas));
