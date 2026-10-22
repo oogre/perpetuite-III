@@ -20,6 +20,8 @@ export default class Camera extends BaseCamera{
 	}
 
 	pointToWorldLocation([x, y], canvas){
+		console.log("PTW", x, y, canvas.width, canvas.height, this._offset.x, this._offset.y, this._offset.z, this.conf.offset);
+		
 		const m = [
 			(x - canvas.width/2)  / this._offset.z - this._offset.x - this.conf.offset[0],
 			(y - canvas.height/2) / this._offset.z - this._offset.y - this.conf.offset[1],
