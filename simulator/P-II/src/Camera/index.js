@@ -18,6 +18,12 @@ export default class Camera extends BaseCamera{
 	pointToWorldLocation([x, y], canvas){
 		const AX = 0.9714, BX = -1.158;
 		const AY = 0.9755, BY =  0.078;
+		
+		const S = 500;
+		// polynôme d'ordre 3, termes : 1, b, b², b³, a, ab, ab², a², a²b, a³   (a = qx/500, b = qy/500)
+		const CX = [1.62461, -0.46814, -0.22730, 0.16088, 511.28408, -1.12015, 4.45855, -0.96683, 0.00411, 3.29986];
+		const CY = [0.16602, 512.25061, -0.33041, 2.72413, -0.25409, 0.86310, 0.87391, -0.33965, -6.96755, 0.63758];
+
 		new Vector2(x, y)
 		const robot  = new Vector2(-this._offset.x, -this._offset.y);
 		// pixel de la buse dans l'image : centre + CAMERA_OFFSET (en px)
@@ -25,7 +31,17 @@ export default class Camera extends BaseCamera{
 	    	                       canvas.height / 2 + this.conf.offset[1]);
 		// (pixel - buse) / (px/mm) + position du robot
 		let point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
-		point = new Vector2((point.x - BX) / AX, (point.y - BY) / AY);
+		
+		// 2) polynôme d'ordre 2
+		//point = new Vector2((point.x - BX) / AX, (point.y - BY) / AY);
+
+		// 2) polynôme : d'ordre 3
+		const a = point.x / S, b = point.y / S;
+		const t = [1, b, b*b, b*b*b, a, a*b, a*b*b, a*a, a*a*b, a*a*a];
+		let wx = 0, wy = 0;
+		for (let i = 0; i < t.length; i++){ wx += CX[i] * t[i]; wy += CY[i] * t[i]; }
+		
+		point = new Vector2(wx, wy);
 		return [...point];
 	}
 

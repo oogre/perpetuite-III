@@ -37,7 +37,7 @@ export const Probes_test = async (BASE)=>{
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
 		await Robot_go(BASE, location);
-		await delay(1000);
+		await delay(200);
 		await Robot_drop(BASE);
 		if(Memory_get(BASE, []).split("\n") == 0){
 			console.log("Memory problem");
@@ -46,7 +46,7 @@ export const Probes_test = async (BASE)=>{
 		const pillLocation = BASE.robot.location4D;
 		console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
 		await Robot_grab(BASE);
-		await delay(1000);
+		await delay(200);
 		await Memory_clear(BASE);
 	}
 	return true;
