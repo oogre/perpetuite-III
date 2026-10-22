@@ -25,7 +25,7 @@ export default class Camera extends BaseCamera{
 	    	                       canvas.height / 2 + this.conf.offset[1]);
 		// (pixel - buse) / (px/mm) + position du robot
 		let point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
-		point = new Vector2((p.x - BX) / AX, (p.y - BY) / AY);
+		point = new Vector2((point.x - BX) / AX, (point.y - BY) / AY);
 		return [...point];
 	}
 
