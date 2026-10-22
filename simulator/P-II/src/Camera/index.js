@@ -19,17 +19,18 @@ export default class Camera extends BaseCamera{
 		const AX = 0.9714, BX = -1.158;
 		const AY = 0.9755, BY =  0.078;
 		
+		const PX_PER_MM = 5.3205;
 		const S = 500;
 		// polynôme d'ordre 3, termes : 1, b, b², b³, a, ab, ab², a², a²b, a³   (a = qx/500, b = qy/500)
 		const CX = [1.62461, -0.46814, -0.22730, 0.16088, 511.28408, -1.12015, 4.45855, -0.96683, 0.00411, 3.29986];
 		const CY = [0.16602, 512.25061, -0.33041, 2.72413, -0.25409, 0.86310, 0.87391, -0.33965, -6.96755, 0.63758];
 
-		// const robot  = new Vector2(-this._offset.x, -this._offset.y);
-		// // pixel de la buse dans l'image : centre + CAMERA_OFFSET (en px)
-		// const nozzle = new Vector2(canvas.width  / 2 + this.conf.offset[0],
-	    // 	                       canvas.height / 2 + this.conf.offset[1]);
-		// // (pixel - buse) / (px/mm) + position du robot
-		// let point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
+		const robot  = new Vector2(-this._offset.x, -this._offset.y);
+		// pixel de la buse dans l'image : centre + CAMERA_OFFSET (en px)
+		const nozzle = new Vector2(canvas.width  / 2 + this.conf.offset[0],
+	    	                       canvas.height / 2 + this.conf.offset[1]);
+		// (pixel - buse) / (px/mm) + position du robot
+		let point = new Vector2(x, y).sub(nozzle).divideScalar(PX_PER_MM).add(robot);
 
 		// const PX_PER_MM = 5.3205, ROT = -0.0118;  
 		// const M = new Matrix3()
