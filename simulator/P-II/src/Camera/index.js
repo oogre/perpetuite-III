@@ -36,7 +36,7 @@ export default class Camera extends BaseCamera{
 
 	
 	pixelToWorld([u, v], canvas){
-		const SCALE_X = 1.082, SCALE_Y = 1.061;   // échelle réelle = z * SCALE (≈5,41 et 5,30 px/mm mesurés)
+		const SCALE_X = 1.0, SCALE_Y = 1.061;   // échelle réelle = z * SCALE (≈5,41 et 5,30 px/mm mesurés)
 		const DRIFT_X = 0.00, DRIFT_Y = 0.0187; // adaptation en fonction de la position du robot (≈1,9 %)
 
 		// pixel de la buse dans l'image (là où se trouve une pastille posée sous la buse, robot au centre)
