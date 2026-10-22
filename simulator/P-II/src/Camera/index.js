@@ -16,27 +16,16 @@ export default class Camera extends BaseCamera{
 	}
 
 	pointToWorldLocation([x, y], canvas){
-		// console.log("PTW", x, y, canvas.width, canvas.height, this._offset.x, this._offset.y, this._offset.z, this.conf.offset);
-
-		// const m = [
-		// 	(x - canvas.width/2)  / this._offset.z - this._offset.x - this.conf.offset[0],
-		// 	(y - canvas.height/2) / this._offset.z - this._offset.y - this.conf.offset[1],
-		// ];
-		// const R = [-this._offset.x, -this._offset.y];   // pose du robot à la capture
-		// return this.correctMeasure(R, m);
-		//- this._offset.x Robot mm
-		// - this._offset.y Robot mm
-		// this.conf.offset[0] Camera X offset en px
-		// this.conf.offset[1] Camera Y offset en px
-
+		const AX = 0.9714, BX = -1.158;
+		const AY = 0.9755, BY =  0.078;
 		new Vector2(x, y)
 		const robot  = new Vector2(-this._offset.x, -this._offset.y);
 		// pixel de la buse dans l'image : centre + CAMERA_OFFSET (en px)
 		const nozzle = new Vector2(canvas.width  / 2 + this.conf.offset[0],
 	    	                       canvas.height / 2 + this.conf.offset[1]);
 		// (pixel - buse) / (px/mm) + position du robot
-		const point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
-
+		let point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
+		point = new Vector2((p.x - BX) / AX, (p.y - BY) / AY);
 		return [...point];
 	}
 
