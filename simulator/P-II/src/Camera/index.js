@@ -27,7 +27,7 @@ export default class Camera extends BaseCamera{
 		this._offset = value;
 	}
 
-	pointToWorldLocation([u, v], canvas){
+	pointToWorldLocation([x, y], canvas){
 		// Matrice image -> monde mesurée sur 5 images d'une pastille fixe (mm/px, repère 1000x1000 à offset.z = 5 px/mm).
 		// Elle contient l'inversion de l'axe x, l'échelle réelle (≈5,35 px/mm) et la rotation de la caméra (≈2,3°).
 		const NXX = -0.1848, NXY = -0.0068;
