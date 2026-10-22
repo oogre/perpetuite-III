@@ -29,8 +29,8 @@ export default class Camera extends BaseCamera{
 		//  - this.conf.offset[0] Camera 
 		// - this.conf.offset[1] Camera
 		return [
-			(x - canvas.width/2 )/this._offset.z * lerp(1, 0.975, inverseLerp(0, 600, Math.abs(this._offset.x))) - this.conf.offset[0] - this._offset.x, 
-			(y - canvas.height/2)/this._offset.z * lerp(1, 1.02, inverseLerp(0, 600, Math.abs(this._offset.y))) - this.conf.offset[1] - this._offset.y, 
+			(x*lerp(1, 0.98, inverseLerp(0, 600, Math.abs(this._offset.x))) - canvas.width/2 )/this._offset.z - this.conf.offset[0] - this._offset.x, 
+			(y*lerp(1, 1.02, inverseLerp(0, 600, Math.abs(this._offset.y))) - canvas.height/2)/this._offset.z - this.conf.offset[1] - this._offset.y, 
 		];
 	}
 	contourToWorldLocation(contour, canvas){
