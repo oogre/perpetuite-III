@@ -31,14 +31,14 @@ export default class Camera extends BaseCamera{
 		// // (pixel - buse) / (px/mm) + position du robot
 		// let point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
 
-		const PX_PER_MM = 5.3205, ROT = -0.0118;  
-		const M = new Matrix3()
-			.multiply(new Matrix3().makeTranslation(-this._offset.x, -this._offset.y))
-			.multiply(new Matrix3().makeScale(1 / PX_PER_MM, 1 / PX_PER_MM))
-			.multiply(new Matrix3().makeRotation(-ROT))
-			.multiply(new Matrix3().makeTranslation(-(canvas.width / 2 + this.conf.offset[0]),
-			                                        -(canvas.height / 2 + this.conf.offset[1])));
-		let point = new Vector2(x, y).applyMatrix3(M);
+		// const PX_PER_MM = 5.3205, ROT = -0.0118;  
+		// const M = new Matrix3()
+		// 	.multiply(new Matrix3().makeTranslation(-this._offset.x, -this._offset.y))
+		// 	.multiply(new Matrix3().makeScale(1 / PX_PER_MM, 1 / PX_PER_MM))
+		// 	.multiply(new Matrix3().makeRotation(-ROT))
+		// 	.multiply(new Matrix3().makeTranslation(-(canvas.width / 2 + this.conf.offset[0]),
+		// 	                                        -(canvas.height / 2 + this.conf.offset[1])));
+		// let point = new Vector2(x, y).applyMatrix3(M);
 
 		
 		// 2) polynôme : d'ordre 3

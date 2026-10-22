@@ -2,7 +2,7 @@ import { Vector4, Vector2 } from './../../tools/Vector.js';
 import { Robot_go, Robot_drop, Robot_speed, Robot_acc, Robot_dcc, Robot_gripper } from '../Robot';
 import {delay} from './../../tools/helpers.js';
 import {Memory_get, Memory_clear} from './../Memory';
-
+import {Camera_capture} from './../Camera';
 
 export const Probes_camAngle = async (BASE)=>{
 
@@ -16,8 +16,8 @@ export const Probes_camAngle = async (BASE)=>{
 	const robot  = BASE.robot.location2D;
 	const points = new Array(10).fill(0).map((_, id, {length})=>
 		new Vector2(  
-			-1 * ((length*step) / 2) + step * id , 
-			0
+			0, 
+			-1 * ((length*step) / 2) + step * id
 		).add(robot)
 	);
 
@@ -36,7 +36,8 @@ export const Probes_camAngle = async (BASE)=>{
 		}
 		await Memory_clear(BASE);
 	}
-
+	await Robot_go(BASE, robot);
+	await Camera_capture(BASE, [true]);
 	await Robot_gripper(BASE, [false]);
 	return true;
 }
