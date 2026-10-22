@@ -59,11 +59,11 @@ export default class Camera extends BaseCamera{
 	}
 
 	contourToWorldLocation(contour, canvas){
-		return contour.map(([x, y])=>this.pixelToWorld([x, y], canvas));
+		return contour.map(([x, y])=>this.pointToWorldLocation([x, y], canvas));
 	}
 	boxToWorldLocation([x, y, w, h], canvas){
 		return [
-			...this.pixelToWorld([x, y], canvas),
+			...this.pointToWorldLocation([x, y], canvas),
 			w/this._offset.z, 
 			h/this._offset.z 
 		]
