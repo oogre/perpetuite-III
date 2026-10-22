@@ -10,35 +10,35 @@ export const Probes_test = async (BASE)=>{
 	await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 	await Robot_gripper(BASE, [true]);
 	await BASE.robot.controller.WaitProbe();
+	const points = [BASE.table.pointToExplore[0]].sort(()=>Math.random()-0.5)
 	
-
-	
-
-	for(let i = 0 ; i < 4 ; i ++){
-		const location = new Vector4(250, 250, 0, 0);
-
+	for(const pos of points){
+		const location = new Vector4(pos.x, pos.y, 0, 0);
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
 		await Robot_go(BASE, location);
-		const robotLocation = BASE.robot.location4D;
 		await delay(1000);
 		await Robot_drop(BASE);
 		const pillLocation = BASE.robot.location4D;
-		console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
 		if(Memory_get(BASE, []).split("\n") == 0){
 			return false;
 		}
-		await Robot_grab(BASE);
-		const grabLocation = BASE.robot.location4D;
+		console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
 		await Memory_clear(BASE);
-		
-		location.x = grabLocation.x;
-		location.y = grabLocation.y;
 
-		
-		console.log(`pill : ${pillLocation}`)
-		console.log(`grabbed : ${grabLocation}`)
+		for(let i = 0 ; i < 3 ; i ++){
+			const rLocation = BASE.robot.location4D;
+			rLocation.x += (Math.random()-0.5 * 2) * 100;
+			rLocation.y += (Math.random()-0.5 * 2) * 100;
+			await Robot_go(BASE, rLocation);
+			await Camera_capture(BASE, [true])
+			console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
+			await Memory_clear(BASE);
+		}
 
+		await Robot_go(BASE, location);
+		await Robot_catch(BASE);
+		await BASE.robot.controller.WaitProbe();
 	}
 	return true;
 }
