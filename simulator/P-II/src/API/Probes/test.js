@@ -35,8 +35,8 @@ export const Probes_test = async (BASE)=>{
 
 		for(let i = 0 ; i < 3 ; i ++){
 			const rLocation = BASE.robot.location4D;
-			rLocation.x += (Math.random()-0.5 * 2) * 50;
-			rLocation.y += (Math.random()-0.5 * 2) * 50;
+			rLocation.x += (Math.random()-0.5 * 2) * 25;
+			rLocation.y += (Math.random()-0.5 * 2) * 25;
 			await Robot_go(BASE, rLocation);
 			await Camera_capture(BASE, [true])
 			console.log(BASE.robot.location2D.toString(), await Memory_get(BASE, []));
