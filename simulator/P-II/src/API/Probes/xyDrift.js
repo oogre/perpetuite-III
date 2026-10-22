@@ -4,7 +4,7 @@ import {delay} from './../../tools/helpers.js';
 import {Memory_get, Memory_clear} from './../Memory';
 import { fitPolynomial } from './../../tools/fitPolynomial.js';
 
-export const Probes_test = async (BASE)=>{
+export const Probes_xyDrift = async (BASE)=>{
 
 	await Robot_speed(BASE, [BASE.robot.conf.default.speed]);
 	await Robot_acc(BASE, [BASE.robot.conf.default.acc]);
