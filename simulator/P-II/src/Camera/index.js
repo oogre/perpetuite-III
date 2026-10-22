@@ -15,7 +15,7 @@ export default class Camera extends BaseCamera{
 		this._offset = value;
 	}
 
-	pointToWorldLocation([x, y], canvas){
+	pixelToWorld([x, y], canvas){
 		const AX = 0.9714, BX = -1.158;
 		const AY = 0.9755, BY =  0.078;
 		
@@ -31,9 +31,6 @@ export default class Camera extends BaseCamera{
 	    	                       canvas.height / 2 + this.conf.offset[1]);
 		// (pixel - buse) / (px/mm) + position du robot
 		let point = new Vector2(x, y).sub(nozzle).divideScalar(this._offset.z).add(robot);
-		
-		// 2) polynôme d'ordre 2
-		//point = new Vector2((point.x - BX) / AX, (point.y - BY) / AY);
 
 		// 2) polynôme : d'ordre 3
 		const a = point.x / S, b = point.y / S;
@@ -45,30 +42,12 @@ export default class Camera extends BaseCamera{
 		return [...point];
 	}
 
-	
-	pixelToWorld([u, v], canvas){
-		const SCALE_X = 1.082, SCALE_Y = 1.061;   // échelle réelle = z * SCALE (≈5,41 et 5,30 px/mm mesurés)
-		const DRIFT_X = 0.024, DRIFT_Y = 0.0187; // adaptation en fonction de la position du robot (≈1,9 %)
-
-		// pixel de la buse dans l'image (là où se trouve une pastille posée sous la buse, robot au centre)
-		const un = canvas.width  * 0.5 + this._offset.z * this.conf.offset[0];
-		const vn = canvas.height * 0.5 + this._offset.z * this.conf.offset[1];
-		// décalage pastille - buse, en mm (l'axe x de l'image est inversé par rapport à x du robot)
-		const dx =  (u - un) / (this._offset.z * SCALE_X);
-		const dy =  (v - vn) / (this._offset.z * SCALE_Y);
-		// la pastille apparaît trop près du centre de la table de ~1,9 % de la position du robot
-		return [
-			-1 * this._offset.x + dx + DRIFT_X * this._offset.x,
-			-1 * this._offset.y + dy + DRIFT_Y * this._offset.y,
-		];
-	}
-
 	contourToWorldLocation(contour, canvas){
-		return contour.map(([x, y])=>this.pointToWorldLocation([x, y], canvas));
+		return contour.map(([x, y])=>this.pixelToWorld([x, y], canvas));
 	}
 	boxToWorldLocation([x, y, w, h], canvas){
 		return [
-			...this.pointToWorldLocation([x, y], canvas),
+			...this.pixelToWorld([x, y], canvas),
 			w/this._offset.z, 
 			h/this._offset.z 
 		]
@@ -125,20 +104,4 @@ export default class Camera extends BaseCamera{
 			this._target.on("updated", captureAdapter);
 		});
 	}
- 
-	// Camera/correctMeasure.js
-	// R = pose du robot à la capture [x, y] (mm)
-	// m = mesure BRUTE de pointToWorldLocation, formule d'origine sans aucune correction [x, y] (mm)
-	// Retourne la position réelle de la pastille dans le repère du robot (mm).
-	// Modèle : T = R + A·(m−R) + b + champ quadratique en R. Ajusté sur 61 pastilles / 242 mesures.
-	
-	correctMeasure([rx, ry], [mx, my]){
-		const r = Math.hypot(rx, ry);
-		const k = r > R_MAX ? R_MAX / r : 1;      // on reste dans la zone ajustée
-		const a = rx * k / S, b = ry * k / S;
-		const t = [mx - rx, my - ry, 1, b, b * b, a, a * b, a * a];
-		let dx = 0, dy = 0;
-		for (let i = 0; i < t.length; i++) { dx += CX[i] * t[i]; dy += CY[i] * t[i]; }
-		return [rx + dx, ry + dy];
-	};
 }
