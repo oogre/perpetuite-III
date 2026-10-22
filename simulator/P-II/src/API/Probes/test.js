@@ -19,7 +19,6 @@ export const Probes_test = async (BASE)=>{
 
 	for(const pos of points){
 		const location = new Vector4(pos.x, pos.y, 0, 0);
-		console.log(`GO to : ${location}`);
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
 		await Robot_go(BASE, location);
