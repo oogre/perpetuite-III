@@ -97,6 +97,7 @@ export default class Pills{
 	}
 	getByBox(box=[x=0, y=0, w=this.conf.radius.value*2, h=this.conf.radius.value*2]){
 		const tmp = this.createPill({box});
+		console.log(`getByBox`, tmp);
 		return this.set.filter( pill => contentEquals(pill, tmp)).toArray();
 	}
 	getByColorName(colorName){

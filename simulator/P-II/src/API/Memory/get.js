@@ -19,7 +19,7 @@ export const Memory_get = ({memory}, location)=>{
 		console.log(`Memory_get Color ${location}`)
 		return memory.getByColorName(...location);
 	}
-	console.log(`Memory_get Color ${location}`)
+	console.log(`Memory_get ALL ${location}`)
 	return memory.set.map(pill=>pill.toString()).join("\n")
 }
 
