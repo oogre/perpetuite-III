@@ -138,7 +138,7 @@ def parse_args():
     root = Path(__file__).resolve().parent.parent  # P-II/
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument('--port', type=int, default=int(env('CAM_PORT', 8000)))
-    p.add_argument('--host', default=env('CAM_HOST', '0.0.0.0'),
+    p.add_argument('--host', default=env('CAM_HOST', '127.0.0.1'),
                    help="'0.0.0.0' pour etre joignable depuis WSL quand ce script tourne sous Windows")
     p.add_argument('--log-file', default=env('CAM_LOG_FILE', default_log_file()),
                    help="journal (defaut P-II/log/camera.log, '-' = ecran seulement)")
