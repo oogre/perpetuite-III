@@ -8,16 +8,16 @@ import { Vector2 } from './../../tools/Vector.js';
 
 
 export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])=>{
-	// if(depth>2){
-	// 	throw new Error("Unlock loop");
-	// }
-	// else if(depth==2){
-	// 	await Robot_explore(BASE);
-	// }
-	// else if(depth>0){
-	// 	console.log(`Unlock all ${PillModel.Color.style(colorName)} pill`);
-	// 	Memory_unlock(BASE, [colorName]);
-	// }
+	if(depth>2){
+		throw new Error("Unlock loop");
+	}
+	else if(depth==2){
+		await Robot_explore(BASE);
+	}
+	else if(depth>0){
+		console.log(`Unlock all ${PillModel.Color.style(colorName)} pill`);
+		Memory_unlock(BASE, [colorName]);
+	}
 	
 	const coloredPills = Memory_get(BASE, [colorName]);
 	const unlockColoredPills = coloredPills.filter(pill=>!pill.isLock);
@@ -37,12 +37,10 @@ export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[]
 
 		const below = await Robot_whatsBelow(BASE, selectedPill.color.name);
 
-		console.log(below);
-		return;
 		if(below == AT_DROPZONE.GOOD_COLOR) {
 			return selectedPill;
 		}
-		console.log(`My souvenir is ${selectedPill.color.style} actual pill color is not... going deeper`);
+		console.log(`My souvenir is ${selectedPill.color.style} pointed pill  is ${colorName}...`);
 		BASE.memory.delete(selectedPill);
 	}
 	return await Robot_findFreePillByColorName(BASE, [colorName, depth+1])
