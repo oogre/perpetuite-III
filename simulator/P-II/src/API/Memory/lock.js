@@ -22,7 +22,7 @@ export const Memory_unlock = ({memory}, [colorName]=[])=>{
 
 	console.log(colorName);
 	const pills = Memory_get({memory}, [colorName]);
-	console.log(pills.toArray());
+	
 
 	const coloredPillHistory = pills.toArray()
 								.filter(({isLock})=>isLock)
@@ -30,5 +30,7 @@ export const Memory_unlock = ({memory}, [colorName]=[])=>{
 									return pillA.lockedAt - pillB.lockedAt;
 								});
 	coloredPillHistory.length = Math.floor(coloredPillHistory.length/3);
+
+	console.log(coloredPillHistory.length);
 	coloredPillHistory.map(pill=>pill.unlock());
 }
