@@ -8,18 +8,21 @@ import { Vector2 } from './../../tools/Vector.js';
 
 
 export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])=>{
-	if(depth>2){
-		throw new Error("Unlock loop");
-	}
-	else if(depth==2){
-		await Robot_explore(BASE);
-	}
-	else if(depth>0){
-		console.log(`Unlock all ${PillModel.Color.style(colorName)} pill`);
-		Memory_unlock(BASE, [colorName]);
-	}
+	// if(depth>2){
+	// 	throw new Error("Unlock loop");
+	// }
+	// else if(depth==2){
+	// 	await Robot_explore(BASE);
+	// }
+	// else if(depth>0){
+	// 	console.log(`Unlock all ${PillModel.Color.style(colorName)} pill`);
+	// 	Memory_unlock(BASE, [colorName]);
+	// }
 	
 	const coloredPills = Memory_get(BASE, [colorName]);
+
+	console.log(coloredPills);
+	return;
 	const unlockColoredPills = coloredPills.filter(pill=>!pill.isLock);
 	if(unlockColoredPills.length>0){
 		const toolVec = new Vector2();
