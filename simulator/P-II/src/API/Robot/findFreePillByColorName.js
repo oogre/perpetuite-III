@@ -33,11 +33,12 @@ export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[]
 		const id = Math.floor(Math.pow(Math.random(), 10) * pillsStortedByDistance.length);
 		const selectedPill = pillsStortedByDistance[id];
 
-		console.log(`selectedPill `, selectedPill.location);
-		return;
 		await Robot_go(BASE, selectedPill.location);
 
 		const below = await Robot_whatsBelow(BASE, selectedPill.color.name);
+
+		console.log(below);
+		return;
 		if(below == AT_DROPZONE.GOOD_COLOR) {
 			return selectedPill;
 		}
