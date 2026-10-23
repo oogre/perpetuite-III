@@ -8,18 +8,18 @@ export const Memory_get = ({memory}, location)=>{
 		return memory.set.get(location);
 	}
 	if(isLocation(location)){
-		console.log(`Memory_get Location ${...location}`)
+		console.log(`Memory_get Location ${location}`)
 		return memory.getByLocation(new Vector4(...location));
 	}
 	if(isBox(location)){
-		console.log(`Memory_get Box ${...location}`)
+		console.log(`Memory_get Box ${location}`)
 		return memory.getByBox(location);
 	}
 	if(isString(...location)){
-		console.log(`Memory_get Color ${...location}`)
+		console.log(`Memory_get Color ${location}`)
 		return memory.getByColorName(...location);
 	}
-	console.log(`Memory_get all  ${location}`)
+	console.log(`Memory_get Color ${location}`)
 	return memory.set.map(pill=>pill.toString()).join("\n")
 }
 
