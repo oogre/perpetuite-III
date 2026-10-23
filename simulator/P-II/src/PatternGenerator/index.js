@@ -3,7 +3,7 @@ import util from 'util';
 import {exec} from 'child_process';
 const _exec = util.promisify(exec);
 import { Jimp } from "jimp";
-
+import path from 'path';
 
 const call = async (command)=>{
 	let {stdout, stderr} = await _exec(command);
@@ -19,13 +19,12 @@ export default class PatternGenerator{
 		this.conf = conf
 	}
 	set offset(value){
-		console.log(this.conf.offsetFilePath);
-
+		fs.mkdirSync(path.dirname(this.conf.offsetFilePath), { recursive: true });
 		fs.writeFileSync(this.conf.offsetFilePath, `${value}`, "utf8");
 	}
 	get offset(){
 		console.log(this.conf.offsetFilePath);
-		
+
 		if(!fs.pathExistsSync(this.conf.offsetFilePath)){
 			this.offset = 0;
 		}
