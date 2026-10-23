@@ -34,11 +34,13 @@ export const Probes_xyDrift = async (BASE)=>{
 			return false;
 		}
 
-		const theoricalPillLocation = BASE.robot.location2D;
-		const mathPillLocation = Memory_get(BASE, []);
+		let [_, x, y] = Memory_get(BASE, []).split("\n")[0].split(" ");
 
-		console.log([...theoricalPillLocation, ...mathPillLocation.location]);
-		rows.push([...theoricalPillLocation, ...mathPillLocation.location]);
+		const theoricalPillLocation = BASE.robot.location2D;
+		const mathPillLocation = new Vector2(parseFloat(x), parseFloat(y));
+
+		console.log([...theoricalPillLocation, ...mathPillLocation]);
+		rows.push([...theoricalPillLocation, ...mathPillLocation]);
 		
 		await Robot_catch(BASE);
 		await BASE.robot.controller.WaitProbe();
