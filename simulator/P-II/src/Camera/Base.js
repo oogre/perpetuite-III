@@ -9,7 +9,7 @@ export default class BaseCamera{
 	}
 	async start(){
 		console.log("Restart camera");
-		await _exec(`CAMERA_URL=${this.conf.url} npm run start.camera`);
+		await _exec(`CAM_GAIN=${100} CAMERA_URL=${this.conf.url} npm run start.camera`);
 		await delay(1000);
 	}
 	// Le serveur camera ne doit pas survivre à P-II.
