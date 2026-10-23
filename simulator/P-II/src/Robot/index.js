@@ -41,7 +41,7 @@ export default class Robot extends RobotBase {
 
 	async go(target){
 		if (!isLocation(target)) {
-			throw new Error("go should receive a Vector3 or an array");	
+			throw new Error("go should receive a Vector2 Vector3 Vector4");	
 		}
 		await super.go(target);
 	}

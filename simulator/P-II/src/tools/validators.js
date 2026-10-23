@@ -5,12 +5,7 @@ export const isArrayRGB = v => Array.isArray(v) && v.length == 3 && v.every(i=>N
 export const isLocation = v => {
 	return 	(v instanceof Vector2) || 
 			(v instanceof Vector3) || 
-			(v instanceof Vector4) || 
-			(	Array.isArray(v) && 
-				v.length!==0 && 
-				(v.length===2||v.length===3||v.length===4) && 
-				v.every(i=>Number(i)===i)
-			);
+			(v instanceof Vector4);
 }
 export const isNumber = v => Number(v)===v;
 export const isBox = v => (Array.isArray(v) && v.length!=0 && v.length===4 && v.every(i=>Number(i)===i));
