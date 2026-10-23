@@ -7,6 +7,8 @@ export const Robot_whatsBelow = async(BASE, colorName)=>{
 	const justCapturedPills = await Camera_capture(BASE);
 	const pill = justCapturedPills.getByLocation(BASE.robot.location2D);
 
+	console.log(`Robot_whatsBelow wanted ${colorName} find ${pill.color.name} `)
+
 	if(pill === undefined){
 		return AT_DROPZONE.EMPTY;
 	}else if(BASE.forbidden.isIntersect(pill)){

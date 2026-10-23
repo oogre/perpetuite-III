@@ -41,8 +41,7 @@ export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[]
 		if(below == AT_DROPZONE.GOOD_COLOR) {
 			return selectedPill;
 		}
-		console.log(below)
-		console.log(`My souvenir is ${selectedPill.color.style} pointed pill  is ${colorName}...`);
+		throw new Error(`My souvenir is ${selectedPill.color.style} pointed pill  is ${colorName}...`);
 		BASE.memory.delete(selectedPill);
 	}
 	return await Robot_findFreePillByColorName(BASE, [colorName, depth+1])
