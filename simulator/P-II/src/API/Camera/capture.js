@@ -13,10 +13,10 @@ export const Camera_capture = async (BASE, [transport=false]=[])=>{
 	const rawData = await BASE.camera.capture(captureName, transport);
 	const areas = rawData.map(item=>new Area(item.contour, item.avgRGB));
 
+	// AVOID DOUBLE PILLS
 	Memory_get(BASE, [...BASE.robot.location2D, 50, 50])
 		.filter(({isLock})=>!isLock)
 		.map(pill=>{
-			console.log(pill);
 			BASE.memory.delete(pill);
 		})
 
