@@ -49,8 +49,8 @@ const ui = new UI_Manager(config.window);
 	ui.register(grid.ui);
 	ui.register(table.ui);
 	// ui.register(real.ui);
-	ui.register(robot.ui);
 	ui.register(memory.ui);
+	ui.register(robot.ui);
 	ui.register(forbidden.ui);
 
 // const uiPreview = new UI_Manager(config.windowPreview);
