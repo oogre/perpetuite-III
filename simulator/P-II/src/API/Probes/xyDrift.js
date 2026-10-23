@@ -35,7 +35,7 @@ export const Probes_xyDrift = async (BASE)=>{
 		}
 
 		const theoricalPillLocation = BASE.robot.location2D;
-		const mathPillLocation = await Memory_get(BASE, BASE.robot.location2D);
+		const mathPillLocation = Memory_get(BASE, []);
 
 		console.log([...theoricalPillLocation, ...mathPillLocation.location]);
 		rows.push([...theoricalPillLocation, ...mathPillLocation.location]);
