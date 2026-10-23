@@ -148,7 +148,7 @@ def parse_args():
                    help='fausse camera (scene de pilules synthetique)')
     # camera
     p.add_argument('--exposure', type=float, default=float(env('CAM_EXPOSURE', 10000.0)), help='microsecondes')
-    p.add_argument('--gain', type=float, default=float(env('CAM_GAIN', 20.0)))
+    p.add_argument('--gain', type=float, default=float(env('CAM_GAIN', 40.0)))
     p.add_argument('--gxipy-path', default=env('CAM_GXIPY_PATH', ''),
                    help="dossier qui CONTIENT gxipy/. Defaut : P-III/src/computerVision (le gxipy que liveCV.py utilisait) "
                         "si on le trouve, sinon le gxipy installe avec pip")
