@@ -48,7 +48,7 @@ export const Probes_xyDrift = async (BASE)=>{
 	}
 
 	const { CX, CY, rms, max } = fitPolynomial(rows, 3);
-	console.log(`à coller dans src/Camera/index.js:pointToWorldLocation`, `\nCX=${CX}`, `\nCX=${CY}`, `\nrms=${rms}`, `\nmax=${max}`);       // à coller dans pointToWorldLocation
+	console.log(`à coller dans src/Camera/index.js:pointToWorldLocation`, `\nCX=${CX}`, `\nCY=${CY}`, `\nrms=${rms}`, `\nmax=${max}`);       // à coller dans pointToWorldLocation
 
 	await Robot_gripper(BASE, [false]);
 	return true;
