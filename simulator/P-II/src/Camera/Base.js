@@ -9,7 +9,7 @@ export default class BaseCamera{
 	}
 	async start(){
 		console.log("Restart camera");
-		await _exec(`npm run start.cameraa -- --exposure 15000 --gain 20`);
+		await _exec(`npm run start.camera -- --exposure 15000 --gain 20`);
 		await delay(1000);
 	}
 	// Le serveur camera ne doit pas survivre à P-II.
