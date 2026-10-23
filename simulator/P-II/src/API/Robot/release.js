@@ -25,11 +25,9 @@ export const Robot_release = async (BASE)=>{
 		await Robot_gripper(BASE, [false]);
 		await delay(400);
 		await Robot_acc(BASE, [1]);
-		await Robot_speed(BASE, [1]);
 		await Robot_dcc(BASE, [BASE.robot.conf.default.dcc]);
 		await Robot_go(BASE, overPillLocation);
 		await Robot_acc(BASE, [BASE.robot.conf.default.acc]);
-		await Robot_speed(BASE, [BASE.robot.conf.default.speed]);
 		await Robot_go(BASE, baseLocation);
 	}
 	BASE.robot.actionDescPop();
