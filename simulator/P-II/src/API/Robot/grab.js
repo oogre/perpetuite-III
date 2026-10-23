@@ -13,6 +13,7 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	
 	if(depth >= 5 ){
 		throw new Error("Error grabbing");
+		return false;
 	}
 	if(BASE.robot.conf.simulation){
 		if(BASE.robot.grabbedPill!==null){
@@ -38,7 +39,7 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	if(isTargetedPillExists){
 		await Robot_go(BASE, targetedPill.location);
 	}else{
-		console.log("pill Is not Present");
+		throw new Error("pill Is not Present");
 		return false;
 	}
 

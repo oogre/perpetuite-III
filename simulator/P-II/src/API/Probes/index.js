@@ -4,3 +4,4 @@ export * from './random.js';
 export * from './walk.js';
 export * from './xyDrift.js';
 export * from './camAngle.js';
+export * from './clean.js';
