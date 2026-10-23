@@ -13,7 +13,8 @@ export const Camera_capture = async (BASE, [transport=false]=[])=>{
 	const rawData = await BASE.camera.capture(captureName, transport);
 	const areas = rawData.map(item=>new Area(item.contour, item.avgRGB));
 
-	// AVOID DOUBLE PILLS
+	// Supprime de la mémoire les pillules non locked dans un rayon de 5cm autour de la buse
+	// Permet d'éviter les doublons du aux vibration de la cage
 	Memory_get(BASE, [...BASE.robot.location2D, 100, 100])
 		.filter(({isLock})=>!isLock)
 		.map(pill=>{
