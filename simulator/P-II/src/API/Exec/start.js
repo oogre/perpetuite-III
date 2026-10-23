@@ -17,6 +17,7 @@ export const Exec_start = async (BASE)=>{
 	try{
 		await Exec_loop(BASE);	
 	}catch(error){
+		console.log(error);
 		if(error.code){
 			console.log(ColorCli.red(error.code));
 		}else if(error.message){
