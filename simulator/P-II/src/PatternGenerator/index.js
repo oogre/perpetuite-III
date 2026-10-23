@@ -19,9 +19,13 @@ export default class PatternGenerator{
 		this.conf = conf
 	}
 	set offset(value){
+		console.log(this.conf.offsetFilePath);
+
 		fs.writeFileSync(this.conf.offsetFilePath, `${value}`, "utf8");
 	}
 	get offset(){
+		console.log(this.conf.offsetFilePath);
+		
 		if(!fs.pathExistsSync(this.conf.offsetFilePath)){
 			this.offset = 0;
 		}
