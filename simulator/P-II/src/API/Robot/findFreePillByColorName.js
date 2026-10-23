@@ -12,7 +12,8 @@ export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[]
 		throw new Error("Unlock loop");
 	}
 	else if(depth==2){
-		await Robot_explore(BASE);
+		///await Robot_explore(BASE);
+		throw new Error("Robot_explore has to be refactored");
 	}
 	else if(depth>0){
 		console.log(`Unlock all ${PillModel.Color.style(colorName)} pill`);
