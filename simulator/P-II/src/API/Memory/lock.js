@@ -19,7 +19,10 @@ export const Memory_lock = async ({memory}, location)=>{
 
 
 export const Memory_unlock = ({memory}, [colorName]=[])=>{
+
+	console.log(colorName);
 	const pills = Memory_get({memory}, [colorName]);
+	console.log(pills.toArray());
 
 	const coloredPillHistory = pills.toArray()
 								.filter(({isLock})=>isLock)
