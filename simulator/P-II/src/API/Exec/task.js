@@ -19,7 +19,7 @@ export const Exec_task = async(BASE, [colorName=(new PillModel.Color()).name, x=
 		box:[x, y]
 	});
 	
-	const pill = await Robot_findFreePillByColorName(BASE, task.color.name);
+	const pill = await Robot_findFreePillByColorName(BASE, [task.color.name]);
 	if(BASE.forbidden.isIntersect(pill)){
 		return Exec_task(BASE, [colorName, x, y]);
 	}

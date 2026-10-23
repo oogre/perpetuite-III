@@ -7,7 +7,7 @@ import PillModel from "./../../Pills/PillModel";
 import { Vector2 } from './../../tools/Vector.js';
 
 
-export const Robot_findFreePillByColorName = async(BASE, colorName, depth=0)=>{
+export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])=>{
 	if(depth>2){
 		throw new Error("Unlock loop");
 	}
@@ -41,5 +41,5 @@ export const Robot_findFreePillByColorName = async(BASE, colorName, depth=0)=>{
 		console.log(`My souvenir is ${selectedPill.color.style} actual pill color is not... going deeper`);
 		BASE.memory.delete(selectedPill);
 	}
-	return await Robot_findFreePillByColorName(BASE, colorName, depth+1)
+	return await Robot_findFreePillByColorName(BASE, [colorName, depth+1])
 }
