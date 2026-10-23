@@ -20,10 +20,11 @@ export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[]
 	// }
 	
 	const coloredPills = Memory_get(BASE, [colorName]);
-
-	console.log(coloredPills);
-	return;
 	const unlockColoredPills = coloredPills.filter(pill=>!pill.isLock);
+
+	console.log(unlockColoredPills);
+	return;
+	
 	if(unlockColoredPills.length>0){
 		const toolVec = new Vector2();
 		const robotLocation = BASE.robot.location2D;
