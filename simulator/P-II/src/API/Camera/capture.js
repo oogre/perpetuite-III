@@ -1,7 +1,7 @@
 
 import Pills from "./../../Pills";
 import Area from "./../../Area";
-import {Memory_set} from './../Memory';
+import {Memory_get} from './../Memory';
 
 
 
@@ -11,7 +11,16 @@ export const Camera_capture = async (BASE, [transport=false]=[])=>{
 	transport = transport==1
 	const captureName = `${new Date().getTime()} ${BASE.robot.location4D}.png`;
 	const rawData = await BASE.camera.capture(captureName, transport);
-	const areas = rawData.map(item=>new Area(item.contour, item.avgRGB))
+	const areas = rawData.map(item=>new Area(item.contour, item.avgRGB));
+
+	Memory_get(BASE, [...BASE.robot.location2D, 50, 50])
+		.filter(({isLock})=>!isLock)
+		.map(pill=>{
+			console.log(pill);
+			BASE.memory.delete(pill);
+		})
+
+
 	const localPills = new Pills(BASE.memory.conf);
 
 	const [notPillAreas, pillAreas] = areas.reduce((out, area)=>{
