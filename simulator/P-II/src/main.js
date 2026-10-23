@@ -50,8 +50,8 @@ const ui = new UI_Manager(config.window);
 	ui.register(table.ui);
 	// ui.register(real.ui);
 	ui.register(memory.ui);
-	ui.register(robot.ui);
 	ui.register(forbidden.ui);
+	ui.register(robot.ui);
 
 // const uiPreview = new UI_Manager(config.windowPreview);
 // 	uiPreview.register(image.ui);
