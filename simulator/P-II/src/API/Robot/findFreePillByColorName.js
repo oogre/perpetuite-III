@@ -22,20 +22,19 @@ export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[]
 	const coloredPills = Memory_get(BASE, [colorName]);
 	const unlockColoredPills = coloredPills.filter(pill=>!pill.isLock);
 
-	console.log(unlockColoredPills);
-	return;
-	
 	if(unlockColoredPills.length>0){
 		const toolVec = new Vector2();
 		const robotLocation = BASE.robot.location2D;
 		const distToRobot = (pill)=>{
 			return toolVec.subVectors(pill.location, robotLocation).lengthSq();
 		}
-		const unlockColoredPillsStortedByDistance = unlockColoredPills.toArray()
+		const pillsStortedByDistance = unlockColoredPills.toArray()
 			.sort((a, b)=> distToRobot(a) - distToRobot(b));
-		const id = Math.floor(Math.pow(Math.random(), 10) * unlockColoredPillsStortedByDistance.length);
-		const selectedPill = unlockColoredPillsStortedByDistance[id];
+		const id = Math.floor(Math.pow(Math.random(), 10) * pillsStortedByDistance.length);
+		const selectedPill = pillsStortedByDistance[id];
 
+		console.log(`selectedPill `, selectedPill.location);
+		return;
 		await Robot_go(BASE, selectedPill.location);
 
 		const below = await Robot_whatsBelow(BASE, selectedPill.color.name);
