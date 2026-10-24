@@ -2,6 +2,10 @@ import {Robot_go} from './go.js';
 import {Camera_capture} from './../Camera';
 import { Vector2, Vector4 } from './../../tools/Vector.js';
 import {delay} from './../../tools/helpers.js';
+import {Robot_speed} from './speed.js';
+import {Robot_acc} from './acc.js';
+import {Robot_dcc} from './dcc.js';
+
 
 export const Robot_explore = async (BASE)=>{
 	BASE.robot.actionDesc = `Explore`;
