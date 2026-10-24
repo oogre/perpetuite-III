@@ -1,7 +1,7 @@
 // extractPaths.js : lignes médianes des tracés rouge / vert / bleu d'un PNG (traits fins, fragmentés)
 // usage : node extractPaths.js image.png [saut=14] [tolerance=1] [longueurMin=10]
 import { PNG } from 'pngjs';
-
+import fs from 'fs';
 
 const COLORS = { rouge: [255, 0, 0], vert: [0, 255, 0], bleu: [0, 0, 255] };
 
