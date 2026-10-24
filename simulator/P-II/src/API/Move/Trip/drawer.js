@@ -7,13 +7,18 @@ export const Move_drawer = async (BASE)=>{
 	const path = await Command_getPath(BASE);
 	const noise2D = createNoise2D();
 
-	await Robot_go(BASE, new Vector4(...(path[0]), 0, 0));
-	await Promise.all(path.map((point)=>{
-		const n = noise2D(point.x*0.01, point.y*0.01);
-		return Robot_go(BASE, new Vector4(...point, (n * 0.5 + 0.5)* -200, n*40));
-	}));
+	path.unshift(path[0]);
+	path.push(path[path.length-1]);
 
-	await Robot_go(BASE, new Vector4(...(path[path.length-1]), 0, 0));
+	
+	await Promise.all(path.map((point, id, {length})=>{
+		if(id == 0 || id == length-1){
+			return Robot_go(BASE, new Vector4(...point, 0, 0));	
+		}
+		const n = noise2D(id * 0.1, 0) * 0.5 + 0.5;
+		const m = noise2D(id * 0.1, 1);
+		return Robot_go(BASE, new Vector4(...point, n * -200, m * 40));
+	}));
 
 	return true;
 }
