@@ -16,10 +16,10 @@ export const Move_drawer = async (BASE)=>{
 		if(id == 0 || id == length-1){
 			return Robot_go(BASE, new Vector4(...point, 0, 0));	
 		}
-		const n = Math.abs((id / (length -1)) * 2 - 1);
+		const n = 1 - Math.abs((id / (length -1)) * 2 - 1);
 		console.log(n);		
 		
-		return Robot_go(BASE, new Vector4(...point, lerp(0 , -200, n), lerp(-40 , 40, n)));
+		return Robot_go(BASE, new Vector4(...point, lerp(0 , -200, n), 0));
 	}));
 
 	return true;
