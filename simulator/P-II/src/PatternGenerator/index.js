@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import util from 'util';
 import {exec} from 'child_process';
 const _exec = util.promisify(exec);
-import { Jimp } from "jimp";
+import Jimp from "jimp";
 import path from 'path';
 
 const call = async (command)=>{
