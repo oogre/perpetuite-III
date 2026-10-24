@@ -15,7 +15,7 @@ export const Move_drawer = async (BASE)=>{
 		if(id == 0 || id == length-1){
 			return Robot_go(BASE, new Vector4(...point, 0, 0));	
 		}
-		const n = id / (length -1);
+		const n = 1 - Math.pow((id / (length -1)) * 2 - 1, 2);
 		//const m = noise2D(id * 0.05, 1);
 		return Robot_go(BASE, new Vector4(...point, n * -200, 0));
 	}));
