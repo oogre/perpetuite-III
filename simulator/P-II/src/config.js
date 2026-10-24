@@ -119,8 +119,8 @@ export default {
 		url : "http://"+CAMERA_HOST+":"+parseInt(CAMERA_PORT),
 		src: CAMERA_SRC,
 		//exposure: parseInt(CAMERA_EXPOSURE_NIGHT),
-		//exposure: parseInt(CAMERA_EXPOSURE_NORMAL),
-		exposure: parseInt(CAMERA_EXPOSURE_MIDDAY)
+		exposure: parseInt(CAMERA_EXPOSURE_NORMAL),
+		//exposure: parseInt(CAMERA_EXPOSURE_MIDDAY)
 	},
 	robot : {
 		simulation : parseInt(SIMULATION)==1,

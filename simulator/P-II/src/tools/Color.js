@@ -114,23 +114,23 @@ export const LimitedColorPaletteGenerator = (palette)=>{
 		}
 		static get = (rgb)=>{
 
-			const WL = 0.35; // poids de la luminosité (1 = comme CIE76)
-			const labPalette = palette.map(p => ({ ...p, lab: rgb2lab(p.rgb) }));
-			const colorDistance = (a, b) => Math.hypot(WL * (a[0] - b[0]), a[1] - b[1], a[2] - b[2]);
-			const lab = rgb2lab(rgb);
-			let best = null, bestDist = Infinity;
-			for (const p of labPalette) {
-				const d = colorDistance(lab, p.lab);
-				if (d < bestDist) { bestDist = d; best = p; }
-			}
-			return best;
-		
+			// const WL = 0.35; // poids de la luminosité (1 = comme CIE76)
+			// const labPalette = palette.map(p => ({ ...p, lab: rgb2lab(p.rgb) }));
+			// const colorDistance = (a, b) => Math.hypot(WL * (a[0] - b[0]), a[1] - b[1], a[2] - b[2]);
 			// const lab = rgb2lab(rgb);
-			// return palette.sort((a, b)=>{
-			// 	const dA = deltaE(lab, rgb2lab(a.rgb));
-			// 	const dB = deltaE(lab, rgb2lab(b.rgb));
-			// 	return dA - dB;
-			// })[0];
+			// let best = null, bestDist = Infinity;
+			// for (const p of labPalette) {
+			// 	const d = colorDistance(lab, p.lab);
+			// 	if (d < bestDist) { bestDist = d; best = p; }
+			// }
+			// return best;
+		
+			const lab = rgb2lab(rgb);
+			return palette.sort((a, b)=>{
+				const dA = deltaE(lab, rgb2lab(a.rgb));
+				const dB = deltaE(lab, rgb2lab(b.rgb));
+				return dA - dB;
+			})[0];
 		}
 
 		constructor(param){

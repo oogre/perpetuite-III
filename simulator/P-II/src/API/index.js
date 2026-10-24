@@ -32,7 +32,6 @@ export default class API extends EventsManager{
 		this.rl.once('close', () => {
 
 		});
-
 		Object.keys(Actions).forEach(key=>{
 			this.on(key, async (...data)=>{
 				try{

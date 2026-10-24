@@ -8,5 +8,6 @@ export * from './Forbidden';
 export * from './Move';
 export * from './Exec';
 export * from './Probes';
+export * from './Command';
 
 

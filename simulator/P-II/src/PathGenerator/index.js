@@ -1,7 +1,6 @@
 import {extractPaths} from "./PathExtractor.js";
 import fs from 'fs';
 
-
 export const PathExtractor = (conf)=>{
 	/*
 	{
@@ -16,11 +15,11 @@ export const PathExtractor = (conf)=>{
 		genPath : () => {
 			const res = extractPaths(conf.inFile, conf.gap, conf.eps, conf.min);
 			fs.writeFileSync(conf.outFile, JSON.stringify(res));
+			return res;
 		},
-		getPath : ()=>{
-			const rawPath = fs.readFileSync(conf.outFile);
-			console.log(rawPath);
-			return rawPath;
+		getPaths : ()=>{
+			const rawPath = fs.readFileSync(conf.outFile, 'utf8');
+			return JSON.parse(rawPath);
 		}
 	}
 }
