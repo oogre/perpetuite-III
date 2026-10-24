@@ -4,7 +4,7 @@ import {exec} from 'child_process';
 const _exec = util.promisify(exec);
 import Jimp from "jimp";
 import path from 'path';
-
+import { PathExtractor } from "./../PathGenerator"
 const call = async (command)=>{
 	let {stdout, stderr} = await _exec(command);
 	if(stderr){
@@ -16,7 +16,8 @@ const call = async (command)=>{
 
 export default class PatternGenerator{
 	constructor(conf){
-		this.conf = conf
+		this.conf = conf;
+		this.pathExtractor = PathExtractor(this.conf.pathExtractor);
 	}
 	set offset(value){
 		fs.mkdirSync(path.dirname(this.conf.offsetFilePath), { recursive: true });
@@ -33,8 +34,9 @@ export default class PatternGenerator{
 	
 	async getNextPattern(){
 		console.log(`GEN NEW PATTERN FOR OFFSET ${this.offset}`);
-		const res = await call(`./Generator/main.py ${this.offset}`);
+		const res = await call(`${this.conf.path} ${this.offset}`);
 		this.offset += 1;
-		return await Jimp.read(`./data/patterns/draw.diff.png`);
+		pathExtractor.genPath();
+		return await Jimp.read(this.conf.drawPath);
 	}
 }

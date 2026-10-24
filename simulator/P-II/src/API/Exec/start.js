@@ -18,6 +18,9 @@ export const Exec_start = async (BASE)=>{
 		await Exec_loop(BASE);	
 	}catch(error){
 		console.log(error);
+		if(error.code == "pill Is not Present" || error.message == "pill Is not Present"){
+			return await Exec_start(BASE);
+		}
 		if(error.code){
 			console.log(ColorCli.red(error.code));
 		}else if(error.message){
