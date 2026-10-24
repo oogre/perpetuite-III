@@ -14,7 +14,7 @@ export const Command_getPath = async (BASE)=>{
 								return point.lengthSq() <= radius * radius;
 							})
 							.map(point => point.toArray());
-				}).filter(({length})=>length>2)
+				}).filter(({length})=>length>4)
 			}).flatten();
 	if(paths.length==0){
 		return [];
