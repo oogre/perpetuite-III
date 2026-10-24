@@ -18,6 +18,8 @@ export const PathExtractor = (conf)=>{
 			fs.writeFileSync(conf.outFile, JSON.stringify(res));
 		},
 		getPath : ()=>{
+			const rawPath = fs.readFileSync(conf.outFile);
+			console.log(rawPath);
 			return [];
 		}
 	}
