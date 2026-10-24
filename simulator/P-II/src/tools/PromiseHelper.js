@@ -7,6 +7,7 @@ export default class PromiseHelper{
     this.reset();
   }
   reset(){
+    this._resolve && this._resolve();
     this._promise = new Promise((res, rej)=>{
       this._resolve = res;
       this._reject = rej;
