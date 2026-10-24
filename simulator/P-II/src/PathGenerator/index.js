@@ -20,7 +20,7 @@ export const PathExtractor = (conf)=>{
 		getPath : ()=>{
 			const rawPath = fs.readFileSync(conf.outFile);
 			console.log(rawPath);
-			return [];
+			return rawPath;
 		}
 	}
 }
