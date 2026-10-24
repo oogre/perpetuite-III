@@ -1,9 +1,10 @@
 // extractPaths.js : lignes médianes des tracés rouge / vert / bleu d'un PNG (traits fins, fragmentés)
 // usage : node extractPaths.js image.png [saut=14] [tolerance=1] [longueurMin=10]
-const fs = require('fs');
-const { PNG } = require('pngjs');
+import { PNG } from 'pngjs';
+
 
 const COLORS = { rouge: [255, 0, 0], vert: [0, 255, 0], bleu: [0, 0, 255] };
+
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 
 // 1) pixels de chaque couleur -> points (centre du pixel)
@@ -106,7 +107,7 @@ function simplify(p, eps) {
 }
 const length = p => p.reduce((s, q, i) => s + (i ? dist(p[i - 1], q) : 0), 0);
 
-function extractPaths(file, gap = 14, eps = 1, minLength = 10) {
+export function extractPaths(file, gap = 14, eps = 1, minLength = 10) {
 	const { points, width, height } = readMasks(file), paths = {};
 	for (const name in points) {
 		const pts = points[name];
@@ -128,24 +129,4 @@ function extractPaths(file, gap = 14, eps = 1, minLength = 10) {
 		}
 	}
 	return { width, height, paths };
-}
-
-export const PathExtractor = (conf)=>{
-	/*
-	{
-		outFile : PATH_EXTRACTOR_OUTPUT_PATH,
-		inFile : GENERATOR_DRAW_PATH
-		gap : parseInt(PATH_EXTRACTOR_GAP),
-		eps : parseInt(PATH_EXTRACTOR_SIMPLIFY_TOLERANCE_THRESHOLD),
-		min : parseInt(PATH_EXTRACTOR_PATH_MIN_LENGTH),
-	}
-	*/
-	const genPath = () => {
-		const res = extractPaths(conf.inFile, conf.gap, conf.eps, conf.min);
-		fs.writeFileSync(conf.outFile, JSON.stringify(res));
-	}
-
-	return {
-		genPath
-	}
 }

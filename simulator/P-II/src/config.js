@@ -71,7 +71,9 @@ const {
 	CAMERA_HOST,
 	CAMERA_PORT,
 	CAMERA_SRC,
-	CAMERA_EXPOSURE,
+	CAMERA_EXPOSURE_NIGHT,
+	CAMERA_EXPOSURE_NORMAL,
+	CAMERA_EXPOSURE_MIDDAY,
 	GENERATOR_PATH,
 	GENERATOR_OFFSET_PATH,
 	GENERATOR_DRAW_PATH,
@@ -116,7 +118,9 @@ export default {
 		margin : 4*parseFloat(PILL_SIZE),
 		url : "http://"+CAMERA_HOST+":"+parseInt(CAMERA_PORT),
 		src: CAMERA_SRC,
-		exposure: parseInt(CAMERA_EXPOSURE)
+		//exposure: parseInt(CAMERA_EXPOSURE_NIGHT),
+		//exposure: parseInt(CAMERA_EXPOSURE_NORMAL),
+		exposure: parseInt(CAMERA_EXPOSURE_MIDDAY)
 	},
 	robot : {
 		simulation : parseInt(SIMULATION)==1,
