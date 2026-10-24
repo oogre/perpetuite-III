@@ -145,5 +145,7 @@ export const PathExtractor = (BASE, conf)=>{
 		fs.writeFileSync(conf.outFile, JSON.stringify(res));
 	}
 
-	return genPath;
+	return {
+		genPath
+	}
 }
