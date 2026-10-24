@@ -11,7 +11,7 @@ export const Move_drawer = async (BASE)=>{
 	path.unshift(path[0]);
 	path.push(path[path.length-1]);
 
-	const origin = BASE.robot.location4D;
+	
 	await Promise.all(path.map((point, id, {length})=>{
 		if(id == 0 || id == length-1){
 			return Robot_go(BASE, new Vector4(...point, 0, 0));	
@@ -21,9 +21,9 @@ export const Move_drawer = async (BASE)=>{
 		const n = 1 - Math.pow((id / (length -1)) * 2 - 1, 2);
 		return Robot_go(BASE, new Vector4(...point, lerp(0, depth, n), 0));
 	}));
-
+	const origin = BASE.robot.location4D;
 	
-	return Robot_go(BASE, new Vector4(origin.x, origin.y, 0, origin.w));
+	return Robot_go(BASE, new Vector4(origin.x, origin.y, 0, 0));
 
 	return true;
 }
