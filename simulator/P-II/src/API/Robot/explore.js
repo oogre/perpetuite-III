@@ -12,7 +12,7 @@ export const Robot_explore = async (BASE)=>{
 
 	const points = new Array(10).fill(0)
 		.map(()=>{
-			new Vector2(...BASE.grid.getRandomCellLocation());
+			return new Vector2(...BASE.grid.getRandomCellLocation());
 		});
 	await Robot_acc(BASE, [25]);
 	await Robot_dcc(BASE, [25]);
