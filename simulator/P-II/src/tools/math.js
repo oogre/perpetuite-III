@@ -23,7 +23,7 @@ export const lerpAngle = (from, to, weight)=>{
 export const lerp = (from, to, weight, limitter=false)=>{
     let value = from * (1 - weight) + to * weight;
     if(limitter){
-      value = Math.min(Math.max(value, 0), 1);
+      value = Math.min(Math.max(value, Math.min(from, to)), Math.max(from, to));
     }
     return value;
 }
