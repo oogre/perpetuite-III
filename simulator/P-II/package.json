@@ -36,6 +36,7 @@
     "obs-websocket-js": "^5.0.7",
     "pngjs": "^7.0.0",
     "robust-point-in-polygon": "^1.0.3",
+    "simplex-noise": "^4.0.3",
     "stdin": "^0.0.1",
     "three": "^0.183.1"
   }
