@@ -17,7 +17,7 @@ export const Move_drawer = async (BASE)=>{
 			return Robot_go(BASE, new Vector4(...point, 0, 0));	
 		}
 		const n = 1 - Math.pow((id / (length -1)) * 2 - 1, 2);
-		return Robot_go(BASE, new Vector4(...point, lerp(0, lerp(0, -200, inverseLerp(0, 8, length)), n), 0));
+		return Robot_go(BASE, new Vector4(...point, lerp(0, lerp(0, -200, inverseLerp(4, 10, length), true), n), 0));
 	}));
 
 	return true;

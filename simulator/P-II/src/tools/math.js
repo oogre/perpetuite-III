@@ -20,8 +20,12 @@ export const lerpAngle = (from, to, weight)=>{
   return from + short_angle(from, to) * weight
 }
 
-export const lerp = (from, to, weight)=>{
-     return from * (1 - weight) + to * weight;
+export const lerp = (from, to, weight, limitter=false)=>{
+    let value = from * (1 - weight) + to * weight;
+    if(limitter){
+      value = Math.min(Math.max(value, 0), 1);
+    }
+    return value;
 }
 
 export const getRandomLocationOnCircle = (radius)=>{
