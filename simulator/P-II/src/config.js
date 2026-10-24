@@ -71,6 +71,7 @@ const {
 	CAMERA_HOST,
 	CAMERA_PORT,
 	CAMERA_SRC,
+	CAMERA_EXPOSURE,
 	GENERATOR_OFFSET_PATH,
 	COMMANDS_PATH,
 	CV_IMAGE_PATH,
@@ -108,7 +109,8 @@ export default {
 		px2mm: parseFloat(CAMERA_PX_PER_MM),
 		margin : 4*parseFloat(PILL_SIZE),
 		url : "http://"+CAMERA_HOST+":"+parseInt(CAMERA_PORT),
-		src: CAMERA_SRC
+		src: CAMERA_SRC,
+		exposure: parseInt(CAMERA_EXPOSURE)
 	},
 	robot : {
 		simulation : parseInt(SIMULATION)==1,
