@@ -130,7 +130,7 @@ function extractPaths(file, gap = 14, eps = 1, minLength = 10) {
 	return { width, height, paths };
 }
 
-export const PathExtractor = (BASE, conf)=>{
+export const PathExtractor = (conf)=>{
 	/*
 	{
 		outFile : PATH_EXTRACTOR_OUTPUT_PATH,
