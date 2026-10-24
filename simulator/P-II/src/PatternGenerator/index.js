@@ -36,7 +36,7 @@ export default class PatternGenerator{
 		console.log(`GEN NEW PATTERN FOR OFFSET ${this.offset}`);
 		const res = await call(`${this.conf.path} ${this.offset}`);
 		this.offset += 1;
-		pathExtractor.genPath();
+		this.pathExtractor.genPath();
 		return await Jimp.read(this.conf.drawPath);
 	}
 }
