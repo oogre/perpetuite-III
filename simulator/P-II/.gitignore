@@ -3,4 +3,6 @@ release/*
 package-lock.json
 
 cv/__pycache__/*
+cv/gxipy/__pycache__/*
+
 log/*
