@@ -2,7 +2,7 @@ import {Exec_loop} from './loop.js';
 import {Real_save} from './../Real/save.js';
 import ColorCli from "cli-color";
 
-import {Robot_HighPower, Robot_Gripper, Robot_explore} from '../Robot';
+import {Robot_HighPower, Robot_gripper, Robot_explore} from '../Robot';
 import Chronos from "./../../tools/Chronos.js"
 
 let frameChronos = 0;
@@ -13,7 +13,7 @@ export const Exec_start = async (BASE)=>{
 	console.log(`Start at : ${startedAt.getHours().toString().padStart(2, '0')}:${startedAt.getMinutes().toString().padStart(2, '0')}`);
 	BASE.frameChronos = new Chronos();
 	
-	await Robot_Gripper(BASE, [false]);
+	await Robot_gripper(BASE, [false]);
 	await Robot_HighPower(BASE, [true]);
 	await Robot_explore(BASE);
 
@@ -34,7 +34,7 @@ export const Exec_start = async (BASE)=>{
 		}
 	}
 	
-	await Robot_Gripper(BASE, [false]);
+	await Robot_gripper(BASE, [false]);
 	await Robot_HighPower(BASE, [false]);
 
 	const stopedAt = new Date();
