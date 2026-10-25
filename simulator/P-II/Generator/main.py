@@ -88,12 +88,11 @@ def diff(cur, old, w=400, h=400, ) :
 				diff[y, x] = np.append(cur[y, x], 255)
 	return diff
 
-offset = 0
+offset = 1
 
 if len(sys.argv) > 1 and sys.argv[1] == "loop" :
-	curImg = np.zeros((width, height, 3), np.uint8) 
 	while (True):
-		oldImg = curImg.copy()
+		oldImg = genImage(w=width, h=height, offset=offset-1) if offset != 0 else np.zeros((width, height, 3), np.uint8)
 		curImg = genImage(w=width, h=height, offset=offset)
 		moveImg = diff(curImg, oldImg, w=width, h=height)
 		offset += 1
@@ -105,13 +104,7 @@ else :
 	except :
 		print("offset is forced to be 0 - pass any integer or 'loop'")
 	curImg = genImage(w=width, h=height, offset=offset)
-	oldImg = np.zeros((width, height, 3), np.uint8)
-	if offset!=0 and os.path.isfile(dataPath/'draw.png') :
-		shutil.move(dataPath/'draw.png', dataPath/'draw.old.png')
-		oldImg = cv2.imread(dataPath/'draw.old.png')
-	else :
-		cv2.imwrite(dataPath/'draw.old.png', oldImg)
-	cv2.imwrite(dataPath/'draw.png', curImg)
+	oldImg = genImage(w=width, h=height, offset=offset-1) if offset != 0 else np.zeros((width, height, 3), np.uint8)
 	moveImg = diff(curImg, oldImg, w=width, h=height)
 	cv2.imwrite(dataPath/'draw.diff.png', moveImg)
 

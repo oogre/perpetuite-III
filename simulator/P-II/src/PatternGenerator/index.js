@@ -34,9 +34,21 @@ export default class PatternGenerator{
 	
 	async getNextPattern(){
 		console.log(`GEN NEW PATTERN FOR OFFSET ${this.offset}`);
-		const res = await call(`${this.conf.path} ${this.offset}`);
-		this.offset += 1;
-		this.pathExtractor.genPath();
+		let t0 = Date.now();
+		console.log(`getNextPattern: start offset=${this.offset}`);
+		try {
+			const {stdout, stderr} = await _exec(`${this.conf.path} ${this.offset}`, {timeout: 60000});
+			if (stderr) console.warn('Generator stderr:', stderr);
+			this.offset += 1;
+			console.log(`getNextPattern: done in ${Date.now() - t0} ms`);
+			t0 = Date.now();
+			console.log(`genPath: start`);
+			this.pathExtractor.genPath();
+			console.log(`genPath: done in ${Date.now() - t0} ms`);
+		} catch (e) {
+			console.error('Generator failed', e);
+			throw e;
+		}
 		return await Jimp.read(this.conf.drawPath);
 	}
 }
