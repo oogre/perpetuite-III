@@ -74,12 +74,11 @@ export default class Commands{
 
 	async genTaskList(){
 		const img = await this.patterGen.getNextPattern();
+
 		const locationToDraw = (location)=>{
 			const toImageSize = new Vector2(img.bitmap.width, img.bitmap.height);
 			const normalize = new Vector2(this.conf.positionRadius * 2, this.conf.positionRadius * 2);
 			const offsetLocation = new Vector2(this.conf.positionRadius, this.conf.positionRadius);
-
-
 			return location.clone()
 				.addScalar(this.conf.positionRadius)
 				.multiply(toImageSize)
@@ -96,11 +95,32 @@ export default class Commands{
 					color >> 8 & 0xFF, 
 					color >> 0 & 0xFF
 				];
-
+				let colorName = "red";
+				if( R > G && R > B){
+					colorName = "red";	
+				}
+				else if( G > R && G > B){
+					colorName = "yellow";	
+				}
+				else if( B > R && B > G){
+					colorName = "blue";	
+				}
+				else if(R == B && R > G){
+					colorName = Math.random()-0.5 > 0 ? "red" : "blue";	
+				}
+				else if(R == G && R > B){
+					colorName = Math.random()-0.5 > 0 ? "red" : "yellow";	
+				}
+				else if(B == G && B > R){
+					colorName = Math.random()-0.5 > 0 ? "yellow" : "blue";	
+				}else{
+					colorName = ["red", "yellow", "blue"][Math.floor(Math.random() * 3)]
+				}
 				if(A!=0){
 					return list.createPill({
 						box:[cell.location.x, cell.location.y], 
-						avgRGB:[R, G, B]
+						avgRGB : (new PillModel.Color(colorName)).rgb,
+						//avgRGB:[R, G, B]
 					});	
 				}
 			}).filter(pill=>!!pill)
@@ -119,11 +139,13 @@ export default class Commands{
 		}).sort(()=>Math.random()-0.5)
 		.map(([hash, group])=>{
 			return group.map(pill=>pill.toString()).join("\n");
-		});
+		}).join("\n").split("\n");
 
 		if(groupedItems.length == 0){
 			groupedItems = await this.genTaskList();
 		}
+
+
 
 		return groupedItems;
 	}

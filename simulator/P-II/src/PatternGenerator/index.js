@@ -24,8 +24,6 @@ export default class PatternGenerator{
 		fs.writeFileSync(this.conf.offsetFilePath, `${value}`, "utf8");
 	}
 	get offset(){
-		console.log(this.conf.offsetFilePath);
-
 		if(!fs.pathExistsSync(this.conf.offsetFilePath)){
 			this.offset = 0;
 		}
