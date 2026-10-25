@@ -2,12 +2,12 @@
 import Pills from "./../../Pills";
 import Area from "./../../Area";
 import {Memory_get} from './../Memory';
-
+import {delay} from './../../tools/helpers.js';
 
 
 export const Camera_capture = async (BASE, [transport=false]=[])=>{
 	BASE.robot.actionDesc = `Camera capture`;
-
+	await delay(1000);
 	transport = transport==1
 	const captureName = `${new Date().getTime()} ${BASE.robot.location4D}.png`;
 	const rawData = await BASE.camera.capture(captureName, transport);
