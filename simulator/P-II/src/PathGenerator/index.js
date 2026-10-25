@@ -14,7 +14,7 @@ export const PathExtractor = (conf)=>{
 	return {
 		genPath : () => {
 			const res = extractPaths(conf.inFile, conf.gap, conf.eps, conf.min);
-			fs.writeFileSync(conf.outFile, JSON.stringify(res));
+			fs.writeFileSync(conf.outFile, JSON.stringify(res, null, 2));
 			return res;
 		},
 		getPaths : ()=>{
