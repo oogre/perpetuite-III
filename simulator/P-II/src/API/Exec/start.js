@@ -2,9 +2,7 @@ import {Exec_loop} from './loop.js';
 import {Real_save} from './../Real/save.js';
 import ColorCli from "cli-color";
 
-import {Robot_HighPower} from '../Robot/HighPower.js';
-import {Robot_explore} from '../Robot/explore.js';
-
+import {Robot_HighPower, Robot_Gripper, Robot_explore} from '../Robot';
 import Chronos from "./../../tools/Chronos.js"
 
 let frameChronos = 0;
@@ -14,14 +12,14 @@ export const Exec_start = async (BASE)=>{
 	const startedAt = new Date();
 	console.log(`Start at : ${startedAt.getHours().toString().padStart(2, '0')}:${startedAt.getMinutes().toString().padStart(2, '0')}`);
 	BASE.frameChronos = new Chronos();
+	
+	await Robot_Gripper(BASE, [false]);
 	await Robot_HighPower(BASE, [true]);
-
-
 	await Robot_explore(BASE);
 
 
 	try{
-		await Exec_loop(BASE);	
+		await Exec_loop(BASE);
 	}catch(error){
 		console.log(error);
 		if(error.code == "pill Is not Present" || error.message == "pill Is not Present"){
@@ -35,7 +33,10 @@ export const Exec_start = async (BASE)=>{
 			console.log(error);	
 		}
 	}
+	
+	await Robot_Gripper(BASE, [false]);
 	await Robot_HighPower(BASE, [false]);
+
 	const stopedAt = new Date();
 	console.log(`Stoped at : ${stopedAt.getHours().toString().padStart(2, '0')}:${stopedAt.getMinutes().toString().padStart(2, '0')}`);
 	const runDuration = stopedAt - startedAt;
