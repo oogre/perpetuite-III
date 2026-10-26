@@ -38,6 +38,7 @@ export default class Pills{
 	fromArea(area){
 		const p = new PillModel(this.conf, area.inflate(1));
 		p.color = area.color;
+		p.lockedAt = area.lockedAt || -1;
 		return p;
 	}
 
