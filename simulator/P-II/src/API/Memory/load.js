@@ -13,15 +13,17 @@ export const Memory_load = (BASE)=>{
 		fs.readFileSync("./data/memoryStatus", "utf8")
 		.split("\n")
 		.map(line=>line.split(" "))
-		.map(([colorName, x, y, locked])=>{
+		.map(([colorName, x, y, locked, savedAt=new Date().getTime()])=>{
 			x = parseFloat(x);
 			y = parseFloat(y);
 			locked = parseInt(locked);
+			savedAt = parseInt(savedAt);
 			const area = new Area(
 				defaultPillVertex.map(([_x, _y])=>{return [_x+x, _y+y]}),
 			 	(new PillModel.Color(colorName)).rgb,
 			);
-			area.lockedAt = locked;
+			const dT = savedAt - locked;
+			area.lockedAt = new Date(locked + dT).getTime();
 			return area;
 		}).map(area=>BASE.memory.fromArea(area))
 	);
