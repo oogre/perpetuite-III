@@ -5,7 +5,7 @@ import {lerp} from "./../../../tools/math.js";
 
 //Log.info("Random x y z w adjustment");
 export const Move_drunk = async (BASE, destination=BASE.robot.location4D)=>{
-	const ptLen = Math.floor(lerp(2, 5, Math.random()));
+	const ptLen = Math.floor(lerp(3, 10, Math.random()));
 	const origin = BASE.robot.location4D;
 	for(let i = 0 ; i < ptLen ; i++){
 		const work = new Vector4(...BASE.grid.getRandom().location, 0, 0);
