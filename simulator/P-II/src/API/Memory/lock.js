@@ -1,7 +1,7 @@
 import {Memory_get} from "./get.js";
 import {isLocation, isBox, isString} from "./../../tools/validators.js";
 import {delay} from "./../../tools/helpers.js";
-
+import PillModel from "./../../Pills/PillModel";
 
 export const Memory_lock = async ({memory}, location)=>{
 	if(isLocation(location)){
@@ -20,7 +20,7 @@ export const Memory_lock = async ({memory}, location)=>{
 
 export const Memory_unlock = ({memory}, [colorName]=[])=>{
 
-	console.log(colorName);
+	
 	const pills = Memory_get({memory}, [colorName]);
 	
 
@@ -31,6 +31,7 @@ export const Memory_unlock = ({memory}, [colorName]=[])=>{
 								});
 	coloredPillHistory.length = Math.floor(coloredPillHistory.length/3);
 
-	console.log(coloredPillHistory.length);
+	console.log(`Unlock 1/3 of ${PillModel.Color.style(colorName)} pill : ${coloredPillHistory.length}`);
+	
 	coloredPillHistory.map(pill=>pill.unlock());
 }

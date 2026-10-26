@@ -4,7 +4,7 @@ import {Robot_go} from './go.js';
 import {Memory_get, Memory_unlock} from './../Memory';
 import {Robot_whatsBelow, AT_DROPZONE} from './whatsBelow.js';
 import {Move_drunk} from './../Move';
-import PillModel from "./../../Pills/PillModel";
+
 import { Vector2, Vector4 } from './../../tools/Vector.js';
 
 
@@ -12,7 +12,6 @@ import { Vector2, Vector4 } from './../../tools/Vector.js';
 export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])=>{
 	
 	if(depth==5){
-		console.log(`Unlock all ${PillModel.Color.style(colorName)} pill`);
 		Memory_unlock(BASE, [colorName]);
 	}
 	else if(depth>5){
