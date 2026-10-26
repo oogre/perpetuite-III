@@ -5,10 +5,12 @@ import {PillModel} from "./../../Pills";
 import Area from "./../../Area";
 
 export const Memory_load = (BASE)=>{
+	BASE.robot.actionDesc = `Memory load`;
 	const defaultPillVertex = new Array(8).fill(0).map((_, id, {length})=>{
 		const alpha = id * (Math.PI * 2 / (length - 1))
 		return [Math.cos(alpha) * 4.5, Math.sin(alpha) * 4.5]
 	});
+	
 	BASE.memory.addEach(
 		fs.readFileSync("./data/memoryStatus", "utf8")
 		.split("\n")
@@ -27,5 +29,6 @@ export const Memory_load = (BASE)=>{
 			return area;
 		}).map(area=>BASE.memory.fromArea(area))
 	);
+	BASE.robot.actionDescPop();
 	return true;
 }

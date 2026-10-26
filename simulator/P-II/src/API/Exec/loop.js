@@ -1,9 +1,11 @@
 import {Exec_task} from "./task.js";
 import Chronos from "./../../tools/Chronos.js"
 import {delay} from "./../../tools/helpers.js"
+import {Memory_save} from '../Memory';
 
 export const Exec_loop = async (BASE)=>{
-	if(!BASE.hasToLoop) return;
+	Memory_save(BASE);
+	if(!BASE.hasToLoop)return;
 	BASE.robot.actionDesc = `Exec loop`;
 	console.log("");
 	if(BASE.cmd.length==1){
@@ -15,7 +17,7 @@ export const Exec_loop = async (BASE)=>{
 	const task = await BASE.cmd.getTask();
 	await Exec_task(BASE, [task.color.name, task.location.x, task.location.y]);
 	taskChrono.interval();
-	console.log(`Duration : ${taskChrono.duration}s.`);
+	console.log(`Duration : ${taskChrono.duration}s.`);	
 	BASE.robot.actionDescPop();
 	await Exec_loop(BASE);
 }
