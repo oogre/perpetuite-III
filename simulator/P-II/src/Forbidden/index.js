@@ -21,13 +21,15 @@ export default class Forbidden{
 	}
 	async add(item){
 		const area = new Area(item.contour).inflate(5);
+		if(area.contour.length < 3) return;   // contour dégénéré : rien à interdire
 		hasToAdd:{
 			for(const other of this.areas){
 				/*
 				Error: PolyBool: Zero-length segment detected; your epsilon is probably too small or too large
 				*/
 				if(other.isIntersect(area)){
-					other.contour = other.union(area)[0];
+					const merged = other.union(area)[0];
+					if(merged) other.contour = merged;
 					break hasToAdd;
 				}
 			}

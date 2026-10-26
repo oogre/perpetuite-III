@@ -51,7 +51,10 @@ export default class Area {
 		const grahamScan = new GrahamScan();
 		grahamScan.setPoints(points);
 		points = grahamScan.getHull();
- 
+ 		if(points.length < 3){ 
+ 			this._points = []; 
+ 			return; 
+ 		}
 		this._points = points;
 		this._path = new Path2D();
 		this._length = 0;
