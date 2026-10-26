@@ -85,39 +85,50 @@ export default class RobotBase extends EventsManager{
 	}
 
 	async update(deltaTime, now){
-		this._move.set(...this._target).sub(this._location);
-		if(await this._reached.isPending()){
-			if(this.conf.simulation){
-				const bellCurve = (curveWidth, x)=>{
-					const width = lerp(4, 1.01, curveWidth);
-					return 1-Math.pow(width, -1 * x);
-				};
-				const damping = (value)=>{
-					const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
-					return bellCurve(Math.pow(speedAsFloat, 0.05), value);
+		if(this._updating) return;
+		this._updating = true;
+		try{
+			this._move.set(...this._target).sub(this._location);
+			if(await this._reached.isPending()){
+				if(this.conf.simulation){
+					const bellCurve = (curveWidth, x)=>{
+						const width = lerp(4, 1.01, curveWidth);
+						return 1-Math.pow(width, -1 * x);
+					};
+					const damping = (value)=>{
+						const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
+						return bellCurve(Math.pow(speedAsFloat, 0.05), value);
+					}
+					this._move.w = shortAngle(this._location.w, this._target.w, 360);
+					this._location.add(
+						this._move
+							.clone()
+							.normalize()
+							.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
+					);
+					this._location.w %= 360;
+					this.fire('locationChange', this.location4D.clone());	
+				}else{
+					const t = await this.controller.GetPosition();
+					this._location.copy(new Vector4(...t));
+					this.fire('locationChange', this.location4D.clone());	
 				}
-				this._move.w = shortAngle(this._location.w, this._target.w, 360);
-				this._location.add(
-					this._move
-						.clone()
-						.normalize()
-						.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
-				);
-				this._location.w %= 360;
-				this.fire('locationChange', this.location4D.clone());	
-			}else{
-				const t = await this.controller.GetPosition();
-				this._location.copy(new Vector4(...t));
-				this.fire('locationChange', this.location4D.clone());	
-			}
 
-			if(this._move.lengthSq()<0.3){
-				if(!this._isInit){
-					this._isInit = true;
-					this.fire('initilized', this.location4D.clone());
+				this._move.set(...this._target).sub(this._location);
+				this._move.w = shortAngle(this._location.w, this._target.w, 360);
+
+				if(this._move.lengthSq()<0.3){
+					if(!this._isInit){
+						this._isInit = true;
+						this.fire('initilized', this.location4D.clone());
+					}
+					this._reached.resolve();	
 				}
-				this._reached.resolve();	
 			}
+		}catch(error){
+			console.log(error);   // une lecture ratée ne doit pas tuer le programme
+		}finally{
+			this._updating = false;
 		}
 	}
 }

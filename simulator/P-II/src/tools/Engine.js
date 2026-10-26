@@ -11,9 +11,13 @@ export default class Engine{
 	update(){
 		const now = new Date().getTime();
 		const deltaTime = (now-this._lastFrameAt)*0.001;
-		this._registered.forEach((item, id)=>{
-			item.update(deltaTime, now);
+		// this._registered.forEach((item, id)=>{
+		// 	item.update(deltaTime, now);
+		// });
+		this._registered.forEach(item=>{
+			Promise.resolve(item.update(deltaTime, now)).catch(console.error);
 		});
+
 		this._lastFrameAt = now;
 	}
 	forAllRegistered(action){
