@@ -39,7 +39,7 @@ export const Exec_task = async(BASE, [colorName=(new PillModel.Color()).name, x=
 			error.code == "pill Is not Removed" || 
 			error.message == "pill Is not Removed"
 		){
-			console.log(${error.code} ${error.message});
+			console.log(`${error.code} ${error.message}`);
 		 	return Exec_task(BASE, [colorName, x, y]);
 		}else{
 			throw error;
