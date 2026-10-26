@@ -9,7 +9,7 @@ export const Move_drunk = async (BASE, destination=BASE.robot.location4D)=>{
 	const origin = BASE.robot.location4D;
 	for(let i = 0 ; i < ptLen ; i++){
 		const work = new Vector4(...BASE.grid.getRandom().location, 0, 0);
-		work.z = Math.random() * BASE.table.toFloorLocation(work).z;
+		work.z = Math.random() * (BASE.table.toFloorLocation(work).z + 20);
 		work.w = lerp(BASE.robot.conf.minRoll, BASE.robot.conf.maxRoll, Math.random());
 		await Robot_go(BASE, work);
 	}
