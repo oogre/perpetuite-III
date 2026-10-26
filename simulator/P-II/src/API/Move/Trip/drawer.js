@@ -6,7 +6,7 @@ import { lerp, inverseLerp} from './../../../tools/math.js';
 
 export const Move_drawer = async (BASE)=>{
 	const path = await Command_getPath(BASE);
-	const ptLen = Math.floor(lerp(1, 3, Math.random()));
+	const ptLen = Math.floor(lerp(2, 4, Math.random()));
 
 	for(let i = 0 ; i < ptLen ; i++){
 		const lastPoint = path[path.length-1];
