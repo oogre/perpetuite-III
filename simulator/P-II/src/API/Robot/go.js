@@ -22,9 +22,9 @@ export const Robot_go = async (BASE, location)=>{
 		await BASE.robot.go(dest);	
 	}
 
-	const dampingTime = lerp(20, 1500, inverseLerp(0, BASE.robot.conf.radius * 2, move.length()));
+	const dampingTime = lerp(20, 2000, inverseLerp(0, BASE.robot.conf.radius * 2, move.length()));
 	await delay(dampingTime);
-	
+	console.log(`damping time : ${dampingTime}`);
 	BASE.robot.actionDescPop();
 	return true;
 }
