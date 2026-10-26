@@ -40,8 +40,9 @@ export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[]
 		if(below == AT_DROPZONE.GOOD_COLOR) {
 			return selectedPill;
 		}
-		await Move_drunk(BASE, new Vector4(...(BASE.grid.getRandom().location), 0, 0));
 		BASE.memory.delete(selectedPill);
+		
+		await Move_drunk(BASE, new Vector4(...(BASE.grid.getRandom().location), 0, 0));
 	}
 	return await Robot_findFreePillByColorName(BASE, [colorName, depth+1])
 }
