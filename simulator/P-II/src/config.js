@@ -166,17 +166,17 @@ export default {
 		colors : [
 			{
 				name : "red",
-				rgb : [128,  94,  85],
+				rgb : [124, 85, 80],
 				rgbOLD : [127,  73,  61],
 				style : ColorCli.black.bgRed
 			},{
 				name : "yellow",
-				rgb : [144, 125,  94],
+				rgb : [145, 123, 93],
 				rgbOLD : [100, 100,  61],
 				style : ColorCli.black.bgYellow
 			},{
 				name : "blue",
-				rgb : [ 91,  94,  102],
+				rgb : [ 84, 85, 96],
 				rgbOLD : [ 66,  70,  80],
 				style : ColorCli.black.bgBlue
 			}

@@ -89,6 +89,7 @@ export const LimitedColorPaletteGenerator = (palette)=>{
 	return class LimitedColorPalette {
 		static NAMED_COLOR = palette;	
 
+
 		static getRandomColorName = ()=>{
 			return getRandomItem(palette).name
 		}
@@ -106,31 +107,27 @@ export const LimitedColorPaletteGenerator = (palette)=>{
 			}
 			return `-${args.join(' ')}-`;
 		}
-		static getName = (rgb)=>{
-			LimitedColorPaletteGenerator.get(rgb).name;
-		}
-		static getStyle = (rgb)=>{
-			LimitedColorPaletteGenerator.get(rgb).style;
-		}
-		static get = (rgb)=>{
+		// static getName = (rgb)=>{
+		// 	LimitedColorPaletteGenerator.get(rgb).name;
+		// }
+		// static getStyle = (rgb)=>{
+		// 	LimitedColorPaletteGenerator.get(rgb).style;
+		// }
+		static WL = 0.35;                                    // poids de la luminosité (1 = CIE76 normal)
+		static labPalette = palette.map(p => ({...p, lab: rgb2lab(p.rgb)}));   // calculé une seule fois
 
-			// const WL = 0.35; // poids de la luminosité (1 = comme CIE76)
-			// const labPalette = palette.map(p => ({ ...p, lab: rgb2lab(p.rgb) }));
-			// const colorDistance = (a, b) => Math.hypot(WL * (a[0] - b[0]), a[1] - b[1], a[2] - b[2]);
-			// const lab = rgb2lab(rgb);
-			// let best = null, bestDist = Infinity;
-			// for (const p of labPalette) {
-			// 	const d = colorDistance(lab, p.lab);
-			// 	if (d < bestDist) { bestDist = d; best = p; }
-			// }
-			// return best;
-		
+		static get = (rgb)=>{
 			const lab = rgb2lab(rgb);
-			return palette.sort((a, b)=>{
-				const dA = deltaE(lab, rgb2lab(a.rgb));
-				const dB = deltaE(lab, rgb2lab(b.rgb));
-				return dA - dB;
-			})[0];
+			let best = null, bestDist = Infinity;
+			for(const p of LimitedColorPalette.labPalette){
+				const d = Math.hypot(
+					LimitedColorPalette.WL * (lab[0] - p.lab[0]),
+					lab[1] - p.lab[1],
+					lab[2] - p.lab[2]
+				);
+				if(d < bestDist){ bestDist = d; best = p; }
+			}
+			return best;
 		}
 
 		constructor(param){
