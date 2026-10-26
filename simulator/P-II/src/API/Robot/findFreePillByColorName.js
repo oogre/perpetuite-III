@@ -3,8 +3,10 @@ import {Robot_go} from './go.js';
 
 import {Memory_get, Memory_unlock} from './../Memory';
 import {Robot_whatsBelow, AT_DROPZONE} from './whatsBelow.js';
+import {Move_drunk} from './../Move';
 import PillModel from "./../../Pills/PillModel";
-import { Vector2 } from './../../tools/Vector.js';
+import { Vector2, Vector4 } from './../../tools/Vector.js';
+
 
 
 export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])=>{
@@ -38,6 +40,7 @@ export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[]
 		if(below == AT_DROPZONE.GOOD_COLOR) {
 			return selectedPill;
 		}
+		await Move_drunk(BASE, new Vector4(...(BASE.grid.getRandom().location), 0, 0);
 		BASE.memory.delete(selectedPill);
 	}
 	return await Robot_findFreePillByColorName(BASE, [colorName, depth+1])
