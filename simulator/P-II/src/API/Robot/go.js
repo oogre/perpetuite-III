@@ -5,7 +5,7 @@ import * as Walk from './../Move/Walk';
 import {getRandomOne, delay} from './../../tools/helpers.js';
 import {lerp, inverseLerp} from './../../tools/math.js';
 
-export const Robot_go = async (BASE, location)=>{
+export const Robot_go = async (BASE, location, enableDamping=false)=>{
 	BASE.robot.actionDesc = `Robot go ${location}`;
 
 	// if(Math.random()<0.1){
@@ -22,9 +22,12 @@ export const Robot_go = async (BASE, location)=>{
 		await BASE.robot.go(dest);	
 	}
 
-	const dampingTime = lerp(20, 2000, inverseLerp(0, BASE.robot.conf.radius * 2, move.length()));
-	await delay(dampingTime);
-	console.log(`damping time : ${dampingTime}`);
+	if(enableDamping){
+		const dampingTime = lerp(20, 2000, inverseLerp(0, BASE.robot.conf.radius * 2, move.length()));
+		console.log(`damping time : ${dampingTime}`);
+		await delay(dampingTime);
+	}
+
 	BASE.robot.actionDescPop();
 	return true;
 }
