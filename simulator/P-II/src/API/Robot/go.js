@@ -3,6 +3,7 @@ import { Vector4 } from './../../tools/Vector.js';
 import { Robot_limitter } from './limitter.js';
 import * as Walk from './../Move/Walk';
 import {getRandomOne, delay} from './../../tools/helpers.js';
+import {lerp, inverseLerp} from './../../tools/math.js';
 
 export const Robot_go = async (BASE, location)=>{
 	BASE.robot.actionDesc = `Robot go ${location}`;
@@ -21,10 +22,9 @@ export const Robot_go = async (BASE, location)=>{
 		await BASE.robot.go(dest);	
 	}
 
-	console.log(`Distance ${move.length()}`);
-	if(move.length() > BASE.robot.conf.radius){
-		await delay(1000);
-	}
+	const dampingTime = lerp(20, 1500, inverseLerp(0, BASE.robot.conf.radius * 2, move.length()));
+	await delay(dampingTime);
+	
 	BASE.robot.actionDescPop();
 	return true;
 }
