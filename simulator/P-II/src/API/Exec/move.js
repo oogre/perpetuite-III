@@ -38,7 +38,7 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 		...BASE.robot.location2D, 
 		visiblePills.conf.radius.value*3, 
 		visiblePills.conf.radius.value*3
-	]);
+	]).filter(pill=>!pill.isLock);
 
 	if(depth == 0){
 		const goodColorId = pills.findIndex(({color:{name:colorName}})=>colorName==pill.color.name);
