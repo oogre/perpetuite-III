@@ -24,7 +24,6 @@ export const Robot_go = async (BASE, location, enableDamping=true)=>{
 
 	if(enableDamping){
 		const dampingTime = lerp(20, 2000, inverseLerp(0, BASE.robot.conf.radius * 2, move.length()));
-		console.log(`damping time : ${dampingTime}`);
 		await delay(dampingTime);
 	}
 

@@ -2,6 +2,7 @@ import {Exec_task} from "./task.js";
 import Chronos from "./../../tools/Chronos.js"
 import {delay} from "./../../tools/helpers.js"
 import {Memory_save} from '../Memory';
+import {Move_drawer} from './../Move';
 
 export const Exec_loop = async (BASE)=>{
 	Memory_save(BASE);
@@ -11,6 +12,7 @@ export const Exec_loop = async (BASE)=>{
 	if(BASE.cmd.length==1){
 		BASE.frameChronos.interval();
 		console.log(`Frame accomplished in ${BASE.frameChronos.duration}s.`);
+		await Move_drawer(BASE);
 	}
 	console.log(`Still : ${BASE.cmd.length} tasks`);
 	const taskChrono = new Chronos();
