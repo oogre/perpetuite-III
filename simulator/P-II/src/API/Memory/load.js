@@ -22,8 +22,8 @@ export const Memory_load = (BASE)=>{
 				defaultPillVertex.map(([_x, _y])=>{return [_x+x, _y+y]}),
 			 	(new PillModel.Color(colorName)).rgb,
 			);
-			const dT = savedAt - locked;
-			area.lockedAt = new Date(locked + dT).getTime();
+			const age = savedAt - locked;
+			area.lockedAt = new Date().getTime() - age;
 			return area;
 		}).map(area=>BASE.memory.fromArea(area))
 	);
