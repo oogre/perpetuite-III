@@ -6,3 +6,4 @@ export * from './lock.js';
 export * from './clear.js';
 export * from './removeNotlocked.js';
 export * from './load.js';
+export * from './save.js';

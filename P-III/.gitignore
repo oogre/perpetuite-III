@@ -3,3 +3,4 @@ release/*
 node_modules/*
 *.log
 data/parent_IP.conf
+Claude outputs/*
