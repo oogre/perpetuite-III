@@ -85,8 +85,10 @@ export default class RobotBase extends EventsManager{
 			try{ 
 				await this.controller.Go(this._target); 
 			}catch(error){
-				if(error.code === '604') this.fire('powerOff', error);
-				throw error;                                   // l'appelant la voit toujours
+				if(error.code === '604') 
+					this.fire('powerOff', error);
+				else
+					throw error;// l'appelant la voit toujours
 			}
 		}
 
