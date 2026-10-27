@@ -6,8 +6,7 @@ import {lerp} from "./../../../tools/math.js";
 //Move inspector
 
 export const Move_inspector = async (BASE, destination=BASE.robot.location4D)=>{
-
-
+	BASE.robot.actionDesc = `Move inspector ${destination}`;
 
 	for(const {color, location} of BASE.data.history.tasks){
 			const work = new Vector4(...location, 0, 0);
@@ -16,7 +15,7 @@ export const Move_inspector = async (BASE, destination=BASE.robot.location4D)=>{
 			await Robot_go(BASE, work, false);
 	}
 	await Robot_go(BASE, new Vector4(...destination));
-
-
+	
+	BASE.robot.actionDescPop();
 	return true;
 }
