@@ -15,6 +15,7 @@ export const Move_drunk = async (BASE, destination=BASE.robot.location4D)=>{
 		work.w = lerp(BASE.robot.conf.minRoll, BASE.robot.conf.maxRoll, Math.random());
 		await Robot_go(BASE, work, false);
 	}
+	await delay( 1000 );
 	await Robot_go(BASE, new Vector4(...destination));
 	BASE.robot.actionDescPop();
 	return true;
