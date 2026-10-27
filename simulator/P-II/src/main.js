@@ -4,7 +4,7 @@ import config from "./config.js";
 import readline from "readline"
 import Engine from "./tools/Engine.js";
 import API from "./API";
-import {Robot_HighPower, Robot_gripper, Memory_save} from "./API/Actions.js";
+import {Robot_HighPower, Robot_gripper, Memory_save, Memory_clear} from "./API/Actions.js";
 import UI_Manager from "./UI";
 // import Real from "./Real";
 import Robot from "./Robot";
@@ -95,14 +95,15 @@ robot.on("initilized", location => {
 
 api.on('error', async (error)=>{ 
 	console.log(error?.code, error?.message);
-	await Memory_save(api.BASE);
+	Memory_save(api.BASE);
+	Memory_clear(api.BASE);
 	await Robot_gripper(api.BASE, [false]);
 	await Robot_HighPower(api.BASE, [false]);
 
-	// if(error instanceof AppError && error.is(ERR.FORBIDDEN)){
-	// 	console.log(`${error.message}`);
-	//  	return api.fire(`Exec_Start`);
-	// }
+	if(error instanceof AppError && error.is(ERR.FORBIDDEN)){
+		console.log(`${error.message}`);
+	 	return api.fire(`Exec_start`);
+	}
 
 	switch (error.code) {
 		default : 
