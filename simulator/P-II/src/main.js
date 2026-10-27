@@ -15,6 +15,8 @@ import Grid from "./Grid";
 import Commands from "./Commands";
 import ImageManager from "./ImageManager";
 import {axisCorrection} from "./tools/correction.js";
+import LimitedArray from "./tools/LimitedArray.js";
+
 
 process.title = config.window.title;
 
@@ -57,7 +59,15 @@ const ui = new UI_Manager(config.window);
 // 	uiPreview.register(image.ui);
 // 	uiPreview.register(image.uiFrame);
 
+
+const data = {
+	history : {
+		tasks : new LimitedArray(10)
+	}
+};
+
 const api = new API({
+	data,
 	robot,
 	camera,
 	memory,

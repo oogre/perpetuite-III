@@ -63,5 +63,11 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 	Memory_lock(BASE, location);
 
 	LOG(`DONE ${pill.color.style} @  ${location.style}`);
+	
+	BASE.data.history.tasks.push({
+		color : pill.color.name,
+		location : location.toArray()
+	});
+
 	BASE.robot.actionDescPop();
 }
