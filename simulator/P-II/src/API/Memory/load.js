@@ -14,6 +14,8 @@ export const Memory_load = (BASE)=>{
 	BASE.memory.addEach(
 		fs.readFileSync("./data/memoryStatus", "utf8")
 		.split("\n")
+		.map(line => line.trim())
+		.filter( line => line !== "") 
 		.map(line=>line.split(" "))
 		.map(([colorName, x, y, locked, savedAt=new Date().getTime()])=>{
 			x = parseFloat(x);
