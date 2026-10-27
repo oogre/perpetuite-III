@@ -82,6 +82,7 @@ const api = new API({
 	table
 });
 
+
 robot.on('powerOff', async (error)=>{ 
 	console.log(error.message);
 	await Memory_save(api.BASE);
@@ -91,8 +92,11 @@ robot.on('powerOff', async (error)=>{
 });
 
 api.on('error', async (error)=>{ 
+	console.error("[main] api error :", error.message);
 	console.error(error);
 });
+
+// real.load();
 
 process.on('exit', ()=>camera.shutdownSync());
 process.on('SIGINT', ()=>process.exit(0));
