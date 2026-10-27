@@ -2,7 +2,7 @@
 import {Robot_go} from "./../../Robot";
 import { Vector4 } from './../../../tools/Vector.js';
 import {lerp} from "./../../../tools/math.js";
-import {delay} from './../../tools/helpers.js';
+import {delay} from './../../../tools/helpers.js';
 //Move inspector
 
 export const Move_inspector = async (BASE, destination=BASE.robot.location4D)=>{
