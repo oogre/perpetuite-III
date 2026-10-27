@@ -1,7 +1,7 @@
 import {Robot_go} from "./../../Robot";
 import { Vector4, Vector3 } from './../../../tools/Vector.js';
 import { lerp, inverseLerp, areAligned} from './../../../tools/math.js';
-import { ArcThrough} from './../../../tools/ArcThrough.js';
+import ArcThrough from './../../../tools/ArcThrough.js';
 
 // Move curve 0 0 0 0
 
