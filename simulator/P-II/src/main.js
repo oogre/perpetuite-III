@@ -85,15 +85,10 @@ const update = (location)=>{
 }
 
 
-robot.on("locationChange", location => {
-	console.log("locationChange");
-	update(location);
-});
+robot.on("locationChange", update.bind(this));
 robot.on("initilized", location => {
-	console.log("initilized");
 	update(location);
-	api.fire(`Exec_Start`);
-
+	api.fire(`Exec_start`);
 });
 	
 
