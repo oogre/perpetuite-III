@@ -4,7 +4,7 @@ import config from "./config.js";
 import readline from "readline"
 import Engine from "./tools/Engine.js";
 import API from "./API";
-import {Robot_gripper, Memory_save} from "./API/Actions.js";
+import {Robot_HighPower, Robot_gripper, Memory_save} from "./API/Actions.js";
 import UI_Manager from "./UI";
 // import Real from "./Real";
 import Robot from "./Robot";
@@ -40,8 +40,9 @@ const robot = new Robot(config.robot);
 	robot.on('powerOff', async (error)=>{ 
 		console.log(error.message);
 		/* stopper la boucle, prévenir, etc. */ 
-		await Robot_gripper(api.BASE, [false]);
 		await Memory_save(api.BASE);
+		await Robot_gripper(api.BASE, [false]);
+		await Robot_HighPower(BASE, [false]);
 		process.exit(1);
 	});
 
