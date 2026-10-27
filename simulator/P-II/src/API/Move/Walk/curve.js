@@ -9,8 +9,6 @@ import ArcThrough from './../../../tools/ArcThrough.js';
 //   arc.getPoints(32)         // 33 Vector3, de l'origine à la destination, régulièrement répartis en angle (donc en longueur : c'est un cercle)
 //   arc.getLength()           // longueur de l'arc
 
-
-
 export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 	const getNotAlignedPoint = (A, B)=>{
 		const C = new Vector3(...BASE.grid.getRandom().location);
@@ -35,11 +33,11 @@ export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 			point.z = Math.min(0, Math.max(point.z, BASE.table.toFloorLocation(point).z - 20));;
 			return point;
 		}).map( point =>{
-			return Robot_go(BASE, new Vector4(...point, 0));
+			return Robot_go(BASE, new Vector4(...point, 0), {enableDamping:false, curve=false});
 		})]);
 
 	}
-	await Robot_go(BASE, new Vector4(...destination));
+	await Robot_go(BASE, new Vector4(...destination), {enableDamping:true, curve=false});
 	return true;
 }
 

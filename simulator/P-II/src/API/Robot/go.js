@@ -5,7 +5,7 @@ import * as Walk from './../Move/Walk';
 import {getRandomOne, delay} from './../../tools/helpers.js';
 import {lerp, inverseLerp} from './../../tools/math.js';
 
-export const Robot_go = async (BASE, location, enableDamping=true)=>{
+export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}={})=>{
 	BASE.robot.actionDesc = `Robot go ${location}`;
 
 	// if(Math.random()<0.1){
