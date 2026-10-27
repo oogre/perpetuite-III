@@ -82,17 +82,17 @@ const api = new API({
 	table
 });
 
-
-robot.on('error', async (error)=>{ 
-	console.log(error.message);
-	await Memory_save(api.BASE);
-	await Robot_gripper(api.BASE, [false]);
-	await Robot_HighPower(api.BASE, [false]);
-	process.exit(1);
-});
-
 api.on('error', async (error)=>{ 
-	console.log(error.message);
+	// switch (parseInt(error.code)) {
+	// 	case 604: //*Robot power off requested*
+	// 	case 901: //*Obstacle collision detected*
+	// 	case 906: //*Robot power off requested*
+	// 	case 908: //*E-STOP from front panel button*
+	// 		this.fire('error', error);
+	// 	break;
+	// }
+	console.log('api error');
+	console.log(error?.code, error?.message);
 	await Memory_save(api.BASE);
 	await Robot_gripper(api.BASE, [false]);
 	await Robot_HighPower(api.BASE, [false]);

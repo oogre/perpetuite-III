@@ -82,19 +82,8 @@ export default class RobotBase extends EventsManager{
 		}
 		this._target.copy(targetValue);
 		if(!this.conf.simulation){
-			try{ 
-				await this.controller.Go(this._target); 
-			}catch(error){
-				switch (parseInt(error.code)) {
-					case 604: //*Robot power off requested*
-					case 901: //*Obstacle collision detected*
-					case 906: //*Robot power off requested*
-						this.fire('error', error);
-					break;
-				default :
-					throw error;
-				}
-			}
+			await this.controller.Go(this._target);
+			
 		}
 
 		this._startedAt = new Date().getTime();
