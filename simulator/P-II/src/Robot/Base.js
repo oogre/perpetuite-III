@@ -130,16 +130,6 @@ export default class RobotBase extends EventsManager{
 				this._move.set(...this._target).sub(this._location);
 				this._move.w = shortAngle(this._location.w, this._target.w, 360);
 
-
-
-				// if(this._move.lengthSq()<0.3){
-				// 	if(!this._isInit){
-				// 		this._isInit = true;
-				// 		this.fire('initilized', this.location4D.clone());
-				// 	}
-				// 	this._reached.resolve();	
-				// }
-
 				const reached = this._move.lengthSq() < 0.3;
 				const stopped = this._still >= 6 && now - this._startedAt > 2000;   // immobile depuis ~300 ms
 				if(reached || stopped){

@@ -1,14 +1,4 @@
-/home/perpetuite/perpetuite-III/simulator/P-II/node_modules/@velipso/polybool/dist/polybool.cjs:2302
-            shape.moveTo(lastPoint[lastPoint.length - 2], lastPoint[lastPoint.length - 1]);
-                                             ^
-
-TypeError: Cannot read properties of undefined (reading 'length')
-    at PolyBool.segments (/home/perpetuite/perpetuite-III/simulator/P-II/node_modules/@velipso/polybool/dist/polybool.cjs:2302:46)
-    at PolyBool.union (/home/perpetuite/perpetuite-III/simulator/P-II/node_modules/@velipso/polybool/dist/polybool.cjs:2400:27)
-    at Area.union (/home/perpetuite/perpetuite-III/simulator/P-II/release/Area/index.js:217:30)
-    at Area.isIntersect (/home/perpetuite/perpetuite-III/simulator/P-II/release/Area/index.js:220:17)
-    at Forbidden.add (/home/perpetuite/perpetuite-III/simulator/P-II/release/Forbidden/index.js:35:19)
-    at Forbidden.addEach (/home/perpetuite/perpetuite-III/simulator/P-II/release/Forbidden/index.js:25:12)
-    at Camera_capture (/home/perpetuite/perpetuite-III/simulator/P-II/release/API/Camera/capture.js:34:18)
+    TypeError: Cannot read properties of undefined (reading 'code')
+    at Object.Exec_start (/home/perpetuite/perpetuite-III/simulator/P-II/release/API/Exec/start.js:31:15)
     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
-    at async Object.Robot_drop (/home/perpetuite/perpetuite-III/simulator/P-II/release/API/Robot/drop.js:21:5)
+    at async t.<anonymous> (/home/perpetuite/perpetuite-III/simulator/P-II/release/API/index.js:37:26)
