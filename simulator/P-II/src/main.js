@@ -35,6 +35,10 @@ const robot = new Robot(config.robot);
 		robot.positionOnTable = table.toFloorLocation(location);
 		robot.hoverDangerousPlace = forbidden.isHover(location);
 	});
+	robot.on('powerOff', ()=>{ 
+		/* stopper la boucle, prévenir, etc. */ 
+		console.log("catched");
+	});
 
 const memory = new Memory(config.pills);
 const forbidden = new Forbidden(config.forbidden);
@@ -86,13 +90,3 @@ const api = new API({
 process.on('exit', ()=>camera.shutdownSync());
 process.on('SIGINT', ()=>process.exit(0));
 process.on('SIGTERM', ()=>process.exit(0));
-const onFatal = (error)=>{
-	if(error?.code === '604'){                      // le code est une chaîne
-		console.error("Robot hors tension : j'attends l'allumage");
-		// ici : arrêter la boucle Exec, relancer HighPower, etc.
-		return;
-	}
-	console.error(error);
-};
-process.on('unhandledRejection', onFatal);
-process.on('uncaughtException', onFatal);

@@ -83,6 +83,13 @@ export default class RobotBase extends EventsManager{
 		this._target.copy(targetValue);
 		if(!this.conf.simulation){
 			await this.controller.Go(this._target);
+
+			try{ 
+				await this.controller.Go(this._target); 
+			}catch(error){
+				if(error.code === '604') this.fire('powerOff', error);
+				throw error;                                   // l'appelant la voit toujours
+			}
 		}
 
 		this._startedAt = new Date().getTime();
