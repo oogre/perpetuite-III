@@ -9,7 +9,7 @@ import {Robot_dcc} from './dcc.js';
 
 export const Robot_explore = async (BASE)=>{
 	BASE.robot.actionDesc = `Explore`;
-
+	throw new Error(`Explore`);
 	const points = new Array(10).fill(0)
 		.map(()=>{
 			return new Vector2(...BASE.grid.getRandomCellLocation());
