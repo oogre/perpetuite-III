@@ -26,18 +26,12 @@ export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 
 	const arc = new ArcThrough(start, middle, stop);
 
-	console.log(arc.getLength());
-	console.log(arc.getPoints(10));
-
-	// const work = new Vector3(...BASE.grid.getRandom().location, 0, 0);
 	
-	// const lastPoint = path[path.length-1];
-	// const curve = Math.ceil(Math.random() * 4);
-	// await Promise.all([path.map((point)=>{
-	// 	return Robot_go(BASE, new Vector4(...point, 0));
-	// }));
+	await Promise.all([arc.getPoints(10).map((point)=>{
+		return Robot_go(BASE, new Vector4(...point, 0));
+	}));
 
-	// await Robot_go(BASE, new Vector4(...destination));
+	await Robot_go(BASE, new Vector4(...destination));
 	return true;
 }
 
