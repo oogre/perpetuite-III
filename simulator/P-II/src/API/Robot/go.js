@@ -24,8 +24,7 @@ export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}=
 			try{
 				await Move_curve(BASE, dest);	
 			}catch(e){
-				console.log("Something went wrong with curve to ", dest)
-
+				console.log(`Something went wrong with curve from ${origin.style} to ${origin.style}`)
 				await BASE.robot.go(dest);
 			}
 			

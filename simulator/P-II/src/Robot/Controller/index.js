@@ -8,11 +8,20 @@ import Position from './Position.js';
 
 // same error shape as the command line tool: [errorId, errorLabel]
 const errorOf = (res) => {
-	try{
-		return res.getErrorMessage();
-	}catch(e){
-		return [-1, String(res.parameters[0]?.value)];
+	let code = -1, message;
+	try{ 
+		[code, message] = res.getErrorMessage(); 
 	}
+	catch(e){ 
+		message = String(res.parameters[0]?.value); 
+	}
+	return Object.assign(new Error(`ACE ${code} : ${message}`), {code});
+
+	// try{
+	// 	return res.getErrorMessage();
+	// }catch(e){
+	// 	return [-1, String(res.parameters[0]?.value)];
+	// }
 }
 // same conversion as the command line tool (index.js) does for Go & Follow
 const toRobotRoll = (w) => (w>0?1:-1)*(180-Math.abs(w));
