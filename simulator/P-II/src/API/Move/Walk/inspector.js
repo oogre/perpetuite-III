@@ -12,17 +12,17 @@ export const Move_inspector = async (BASE, destination=BASE.robot.location4D)=>{
 			const work = new Vector4(...location, 0, 0);
 			work.z = (BASE.table.toFloorLocation(work).z + 20);
 			work.w = lerp(BASE.robot.conf.minRoll, BASE.robot.conf.maxRoll, Math.random());
-			await Robot_go(BASE, work, {enableDamping:false});
+			await Robot_go(BASE, work, {enableDamping:false, curve:false});
 			if(Math.random()<0.2){
 				for(let i = 0 ; i < 3 ; i++){
 					work.w = lerp(BASE.robot.conf.minRoll, BASE.robot.conf.maxRoll, Math.random());
-					await Robot_go(BASE, work, {enableDamping:false});
+					await Robot_go(BASE, work, {enableDamping:false, curve:false});
 				}
 			}
 			await delay( lerp(100, 800, Math.random()));
 	}
 	await delay( 800 );
-	await Robot_go(BASE, new Vector4(...destination));
+	await Robot_go(BASE, new Vector4(...destination), {enableDamping:false, curve:false});
 	
 	BASE.robot.actionDescPop();
 	return true;

@@ -18,13 +18,13 @@ export const Robot_release = async (BASE)=>{
 		const baseLocation = BASE.robot.location4D;
 		const pillLocation = Robot_limitter(BASE, new Vector4(baseLocation.x, baseLocation.y, -300, baseLocation.w));
 		const overPillLocation = new Vector4(pillLocation.x, pillLocation.y, pillLocation.z+5, pillLocation.w);
-		await Robot_go(BASE, pillLocation);
+		await Robot_go(BASE, pillLocation, {enableDamping:false, curve:false});
 		await Robot_gripper(BASE, [false]);
 		await delay(200);
 		await Robot_acc(BASE, [1]);
-		await Robot_go(BASE, overPillLocation);
+		await Robot_go(BASE, overPillLocation, {enableDamping:false, curve:false});
 		await Robot_acc(BASE, [BASE.robot.conf.default.acc]);
-		await Robot_go(BASE, baseLocation);
+		await Robot_go(BASE, baseLocation, {enableDamping:false, curve:false});
 	}
 	BASE.robot.actionDescPop();
 	return true;
