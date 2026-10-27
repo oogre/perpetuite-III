@@ -1,5 +1,5 @@
 import {Robot_go} from "./../../Robot";
-import { Vector4 } from './../../../tools/Vector.js';
+import { Vector4, Vector3 } from './../../../tools/Vector.js';
 import { lerp, inverseLerp, areAligned} from './../../../tools/math.js';
 import { ArcThrough} from './../../../tools/ArcThrough.js';
 
