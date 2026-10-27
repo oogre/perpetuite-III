@@ -17,9 +17,7 @@ using Ace.Core.Server.Device;
 using Ace.Core.Server.Motion;
 using Ace.Core.Util;
 
-
-
-namespace Ace.Custom{
+namespace Ace.Custom {
 	
 	public class TCPListener{
 	 	TcpListener server;
@@ -66,8 +64,10 @@ namespace Ace.Custom{
 					using(StreamWriter writer = new StreamWriter(stream, System.Text.Encoding.ASCII){ AutoFlush = true, NewLine = "\n" }){
 						string line;
 						while(isRunning && (line = reader.ReadLine()) != null){
+							Trace.WriteLine("->", line);
 							parent.requests.Add(new Request(line));
 							Request rep = parent.replies.Take();
+							Trace.WriteLine("<-", rep.ToString());
 							writer.WriteLine(rep.ToString());
 						}
 					}
@@ -375,7 +375,7 @@ namespace Ace.Custom{
 			cartesianMove.Param.Speed = _speed;
 			cartesianMove.Param.Straight = true;
 			cartesianMove.Param.MotionEnd = MotionEnd.Blend;
-			cartesianMove.Param.SCurveProfile = 0;
+			cartesianMove.Param.SCurveProfile = 7;
 			robot.Move(cartesianMove);
 		}
 		
@@ -418,13 +418,13 @@ namespace Ace.Custom{
 			int oldAcc = acc;
 			int oldDcc = dcc;
 			
-			Go(x, y, 0, 0);
+			Go(x, y, 0, 180);
 			robot.WaitMoveDone();
 			
 			speed = 1;
 			acc = 1;
 			dcc = 1;
-			Go(x, y, -290, 0);
+			Go(x, y, -290, 180);
 			while(true){
 				if(robot.GetDigitalIO(1001)){
 					robot.Halt();
@@ -437,14 +437,14 @@ namespace Ace.Custom{
 			dcc = 100;
 			while(robot.GetDigitalIO(1001)){
 				z += 0.1;
-				Go(x, y, z, 0);
+				Go(x, y, z, 180);
 				robot.WaitMoveDone();
 			}
 			speed = oldSpeed;
 			acc = oldAcc;
 			dcc = oldDcc;
 			Transform3D res = robot.WorldLocation;
-			Go(0, 0, 0, 0);
+			Go(x, y, 0, 180);
 			robot.WaitMoveDone();
 			return res;
 		}
@@ -470,11 +470,16 @@ namespace Ace.Custom{
 		}
 	}
 	public class Program {
-		public AceServer ace;
 
+		public AceServer ace;
 		public BlockingCollection<Request> requests = new BlockingCollection<Request>();
-		public BlockingCollection<Request> replies = new BlockingCollection<Request>();		
-		public void Main() {
+		public BlockingCollection<Request> replies = new BlockingCollection<Request>();
+		
+		public double rollConvertion(double w){
+			return (w>0?1:-1)*(180-Math.Abs(w));
+		}
+		
+		public void Main () {
 			// Create the controller and associate it with an IP address
 			IAdeptController controller = ace.Root["/SmartController 101/SmartController 101"] as IAdeptController;
 
@@ -503,7 +508,7 @@ namespace Ace.Custom{
 								res.parameters.Add(new Parameter(pos.DX));
 								res.parameters.Add(new Parameter(pos.DY));
 								res.parameters.Add(new Parameter(pos.DZ));
-								res.parameters.Add(new Parameter(pos.Roll));
+								res.parameters.Add(new Parameter(rollConvertion(pos.Roll)));
 							}
 							break;
 							case Request.Type.IdleZ :
@@ -520,7 +525,7 @@ namespace Ace.Custom{
 								res.parameters.Add(new Parameter(pos.DX));
 								res.parameters.Add(new Parameter(pos.DY));
 								res.parameters.Add(new Parameter(pos.DZ));
-								res.parameters.Add(new Parameter(pos.Roll));
+								res.parameters.Add(new Parameter(rollConvertion(pos.Roll)));
 							}
 							break;
 							case Request.Type.Break :
@@ -539,11 +544,11 @@ namespace Ace.Custom{
 								robotController.dcc = req.parameters[0].iValue;				
 							break;
 							case Request.Type.Go :
-								robotController.Go(req.parameters[0].dValue, req.parameters[1].dValue, req.parameters[2].dValue, req.parameters[3].dValue);			
-								robot.WaitMoveDone();		
+								robotController.Go(req.parameters[0].dValue, req.parameters[1].dValue, req.parameters[2].dValue, rollConvertion(req.parameters[3].dValue));			
+								//robot.WaitMoveDone();		
 							break;
 							case Request.Type.Follow :
-								robotController.Go(req.parameters[0].dValue, req.parameters[1].dValue, req.parameters[2].dValue, req.parameters[3].dValue);
+								robotController.Go(req.parameters[0].dValue, req.parameters[1].dValue, req.parameters[2].dValue, rollConvertion(req.parameters[3].dValue));
 							break;
 						}
 						replies.Add(res);

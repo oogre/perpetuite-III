@@ -28,9 +28,9 @@ export const Exec_start = async (BASE)=>{
 		// if(error.code == "pill Is not Present" || error.message == "pill Is not Present"){
 		// 	return await Exec_start(BASE);
 		// }
-		if(error.code){
+		if(error?.code){
 			console.log(ColorCli.red(error.code));
-		}else if(error.message){
+		}else if(error?.message){
 			console.log(ColorCli.red(error.message));
 		}else{
 			console.log(error);	

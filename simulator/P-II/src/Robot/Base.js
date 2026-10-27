@@ -21,6 +21,11 @@ export default class RobotBase extends EventsManager{
 		this._locationProjectedOnTable = this._location.clone()
 		this._isInit = false;
 		this.ui = new RobotUI(this);
+
+		this._lastPos = new Vector4();
+		this._still = 0;
+		this._startedAt = 0;
+
 		this._reached = new PromiseHelper(()=>{
 			this.fire('locationReached', this.location4D.clone());
 		});
@@ -73,12 +78,15 @@ export default class RobotBase extends EventsManager{
 		}
 		
 		if(await this._reached.isPending()){
-			this._reached.reject();
+			this._reached.reject(new Error("Move interrupted by a new target"));
 		}
 		this._target.copy(targetValue);
 		if(!this.conf.simulation){
 			await this.controller.Go(this._target);
 		}
+
+		this._startedAt = new Date().getTime();
+		this._still = 0;
 
 		this._reached.reset();
 		return this._reached.promise;
@@ -111,19 +119,38 @@ export default class RobotBase extends EventsManager{
 				}else{
 					const t = await this.controller.GetPosition();
 					this._location.copy(new Vector4(...t));
+					
+					const delta = this._lastPos.clone().sub(this._location).lengthSq();
+					this._lastPos.copy(this._location);
+					this._still = delta < 0.01 ? this._still + 1 : 0;      // < 0,1 mm entre deux lectures
+
 					this.fire('locationChange', this.location4D.clone());	
 				}
 
 				this._move.set(...this._target).sub(this._location);
 				this._move.w = shortAngle(this._location.w, this._target.w, 360);
 
-				if(this._move.lengthSq()<0.3){
+
+
+				// if(this._move.lengthSq()<0.3){
+				// 	if(!this._isInit){
+				// 		this._isInit = true;
+				// 		this.fire('initilized', this.location4D.clone());
+				// 	}
+				// 	this._reached.resolve();	
+				// }
+
+				const reached = this._move.lengthSq() < 0.3;
+				const stopped = this._still >= 6 && now - this._startedAt > 2000;   // immobile depuis ~300 ms
+				if(reached || stopped){
+					if(!reached) console.log("robot immobile hors tolérance, écart :", this._move.toArray().map(v=>v.toFixed(2)).join(" "));
 					if(!this._isInit){
 						this._isInit = true;
 						this.fire('initilized', this.location4D.clone());
 					}
-					this._reached.resolve();	
+					this._reached.resolve();
 				}
+
 			}
 		}catch(error){
 			console.log(error);   // une lecture ratée ne doit pas tuer le programme
