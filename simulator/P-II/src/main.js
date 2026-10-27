@@ -104,8 +104,3 @@ api.on('error', async (error)=>{
 process.on('exit', ()=>camera.shutdownSync());
 process.on('SIGINT', ()=>process.exit(0));
 process.on('SIGTERM', ()=>process.exit(0));
-const onFatal = (error)=>{
-	console.error(error);
-};
-process.on('unhandledRejection', onFatal);
-process.on('uncaughtException', onFatal);
