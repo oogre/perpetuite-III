@@ -32,5 +32,5 @@ export const Exec_start = async (BASE)=>{
 	if(BASE.robot.conf.simulation){
 		Real_save(BASE);
 	}
-	process.exit(0);
+	//process.exit(0);
 }
