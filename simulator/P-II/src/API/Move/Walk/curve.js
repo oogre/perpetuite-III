@@ -3,7 +3,7 @@ import { Vector4 } from './../../../tools/Vector.js';
 import { lerp, inverseLerp, areAligned} from './../../../tools/math.js';
 import { ArcThrough} from './../../../tools/ArcThrough.js';
 
-
+// Move curve
 
 //   const arc = new ArcThrough(origin, middle, destination);
 //   arc.getPoints(32)         // 33 Vector3, de l'origine à la destination, régulièrement répartis en angle (donc en longueur : c'est un cercle)
