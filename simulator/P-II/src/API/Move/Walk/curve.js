@@ -14,7 +14,7 @@ export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 		const C = new Vector3(...BASE.grid.getRandom().location);
 		C.z = Math.max((A.z+B.z)/2, BASE.table.toFloorLocation(C).z);
 		if(areAligned(start, C, stop))
-			return getNotAlignedPoint();
+			return getNotAlignedPoint(A, B);
 		return C;
 	}
 	const start = BASE.robot.location3D;
