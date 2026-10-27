@@ -85,9 +85,9 @@ const update = (location)=>{
 }
 
 
-robot.on("locationChange", update);
-robot.on("initilized", (location) => {
-	update();
+robot.on("locationChange", update.bind(this));
+robot.on("initilized", location => {
+	update(location);
 	api.fire(`Exec_Start`);
 });
 	
