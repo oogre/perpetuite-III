@@ -3,7 +3,7 @@ import {Real_save} from './../Real/save.js';
 import ColorCli from "cli-color";
 
 import {Robot_HighPower, Robot_gripper, Robot_explore} from '../Robot';
-import {Memory_load} from '../Memory';
+import {Memory_load, Memory_save} from '../Memory';
 import Chronos from "./../../tools/Chronos.js"
 
 let frameChronos = 0;
@@ -19,21 +19,9 @@ export const Exec_start = async (BASE)=>{
 	await Robot_HighPower(BASE, [true]);
 	await Robot_explore(BASE);
 
-
-
-	try{
-		await Exec_loop(BASE);
-	}catch(error){
-		console.log(error);
-		if(error?.code){
-			console.log(ColorCli.red(error.code));
-		}else if(error?.message){
-			console.log(ColorCli.red(error.message));
-		}else{
-			console.log(error);	
-		}
-	}
+	await Exec_loop(BASE);
 	
+	await Memory_save(BASE);
 	await Robot_gripper(BASE, [false]);
 	await Robot_HighPower(BASE, [false]);
 
