@@ -38,7 +38,7 @@ export default class API extends EventsManager{
 					const result = await Actions[key](controllables, ...data);
 					console.log(result);
 				}catch(error){
-					console.log(error);
+					throw (error);
 				}
 			});
 		});
