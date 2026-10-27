@@ -38,8 +38,8 @@ const robot = new Robot(config.robot);
 	});
 	robot.on('powerOff', async ()=>{ 
 		/* stopper la boucle, prévenir, etc. */ 
-		await Robot_gripper(BASE, [false]);
-		await Memory_save(BASE);
+		await Robot_gripper(api.BASE, [false]);
+		await Memory_save(api.BASE);
 		process.exit(1);
 	});
 
