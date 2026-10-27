@@ -86,8 +86,9 @@ export default class RobotBase extends EventsManager{
 				await this.controller.Go(this._target); 
 			}catch(error){
 				switch (parseInt(error.code)) {
-					case 604:
-					case 906:
+					case 604: //*Robot power off requested*
+					case 901: //*Obstacle collision detected*
+					case 906: //*Robot power off requested*
 						this.fire('powerOff', error);
 					break;
 				}
