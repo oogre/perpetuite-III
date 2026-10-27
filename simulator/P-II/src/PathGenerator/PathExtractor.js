@@ -124,7 +124,9 @@ export function extractPaths(file, gap = 14, eps = 1, minLength = 10) {
 				const line = centerline(pts, [...rest], path);
 				if (line.length < 2) break;
 				if (length(line) >= minLength) paths[name].push(simplify(line, eps));
-				rest = new Set([...rest].filter(i => Math.min(...line.map(q => dist(pts[i], q))) > 3));
+				//rest = new Set([...rest].filter(i => Math.min(...line.map(q => dist(pts[i], q))) > 3));
+				const onPath = new Set(path);   // le tronc sort toujours : l'ensemble diminue à chaque tour
+				rest = new Set([...rest].filter(i => !onPath.has(i) && Math.min(...line.map(q => dist(pts[i], q))) > 3));
 			}
 		}
 	}
