@@ -91,8 +91,9 @@ export default class RobotBase extends EventsManager{
 					case 906: //*Robot power off requested*
 						this.fire('powerOff', error);
 					break;
+				default :
+					throw error;
 				}
-				throw error;// l'appelant la voit toujours
 			}
 		}
 

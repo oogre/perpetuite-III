@@ -38,7 +38,7 @@ const robot = new Robot(config.robot);
 		robot.hoverDangerousPlace = forbidden.isHover(location);
 	});
 	robot.on('powerOff', async (error)=>{ 
-		console.log(`${error.code} : ${error.message}`);
+		console.log(error.message);
 		/* stopper la boucle, prévenir, etc. */ 
 		await Robot_gripper(api.BASE, [false]);
 		await Memory_save(api.BASE);
