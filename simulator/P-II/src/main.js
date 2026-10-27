@@ -30,17 +30,6 @@ const cmd = new Commands(config.commands, {grid});
 const table = new Floor(config.floor);
 // const real = new Real(config.pills, {grid});
 const robot = new Robot(config.robot);
-	robot.on("locationChange initilized", (location) => {
-		const offset = axisCorrection(location, config.flipAxis);
-		ui.forAllRegistered( item =>{
-			item.offset = offset;
-		});
-		camera.offset = offset;
-		robot.positionOnTable = table.toFloorLocation(location);
-		robot.hoverDangerousPlace = forbidden.isHover(location);
-	});
-	
-
 const memory = new Memory(config.pills);
 const forbidden = new Forbidden(config.forbidden);
 const camera = new Camera(config.camera);
@@ -84,6 +73,26 @@ const api = new API({
 	table
 });
 
+
+const update = (location)=>{
+	const offset = axisCorrection(location, config.flipAxis);
+	ui.forAllRegistered( item =>{
+		item.offset = offset;
+	});
+	camera.offset = offset;
+	robot.positionOnTable = table.toFloorLocation(location);
+	robot.hoverDangerousPlace = forbidden.isHover(location);
+}
+
+
+robot.on("locationChange", update);
+robot.on("initilized", (location) => {
+	update();
+	api.fire(`Exec_Start`);
+});
+	
+
+
 api.on('error', async (error)=>{ 
 	console.log(error?.code, error?.message);
 	await Memory_save(api.BASE);
@@ -108,7 +117,7 @@ api.on('error', async (error)=>{
 	}
 });
 
-api.fire(`Exec_Start`);
+
 
 // real.load();
 
