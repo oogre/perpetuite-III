@@ -6,7 +6,8 @@ export const ERR = {
 	CONF          : "CONFIGURE",
 	PATTERN 	  : "PATTERN",
 	PATH 	  	  : "PATH",
-	USE			  : "USE"
+	USE			  : "USE",
+	CAMERA	 	  : "CAMERA"
 };
 
 export class AppError extends Error{

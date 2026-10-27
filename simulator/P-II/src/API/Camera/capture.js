@@ -3,9 +3,9 @@ import Pills from "./../../Pills";
 import Area from "./../../Area";
 import {Memory_get} from './../Memory';
 import {delay} from './../../tools/helpers.js';
+import {AppError, ERR } from './../../tools/Errors.js' ;
 
-
-export const Camera_capture = async (BASE, [transport=false]=[])=>{
+export const Camera_capture = async (BASE, [transport=false]=[], depth=0)=>{
 	BASE.robot.actionDesc = `Camera capture`;
 	transport = transport==1
 	const captureName = `${new Date().getTime()} ${BASE.robot.location4D}.png`;
@@ -29,6 +29,14 @@ export const Camera_capture = async (BASE, [transport=false]=[])=>{
 		out[id].push(area);
 		return out;
 	}, [[], []]);
+
+	if(notPillAreas.length>0){
+		if(depth>3){
+			throw new AppError(ERR.CAMERA, "TOO much forbidden Area");
+		}
+		await delay(1000);
+		return await Camera_capture(BASE, [transport], depth+1)
+	}
 	BASE.forbidden.addEach(notPillAreas);	
 
 	const pills = pillAreas.map(pillArea=> localPills.fromArea(pillArea));
