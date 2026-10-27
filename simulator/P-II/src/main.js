@@ -42,7 +42,7 @@ const robot = new Robot(config.robot);
 		/* stopper la boucle, prévenir, etc. */ 
 		await Memory_save(api.BASE);
 		await Robot_gripper(api.BASE, [false]);
-		await Robot_HighPower(BASE, [false]);
+		await Robot_HighPower(api.BASE, [false]);
 		process.exit(1);
 	});
 
