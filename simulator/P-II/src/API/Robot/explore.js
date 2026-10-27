@@ -17,7 +17,7 @@ export const Robot_explore = async (BASE)=>{
 	await Robot_acc(BASE, [25]);
 	await Robot_dcc(BASE, [25]);
 	for(const point of points){
-		await Robot_go(BASE, new Vector4(...point, 0, 0), {enableDamping:false, curve:false});
+		await Robot_go(BASE, new Vector4(...point, 0, 0), {enableDamping:true, curve:false});
 		await delay(1000);
 		await Camera_capture(BASE);
 	}
