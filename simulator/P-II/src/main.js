@@ -87,14 +87,14 @@ api.on('error', async (error)=>{
 	await Memory_save(api.BASE);
 	await Robot_gripper(api.BASE, [false]);
 	await Robot_HighPower(api.BASE, [false]);
-	switch (parseInt(error.code)) {
+	switch (error.code) {
 		default : 
-		case 604: //*Robot power off requested*
-		case 901: //*Obstacle collision detected*
-		case 906: //*Robot power off requested*
+		case "604": //*Robot power off requested*
+		case "901": //*Obstacle collision detected*
+		case "906": //*Robot power off requested*
 			console.log("STOP AND RESTART")
 			return process.exit(1);
-		case 908: //*E-STOP from front panel button*
+		case "908": //*E-STOP from front panel button*
 			console.log("NORMAL STOP")
 			return process.exit(0);	
 	}

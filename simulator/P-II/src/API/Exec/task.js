@@ -2,6 +2,7 @@ import {spacedLog} from "./../../tools/helpers.js";
 import Pills, {PillModel}  from "./../../Pills";
 import {Robot_findFreePillByColorName} from "./../Robot";
 import {Exec_move} from "./move.js";
+import {AppError, ERR } from './../../tools/Errors.js' ;
 
 // SET Color to XY
 // 	Get PILL for Color
@@ -33,17 +34,11 @@ export const Exec_task = async(BASE, [colorName=(new PillModel.Color()).name, x=
 	try{
 		await Exec_move(BASE, pill, task.location);	
 	}catch(error){
-		if(
-			error?.code == "pill Is not Present" || 
-			error?.message == "pill Is not Present"||
-			error?.code == "pill Is not Removed" || 
-			error?.message == "pill Is not Removed"
-		){
-			console.log(`${error.code} ${error.message}`);
+		if(error instanceof AppError && error.is(ERR.GRAB)){
+			console.log(`${error.message}`);
 		 	return Exec_task(BASE, [colorName, x, y]);
-		}else{
-			throw error;
 		}
+		throw error;
 	}
 }
 

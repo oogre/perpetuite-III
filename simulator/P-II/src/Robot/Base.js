@@ -8,6 +8,7 @@ import {isLocation} from "./../tools/validators.js";
 import Toggle from "./../tools/Toggle.js";
 import RobotUI from "./UI.js";
 import RobotController from "./Controller";
+import {AppError, ERR } from './../tools/Errors.js' ;
 
 export default class RobotBase extends EventsManager{
 	constructor(conf){
@@ -74,11 +75,11 @@ export default class RobotBase extends EventsManager{
 	
 	async go(targetValue){
 		if (!isLocation(targetValue)) {
-			throw new Error("Set target of Robot should receive a Vector4 or an array");	
+			throw new AppError(ERR.USE, "Set target of Robot should receive a Vector4 or an array");	
 		}
 		
 		if(await this._reached.isPending()){
-			this._reached.reject(new Error("Move interrupted by a new target"));
+			this._reached.reject(new AppError(ERR.USE, "Move interrupted by a new target"));
 		}
 		this._target.copy(targetValue);
 		if(!this.conf.simulation){
@@ -141,7 +142,6 @@ export default class RobotBase extends EventsManager{
 					}
 					this._reached.resolve();
 				}
-
 			}
 		}catch(error){
 			console.log(error);   // une lecture ratée ne doit pas tuer le programme

@@ -3,24 +3,25 @@ import Face from "./Face.js";
 import FloorUI from "./UI.js";
 import { Ray } from 'three';
 import { Vector3 } from './../tools/Vector.js';
+import {AppError, ERR } from './../tools/Errors.js' ;
 
 export default class Floor{
 	constructor(conf){
 		this.conf = conf;
 		if(!fs.pathExistsSync(this.conf.probePointsPath)){
-			throw new Error("Floor probe points not configured!")
+			throw new AppError(ERR.CONF, "Floor probe points not configured!")
 		}
 
 		const rawPoints = JSON.parse(fs.readFileSync(this.conf.probePointsPath,"utf8"));
 		this.points = rawPoints.map(([x, y])=>new Vector3(x, y, 0));
 	
 		if(!fs.pathExistsSync(this.conf.zValuesPath)){
-			throw new Error("Floor probe z values not configured!")
+			throw new AppError(ERR.CONF, "Floor probe z values not configured!")
 		}
 
 		const zValues = JSON.parse(fs.readFileSync(this.conf.zValuesPath,"utf8")).map(z=>z-this.conf.probeHeight);
 		if(this.points.length != zValues.length){
-			throw new MyError("Floor probe z values wrong configured!")
+			throw new AppError(ERR.CONF, "Floor probe z values wrong configured!")
 		}
 
 		this.points = this.points.map((point, id)=> {

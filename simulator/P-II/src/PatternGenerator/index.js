@@ -6,15 +6,7 @@ import Jimp from "jimp";
 import path from 'path';
 import { PathExtractor } from "./../PathGenerator"
 import {timed} from "./../tools/timed.js";
-
-const call = async (command)=>{
-	let {stdout, stderr} = await _exec(command);
-	if(stderr){
-	  throw stderr;
-	}
-	return stdout;
-}
-
+import {AppError, ERR } from './../tools/Errors.js' ;
 
 export default class PatternGenerator{
 	constructor(conf){
@@ -35,8 +27,7 @@ export default class PatternGenerator{
 	async newPattern(){
 		const {stdout, stderr} = await _exec(`${this.conf.path} ${this.offset}`, {timeout: 60000});
 		if (stderr) {
-			console.warn('newPattern stderr:', stderr);
-			throw new Error('newPattern stderr:');
+			throw new AppError(ERR.PATTERN, "newPattern stderr:", stderr);
 		}
 		this.offset += 1;
 	}
@@ -46,13 +37,8 @@ export default class PatternGenerator{
 	}
 
 	async next(){
-		try {
-			await timed(this.newPattern.bind(this));
-			await timed(this.newPath.bind(this));
-			return await Jimp.read(this.conf.drawPath);
-		} catch (e) {
-			console.error('Generator failed', e);
-			throw e;
-		}
+		await timed(this.newPattern.bind(this));
+		await timed(this.newPath.bind(this));
+		return await Jimp.read(this.conf.drawPath);
 	}
 }

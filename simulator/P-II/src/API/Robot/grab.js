@@ -5,6 +5,7 @@ import {Camera_capture} from './../Camera';
 import {Memory_clean, Memory_get} from './../Memory';
 import * as Hunting from './../Move/Hunting';
 import {getRandomOne, delay} from './../../tools/helpers.js';
+import {AppError, ERR } from './../../tools/Errors.js' ;
 
 
 export const Robot_grab = async (BASE, [depth=0]=[])=>{
@@ -12,20 +13,18 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	BASE.robot.actionDesc = `Robot grab ${depth}`;
 	
 	if(depth >= 5 ){
-		throw new Error("Error grabbing");
-		return false;
+		throw new AppError(ERR.GRAB, "Pill is not removed");
 	}
 	if(BASE.robot.conf.simulation){
 		if(BASE.robot.grabbedPill!==null){
-			throw new Error("Already grabbing");
-			return false;
+			throw new AppError(ERR.PROC, "Already grabbing");
 		}
 	}
 
 	const robotLocationBefore = BASE.robot.location2D;
 	const isMemoryCleanBefore = Memory_clean(BASE, robotLocationBefore);
 	if(!isMemoryCleanBefore){
-		throw new Error("MEMORY IS A MESS BEFORE");
+		throw new AppError(ERR.MEMORY, "Memory is a mess before");
 	}
 
 	if(Math.random()<0.9){
@@ -39,7 +38,7 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	if(isTargetedPillExists){
 		await Robot_go(BASE, targetedPill.location);
 	}else{
-		throw new Error("pill Is not Present");
+		throw new AppError(ERR.GRAB, "Pill is not present");
 		return false;
 	}
 
@@ -47,7 +46,7 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	
 	const isMemoryCleanAfter = Memory_clean(BASE, BASE.robot.location2D)
 	if(!isMemoryCleanAfter){
-		throw new Error("MEMORY IS A MESS AFTER");
+		throw new AppError(ERR.MEMORY, "Memory is a mess after");
 	}
 	
 	const afterCollection = await Camera_capture(BASE, [true])
@@ -57,7 +56,6 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	const isRemoved = tmp === null
 	if(!isRemoved){
 		await Robot_gripper(BASE, [false]);
-		console.log("pill Is not Removed");
 		await delay(1500);
 		return await Robot_grab(BASE, [depth+1]);
 	}

@@ -1,13 +1,11 @@
 
 import {Robot_go} from './go.js';
-
 import {Memory_get, Memory_unlock} from './../Memory';
 import {Robot_whatsBelow, AT_DROPZONE} from './whatsBelow.js';
-import {getRandomOne, delay} from './../../tools/helpers.js';
+import {getRandomOne} from './../../tools/helpers.js';
 import * as Walk from './../Move/Walk';
-
 import { Vector2, Vector4 } from './../../tools/Vector.js';
-
+import {AppError, ERR } from './../../tools/Errors.js' ;
 
 
 export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])=>{
@@ -16,7 +14,7 @@ export const Robot_findFreePillByColorName = async(BASE, [colorName, depth=0]=[]
 		Memory_unlock(BASE, [colorName]);
 	}
 	else if(depth>5){
-		throw new Error("Unlock loop");
+		throw new AppError(ERR.PROC, "findFreePillByColorName loop");
 	}
 	
 	const coloredPills = Memory_get(BASE, [colorName]);
