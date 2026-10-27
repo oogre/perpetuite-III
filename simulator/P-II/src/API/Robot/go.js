@@ -21,7 +21,14 @@ export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}=
 	const move = new Vector4().subVectors(origin, dest);
 	if(move.lengthSq() > 0.1){
 		if(curve && Math.random()<0.5){
-			await Move_curve(BASE, dest);
+			try{
+				await Move_curve(BASE, dest);	
+			}catch(e){
+				console.log("Something went wrong with curve to ", dest)
+
+				await BASE.robot.go(dest);
+			}
+			
 		}else{
 			await BASE.robot.go(dest);		
 		}
