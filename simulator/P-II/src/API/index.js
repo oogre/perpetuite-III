@@ -7,6 +7,7 @@ import {isNumber} from "./../tools/validators.js";
 export default class API extends EventsManager{
 	constructor(controllables){
 		super();
+		this.controllables = controllables;
 		this.rl = readline.createInterface({
 			input: process.stdin,
 			output: process.stdout,
@@ -35,7 +36,7 @@ export default class API extends EventsManager{
 		Object.keys(Actions).forEach(key=>{
 			this.on(key, async (...data)=>{
 				try{
-					const result = await Actions[key](controllables, ...data);
+					const result = await Actions[key](this.controllables, ...data);
 					console.log(result);
 				}catch(error){
 					console.error(error);

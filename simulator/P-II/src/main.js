@@ -16,6 +16,7 @@ import Commands from "./Commands";
 import ImageManager from "./ImageManager";
 import {axisCorrection} from "./tools/correction.js";
 import LimitedArray from "./tools/LimitedArray.js";
+import {Robot_gripper, Memory_save} from "./Actions.js";
 
 
 process.title = config.window.title;
@@ -37,7 +38,9 @@ const robot = new Robot(config.robot);
 	});
 	robot.on('powerOff', ()=>{ 
 		/* stopper la boucle, prévenir, etc. */ 
-		console.log("catched");
+		await Robot_gripper(BASE, [false]);
+		await Memory_save(BASE);
+		process.exit(1);
 	});
 
 const memory = new Memory(config.pills);
