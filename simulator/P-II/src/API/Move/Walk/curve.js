@@ -27,20 +27,16 @@ export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 	const arc = new ArcThrough(start, middle, stop, {shortest : true});
 
 
-	console.log(start, middle, stop);
-	console.log(arc.getPoints(10));
-	
 	await Promise.all([arc.getPoints(10).map((point, id, {length})=>{
 		point = new Vector4(...point, 0);
 		if(id == 0 || id == length-1)return point;
 		point.z = Math.min(0, Math.max(point.z, BASE.table.toFloorLocation(point).z - 20));;
 		return point;
 	}).map( point =>{
-		console.log(point);
-		//return Robot_go(BASE, new Vector4(...point, 0));
+		return Robot_go(BASE, new Vector4(...point, 0));
 	})]);
 
-	// await Robot_go(BASE, new Vector4(...destination));
+	await Robot_go(BASE, new Vector4(...destination));
 	return true;
 }
 
