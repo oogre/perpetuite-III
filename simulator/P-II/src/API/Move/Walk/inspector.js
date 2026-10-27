@@ -1,7 +1,7 @@
 
 import {Robot_go} from "./../../Robot";
 import { Vector4 } from './../../../tools/Vector.js';
-
+import {lerp} from "./../../../tools/math.js";
 //Move inspector
 
 export const Move_inspector = async (BASE, destination=BASE.robot.location4D)=>{
