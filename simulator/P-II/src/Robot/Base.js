@@ -89,7 +89,7 @@ export default class RobotBase extends EventsManager{
 					case 604: //*Robot power off requested*
 					case 901: //*Obstacle collision detected*
 					case 906: //*Robot power off requested*
-						this.fire('powerOff', error);
+						this.fire('error', error);
 					break;
 				default :
 					throw error;

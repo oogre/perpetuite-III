@@ -83,7 +83,7 @@ const api = new API({
 });
 
 
-robot.on('powerOff', async (error)=>{ 
+robot.on('error', async (error)=>{ 
 	console.log(error.message);
 	await Memory_save(api.BASE);
 	await Robot_gripper(api.BASE, [false]);
@@ -92,8 +92,11 @@ robot.on('powerOff', async (error)=>{
 });
 
 api.on('error', async (error)=>{ 
-	console.error("[main] api error :", error.message);
-	console.error(error);
+	console.log(error.message);
+	await Memory_save(api.BASE);
+	await Robot_gripper(api.BASE, [false]);
+	await Robot_HighPower(api.BASE, [false]);
+	process.exit(1);
 });
 
 // real.load();
