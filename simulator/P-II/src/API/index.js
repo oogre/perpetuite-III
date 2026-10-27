@@ -35,8 +35,12 @@ export default class API extends EventsManager{
 		});
 		Object.keys(Actions).forEach(key=>{
 			this.on(key, async (...data)=>{
-				const result = await Actions[key](this.BASE, ...data);
-				console.log(result);
+				try{
+					const result = await Actions[key](this.BASE, ...data);	
+					console.log(result);
+				}catch(error){
+					this.fire("error", error);
+				}
 			});
 		});
 	}

@@ -37,14 +37,7 @@ const robot = new Robot(config.robot);
 		robot.positionOnTable = table.toFloorLocation(location);
 		robot.hoverDangerousPlace = forbidden.isHover(location);
 	});
-	robot.on('powerOff', async (error)=>{ 
-		console.log(error.message);
-		/* stopper la boucle, prévenir, etc. */ 
-		await Memory_save(api.BASE);
-		await Robot_gripper(api.BASE, [false]);
-		await Robot_HighPower(api.BASE, [false]);
-		process.exit(1);
-	});
+	
 
 const memory = new Memory(config.pills);
 const forbidden = new Forbidden(config.forbidden);
@@ -89,9 +82,17 @@ const api = new API({
 	table
 });
 
-// real.load();
+robot.on('powerOff', async (error)=>{ 
+	console.log(error.message);
+	await Memory_save(api.BASE);
+	await Robot_gripper(api.BASE, [false]);
+	await Robot_HighPower(api.BASE, [false]);
+	process.exit(1);
+});
 
-
+api.on('error', async (error)=>{ 
+	console.error(error);
+});
 
 process.on('exit', ()=>camera.shutdownSync());
 process.on('SIGINT', ()=>process.exit(0));
