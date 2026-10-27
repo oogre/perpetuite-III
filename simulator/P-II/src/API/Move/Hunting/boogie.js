@@ -12,8 +12,8 @@ export const Move_boogie = async (BASE)=>{
 		work.y = origin.y + lerp(-amp, amp, Math.random());
 		work.z = origin.z + lerp(-amp, 0, Math.random());
 		work.w = origin.w + lerp(-amp, amp, Math.random());
-		await Robot_go(BASE, work);
+		await Robot_go(BASE, work, {enableDamping:false, curve:false});
 	}
-	await Robot_go(BASE, origin);
+	await Robot_go(BASE, origin, {enableDamping:false, curve:false});
 	return true;
 }

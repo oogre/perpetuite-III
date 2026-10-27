@@ -13,8 +13,8 @@ export const Move_zCalibration = async (BASE)=>{
 	for(let i = 0 ; i < ptLen ; i++){
 		const amp = lerp(10, 50, Math.random());
 		work.z = origin.z + lerp(-amp, 0, Math.random());
-		await Robot_go(BASE, work);
+		await Robot_go(BASE, work, {enableDamping:false, curve:false});
 	}
-	await Robot_go(BASE, origin);
+	await Robot_go(BASE, origin, {enableDamping:false, curve:false});
 	return true;
 }

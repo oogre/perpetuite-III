@@ -10,7 +10,7 @@ export const Move_doupt = async (BASE)=>{
 	for(let i = 0 ; i < ptLen ; i++){
 		const amp = lerp(0, 40, Math.random());
 		work.w = lerp(-amp, amp, Math.random());
-		await Robot_go(BASE, work);
+		await Robot_go(BASE, work, {enableDamping:false, curve:false});
 	}
-	return Robot_go(BASE, origin)
+	return Robot_go(BASE, origin, {enableDamping:false, curve:false})
 }
