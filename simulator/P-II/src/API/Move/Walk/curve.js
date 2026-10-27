@@ -4,7 +4,7 @@ import { lerp, inverseLerp, areAligned} from './../../../tools/math.js';
 import ArcThrough from './../../../tools/ArcThrough.js';
 
 // Move curve 0 0 0 0
-
+// Move curve 260 -436 0 0
 //   const arc = new ArcThrough(origin, middle, destination);
 //   arc.getPoints(32)         // 33 Vector3, de l'origine à la destination, régulièrement répartis en angle (donc en longueur : c'est un cercle)
 //   arc.getLength()           // longueur de l'arc
@@ -26,6 +26,7 @@ export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 
 	const arc = new ArcThrough(start, middle, stop);
 
+	console.log(start, middle, stop);
 	console.log(arc.getPoints(10));
 	
 	// await Promise.all([arc.getPoints(10).map( point =>{
