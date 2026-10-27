@@ -5,6 +5,8 @@ const _exec = util.promisify(exec);
 import Jimp from "jimp";
 import path from 'path';
 import { PathExtractor } from "./../PathGenerator"
+import {timed} from "./../tools/timed.js";
+
 const call = async (command)=>{
 	let {stdout, stderr} = await _exec(command);
 	if(stderr){
@@ -30,23 +32,27 @@ export default class PatternGenerator{
 		return parseInt(fs.readFileSync(this.conf.offsetFilePath, "utf8"));
 	}
 	
-	async getNextPattern(){
-		console.log(`GEN NEW PATTERN FOR OFFSET ${this.offset}`);
-		let t0 = Date.now();
-		console.log(`getNextPattern: start offset=${this.offset}`);
+	async newPattern(){
+		const {stdout, stderr} = await _exec(`${this.conf.path} ${this.offset}`, {timeout: 60000});
+		if (stderr) {
+			console.warn('newPattern stderr:', stderr);
+			throw new Error('newPattern stderr:');
+		}
+		this.offset += 1;
+	}
+
+	async newPath(){
+		this.pathExtractor.genPath();
+	}
+
+	async next(){
 		try {
-			const {stdout, stderr} = await _exec(`${this.conf.path} ${this.offset}`, {timeout: 60000});
-			if (stderr) console.warn('Generator stderr:', stderr);
-			this.offset += 1;
-			console.log(`getNextPattern: done in ${Date.now() - t0} ms`);
-			t0 = Date.now();
-			console.log(`genPath: start`);
-			this.pathExtractor.genPath();
-			console.log(`genPath: done in ${Date.now() - t0} ms`);
+			await timed(this.newPattern.bind(this));
+			await timed(this.newPath.bind(this));
+			return await Jimp.read(this.conf.drawPath);
 		} catch (e) {
 			console.error('Generator failed', e);
 			throw e;
 		}
-		return await Jimp.read(this.conf.drawPath);
 	}
 }

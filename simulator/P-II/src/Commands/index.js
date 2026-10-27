@@ -73,7 +73,7 @@ export default class Commands{
 	}
 
 	async genTaskList(){
-		const img = await this.patterGen.getNextPattern();
+		const img = await this.patterGen.next();
 
 		const locationToDraw = (location)=>{
 			const toImageSize = new Vector2(img.bitmap.width, img.bitmap.height);
