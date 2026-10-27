@@ -24,7 +24,7 @@ export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 	stop.z = Math.max(stop.z, BASE.table.toFloorLocation(stop).z);
 	const middle = getNotAlignedPoint(start, stop);
 
-	const arc = new ArcThrough(start, middle, stop, {shortest = true});
+	const arc = new ArcThrough(start, middle, stop, {shortest : true});
 
 
 	console.log(start, middle, stop);
