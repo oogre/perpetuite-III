@@ -98,8 +98,6 @@ api.on('error', async (error)=>{
 			console.log("NORMAL STOP")
 			return process.exit(0);	
 	}
-
-	
 });
 
 // real.load();
