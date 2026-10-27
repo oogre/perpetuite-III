@@ -17,6 +17,8 @@ import Commands from "./Commands";
 import ImageManager from "./ImageManager";
 import {axisCorrection} from "./tools/correction.js";
 import LimitedArray from "./tools/LimitedArray.js";
+import {AppError, ERR } from './tools/Errors.js' ;
+
 
 
 
@@ -87,6 +89,12 @@ api.on('error', async (error)=>{
 	await Memory_save(api.BASE);
 	await Robot_gripper(api.BASE, [false]);
 	await Robot_HighPower(api.BASE, [false]);
+
+	// if(error instanceof AppError && error.is(ERR.FORBIDDEN)){
+	// 	console.log(`${error.message}`);
+	//  	return api.fire(`Exec_Start`);
+	// }
+
 	switch (error.code) {
 		default : 
 		case "604": //*Robot power off requested*
@@ -100,8 +108,12 @@ api.on('error', async (error)=>{
 	}
 });
 
+api.fire(`Exec_Start`);
+
 // real.load();
 
 process.on('exit', ()=>camera.shutdownSync());
 process.on('SIGINT', ()=>process.exit(0));
 process.on('SIGTERM', ()=>process.exit(0));
+
+

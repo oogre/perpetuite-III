@@ -32,10 +32,10 @@ export const Camera_capture = async (BASE, [transport=false]=[], depth=0)=>{
 
 	if(notPillAreas.length>0){
 		if(depth>3){
-			throw new AppError(ERR.CAMERA, "TOO much forbidden Area");
+			throw new AppError(ERR.FORBIDDEN, "TOO much forbidden Area");
 		}
 		await delay(1000);
-		return await Camera_capture(BASE, [transport], depth+1)
+		return await Camera_capture(BASE, [true], depth+1)
 	}
 	BASE.forbidden.addEach(notPillAreas);	
 

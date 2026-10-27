@@ -7,7 +7,8 @@ export const ERR = {
 	PATTERN 	  : "PATTERN",
 	PATH 	  	  : "PATH",
 	USE			  : "USE",
-	CAMERA	 	  : "CAMERA"
+	CAMERA	 	  : "CAMERA",
+	FORBIDDEN	  : "FORBIDDEN"
 };
 
 export class AppError extends Error{
