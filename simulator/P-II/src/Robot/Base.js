@@ -82,8 +82,6 @@ export default class RobotBase extends EventsManager{
 		}
 		this._target.copy(targetValue);
 		if(!this.conf.simulation){
-			await this.controller.Go(this._target);
-
 			try{ 
 				await this.controller.Go(this._target); 
 			}catch(error){
