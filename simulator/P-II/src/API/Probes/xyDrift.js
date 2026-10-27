@@ -25,7 +25,7 @@ export const Probes_xyDrift = async (BASE)=>{
 		const location = new Vector4(pos.x, pos.y, 0, 0);
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
-		await Robot_go(BASE, location, {enableDamping:false, curve=false});
+		await Robot_go(BASE, location, {enableDamping:false, curve:false});
 		await delay(1000);
 		await Robot_drop(BASE);
 		if(Memory_get(BASE, []).split("\n") == 0){

@@ -25,7 +25,7 @@ export const Probes_camAngle = async (BASE)=>{
 		const location = new Vector4(pos.x, pos.y, 0, 0);
 		await Robot_acc(BASE, [25]);
 		await Robot_dcc(BASE, [25]);
-		await Robot_go(BASE, location, {enableDamping:false, curve=false});
+		await Robot_go(BASE, location, {enableDamping:false, curve:false});
 		await Robot_gripper(BASE, [true]);
 		await BASE.robot.controller.WaitProbe();
 		await Robot_drop(BASE);
@@ -36,7 +36,7 @@ export const Probes_camAngle = async (BASE)=>{
 		}
 		await Memory_clear(BASE);
 	}
-	await Robot_go(BASE, robot, {enableDamping:false, curve=false});
+	await Robot_go(BASE, robot, {enableDamping:false, curve:false});
 	await Camera_capture(BASE, [true]);
 	await Robot_gripper(BASE, [false]);
 	return true;

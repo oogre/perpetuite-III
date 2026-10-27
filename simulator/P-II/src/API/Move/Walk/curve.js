@@ -33,11 +33,11 @@ export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 			point.z = Math.min(0, Math.max(point.z, BASE.table.toFloorLocation(point).z - 20));;
 			return point;
 		}).map( point =>{
-			return Robot_go(BASE, new Vector4(...point, 0), {enableDamping:false, curve=false});
+			return Robot_go(BASE, new Vector4(...point, 0), {enableDamping:false, curve:false});
 		})]);
 
 	}
-	await Robot_go(BASE, new Vector4(...destination), {enableDamping:true, curve=false});
+	await Robot_go(BASE, new Vector4(...destination), {enableDamping:true, curve:false});
 	return true;
 }
 
