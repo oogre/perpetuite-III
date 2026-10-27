@@ -36,7 +36,7 @@ const robot = new Robot(config.robot);
 		robot.positionOnTable = table.toFloorLocation(location);
 		robot.hoverDangerousPlace = forbidden.isHover(location);
 	});
-	robot.on('powerOff', ()=>{ 
+	robot.on('powerOff', async ()=>{ 
 		/* stopper la boucle, prévenir, etc. */ 
 		await Robot_gripper(BASE, [false]);
 		await Memory_save(BASE);
