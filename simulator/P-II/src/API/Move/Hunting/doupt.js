@@ -8,7 +8,7 @@ export const Move_doupt = async (BASE)=>{
 	const origin = BASE.robot.location4D;
 	const work = origin.clone()
 	for(let i = 0 ; i < ptLen ; i++){
-		const amp = lerp(10, 50, Math.random());
+		const amp = lerp(0, 40, Math.random());
 		work.w = lerp(-amp, amp, Math.random());
 		await Robot_go(BASE, work);
 	}

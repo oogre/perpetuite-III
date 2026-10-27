@@ -28,7 +28,7 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 		throw new Error("MEMORY IS A MESS BEFORE");
 	}
 
-	if(Math.random()<0.5){
+	if(Math.random()<0.9){
 		const move = getRandomOne(Hunting);
 		await move(BASE);
 	}
