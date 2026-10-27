@@ -4,6 +4,7 @@ import config from "./config.js";
 import readline from "readline"
 import Engine from "./tools/Engine.js";
 import API from "./API";
+import {Robot_gripper, Memory_save} from "./API/Actions.js";
 import UI_Manager from "./UI";
 // import Real from "./Real";
 import Robot from "./Robot";
@@ -16,7 +17,7 @@ import Commands from "./Commands";
 import ImageManager from "./ImageManager";
 import {axisCorrection} from "./tools/correction.js";
 import LimitedArray from "./tools/LimitedArray.js";
-import {Robot_gripper, Memory_save} from "./Actions.js";
+
 
 
 process.title = config.window.title;
