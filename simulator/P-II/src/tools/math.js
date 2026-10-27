@@ -1,4 +1,4 @@
-import { Vector2 } from './Vector.js';
+import { Vector2, Vector3 } from './Vector.js';
 
 import {isLocation} from "./validators.js";
 
@@ -28,39 +28,23 @@ export const lerp = (from, to, weight, limitter=false)=>{
     return value;
 }
 
-export const getRandomLocationOnCircle = (radius)=>{
-    let alpha = TAU * Math.random();
-    let r = Math.pow(Math.random(), 0.5) * radius;
-    let x = r * Math.sin(alpha);
-    let y = r * Math.cos(alpha);
-    return new Vector2(x, y);
-}
 
-export const halfCircleFromPoints=(start, stop, direction)=>{
-    const lineMove = start.clone().subtract(stop);
-    const radius = lineMove.magnitude()/2;
-    const alphaStart = lineMove.horizontalAngle();
-    const alphaStop = alphaStart + direction * Math.PI;
-    return arc(start, radius, alphaStart, alphaStop);
-}
+const _u = new Vector3();
+const _v = new Vector3();
 
-export const arc = (location, radius, alphaStart=0, alphaStop=TAU)=>{
-  if(!isLocation(location)){
-    throw new Error("arc should receive a Vector3 or an array as location");  
-  }
-  if(radius == 0){
-    throw new Error("arc should receive a radius greater than zero");  
-  }
-  const [ox, oy] = [
-    location.x - radius * Math.cos(alphaStart), 
-    location.y - radius * Math.sin(alphaStart)
-  ];
-  const angle = shortAngle(alphaStart, alphaStop);
-  const nPoints = Math.abs(radius * angle / TAU);
-  const stepAngle = angle / nPoints;
-  return new Array(Math.floor(nPoints)).fill(0).map((_, i)=>{
-    const x = ox + radius * Math.cos(alphaStart + stepAngle * i);
-    const y = oy + radius * Math.sin(alphaStart + stepAngle * i);
-    return [x, y, location.z];
-  });
-}
+// distance du point `p` à la droite qui passe par `a` et `b` (a et b distincts)
+export const distanceToLine = (p, a, b) => {
+  _u.subVectors(b, a);
+  const length = _u.length();
+  _v.subVectors(p, a);
+  return _u.cross(_v).length() / length;       // |AB × AP| / |AB| : l'aire du parallélogramme divisée par sa base
+};
+
+export const areAligned = (a, b, c, tolerance = 1) => {
+  const ab = a.distanceToSquared(b), ac = a.distanceToSquared(c), bc = b.distanceToSquared(c);
+  const longest = Math.max(ab, ac, bc);
+  if (longest === 0) return true;                                      // trois points confondus
+  if (longest === ab) return distanceToLine(c, a, b) <= tolerance;     // droite = les deux plus éloignés, le troisième est testé contre elle
+  if (longest === ac) return distanceToLine(b, a, c) <= tolerance;
+  return distanceToLine(a, b, c) <= tolerance;
+};
