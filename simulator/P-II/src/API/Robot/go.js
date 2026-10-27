@@ -20,7 +20,7 @@ export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}=
 	const dest = Robot_limitter(BASE, new Vector4(...location, origin.z, origin.w));
 	const move = new Vector4().subVectors(origin, dest);
 	if(move.lengthSq() > 0.1){
-		if(Math.random()<0.5){
+		if(curve && Math.random()<0.5){
 			await Robot_curve(BASE, dest);
 		}else{
 			await BASE.robot.go(dest);		
