@@ -1,6 +1,6 @@
 import Bag from './../../../tools/Bag.js';
 import {delay, now} from './../../../tools/helpers.js';
-import {lerp} from './../../../tools/lerp.js';
+import {lerp} from './../../../tools/math.js';
 import { createNoise2D } from 'simplex-noise';
 
 
