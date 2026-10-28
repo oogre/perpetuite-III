@@ -13,7 +13,8 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 
 	await Promise.race([
 		Robot_travelPath(BASE, [
-		...(new Array(50).map((_, id)=>{
+		...(new Array(50).fill(0)
+			.map((_, id)=>{
 				const point = origin.clone();
 				point.w = lerp(-40, 40, noise2D(0,  id*inc)*0.5 + 0.5);
 				return point;
