@@ -6,7 +6,6 @@ import { createNoise2D } from 'simplex-noise';
 
 // Move A 1000
 export const Move_A = async (BASE, [duration=0]=[])=>{
-	let t0 = now();
 	const origin = BASE.robot.location4D;
 	const noise2D = createNoise2D();
 	let inc = 0.1;
