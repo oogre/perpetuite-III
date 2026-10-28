@@ -36,8 +36,8 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 	}
 	const pills = visiblePills.getByBox([
 		...BASE.robot.location2D, 
-		visiblePills.conf.radius.value*3, 
-		visiblePills.conf.radius.value*3
+		visiblePills.conf.radius.value*2, 
+		visiblePills.conf.radius.value*2
 	]);
 
 	// if(depth == 0){
