@@ -18,7 +18,7 @@ export const Move_mechanicalSheep = async (BASE)=>{
 	const offAlpha = new Vector2(...start).angle(); 
 	await Robot_travelPath(BASE, [
 		start, 
-		new Array(ptLen+1)
+		...(new Array(ptLen+1)
 			.fill(0)
 			.map( (_, k) => {
 				const point = new Vector4(
@@ -30,6 +30,7 @@ export const Move_mechanicalSheep = async (BASE)=>{
 				point.z = lerp(BASE.table.toFloorLocation(point).z + 100, 0, k%2==0);
 				return point;
 			})
+		)
 	]);
 	await Move_doupt(BASE);
 	await Robot_go(BASE, origin, {enableDamping:true, curve:false});
