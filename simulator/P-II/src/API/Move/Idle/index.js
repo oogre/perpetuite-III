@@ -1,5 +1,5 @@
-import Move_A from './A.js';
-import Move_B from './B.js';
+import { Move_A } from './A.js';
+import { Move_B } from './B.js';
 
 
 
