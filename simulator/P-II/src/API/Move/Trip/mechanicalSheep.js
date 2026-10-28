@@ -35,7 +35,7 @@ export const Move_mechanicalSheep = async (BASE)=>{
 		return point;
 	});
 	
-	await Robot_go(BASE, start, {enableDamping:false, curve=true});
+	await Robot_go(BASE, start, {enableDamping:false, curve:true});
 
 	await Robot_travelPath(BASE, [
 		...path.map((point, id, {length})=>{
@@ -44,7 +44,7 @@ export const Move_mechanicalSheep = async (BASE)=>{
 		
 	]);
 	await Move_doupt(BASE);
-	await Robot_go(BASE, origin, {enableDamping:true, curve=false});
+	await Robot_go(BASE, origin, {enableDamping:true, curve:false});
 
 	return true;
 }
