@@ -112,7 +112,6 @@ api.on('error', async (error)=>{
 		case "604": //*Robot power off requested*
 		case "901": //*Obstacle collision detected*
 		case "906": //*Robot power off requested*
-		default : 
 			console.log("STOP AND RESTART")
 			return process.exit(1);
 		case "908": //*E-STOP from front panel button*
