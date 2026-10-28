@@ -23,7 +23,7 @@ export const Move_B = async (BASE, [duration=0]=[])=>{
 			yOff+=yInc;
 			const point = origin.clone();
 
-			point.z -= 10 * (1 - (Math.cos(t*0.001 * Math.PI * 2 * (duration * 0.001)) * 0.5 + 0.5));
+			point.z -= 20 * (1 - (Math.cos(t*0.001 * Math.PI * 2 / (duration * 0.001)) * 0.5 + 0.5));
 			point.z = Math.min(0, Math.max(minZ, point.z));
 
 			bag.add(BASE.robot.go(point));
