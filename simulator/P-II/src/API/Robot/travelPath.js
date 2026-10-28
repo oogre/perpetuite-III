@@ -9,7 +9,7 @@ export const Robot_travelPath = async (BASE, path=[])=>{
 		})
 	);
 	// chaque go() interrompt le précédent par "Move interrupted…" : c'est normal, on l'ignore
-	console.log(failure);
+	console.log(results);
 	const failure = results.find(r =>
 		r.status === "rejected" && r.reason?.message !== "Move interrupted by a new target"
 	);
