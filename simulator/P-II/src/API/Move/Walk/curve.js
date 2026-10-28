@@ -29,7 +29,7 @@ export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 			...arc.getPoints(5).map((pt, id, {length})=>{
 				const point = new Vector4(...pt, 0);
 				if(id > 0 && id < length - 1){
-					point.z = Math.min(0, Math.max(point.z, BASE.table.toFloorLocation(point).z - 20));
+					point.z = Math.min(0, Math.max(point.z, BASE.table.toFloorLocation(point).z + 20));
 				}
 				return point;
 			})
