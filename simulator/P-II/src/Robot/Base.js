@@ -103,51 +103,47 @@ export default class RobotBase extends EventsManager{
 		if(this._updating || !this._arrival) return;// plus d'await isPending
 		this._updating = true;
 		try{
-			this._move.set(...this._target).sub(this._location);
-			if(await this._reached.isPending()){
-				if(this.conf.simulation){
-					const bellCurve = (curveWidth, x)=>{
-						const width = lerp(4, 1.01, curveWidth);
-						return 1-Math.pow(width, -1 * x);
-					};
-					const damping = (value)=>{
-						const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
-						return bellCurve(Math.pow(speedAsFloat, 0.05), value);
-					}
-					this._move.w = shortAngle(this._location.w, this._target.w, 360);
-					this._location.add(
-						this._move
-							.clone()
-							.normalize()
-							.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
-					);
-					this._location.w %= 360;
-					this.fire('locationChange', this.location4D.clone());	
-				}else{
-					const t = await this.controller.GetPosition();
-					this._location.copy(new Vector4(...t));
-					
-					const delta = this._lastPos.clone().sub(this._location).lengthSq();
-					this._lastPos.copy(this._location);
-					this._still = delta < 0.01 ? this._still + 1 : 0;      // < 0,1 mm entre deux lectures
-
-					this.fire('locationChange', this.location4D.clone());	
+			if(this.conf.simulation){
+				const bellCurve = (curveWidth, x)=>{
+					const width = lerp(4, 1.01, curveWidth);
+					return 1-Math.pow(width, -1 * x);
+				};
+				const damping = (value)=>{
+					const speedAsFloat = inverseLerp(0, this.conf.maxSpeed, this._speed);
+					return bellCurve(Math.pow(speedAsFloat, 0.05), value);
 				}
-
 				this._move.set(...this._target).sub(this._location);
 				this._move.w = shortAngle(this._location.w, this._target.w, 360);
+				this._location.add(
+					this._move
+						.clone()
+						.normalize()
+						.multiplyScalar(deltaTime * this._speed * damping(this._move.length()))
+				);
+				this._location.w %= 360;
+			}else{
+				const t = await this.controller.GetPosition();
+				this._location.copy(new Vector4(...t));
+				const delta = this._lastPos.clone().sub(this._location).lengthSq();
+				this._lastPos.copy(this._location);
+				this._still = delta < 0.01 ? this._still + 1 : 0;      // < 0,1 mm entre deux lectures
+			}
 
-				const reached = this._move.lengthSq() < 0.3;
-				const stopped = this._still >= 6 && now - this._startedAt > 2000;   // immobile depuis ~300 ms
-				if(reached || stopped){
-					if(!reached) console.log("robot immobile hors tolérance, écart :", this._move.toArray().map(v=>v.toFixed(2)).join(" "));
-					if(!this._isInit){ 
-						this._isInit = true; this.fire('initilized', this.location4D.clone()); 
-					}
-					const arrival = this._arrival;
-					this._arrival = null;
-					arrival.resolve();
+			this.fire('locationChange', this.location4D.clone());	
+
+			this._move.set(...this._target).sub(this._location);
+			this._move.w = shortAngle(this._location.w, this._target.w, 360);
+
+			const reached = this._move.lengthSq() < 0.3;
+			const stopped = this._still >= 6 && now - this._startedAt > 2000;   // immobile depuis ~300 ms
+			if(reached || stopped){
+				if(!reached) console.log("robot immobile hors tolérance, écart :", this._move.toArray().map(v=>v.toFixed(2)).join(" "));
+				if(!this._isInit){ 
+					this._isInit = true; this.fire('initilized', this.location4D.clone()); 
 				}
+				const arrival = this._arrival;
+				this._arrival = null;
+				arrival.resolve();
 			}
 		}catch(error){
 			console.log(error);   // une lecture ratée ne doit pas tuer le programme
