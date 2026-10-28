@@ -39,16 +39,14 @@ export const Move_mechanicalSheep = async (BASE)=>{
 		point.z = lerp(altitude, 0, k%2==0)
 		return point;
 	});
-
+	console.log(path);
+	
 	await Robot_travelPath(BASE, [
-			...path.map((point, id, {length})=>{
-				const l = inverseLerp(4, 10, length);
-				const depth = lerp(0, -200, l, true);
-				const n = 1 - Math.abs(Math.pow((id / (length -1)) * 2 - 1, curve));
-				return new Vector4(...point, lerp(0, depth, n), 0);
-			}),
-			origin
-		]);
+		...path.map((point, id, {length})=>{
+			return new Vector4(...point, 0);
+		}),
+		origin
+	]);
 
 	return true;
 }
