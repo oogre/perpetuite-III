@@ -6,7 +6,7 @@ import * as Walk from './../Move/Walk';
 import {getRandomOne, delay} from './../../tools/helpers.js';
 import {lerp, inverseLerp} from './../../tools/math.js';
 
-export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}={})=>{
+export const Robot_go = async (BASE, location, {enableDamping=true, curve=false}={})=>{
 	BASE.robot.actionDesc = `Robot go ${location}`;
 
 	// if(Math.random()<0.1){
@@ -19,7 +19,7 @@ export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}=
 	const origin = BASE.robot.location4D;
 	const dest = Robot_limitter(BASE, new Vector4(...location, origin.z, origin.w));
 	const move = new Vector4().subVectors(origin, dest);
-	if(move.x >= 1.0 || move.y >= 1.0 || move.z >= 1.0 || move.z >= 1.0){
+	if(Math.abs(move.x) >= 1 || Math.abs(move.y) >= 1 || Math.abs(move.z) >= 1 || Math.abs(move.w) >= 1){
 		if(curve && Math.random()<0.5){
 			await Move_curve(BASE, dest);
 		}else{

@@ -1,7 +1,6 @@
 import { Vector4, Vector3, Vector2 } from './../tools/Vector.js';
 
 import {EventsManager} from "events-manager"
-//import PromiseHelper from "./../tools/PromiseHelper.js";
 import {delay} from "./../tools/helpers.js";
 import {inverseLerp, lerp, shortAngle, TAU, degToRag} from "./../tools/math.js";
 import {isLocation} from "./../tools/validators.js";
@@ -27,9 +26,6 @@ export default class RobotBase extends EventsManager{
 		this._still = 0;
 		this._startedAt = 0;
 
-		// this._reached = new PromiseHelper(()=>{
-		// 	this.fire('locationReached', this.location4D.clone());
-		// });
 		this._arrival = {resolve(){}, reject(){}};     // « en attente » dès le départ (première lecture de position -> initilized)
 	}
 	get location2D(){
@@ -85,14 +81,6 @@ export default class RobotBase extends EventsManager{
 		this._arrival?.reject(new AppError(ERR.USE, "Move interrupted by a new target"));
 		this._target.copy(targetValue);
 
-		// if(await this._reached.isPending()){
-		// 	this._reached.reject(new AppError(ERR.USE, "Move interrupted by a new target"));
-		// }
-		// this._target.copy(targetValue);
-		// if(!this.conf.simulation){
-		// 	await this.controller.Go(this._target);
-		// }
-
 		this._startedAt = new Date().getTime();
 		this._still = 0;
 
@@ -103,7 +91,6 @@ export default class RobotBase extends EventsManager{
 		if(this._updating || !this._arrival){
 			return;// plus d'await isPending	
 		}
-		console.log(".");
 
 		this._updating = true;
 		try{
