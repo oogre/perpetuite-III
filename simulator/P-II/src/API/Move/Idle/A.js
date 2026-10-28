@@ -30,15 +30,12 @@ class Bag{
 export const Move_A = async (BASE, [duration=0]=[])=>{
 	const origin = BASE.robot.location4D;
 	const noise2D = createNoise2D();
-	let id = 0;
-	let inc = 0.1;
 	const bag = new Bag();
 	const t0 = now();
 	try{
 		while(now() - t0 < duration){
-			id+=inc;
 			const point = origin.clone();
-			point.w = lerp(-40, 40, noise2D(0,  id)*0.5 + 0.5);
+			point.w = lerp(-40, 40, noise2D(0, now * 0.0001 )*0.5 + 0.5);
 			bag.add(BASE.robot.go(point));
 			await delay(100);
 			bag.check();
