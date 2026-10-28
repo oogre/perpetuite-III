@@ -5,6 +5,7 @@ import ColorCli from "cli-color";
 import {Robot_HighPower, Robot_gripper, Robot_explore} from '../Robot';
 import {Memory_load, Memory_save} from '../Memory';
 import Chronos from "./../../tools/Chronos.js"
+import { Vector4 } from './../../tools/Vector.js';
 
 let frameChronos = 0;
 
@@ -17,6 +18,7 @@ export const Exec_start = async (BASE)=>{
 	Memory_load(BASE);
 	await Robot_gripper(BASE, [false]);
 	await Robot_HighPower(BASE, [true]);
+	await Robot_go(BASE, new Vector4(0, 0, 0, 0), , {enableDamping:true, curve:true})
 	await Robot_explore(BASE);
 
 	await Exec_loop(BASE);

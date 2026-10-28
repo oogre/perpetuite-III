@@ -102,7 +102,9 @@ api.on('error', async (error)=>{
 
 	if(error instanceof AppError && error.is(ERR.FORBIDDEN)){
 		console.log(`${error.message}`);
-	 	return api.fire(`Exec_start`);
+		if(config.autoStart){
+			return api.fire(`Exec_start`);	
+		}
 	}
 
 	switch (error.code) {
