@@ -1,7 +1,7 @@
 import { Vector4, Vector3, Vector2 } from './../tools/Vector.js';
 
 import {EventsManager} from "events-manager"
-import PromiseHelper from "./../tools/PromiseHelper.js";
+//import PromiseHelper from "./../tools/PromiseHelper.js";
 import {delay} from "./../tools/helpers.js";
 import {inverseLerp, lerp, shortAngle, TAU, degToRag} from "./../tools/math.js";
 import {isLocation} from "./../tools/validators.js";
@@ -27,9 +27,10 @@ export default class RobotBase extends EventsManager{
 		this._still = 0;
 		this._startedAt = 0;
 
-		this._reached = new PromiseHelper(()=>{
-			this.fire('locationReached', this.location4D.clone());
-		});
+		// this._reached = new PromiseHelper(()=>{
+		// 	this.fire('locationReached', this.location4D.clone());
+		// });
+		this._arrival = {resolve(){}, reject(){}};     // « en attente » dès le départ (première lecture de position -> initilized)
 	}
 	get location2D(){
 		return new Vector2(...this._location);
@@ -77,24 +78,29 @@ export default class RobotBase extends EventsManager{
 		if (!isLocation(targetValue)) {
 			throw new AppError(ERR.USE, "Set target of Robot should receive a Vector4 or an array");	
 		}
-		
-		if(await this._reached.isPending()){
-			this._reached.reject(new AppError(ERR.USE, "Move interrupted by a new target"));
-		}
-		this._target.copy(targetValue);
 		if(!this.conf.simulation){
-			await this.controller.Go(this._target);
+			await this.controller.Go(targetValue);   // si ACE refuse, l'état n'a pas bougé
 		}
+
+		this._arrival?.reject(new AppError(ERR.USE, "Move interrupted by a new target"));
+		this._target.copy(targetValue);
+
+		// if(await this._reached.isPending()){
+		// 	this._reached.reject(new AppError(ERR.USE, "Move interrupted by a new target"));
+		// }
+		// this._target.copy(targetValue);
+		// if(!this.conf.simulation){
+		// 	await this.controller.Go(this._target);
+		// }
 
 		this._startedAt = new Date().getTime();
 		this._still = 0;
 
-		this._reached.reset();
-		return this._reached.promise;
+		return new Promise((resolve, reject)=>{ this._arrival = {resolve, reject}; });
 	}
 
 	async update(deltaTime, now){
-		if(this._updating) return;
+		if(this._updating || !this._arrival) return;// plus d'await isPending
 		this._updating = true;
 		try{
 			this._move.set(...this._target).sub(this._location);
@@ -135,11 +141,12 @@ export default class RobotBase extends EventsManager{
 				const stopped = this._still >= 6 && now - this._startedAt > 2000;   // immobile depuis ~300 ms
 				if(reached || stopped){
 					if(!reached) console.log("robot immobile hors tolérance, écart :", this._move.toArray().map(v=>v.toFixed(2)).join(" "));
-					if(!this._isInit){
-						this._isInit = true;
-						this.fire('initilized', this.location4D.clone());
+					if(!this._isInit){ 
+						this._isInit = true; this.fire('initilized', this.location4D.clone()); 
 					}
-					this._reached.resolve();
+					const arrival = this._arrival;
+					this._arrival = null;
+					arrival.resolve();
 				}
 			}
 		}catch(error){
