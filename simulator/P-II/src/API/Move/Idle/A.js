@@ -16,7 +16,7 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 	const work = origin.clone()
 	const noise2D = createNoise2D();
 	let y = 0;
-	let inc = 0.01;
+	let inc = 0.1;
 	while(now() - t0 < duration){
 		work.w = lerp(-40, 40, noise2D(0,  y)*0.5 + 0.5);
 		y += inc;
