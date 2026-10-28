@@ -23,8 +23,8 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 		]), 
 		delay(duration)
 	]);
-
+	console.log("OK");
 	await BASE.robot.stop();
-
+	console.log("STOPED");
 	return await BASE.robot.go(origin);
 }
