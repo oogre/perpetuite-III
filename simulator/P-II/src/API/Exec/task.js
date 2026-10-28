@@ -1,6 +1,6 @@
 import {spacedLog} from "./../../tools/helpers.js";
 import Pills, {PillModel}  from "./../../Pills";
-import {Robot_findFreePillByColorName} from "./../Robot";
+import {Robot_findFreePillByColorName, Robot_throw} from "./../Robot";
 import {Exec_move} from "./move.js";
 import {AppError, ERR } from './../../tools/Errors.js' ;
 
@@ -38,6 +38,11 @@ export const Exec_task = async(BASE, [colorName=(new PillModel.Color()).name, x=
 			console.log(`${error.message}`);
 		 	return Exec_task(BASE, [colorName, x, y]);
 		}
+		if(error instanceof AppError && error.is(ERR.DROP)){
+			console.log(`${error.message}`);
+		 	return await Robot_throw(BASE);
+		}
+		
 		throw error;
 	}
 }

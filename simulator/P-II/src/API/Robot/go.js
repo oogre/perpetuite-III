@@ -19,15 +19,9 @@ export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}=
 	const origin = BASE.robot.location4D;
 	const dest = Robot_limitter(BASE, new Vector4(...location, origin.z, origin.w));
 	const move = new Vector4().subVectors(origin, dest);
-	if(move.lengthSq() > 0.1){
+	if(move.x >= 1.0 || move.y >= 1.0 || move.z >= 1.0 || move.z >= 1.0){
 		if(curve && Math.random()<0.5){
-			try{
-				await Move_curve(BASE, dest);	
-			}catch(e){
-				console.log(`Something went wrong with curve from ${origin.style} to ${origin.style}`)
-				await BASE.robot.go(dest);
-			}
-			
+			await Move_curve(BASE, dest);
 		}else{
 			await BASE.robot.go(dest);		
 		}
