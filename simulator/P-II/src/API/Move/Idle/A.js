@@ -20,8 +20,8 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 	while(now() - t0 < duration){
 		work.w = lerp(-40, 40, noise2D(0,  y)*0.5 + 0.5);
 		y += inc;
-		await Robot_go(BASE, work, {enableDamping:false, curve:false});
+		await BASE.robot.go(work);
 	}
 
-	return Robot_go(BASE, origin, {enableDamping:false, curve:false})
+	return await BASE.robot.go(work);
 }
