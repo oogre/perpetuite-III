@@ -69,6 +69,10 @@ export default class RobotBase extends EventsManager{
 		return new Vector4(...t);
 	}
 
+	async stop(){
+		await this.controller.Stop();
+	}
+
 	
 	async go(targetValue){
 		if (!isLocation(targetValue)) {
