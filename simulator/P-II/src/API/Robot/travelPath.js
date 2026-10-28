@@ -1,4 +1,4 @@
-import {Robot_go} from "./Robot_go.js";
+import {Robot_go} from "./go.js";
 import { Vector4 } from './../../tools/Vector.js';
 
 export const Robot_travelPath = async (BASE, path=[])=>{
