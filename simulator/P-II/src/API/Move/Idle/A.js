@@ -5,7 +5,7 @@ import {lerp} from "./../../../tools/math.js";
 import { createNoise2D } from 'simplex-noise';
 
 const noise2D = createNoise2D();
-const yInc = 0.1;
+const yInc = 0.01;
 let   yOff = 0;
 const now = () => Number(process.hrtime.bigint()) / 1e6;
 
@@ -40,7 +40,7 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 		while(now() - t0 < duration){
 			yOff+=yInc;
 			const point = origin.clone();
-			point.w += 10 * noise2D(0, yOff);
+			point.w += 5 * noise2D(0, yOff);
 			point.w = Math.min(40, Math.max(-40,point.w));
 			bag.add(BASE.robot.go(point));
 			await delay(100);
