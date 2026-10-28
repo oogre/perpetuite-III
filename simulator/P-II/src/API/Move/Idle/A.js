@@ -35,7 +35,7 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 	try{
 		while(now() - t0 < duration){
 			const point = origin.clone();
-			point.w = lerp(-40, 40, noise2D(0, now() * 0.00001 )*0.5 + 0.5);
+			point.w = lerp(-40, 40, noise2D(0, now() * 0.0001 )*0.5 + 0.5);
 			bag.add(BASE.robot.go(point));
 			await delay(100);
 			bag.check();
