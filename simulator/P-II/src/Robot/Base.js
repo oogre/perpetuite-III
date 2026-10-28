@@ -101,9 +101,10 @@ export default class RobotBase extends EventsManager{
 
 	async update(deltaTime, now){
 		if(this._updating || !this._arrival){
-			console.log(".");
-			 return;// plus d'await isPending	
+			return;// plus d'await isPending	
 		}
+		console.log(.);
+
 		this._updating = true;
 		try{
 			if(this.conf.simulation){
