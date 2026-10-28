@@ -18,7 +18,7 @@ export const Exec_start = async (BASE)=>{
 	Memory_load(BASE);
 	await Robot_gripper(BASE, [false]);
 	await Robot_HighPower(BASE, [true]);
-	await Robot_go(BASE, new Vector4(0, 0, 0, 0), , {enableDamping:true, curve:true})
+	await Robot_go(BASE, new Vector4(0, 0, 0, 0), {enableDamping:true, curve:true})
 	await Robot_explore(BASE);
 
 	await Exec_loop(BASE);
