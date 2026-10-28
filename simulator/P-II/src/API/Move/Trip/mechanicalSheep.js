@@ -8,15 +8,15 @@ export const Move_mechanicalSheep = async (BASE)=>{
 	let path = [];
 	const origin = BASE.robot.location4D;
 	const origin3D = BASE.robot.location3D;
-	const work = new Vector3(origin.x, origin.y, 0);
-	work.setLength(BASE.robot.conf.radius);
+	const start = new Vector3(origin.x, origin.y, 0);
+	start.setLength(BASE.robot.conf.radius);
 
-	await Robot_go(BASE, work);
 	
+
 	const [center, r] = [new Vector3(0, 0, 0), BASE.robot.conf.radius];
 	const ptLen = 12;
 	const _ptLen = 1/ptLen;
-	const offAlpha = new Vector2(...work).angle(); 
+	const offAlpha = new Vector2(...start).angle(); 
 
 	path = path.concat(
 		new Array(ptLen+1)
@@ -29,11 +29,12 @@ export const Move_mechanicalSheep = async (BASE)=>{
 	);
 
 	path = path.map((point, k) => {
-		point.z = lerp(BASE.table.toFloorLocation(point).z + 20, 0, k%2==0)
+		point.z = lerp(BASE.table.toFloorLocation(point).z + 100, 0, k%2==0)
 		return point;
 	});
 	
-	
+	await Robot_go(BASE, start);
+
 	await Robot_travelPath(BASE, [
 		...path.map((point, id, {length})=>{
 			return new Vector4(...point, 0);
