@@ -5,6 +5,7 @@ import { Move_curve } from './../Move/Walk/curve.js';
 import * as Walk from './../Move/Walk';
 import {getRandomOne, delay} from './../../tools/helpers.js';
 import {lerp, inverseLerp} from './../../tools/math.js';
+import {Move_Idle} from './../Move/Idle';
 
 export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}={})=>{
 	BASE.robot.actionDesc = `Robot go ${location}`;
@@ -29,7 +30,7 @@ export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}=
 
 	if(enableDamping){
 		const dampingTime = lerp(20, 2000, inverseLerp(0, BASE.robot.conf.radius * 2, move.length()));
-		await delay(dampingTime);
+		await Move_Idle(BASE, [dampingTime]);
 	}
 
 	BASE.robot.actionDescPop();
