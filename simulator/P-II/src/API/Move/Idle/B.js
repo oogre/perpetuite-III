@@ -2,9 +2,6 @@ import Bag from './../../../tools/Bag.js';
 import {delay, now} from './../../../tools/helpers.js';
 import { createNoise2D } from 'simplex-noise';
 
-const noise2D = createNoise2D();
-const yInc = 0.05;
-let   yOff = 0;
 
 
 
@@ -20,11 +17,11 @@ export const Move_B = async (BASE, [duration=0]=[])=>{
 		let t = now() - t0;
 		while(t < duration){
 			t = now() - t0;
-			yOff+=yInc;
 			const point = origin.clone();
+			const offZ = 10 * Math.sin(count * t*0.001 * Math.PI * 2 / (duration * 0.001));
 
-			point.z -= 20 * (1 - (Math.cos(count * t*0.001 * Math.PI * 2 / (duration * 0.001)) * 0.5 + 0.5));
-			point.z = Math.min(0, Math.max(minZ, point.z));
+			point.z += offZ;
+			point.z = Math.min(BASE.robot.conf.maxZ, Math.max(minZ + BASE.memory.conf.depth, point.z));
 
 			bag.add(BASE.robot.go(point));
 			await delay(20);
