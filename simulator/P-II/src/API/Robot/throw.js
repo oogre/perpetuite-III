@@ -4,7 +4,7 @@ import {Robot_acc} from './acc.js';
 import {Robot_dcc} from './dcc.js';
 import {Robot_gripper} from './gripper.js';
 import {Robot_limitter} from './limitter.js';
-import { Vector4 } from './../../tools/Vector.js';
+import { Vector4 , Vector2} from './../../tools/Vector.js';
 import {delay} from './../../tools/helpers.js';
 
 export const Robot_throw = async (BASE)=>{
