@@ -2,7 +2,7 @@ import {spacedLog} from "./../../tools/helpers.js";
 import * as Robot from "./../Robot";
 import {Camera_capture} from './../Camera';
 import {Memory_lock} from './../Memory';
-
+import {Move_mechanicalSheep} from './../Move/Trip';
 // MOVE PILL to XY
 // Check XY
 // 	NOGO :
@@ -58,6 +58,9 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 	// 	DEFAULT :
 	await Robot.Robot_go(BASE, pill.location);
 	await Robot.Robot_grab(BASE);
+	if(Math.random() < 0.5){
+		await Move_mechanicalSheep(BASE);
+	}
 	await Robot.Robot_go(BASE, location);
 	await Robot.Robot_drop(BASE);
 	Memory_lock(BASE, location);

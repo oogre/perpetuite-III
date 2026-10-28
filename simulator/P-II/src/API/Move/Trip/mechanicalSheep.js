@@ -8,7 +8,6 @@ import { inverseLerp, lerp } from './../../../tools/math.js';
 //Move mechanicalSheep
 export const Move_mechanicalSheep = async (BASE)=>{
 	const origin = BASE.robot.location4D;
-	const origin3D = BASE.robot.location3D;
 	const start = new Vector3(origin.x, origin.y, 0);
 	start.setLength(BASE.robot.conf.radius);
 
