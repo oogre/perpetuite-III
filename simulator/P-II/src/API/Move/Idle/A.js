@@ -11,7 +11,10 @@ class Bag{
 	add(promise){
 		const tracked = promise
 			.catch(error=>{
-				if(error?.message !== "Move interrupted by a new target") this.failure ??= error;
+				if(error?.message !== "Move interrupted by a new target"){
+					console.log(`[Bag] +${Math.round(now() - this.t0)} ms :`, error.message);
+					this.failure ??= error;
+				}
 			})
 			.finally(()=>this.#set.delete(tracked));
 		this.#set.add(tracked);
@@ -30,15 +33,20 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 	let inc = 0.1;
 	const bag = new Bag();
 	const t0 = now();
-	while(now() - t0 < duration){
-		id+=inc;
-		const point = origin.clone();
-		point.w = lerp(-40, 40, noise2D(0,  id)*0.5 + 0.5);
-		bag.add(BASE.robot.go(point));
-		await delay(100);
-		bag.check();
+	try{
+		while(now() - t0 < duration){
+			id+=inc;
+			const point = origin.clone();
+			point.w = lerp(-40, 40, noise2D(0,  id)*0.5 + 0.5);
+			bag.add(BASE.robot.go(point));
+			await delay(100);
+			bag.check();
+		}
+	}finally{
+		await BASE.robot.stop().catch(error=>{ bag.failure ??= error; });
 	}
-	await BASE.robot.stop();
+	bag.check();
+	
 
 	return await BASE.robot.go(origin);
 }
