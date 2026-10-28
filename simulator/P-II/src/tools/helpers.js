@@ -20,6 +20,8 @@ export const getRandomItem = (arr) => {
     return arr[index];
 }
 
+export const now = () => Number(process.hrtime.bigint()) / 1e6;
+
 export const delay = (time)=>{
   return new Promise(res=>{
     setTimeout(()=>res(), time)

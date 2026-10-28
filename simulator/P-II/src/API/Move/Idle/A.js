@@ -1,33 +1,11 @@
-
-import {delay} from './../../../tools/helpers.js';
-import {Robot_travelPath} from './../../Robot';
-import {lerp} from "./../../../tools/math.js";
+import Bag from './../../../tools/Bag.js';
+import {delay, now} from './../../../tools/helpers.js';
 import { createNoise2D } from 'simplex-noise';
 
 const noise2D = createNoise2D();
 const yInc = 0.05;
 let   yOff = 0;
-const now = () => Number(process.hrtime.bigint()) / 1e6;
 
-class Bag{
-	#set = new Set();
-	failure = null;                                  // première vraie erreur
-	constructor(t0 = now()){ this.t0 = t0; }
-	add(promise){
-		const tracked = promise
-			.catch(error=>{
-				if(error?.message !== "Move interrupted by a new target"){
-					console.log(`[Bag] +${Math.round(now() - this.t0)} ms :`, error.message);
-					this.failure ??= error;
-				}
-			})
-			.finally(()=>this.#set.delete(tracked));
-		this.#set.add(tracked);
-	}
-	check(){ 
-		if(this.failure) throw this.failure; 
-	}  // relance l'erreur ACE telle quelle (code '604')
-}
 
 
 // Move A 1000
@@ -50,7 +28,5 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 		await BASE.robot.stop().catch(error=>{ bag.failure ??= error; });
 	}
 	bag.check();
-	
-
 	return await BASE.robot.go(origin);
 }
