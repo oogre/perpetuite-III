@@ -10,6 +10,10 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 	const noise2D = createNoise2D();
 	let inc = 0.1;
 
+	setTimeout(()=>{
+		await BASE.robot.stop();
+		console.log("STOPED");
+	}, duration);
 
 	const result = await Promise.race([
 		Robot_travelPath(BASE, [
@@ -24,7 +28,7 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 		delay(duration)
 	]);
 	console.log("OK");
-	await BASE.robot.stop();
-	console.log("STOPED");
+	
+	
 	return await BASE.robot.go(origin);
 }
