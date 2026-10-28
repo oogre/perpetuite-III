@@ -8,6 +8,7 @@ const now = () => Number(process.hrtime.bigint()) / 1e6;
 class Bag{
 	#set = new Set();
 	failure = null;                                  // première vraie erreur
+	constructor(t0 = now()){ this.t0 = t0; }
 	add(promise){
 		const tracked = promise
 			.catch(error=>{
