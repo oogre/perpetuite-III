@@ -3,9 +3,8 @@ import Move_B from './B.js';
 
 
 
-const Move_Idle = async (BASE, [duration=0]=[])=>{
+export const Move_Idle = async (BASE, [duration=0]=[])=>{
 	return await Move_A(BASE, duration);
 }
 
 
-export Idle;
