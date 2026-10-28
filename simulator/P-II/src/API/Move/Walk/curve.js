@@ -1,4 +1,4 @@
-import {Robot_go, Move_travelPath} from "./../../Robot";
+import {Robot_go, Robot_travelPath} from "./../../Robot";
 import { Vector4, Vector3 } from './../../../tools/Vector.js';
 import { lerp, inverseLerp, areAligned} from './../../../tools/math.js';
 import ArcThrough from './../../../tools/ArcThrough.js';
@@ -25,7 +25,7 @@ export const Move_curve = async (BASE, destination=BASE.robot.location4D)=>{
 		const middle = getNotAlignedPoint(start, stop);
 
 		const arc = new ArcThrough(start, middle, stop, {shortest : true});
-		await Move_travelPath(BASE, [
+		await Robot_travelPath(BASE, [
 			...arc.getPoints(5).map((pt, id, {length})=>{
 				const point = new Vector4(...pt, 0);
 				if(id > 0 && id < length - 1){

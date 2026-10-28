@@ -1,4 +1,4 @@
-import {Robot_go, Move_travelPath} from "./../../Robot";
+import {Robot_go, Robot_travelPath} from "./../../Robot";
 import {Command_getPath} from "./../../Command";
 import { Vector4 } from './../../../tools/Vector.js';
 import { lerp, inverseLerp} from './../../../tools/math.js';
@@ -11,7 +11,7 @@ export const Move_drawer = async (BASE)=>{
 	for(let i = 0 ; i < ptLen ; i++){
 		const lastPoint = path[path.length-1];
 		const curve = Math.ceil(Math.random() * 4);
-		await Move_travelPath(BASE, [
+		await Robot_travelPath(BASE, [
 			...path.map((point, id, {length})=>{
 				const l = inverseLerp(4, 10, length);
 				const depth = lerp(0, -200, l, true);

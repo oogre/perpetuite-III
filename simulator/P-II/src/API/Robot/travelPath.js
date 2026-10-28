@@ -1,7 +1,7 @@
-import {Robot_go} from "./../../Robot";
-import { Vector4 } from './../../../tools/Vector.js';
+import {Robot_go} from "./Robot_go.js";
+import { Vector4 } from './../../tools/Vector.js';
 
-export const Move_travelPath = async (BASE, path=[])=>{
+export const Robot_travelPath = async (BASE, path=[])=>{
 
 	const results = await Promise.allSettled(
 		path.map( point => {
