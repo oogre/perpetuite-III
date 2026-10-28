@@ -17,8 +17,9 @@ export const Move_B = async (BASE, [duration=0]=[])=>{
 	const minZ =  BASE.table.toFloorLocation(origin).z + 40;
 
 	try{
-		const t = now() - t0;
+		let t = now() - t0;
 		while(t < duration){
+			t = now() - t0;
 			yOff+=yInc;
 			const point = origin.clone();
 
