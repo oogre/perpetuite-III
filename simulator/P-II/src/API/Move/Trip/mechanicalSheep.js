@@ -1,5 +1,7 @@
 
-import { Robot_travelPath, Robot_go } from "./../../Robot";
+import { Robot_travelPath, Robot_go,  } from "./../../Robot";
+import { Move_doupt } from "./../Hunting";
+
 import { Vector3, Vector4, Vector2 } from './../../../tools/Vector.js';
 import { inverseLerp, lerp } from './../../../tools/math.js';
 
@@ -33,7 +35,7 @@ export const Move_mechanicalSheep = async (BASE)=>{
 		return point;
 	});
 	
-	await Robot_go(BASE, start);
+	await Robot_go(BASE, start, {enableDamping:false, curve=true});
 
 	await Robot_travelPath(BASE, [
 		...path.map((point, id, {length})=>{
@@ -41,7 +43,8 @@ export const Move_mechanicalSheep = async (BASE)=>{
 		}),
 		
 	]);
-	await Robot_go(BASE, origin);
+	await Move_doupt(BASE);
+	await Robot_go(BASE, origin, {enableDamping:true, curve=false});
 
 	return true;
 }
