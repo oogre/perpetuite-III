@@ -11,7 +11,6 @@ let   yOff = 0;
 // Move A 1000
 export const Move_A = async (BASE, [duration=0]=[])=>{
 	const origin = BASE.robot.location4D;
-	
 	const bag = new Bag();
 	const t0 = now();
 	try{
