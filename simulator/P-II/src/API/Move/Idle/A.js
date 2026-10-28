@@ -1,15 +1,10 @@
 
 import {delay} from './../../../tools/helpers.js';
+import {Robot_travelPath} from './../../Robot';
 import {lerp} from "./../../../tools/math.js";
 import { createNoise2D } from 'simplex-noise';
 
-
-// horloge monotone : insensible aux changements d'heure du système, contrairement à Date.now()
-const now = () => Number(process.hrtime.bigint()) / 1e6;
-
-
-
-// Move doupt
+// Move A 1000
 export const Move_A = async (BASE, [duration=0]=[])=>{
 	let t0 = now();
 	const origin = BASE.robot.location4D;
