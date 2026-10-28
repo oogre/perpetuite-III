@@ -1,9 +1,9 @@
 
-import { Robot_go } from "./../../Robot";
+import { Robot_travelPath } from "./../../Robot";
 import { Vector3, Vector4, Vector2 } from './../../../tools/Vector.js';
 import { inverseLerp, lerp } from './../../../tools/math.js';
 
-
+//Move mechanicalSheep
 export const Move_mechanicalSheep = async (BASE)=>{
 	let path = [];
 	const origin = BASE.robot.location4D;
