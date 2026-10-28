@@ -2,7 +2,7 @@ import {Exec_loop} from './loop.js';
 import {Real_save} from './../Real/save.js';
 import ColorCli from "cli-color";
 
-import {Robot_HighPower, Robot_gripper, Robot_explore} from '../Robot';
+import {Robot_HighPower, Robot_gripper, Robot_explore, Robot_go} from '../Robot';
 import {Memory_load, Memory_save} from '../Memory';
 import Chronos from "./../../tools/Chronos.js"
 import { Vector4 } from './../../tools/Vector.js';
