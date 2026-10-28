@@ -10,7 +10,8 @@ export const Camera_capture = async (BASE, [transport=false]=[], depth=0)=>{
 	transport = transport==1
 	const captureName = `${new Date().getTime()} ${BASE.robot.location4D}.png`;
 	const rawData = await BASE.camera.capture(captureName, transport);
-	const areas = rawData.map(item=>new Area(item.contour, item.avgRGB));
+	const NOISE_MM2 = 4;                                      // < 4 mm² : bruit, ni pill ni obstacle
+	const areas = rawData.map(item=>new Area(item.contour, item.avgRGB)).filter(a=>a.area >= NOISE_MM2);
 
 	// Supprime de la mémoire les pillules non locked dans un rayon de 5cm autour de la buse
 	// Permet d'éviter les doublons du aux vibration de la cage

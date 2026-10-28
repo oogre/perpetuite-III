@@ -370,13 +370,20 @@ def pill_to_obj(contour, img):
         'box': [int(x - ERODE / 2) + bw / 2, int(y - ERODE / 2) + bh / 2, bw, bh],
         'avgRGB': list(dominant_color(parcel)),
     }
-
+def fill_holes(mask):
+    """chaque forme blanche est redessinée pleine : les puits noirs à l'intérieur disparaissent"""
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    out = np.zeros_like(mask)
+    cv2.drawContours(out, contours, -1, 255, cv2.FILLED)
+    return out
 
 def analyse(img):
     """img : BGR, repere d'analyse. Memes seuils et memes noyaux que P-II/cv/server.py."""
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (11, 11), 0)
     _, thresh1 = cv2.threshold(blur, 48, 255, cv2.THRESH_BINARY)
+    thresh1 = cv2.morphologyEx(thresh1, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15)))
+    thresh1 = fill_holes(thresh1)                      # <-- nouveau
     erosion = cv2.erode(thresh1, KERNEL, iterations=1)
     blur = cv2.GaussianBlur(erosion, (9, 9), 0)
     _, thresh2 = cv2.threshold(blur, 68, 255, cv2.THRESH_BINARY)
