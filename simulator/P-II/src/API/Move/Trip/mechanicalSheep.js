@@ -1,5 +1,5 @@
 
-import { Robot_travelPath } from "./../../Robot";
+import { Robot_travelPath, Robot_go } from "./../../Robot";
 import { Vector3, Vector4, Vector2 } from './../../../tools/Vector.js';
 import { inverseLerp, lerp } from './../../../tools/math.js';
 
@@ -11,14 +11,8 @@ export const Move_mechanicalSheep = async (BASE)=>{
 	const work = new Vector3(origin.x, origin.y, 0);
 	work.setLength(BASE.robot.conf.radius);
 
-	const dist = new Vector3(...work).sub(origin3D).length()
-	const len = Math.floor(lerp(0, 12, inverseLerp(0, 600, dist)));
-	const _len = 1/len;
-	path = path.concat(
-		new Array(len)
-			.fill(0)
-			.map( (_, k) => new Vector3().lerpVectors(origin3D, work, (k+1) * _len) )
-	);
+	await Robot_go(BASE, work);
+	
 	const [center, r] = [new Vector3(0, 0, 0), BASE.robot.conf.radius];
 	const ptLen = 12;
 	const _ptLen = 1/ptLen;
@@ -39,14 +33,14 @@ export const Move_mechanicalSheep = async (BASE)=>{
 		return point;
 	});
 	
-	console.log(path);
 	
 	await Robot_travelPath(BASE, [
 		...path.map((point, id, {length})=>{
 			return new Vector4(...point, 0);
 		}),
-		origin
+		
 	]);
+	await Robot_go(BASE, origin);
 
 	return true;
 }
