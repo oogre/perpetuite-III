@@ -31,6 +31,17 @@ export const Camera_capture = async (BASE, [transport=false]=[], depth=0)=>{
 	}, [[], []]);
 
 	if(notPillAreas.length>0){
+		for(const a of notPillAreas){
+			console.log("NOT PILL", {
+				loc : a.location.toArray?.() ?? a.location,
+				r : Math.hypot(...(a.location.toArray?.() ?? a.location)).toFixed(0),
+				circ : a.circularity?.toFixed(2),
+				area : a.area?.toFixed(0),
+				onArea : localPills.isOnWorkingArea(a),
+				round : localPills.isRound(a),
+				size : localPills.isLargeLikeAPill(a),
+			});
+		}
 		if(depth>3){
 			throw new AppError(ERR.FORBIDDEN, "TOO much forbidden Area");
 		}
