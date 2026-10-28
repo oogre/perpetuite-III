@@ -36,7 +36,7 @@ export const Robot_throw = async (BASE)=>{
 		);
 		await Robot_go(BASE, new Vector4(...start, 0), {enableDamping:false, curve:false});
 		const arrival = Robot_go(BASE, last, {enableDamping:false, curve:false});   // PAS de await
-		await Promise.race([untilWithin(BASE, dest, 100), arrival]);      // arrival : si le go finit (ou échoue) avant, on sort
+		await Promise.race([untilWithin(BASE, dest, 300), arrival]);      // arrival : si le go finit (ou échoue) avant, on sort
 		const grip = Robot_gripper(BASE, [false]);
 		await Promise.all([grip, arrival]);
 		await delay(3000);
