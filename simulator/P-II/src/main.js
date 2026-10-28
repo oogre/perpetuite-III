@@ -88,7 +88,7 @@ const update = (location)=>{
 robot.on("locationChange", update.bind(this));
 robot.on("initilized", location => {
 	update(location);
-	api.fire(`Exec_start`);
+	config.autoStart && api.fire(`Exec_start`);
 });
 	
 

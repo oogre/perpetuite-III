@@ -6,6 +6,7 @@ const {
 	TITLE,
 	PREVIEW,
 	SIMULATION,
+	AUTO_START,
 	UI_WIDTH,
 	UI_HEIGHT,
 	UI_X,
@@ -93,6 +94,7 @@ const {
 
 export default {
 	flipAxis : new Vector4(parseFloat(FLIP_X), parseFloat(FLIP_Y), parseFloat(FLIP_Z), parseFloat(FLIP_W)),
+	autoStart : parseInt(AUTO_START)==1,
 	window : {
 		title: TITLE,
 		width: parseInt(UI_WIDTH),
