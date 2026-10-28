@@ -93,6 +93,7 @@ robot.on("initilized", location => {
 	
 
 
+
 api.on('error', async (error)=>{ 
 	console.log(error?.code, error?.message);
 	Memory_save(api.BASE);
@@ -108,10 +109,10 @@ api.on('error', async (error)=>{
 	}
 
 	switch (error.code) {
-		default : 
 		case "604": //*Robot power off requested*
 		case "901": //*Obstacle collision detected*
 		case "906": //*Robot power off requested*
+		default : 
 			console.log("STOP AND RESTART")
 			return process.exit(1);
 		case "908": //*E-STOP from front panel button*
@@ -127,5 +128,5 @@ api.on('error', async (error)=>{
 process.on('exit', ()=>camera.shutdownSync());
 process.on('SIGINT', ()=>process.exit(0));
 process.on('SIGTERM', ()=>process.exit(0));
-
+process.on('unhandledRejection', (error)=>api.fire('error', error));
 
