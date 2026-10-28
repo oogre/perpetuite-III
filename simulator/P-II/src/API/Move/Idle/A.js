@@ -5,7 +5,7 @@ import {lerp} from "./../../../tools/math.js";
 import { createNoise2D } from 'simplex-noise';
 
 const noise2D = createNoise2D();
-const yInc = 1;
+const yInc = 0.1;
 let   yOff = 0;
 const now = () => Number(process.hrtime.bigint()) / 1e6;
 
