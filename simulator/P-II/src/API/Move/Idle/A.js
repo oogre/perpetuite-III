@@ -1,5 +1,5 @@
 
-import {Robot_go} from "./../../Robot";
+
 import {lerp} from "./../../../tools/math.js";
 import { createNoise2D } from 'simplex-noise';
 
@@ -23,5 +23,5 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 		await BASE.robot.go(work);
 	}
 
-	return await BASE.robot.go(work);
+	return await BASE.robot.go(origin);
 }

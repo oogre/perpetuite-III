@@ -23,7 +23,7 @@ export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}=
 		if(curve && Math.random()<0.5){
 			await Move_curve(BASE, dest);
 		}else{
-			await BASE.robot.go(dest);		
+			await BASE.robot.go(dest);
 		}
 	}
 
