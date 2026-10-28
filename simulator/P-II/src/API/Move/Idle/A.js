@@ -5,24 +5,6 @@ import {lerp} from "./../../../tools/math.js";
 import { createNoise2D } from 'simplex-noise';
 
 const now = () => Number(process.hrtime.bigint()) / 1e6;
-
-class Bag{
-	#set = new Set();
-	results = [];
-	add(promise){
-		const tracked = promise.then(
-			value => this.results.push({status:"fulfilled", value}),
-			reason => this.results.push({status:"rejected", reason})
-		).finally(()=>this.#set.delete(tracked));
-		this.#set.add(tracked);
-		return promise;
-	}
-	async settled(){
-		while(this.#set.size) await Promise.all([...this.#set]);
-		return this.results;                     // aucun rejet : on a déjà converti chaque promesse
-	}
-}
-
 class Bag{
 	#set = new Set();
 	failure = null;                                  // première vraie erreur
