@@ -18,7 +18,7 @@ export const Move_B = async (BASE, [duration=0]=[])=>{
 		while(t < duration){
 			t = now() - t0;
 			const point = origin.clone();
-			const offZ = 10 * Math.sin(t*0.001 * Math.PI * 2 / (duration * 0.001));
+			const offZ = 10 * Math.sin(t*0.001 * Math.PI * 2);
 
 			point.z += offZ;
 			point.z = Math.min(BASE.robot.conf.maxZ, Math.max(minZ + BASE.memory.conf.depth, point.z));
