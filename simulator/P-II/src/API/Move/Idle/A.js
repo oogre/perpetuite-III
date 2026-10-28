@@ -11,28 +11,20 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 	let inc = 0.1;
 
 
-	console.log(...(new Array(50).fill(0)
+	const result = await Promise.race([
+		Robot_travelPath(BASE, [
+		...(new Array(50).fill(0)
 			.map((_, id)=>{
 				const point = origin.clone();
 				point.w = lerp(-40, 40, noise2D(0,  id*inc)*0.5 + 0.5);
 				return point;
 			})
-		));
+		)
+		]), 
+		delay(duration)
+	]);
 
-	// await Promise.race([
-	// 	Robot_travelPath(BASE, [
-	// 	...(new Array(50).fill(0)
-	// 		.map((_, id)=>{
-	// 			const point = origin.clone();
-	// 			point.w = lerp(-40, 40, noise2D(0,  id*inc)*0.5 + 0.5);
-	// 			return point;
-	// 		})
-	// 	)
-	// 	]), 
-	// 	delay(duration)
-	// ]);
+	await BASE.robot.stop();
 
-	//await BASE.robot.stop();
-
-	//return await BASE.robot.go(origin);
+	return await BASE.robot.go(origin);
 }
