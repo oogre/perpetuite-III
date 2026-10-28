@@ -10,7 +10,7 @@ export const Move_A = async (BASE, [duration=0]=[])=>{
 	const noise2D = createNoise2D();
 	let inc = 0.1;
 
-	setTimeout(()=>{
+	setTimeout(async ()=>{
 		await BASE.robot.stop();
 		console.log("STOPED");
 	}, duration);
