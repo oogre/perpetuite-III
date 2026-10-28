@@ -103,7 +103,7 @@ export default class RobotBase extends EventsManager{
 		if(this._updating || !this._arrival){
 			return;// plus d'await isPending	
 		}
-		console.log(.);
+		console.log(".");
 
 		this._updating = true;
 		try{
