@@ -35,8 +35,7 @@ export const Move_mechanicalSheep = async (BASE)=>{
 	);
 
 	path = path.map((point, k) => {
-		const {z} = BASE.table.toFloorLocation(point).z + 20;
-		point.z = lerp(z, 0, k%2==0)
+		point.z = lerp(BASE.table.toFloorLocation(point).z + 20, 0, k%2==0)
 		return point;
 	});
 	
