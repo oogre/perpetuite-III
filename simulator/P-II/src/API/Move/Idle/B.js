@@ -1,5 +1,6 @@
 import Bag from './../../../tools/Bag.js';
 import {delay, now} from './../../../tools/helpers.js';
+import {lerp} from './../../../tools/lerp.js';
 import { createNoise2D } from 'simplex-noise';
 
 
@@ -12,7 +13,7 @@ export const Move_B = async (BASE, [duration=0]=[])=>{
 	const t0 = now();
 
 	const minZ =  BASE.table.toFloorLocation(origin).z + 40;
-	const count = Math.ceil(Math.random() * 3);
+	const count = Math.round(lerp(2, 4, Math.random()));
 	try{
 		let t = now() - t0;
 		while(t < duration){
