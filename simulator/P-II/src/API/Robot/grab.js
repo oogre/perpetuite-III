@@ -50,13 +50,9 @@ export const Robot_grab = async (BASE, [depth=0]=[])=>{
 	}
 	
 	const afterCollection = await Camera_capture(BASE, [true])
-	
-	await delay(300);
-	const tmp = Memory_get({memory:afterCollection}, targetedPill);
-	const isRemoved = tmp === null
+	const isRemoved = Memory_get({memory:afterCollection}, targetedPill) === null
 	if(!isRemoved){
 		await Robot_gripper(BASE, [false]);
-		await delay(1500);
 		return await Robot_grab(BASE, [depth+1]);
 	}
 	BASE.robot.actionDescPop();
