@@ -197,6 +197,10 @@ export default class Robot{
 	async Dcc (dcc) {
 		return await this.call(Request.Dcc(dcc).toString());
 	}
+	// set the deceleration, 0 is minimum 100 is maximum
+	async Stop () {
+		return await this.call(Request.Stop().toString());
+	}
 }
 
 const Call = async (req, NETWORK_CONF) => { // Request object
