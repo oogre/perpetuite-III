@@ -58,7 +58,7 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 	// 	DEFAULT :
 	await Robot.Robot_go(BASE, pill.location);
 	await Robot.Robot_grab(BASE);
-	if(Math.random() < 0.5){
+	if(Math.random() < 0.05){
 		await Move_mechanicalSheep(BASE);
 	}
 	await Robot.Robot_go(BASE, location);
