@@ -36,14 +36,11 @@ export const Move_mechanicalSheep = async (BASE)=>{
 
 	path = path.map((point, k) => {
 		const {z:altitude} = BASE.table.toFloorLocation(point).z + 20;
-
-		console.log(point, BASE.table.toFloorLocation(point));
-
 		point.z = lerp(altitude, 0, k%2==0)
 		return point;
 	});
 	
-
+	console.log(path);
 	await Robot_travelPath(BASE, [
 		...path.map((point, id, {length})=>{
 			return new Vector4(...point, 0);
