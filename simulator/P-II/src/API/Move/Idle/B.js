@@ -22,7 +22,6 @@ const zSine = ({z0, amplitude = 20, period = 2000, min = -300, max = 0, rising =
 export const Move_B = async (BASE, [duration=0]=[])=>{
 	const origin = BASE.robot.location4D;
 	const bag = new Bag();
-	const minZ =  ;
 	const anim = zSine({
 		z0 : BASE.robot.location4D.z, 
 		amplitude : 10, 
