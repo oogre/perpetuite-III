@@ -47,7 +47,7 @@ export const Move_B = async (BASE, [duration=0]=[])=>{
 		}
 		console.log("Move B : fin de boucle, z =", BASE.robot.location4D);   // ← ici
 	}finally{
-		await BASE.robot.stop().catch(error=>{ bag.failure ??= error; });
+		//await BASE.robot.stop().catch(error=>{ bag.failure ??= error; });
 	}
 	bag.check();
 	return await BASE.robot.go(origin);
