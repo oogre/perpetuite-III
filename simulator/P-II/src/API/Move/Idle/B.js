@@ -23,7 +23,7 @@ export const Move_B = async (BASE, [duration=0]=[])=>{
 	const origin = BASE.robot.location4D;
 	const bag = new Bag();
 	const t0 = now();
-	const amplitude = 10;
+	const amplitude = 5;
 	const hi = BASE.robot.conf.maxZ;
 	const lo = BASE.table.toFloorLocation(origin).z + BASE.memory.conf.depth
 	if(hi - lo < 2 * amplitude) return await delay(duration);        // pas de place pour l'animation
