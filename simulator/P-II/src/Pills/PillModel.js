@@ -12,6 +12,9 @@ const xySqDistTo = (a, b) => {
 
 export default class PillModel extends Area{
 	static Color = LimitedColorPaletteGenerator(conf.pills.colors);
+	static SAME_PILL = 3 + 1.5;                       // vibrations 3 mm + marge ; doit rester < 8 mm (diamètre d'une pill)
+
+
 	constructor(conf, {contour=[], avgRGB=[0, 0, 0]}={}){
 		super(contour, avgRGB);
 		this.conf = conf;
@@ -45,13 +48,16 @@ export default class PillModel extends Area{
 
 	isHover(other){
 		if(other instanceof PillModel){
-			const D = this.radius + other.radius;
+			const D = this.radius + other.radius + 3;
 			// console.log(this.radius, other.radius)
 			return this.location.clone().sub(other.location).lengthSq() < D*D;
 		}else if(other instanceof Vector2){
-			return this.location.clone().sub(other).lengthSq() < ((this.radius) * (this.radius));
+			return this.location.clone().sub(other).lengthSq() < ((this.radius + 3) * (this.radius + 3));
 		}
 		return false;
+	}
+	isSame(other){
+		return this.location.clone().sub(other.location).lengthSq() < PillModel.SAME_PILL ** 2;
 	}
 
 	getDistanceTo(otherLocation){
