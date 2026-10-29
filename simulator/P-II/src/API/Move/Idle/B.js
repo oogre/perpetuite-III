@@ -31,7 +31,7 @@ export const Move_B = async (BASE, [duration=0]=[])=>{
 	const anim = zSine({
 		z0 : Math.min(hi, Math.max(lo, origin.z)), 
 		amplitude : amplitude, 
-		period : 2000, 
+		period : 1500, 
 		max:BASE.robot.conf.maxZ,
 		min:BASE.table.toFloorLocation(origin).z + BASE.memory.conf.depth
 	});
