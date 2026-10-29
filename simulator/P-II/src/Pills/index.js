@@ -4,7 +4,7 @@ import PillModel from './PillModel.js';
 export {PillModel};
 
 const contentEquals = (pillA, pillB) => {
-	return pillA.isSame(pillB);                   // était : isHover
+	return pillA.isHover(pillB);
 }
 
 const contentHash = (pill) => {
