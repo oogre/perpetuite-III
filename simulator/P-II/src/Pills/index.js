@@ -7,12 +7,6 @@ const contentEquals = (pillA, pillB) => {
 	return pillA.isSame(pillB);                   // était : isHover
 }
 
-static SAME_PILL = 3 + 1.5;                       // vibrations 3 mm + marge ; doit rester < 8 mm (diamètre d'une pill)
-
-isSame(other){
-	return this.location.clone().sub(other.location).lengthSq() < PillModel.SAME_PILL ** 2;
-}
-
 const contentHash = (pill) => {
 	return pill.hash;
 }
