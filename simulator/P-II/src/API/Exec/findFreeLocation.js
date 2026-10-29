@@ -2,7 +2,7 @@ import {Robot_go} from "./../Robot";
 import {Exec_whatsBelow, AT_DROPZONE} from './whatsBelow.js';
 import { Vector4 } from './../../tools/Vector.js';
 import {AppError, ERR} from './../../tools/Errors.js';
-export {Memory_getFreeCell} from './../Memory';
+import {Memory_getFreeCell} from './../Memory';
 
 const tries = 10;
 
