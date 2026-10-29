@@ -44,6 +44,7 @@ import time
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+import detect
 
 # ----------------------------------------------------------------------------- journal
 # Mis en place AVANT les imports lourds : une erreur d'import (cv2 absent...) arrive aussi dans le fichier.
@@ -377,19 +378,22 @@ def fill_holes(mask):
     cv2.drawContours(out, contours, -1, 255, cv2.FILLED)
     return out
 
-def analyse(img):
-    """img : BGR, repere d'analyse. Memes seuils et memes noyaux que P-II/cv/server.py."""
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    blur = cv2.GaussianBlur(gray, (11, 11), 0)
-    _, thresh1 = cv2.threshold(blur, 48, 255, cv2.THRESH_BINARY)
-    thresh1 = cv2.morphologyEx(thresh1, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15)))
-    thresh1 = fill_holes(thresh1)                      # <-- nouveau
-    erosion = cv2.erode(thresh1, KERNEL, iterations=1)
-    blur = cv2.GaussianBlur(erosion, (9, 9), 0)
-    _, thresh2 = cv2.threshold(blur, 68, 255, cv2.THRESH_BINARY)
-    contours, _ = cv2.findContours(thresh2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    return [pill_to_obj(c, img) for c in contours]
+# def analyse(img):
+#     """img : BGR, repere d'analyse. Memes seuils et memes noyaux que P-II/cv/server.py."""
+#     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#     blur = cv2.GaussianBlur(gray, (11, 11), 0)
+#     _, thresh1 = cv2.threshold(blur, 48, 255, cv2.THRESH_BINARY)
+#     thresh1 = cv2.morphologyEx(thresh1, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15)))
+#     thresh1 = fill_holes(thresh1)                      # <-- nouveau
+#     erosion = cv2.erode(thresh1, KERNEL, iterations=1)
+#     blur = cv2.GaussianBlur(erosion, (9, 9), 0)
+#     _, thresh2 = cv2.threshold(blur, 68, 255, cv2.THRESH_BINARY)
+#     contours, _ = cv2.findContours(thresh2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+#     return [pill_to_obj(c, img) for c in contours]
 
+def analyse(img):
+    """img : BGR, repere d'analyse. Detection par transformee de distance (voir detect.py)."""
+    return detect.analyse(img)
 
 # ----------------------------------------------------------------------------- geometrie
 ROTATIONS = {'90ccw': cv2.ROTATE_90_COUNTERCLOCKWISE, '90cw': cv2.ROTATE_90_CLOCKWISE, '180': cv2.ROTATE_180}
