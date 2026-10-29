@@ -3,7 +3,7 @@ import {delay, now} from './../../../tools/helpers.js';
 import {lerp} from './../../../tools/math.js';
 import { createNoise2D } from 'simplex-noise';
 import { Robot_limitter } from './../../Robot/limitter.js';
-import { Robot_go } from './../../Robot/limitter.js';
+import { Robot_go } from './../../Robot/go.js';
 
 
 // tools/zSine.js
