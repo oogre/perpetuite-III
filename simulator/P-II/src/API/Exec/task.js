@@ -1,6 +1,6 @@
 import {spacedLog} from "./../../tools/helpers.js";
 import Pills, {PillModel}  from "./../../Pills";
-import {Robot_findFreePillByColorName, Robot_throw} from "./../Robot";
+import {Exec_findFreePillByColorName} from "./findFreePillByColorName.js";
 import {Exec_move} from "./move.js";
 import {AppError, ERR } from './../../tools/Errors.js' ;
 
@@ -20,7 +20,7 @@ export const Exec_task = async(BASE, [colorName=(new PillModel.Color()).name, x=
 		box:[x, y]
 	});
 	
-	const pill = await Robot_findFreePillByColorName(BASE, [task.color.name]);
+	const pill = await Exec_findFreePillByColorName(BASE, [task.color.name]);
 	if(BASE.forbidden.isIntersect(pill)){
 		return Exec_task(BASE, [colorName, x, y]);
 	}
@@ -38,11 +38,6 @@ export const Exec_task = async(BASE, [colorName=(new PillModel.Color()).name, x=
 			console.log(`${error.message}`);
 		 	return Exec_task(BASE, [colorName, x, y]);
 		}
-		if(error instanceof AppError && error.is(ERR.DROP)){
-			console.log(`${error.message}`);
-		 	return await Robot_throw(BASE);
-		}
-		
 		throw error;
 	}
 }

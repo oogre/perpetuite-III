@@ -3,5 +3,6 @@ export * from './move.js';
 export * from './start.js';
 export * from './stop.js';
 export * from './task.js';
-
-
+export * from './findFreePillByColorName.js';
+export * from './whatsBelow.js';
+export * from './explore.js';

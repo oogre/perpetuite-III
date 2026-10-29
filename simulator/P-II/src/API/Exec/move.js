@@ -1,8 +1,11 @@
 import {spacedLog} from "./../../tools/helpers.js";
 import * as Robot from "./../Robot";
+import {Exec_dropErrorHandling} from './dropErrorHandling.js'
 import {Camera_capture} from './../Camera';
 import {Memory_lock} from './../Memory';
 import {Move_mechanicalSheep} from './../Move/Trip';
+import {AppError, ERR } from './../../tools/Errors.js' ;
+
 // MOVE PILL to XY
 // Check XY
 // 	NOGO :
@@ -62,7 +65,14 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 		await Move_mechanicalSheep(BASE);
 	}
 	await Robot.Robot_go(BASE, location);
-	await Robot.Robot_drop(BASE);
+	try{
+		await Robot.Robot_drop(BASE);	
+	}catch(error){
+		if(error instanceof AppError && error.is(ERR.DROP)){
+			await Exec_dropErrorHandling(BASE);
+		}
+		throw error;
+	}
 	Memory_lock(BASE, location);
 
 	LOG(`DONE ${pill.color.style} @  ${location.style}`);
