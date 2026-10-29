@@ -4,10 +4,14 @@ import { Vector4 } from './../../../tools/Vector.js';
 import { lerp, inverseLerp} from './../../../tools/math.js';
 
 //Move drawer
+//Command getPath
 export const Move_drawer = async (BASE)=>{
 	const path = await Command_getPath(BASE);
 	const ptLen = Math.floor(lerp(2, 4, Math.random()));
-
+	if(path.length === 0){
+		console.log("Move drawer : aucun tracé à dessiner");
+		return true;
+	}
 	for(let i = 0 ; i < ptLen ; i++){
 		const lastPoint = path[path.length-1];
 		const curve = Math.ceil(Math.random() * 4);
