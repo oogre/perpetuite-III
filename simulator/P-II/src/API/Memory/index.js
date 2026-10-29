@@ -7,3 +7,4 @@ export * from './clear.js';
 export * from './removeNotlocked.js';
 export * from './load.js';
 export * from './save.js';
+export * from './getFreeCell.js';
