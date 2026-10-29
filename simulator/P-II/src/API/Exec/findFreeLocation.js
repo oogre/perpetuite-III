@@ -6,6 +6,7 @@ export {Memory_getFreeCell} from './../Memory';
 
 const tries = 10;
 
+// Exec findFreeLocation
 export const Exec_findFreeLocation = async(BASE)=>{
 	BASE.robot.actionDesc = `Find Free Location`;
 	try{
