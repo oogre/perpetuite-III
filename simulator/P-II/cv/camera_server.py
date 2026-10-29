@@ -345,38 +345,39 @@ class Grabber(threading.Thread):
 
 
 # ----------------------------------------------------------------------------- analyse (process P-II)
-ERODE = 10  # erosionFactor de P-II/cv/server.py
-KERNEL = np.ones((ERODE, ERODE), np.uint8)
-KMEANS_CRITERIA = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.5)
+# ERODE = 10  # erosionFactor de P-II/cv/server.py
+# KERNEL = np.ones((ERODE, ERODE), np.uint8)
+# KMEANS_CRITERIA = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.5)
 
 
-def dominant_color(parcel):
-    """Couleur dominante (2 groupes, on garde le plus gros). RGB entiers."""
-    pixels = np.float32(parcel.reshape(-1, 3))
-    if len(pixels) < 2:
-        b, g, r = pixels[0]
-        return int(r), int(g), int(b)
-    _, labels, palette = cv2.kmeans(pixels, 2, None, KMEANS_CRITERIA, 3, cv2.KMEANS_PP_CENTERS)
-    b, g, r = palette[np.argmax(np.bincount(labels.ravel(), minlength=2))]
-    return int(r), int(g), int(b)
+# def dominant_color(parcel):
+#     """Couleur dominante (2 groupes, on garde le plus gros). RGB entiers."""
+#     pixels = np.float32(parcel.reshape(-1, 3))
+#     if len(pixels) < 2:
+#         b, g, r = pixels[0]
+#         return int(r), int(g), int(b)
+#     _, labels, palette = cv2.kmeans(pixels, 2, None, KMEANS_CRITERIA, 3, cv2.KMEANS_PP_CENTERS)
+#     b, g, r = palette[np.argmax(np.bincount(labels.ravel(), minlength=2))]
+#     return int(r), int(g), int(b)
 
 
-def pill_to_obj(contour, img):
-    """Meme sortie que Pill.toObj() de P-II/cv/Pill.py : contour, box [cx, cy, w, h], avgRGB."""
-    x, y, w, h = cv2.boundingRect(contour)
-    bw, bh = w + ERODE, h + ERODE
-    parcel = img[y:y + bh, x:x + bw]
-    return {
-        'contour': contour.reshape(-1, 2).tolist(),  # (squeeze() cassait les contours d'1 point)
-        'box': [int(x - ERODE / 2) + bw / 2, int(y - ERODE / 2) + bh / 2, bw, bh],
-        'avgRGB': list(dominant_color(parcel)),
-    }
-def fill_holes(mask):
-    """chaque forme blanche est redessinée pleine : les puits noirs à l'intérieur disparaissent"""
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    out = np.zeros_like(mask)
-    cv2.drawContours(out, contours, -1, 255, cv2.FILLED)
-    return out
+# def pill_to_obj(contour, img):
+#     """Meme sortie que Pill.toObj() de P-II/cv/Pill.py : contour, box [cx, cy, w, h], avgRGB."""
+#     x, y, w, h = cv2.boundingRect(contour)
+#     bw, bh = w + ERODE, h + ERODE
+#     parcel = img[y:y + bh, x:x + bw]
+#     return {
+#         'contour': contour.reshape(-1, 2).tolist(),  # (squeeze() cassait les contours d'1 point)
+#         'box': [int(x - ERODE / 2) + bw / 2, int(y - ERODE / 2) + bh / 2, bw, bh],
+#         'avgRGB': list(dominant_color(parcel)),
+#     }
+
+# def fill_holes(mask):
+#     """chaque forme blanche est redessinée pleine : les puits noirs à l'intérieur disparaissent"""
+#     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+#     out = np.zeros_like(mask)
+#     cv2.drawContours(out, contours, -1, 255, cv2.FILLED)
+#     return out
 
 # def analyse(img):
 #     """img : BGR, repere d'analyse. Memes seuils et memes noyaux que P-II/cv/server.py."""
