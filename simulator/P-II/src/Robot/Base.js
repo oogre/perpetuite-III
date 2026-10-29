@@ -129,7 +129,7 @@ export default class RobotBase extends EventsManager{
 			this._move.set(...this._target).sub(this._location);
 			this._move.w = shortAngle(this._location.w, this._target.w, 360);
 
-			const reached = this._move.lengthSq() < 0.3;
+			const reached = this._move.lengthSq() < 1.0;
 			const stopped = this._still >= 6 && now - this._startedAt > 2000;   // immobile depuis ~300 ms
 			if(reached || stopped){
 				if(!reached) console.log("robot immobile hors tolérance, écart :", this._move.toArray().map(v=>v.toFixed(2)).join(" "));

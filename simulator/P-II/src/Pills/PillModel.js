@@ -45,11 +45,11 @@ export default class PillModel extends Area{
 
 	isHover(other){
 		if(other instanceof PillModel){
-			const D = this.radius + other.radius + 3;
+			const D = this.radius + other.radius;
 			// console.log(this.radius, other.radius)
 			return this.location.clone().sub(other.location).lengthSq() < D*D;
 		}else if(other instanceof Vector2){
-			return this.location.clone().sub(other).lengthSq() < ((this.radius + 3) * (this.radius + 3));
+			return this.location.clone().sub(other).lengthSq() < ((this.radius) * (this.radius));
 		}
 		return false;
 	}
