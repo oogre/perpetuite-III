@@ -1,5 +1,6 @@
 import {Robot_go} from "./../Robot";
 import {Exec_whatsBelow, AT_DROPZONE} from './whatsBelow.js';
+import { Vector4 } from './../../tools/Vector.js';
 
 export const Exec_findFreeLocation = async(BASE)=>{
 	BASE.robot.actionDesc = `Find Free Location`;

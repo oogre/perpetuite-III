@@ -47,14 +47,13 @@ export default class PillModel extends Area{
 	}
 
 	isHover(other){
-		if(other instanceof PillModel){
-			const D = this.radius + other.radius + 3;
-			// console.log(this.radius, other.radius)
-			return this.location.clone().sub(other.location).lengthSq() < D*D;
-		}else if(other instanceof Vector2){
-			return this.location.clone().sub(other).lengthSq() < ((this.radius + 3) * (this.radius + 3));
-		}
-		return false;
+		//if(other instanceof PillModel){
+		const D = this.radius + other.radius + 2;
+		return this.location.clone().sub(other.location).lengthSq() < D*D;
+		// }else if(other instanceof Vector2){
+		// 	return this.location.clone().sub(other).lengthSq() < ((this.radius + 2) * (this.radius + 3));
+		// }
+		// return false;
 	}
 	isSame(other){
 		return this.location.clone().sub(other.location).lengthSq() < PillModel.SAME_PILL ** 2;
