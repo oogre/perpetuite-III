@@ -18,7 +18,7 @@ export const Robot_go = async (BASE, location, {enableDamping=true, curve=true}=
 
 
 	const origin = BASE.robot.location4D;
-	const dest = Robot_limitter(BASE, new Vector4(...location, origin.z, origin.w));
+	const dest = Robot_limitter(BASE, new Vector4(...location));
 	const move = new Vector4().subVectors(origin, dest);
 	if(Math.abs(move.x) >= 1 || Math.abs(move.y) >= 1 || Math.abs(move.z) >= 1 || Math.abs(move.w) >= 1){
 		if(curve && Math.random()<0.5){

@@ -2,6 +2,8 @@ import Bag from './../../../tools/Bag.js';
 import {delay, now} from './../../../tools/helpers.js';
 import {lerp} from './../../../tools/math.js';
 import { createNoise2D } from 'simplex-noise';
+import { Robot_limitter } from './../../Robot/limitter.js';
+import { Robot_go } from './../../Robot/limitter.js';
 
 
 // tools/zSine.js
@@ -20,34 +22,33 @@ const zSine = ({z0, amplitude = 20, period = 2000, min = -300, max = 0, rising =
 
 // Move B 1000
 export const Move_B = async (BASE, [duration=0]=[])=>{
-	const origin = BASE.robot.location4D;
+	const origin = Robot_limitter(BASE, BASE.robot.location4D);
 	const bag = new Bag();
 	const t0 = now();
 	const amplitude = 5;
 	const hi = BASE.robot.conf.maxZ;
 	const lo = BASE.table.toFloorLocation(origin).z + BASE.memory.conf.depth
 	if(hi - lo < 2 * amplitude) return await delay(duration);        // pas de place pour l'animation
-
 	const anim = zSine({
 		z0 : Math.min(hi, Math.max(lo, origin.z)), 
 		amplitude : amplitude, 
 		period : 1000, 
-		max:BASE.robot.conf.maxZ,
-		min:BASE.table.toFloorLocation(origin).z + BASE.memory.conf.depth
+		max:hi,
+		min:lo
 	});
 	try{
 		let t = now() - t0;
 		while(t < duration){
 			t = now() - t0;
 			const point = origin.clone();
-			point.z = Math.min(hi, Math.max(lo, anim(t)));
-			bag.add(BASE.robot.go(point));
+			point.z = anim(t);
+			bag.add(BASE.robot.go(Robot_limitter(BASE, point)));
 			await delay(100);
 			bag.check();
 		}
 	}finally{
-		//await BASE.robot.stop().catch(error=>{ bag.failure ??= error; });
+		await BASE.robot.stop().catch(error=>{ bag.failure ??= error; });
 	}
 	bag.check();
-	return await BASE.robot.go(origin);
+	return await Robot_go(BASE, origin);
 }
