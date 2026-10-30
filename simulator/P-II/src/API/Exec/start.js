@@ -3,7 +3,7 @@ import {Exec_explore} from './explore.js';
 
 import {Real_save} from './../Real/save.js';
 import ColorCli from "cli-color";
-
+import Chronos from "./../../tools/Chronos.js"
 import {Robot_HighPower, Robot_gripper, Robot_go} from '../Robot';
 import {Memory_load, Memory_save} from '../Memory';
 import Chronos from "./../../tools/Chronos.js"
@@ -15,9 +15,12 @@ export const Exec_start = async (BASE)=>{
 	BASE.robot.actionDesc = `Exec start`;
 	try{
 		BASE.hasToLoop = true;
+
+		const startChrono = new Chronos();
+		BASE.frameChronos = new Chronos();	
 		const startedAt = new Date();
 		console.log(`Start at : ${startedAt.getHours().toString().padStart(2, '0')}:${startedAt.getMinutes().toString().padStart(2, '0')}`);
-		BASE.frameChronos = new Chronos();
+		
 		
 		Memory_load(BASE);
 		await Robot_gripper(BASE, [false]);
@@ -33,8 +36,10 @@ export const Exec_start = async (BASE)=>{
 
 		const stopedAt = new Date();
 		console.log(`Stoped at : ${stopedAt.getHours().toString().padStart(2, '0')}:${stopedAt.getMinutes().toString().padStart(2, '0')}`);
-		const runDuration = stopedAt - startedAt;
-		console.log(`Last run duration : ${Math.floor(runDuration/1000)} s.`);
+		
+		startChrono.interval();
+		console.log(`Last run duration : ${startChrono.duration}s.`);	
+
 		if(BASE.robot.conf.simulation){
 			Real_save(BASE);
 		}

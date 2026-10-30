@@ -23,7 +23,7 @@ export const Exec_loop = async (BASE)=>{
 			const task = await BASE.cmd.getTask();
 			await Exec_task(BASE, [task.color.name, task.location.x, task.location.y]);
 			taskChrono.interval();
-			console.log(`Duration : ${taskChrono.duration}s.`);	
+			console.log(`Task Duration : ${taskChrono.duration}s.`);	
 		}finally{
 			BASE.robot.actionDescPop();
 		}
