@@ -1,2 +1,2 @@
 @echo off
-wsl.exe -d Ubuntu-24.04 -u perpetuite -- bash -c "export NVM_DIR=$HOME/.nvm; . $NVM_DIR/nvm.sh; cd /home/perpetuite/perpetuite-III/simulator/P-II && npm run start >> /home/perpetuite/p2.log 2>&1"
+wsl.exe -d Ubuntu-24.04 -u perpetuite -- /home/perpetuite/start_p2.sh
