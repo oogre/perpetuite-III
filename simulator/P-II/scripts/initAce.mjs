@@ -29,11 +29,18 @@ const isPortListening = async (port)=>{
 
 const waitForPort = async (port, timeout=120000)=>{
 	const t0 = Date.now();
+	let waited = false;
 	while(!await isPortListening(port)){
-		if(Date.now() - t0 > timeout) throw new Error(`Port ${port} not ready after ${timeout/1000} s`);
+		if(Date.now() - t0 > timeout){
+			console.log("");
+			throw new Error(`Port ${port} not ready after ${timeout/1000} s`);
+		}
+		waited = true;
 		process.stdout.write(".");
 		await wait(500);
-		process.stdout.write("\n");
+	}
+	if(waited){
+		console.log("");
 	}
 }
 
