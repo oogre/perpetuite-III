@@ -93,8 +93,10 @@ robot.on("initilized", location => {
 	
 
 
-
+let handlingError = false;
 api.on('error', async (error)=>{ 
+	if(handlingError) return;                  // une erreur en cours de traitement : on ignore les suivantes
+	handlingError = true;
 	console.log(error?.code, error?.message);
 	Memory_save(api.BASE);
 	Memory_clear(api.BASE);
