@@ -22,7 +22,7 @@ export default class Robot extends RobotBase {
 	}
 
 	actionDescPop(){
-		if(length > 1) this._actionDesc.shift();
+		if(this._actionDesc.length > 1) this._actionDesc.shift();
 	}
 
 	async go(target){
