@@ -1,12 +1,9 @@
 import {Exec_loop} from './loop.js';
 import {Exec_explore} from './explore.js';
-
 import {Real_save} from './../Real/save.js';
-import ColorCli from "cli-color";
 import Chronos from "./../../tools/Chronos.js"
 import {Robot_HighPower, Robot_gripper, Robot_go} from '../Robot';
 import {Memory_load, Memory_save} from '../Memory';
-import Chronos from "./../../tools/Chronos.js"
 import { Vector4 } from './../../tools/Vector.js';
 
 let frameChronos = 0;
@@ -21,16 +18,15 @@ export const Exec_start = async (BASE)=>{
 		const startedAt = new Date();
 		console.log(`Start at : ${startedAt.getHours().toString().padStart(2, '0')}:${startedAt.getMinutes().toString().padStart(2, '0')}`);
 		
-		
 		Memory_load(BASE);
 		await Robot_gripper(BASE, [false]);
 		await Robot_HighPower(BASE, [true]);
-		await Robot_go(BASE, new Vector4(0, 0, 0, 0), {enableDamping:true, curve:true})
+		await Robot_go(BASE, new Vector4(...BASE.robot.conf.origin), {enableDamping:true, curve:true})
 		await Exec_explore(BASE);
 
 		await Exec_loop(BASE);
 		
-		await Memory_save(BASE);
+		Memory_save(BASE);
 		await Robot_gripper(BASE, [false]);
 		await Robot_HighPower(BASE, [false]);
 
