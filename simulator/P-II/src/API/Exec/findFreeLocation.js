@@ -12,7 +12,9 @@ export const Exec_findFreeLocation = async(BASE)=>{
 	try{
 		for(const {location} of Memory_getFreeCell(BASE).slice(0, tries)){
 			await Robot_go(BASE, new Vector4(...location, 0, 0));
-			if(AT_DROPZONE.EMPTY === await Exec_whatsBelow(BASE)) return;   // la capture met la mémoire à jour
+			if(AT_DROPZONE.EMPTY === await Exec_whatsBelow(BASE)){
+				return BASE.robot.location2D;           // la position réelle du robot, là où la pill sera posée
+			}
 		}
 		throw new AppError(ERR.FORBIDDEN, "No free location found");
 	}finally{
