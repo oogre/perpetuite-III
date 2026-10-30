@@ -116,7 +116,7 @@ api.on('error', async (error)=>{
 			return process.exit(1);
 		case "908": //*E-STOP from front panel button*
 			console.log("NORMAL STOP")
-			return process.exit(0);
+			return process.exit(42);
 		default : 
 			console.error(error.stack ?? error);
 			console.log("STOP AND RESTART")

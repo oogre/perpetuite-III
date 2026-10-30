@@ -14,4 +14,4 @@ if [ "$SIMULATION" != "1" ]; then
 	fi
 fi
 
-exec ./release/P-II
+./release/P-II

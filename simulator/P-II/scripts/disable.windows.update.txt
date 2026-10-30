@@ -1,0 +1,12 @@
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoAUShutdownOption /t REG_DWORD /d 1 /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoAUAsDefaultShutdownOption /t REG_DWORD /d 1 /f
+
+Ces deux clés masquent « Mettre à jour et arrêter » et empêchent que ce soit l’action par défaut. Elles s’appliquent après un redémarrage de Windows. Les mises à jour restent installables, mais ne se lancent plus pendant l’arrêt.
+
+Pour aller plus loin, si Windows tente de redémarrer ou de télécharger des mises à jour tout seul :
+
+Mettre en pause les mises à jour : Paramètres, Windows Update, « Suspendre les mises à jour » (limité à quelques semaines).
+Les désactiver pour de bon : 
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoUpdate /t REG_DWORD /d 1 /f
+
+C’est efficace pour une machine dédiée au robot, mais tu ne recevras plus de correctifs de sécurité : à faire en connaissance de cause, avec un lancement manuel des mises à jour de temps en temps.
