@@ -1,18 +1,29 @@
 #!/bin/bash
+
+ENV=/home/perpetuite/perpetuite-III/simulator/P-II/.env
+SD=/mnt/c/Windows/System32/shutdown.exe
+LOG=/home/perpetuite/p2.log
+BOOTS=/home/perpetuite/reboots.log
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 cd /home/perpetuite/perpetuite-III/simulator/P-II || exit 1
 echo "=== $(date) : démarrage ===" >> /home/perpetuite/p2.log
 
-export SKIP_ACE=1
 
 npm run start 2>&1 | tee -a /home/perpetuite/p2.log
-
 code=${PIPESTATUS[0]}
 
-SD=/mnt/c/Windows/System32/shutdown.exe
-LOG=/home/perpetuite/p2.log
-BOOTS=/home/perpetuite/reboots.log
+
+# AUTO_POWER du .env : absent ou différent de 0 => actif
+AUTO_POWER=$(grep -E '^AUTO_POWER' "$ENV" 2>/dev/null | cut -d= -f2 | tr -d ' \r"')
+AUTO_POWER=${AUTO_POWER:-1}
+
+if [ "$AUTO_POWER" = "0" ]; then
+	echo "=== $(date) : code $code, AUTO_POWER=0 : ni extinction ni redémarrage ===" >> "$LOG"
+	exit "$code"
+fi
+
 
 if [ "$code" = "42" ]; then
 	echo "=== $(date) : arrêt d'urgence, extinction de Windows ===" >> /home/perpetuite/p2.log
@@ -22,7 +33,7 @@ fi
 case "$code" in
 	42)                                   # arrêt d'urgence : extinction
 		echo "=== $(date) : E-STOP (42), extinction ===" >> "$LOG"
-		"$SD" /s /f /t 60
+		"$SD" /s /f /t 0
 		;;
 	0)                                    # arrêt volontaire (Ctrl+C, stop.sh) : rien
 		echo "=== $(date) : arrêt normal (0) ===" >> "$LOG"
