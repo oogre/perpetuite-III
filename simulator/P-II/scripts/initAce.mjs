@@ -22,7 +22,7 @@ const isPortListening = async (port)=>{
 		await $`netstat.exe -nao | grep -E ":${port} .*LISTENING"`;
 		return true;
 	}catch(e){
-		console.log(e);
+		if(e.exitCode !== 1) console.log(e);
 		return false;
 	}
 }
