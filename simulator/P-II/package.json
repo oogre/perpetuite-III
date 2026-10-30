@@ -18,7 +18,8 @@
     "@babel/cli": "^7.16.7",
     "@babel/core": "^7.16.7",
     "@babel/preset-env": "^7.18.9",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "zx": "^8.8.5"
   },
   "dependencies": {
     "@kmamal/sdl": "^0.11.7",

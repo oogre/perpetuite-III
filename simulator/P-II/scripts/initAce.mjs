@@ -1,5 +1,4 @@
 #!/usr/bin/env zx
-
 $.verbose = false;
 
 
@@ -17,48 +16,51 @@ const [AutoHotkeyPath, AcePath, DriverPath, FakeUserPath] = await Promise.all([
   translateAddress(path.join(home, 'perpetuite-III/simulator/P-II/scripts/fakeUser.ahk'), "windows"),
 ]);
 
-const isAceRunning = async () => {
+
+const isPortListening = async (port)=>{
 	try{
-		await $`tasklist.exe | grep "Ace."`;
+		await $`netstat.exe -nao | grep -E ":${port} .*LISTENING"`;
 		return true;
 	}catch(e){
+		console.log(e);
 		return false;
 	}
 }
 
-const isAceReady = async ()=>{
-	try{
-		const {stdout:openPortList} = await $`netstat.exe -nao | grep "0.0.0.0:9090"`;
-		return true;
-	}catch(e){
-		return false;
-	}
-}
-
-const waitForAceReady = async () =>{
-	console.log("Waiting for Ace to be ready");
-	let flag = false;
-	while(! await isAceReady()){
-		await wait(1000);
+const waitForPort = async (port, timeout=120000)=>{
+	const t0 = Date.now();
+	while(!await isPortListening(port)){
+		if(Date.now() - t0 > timeout) throw new Error(`Port ${port} not ready after ${timeout/1000} s`);
 		process.stdout.write(".");
-		flag =true;
-	}
-	if(flag){
-		console.log("");	
+		await wait(500);
+		process.stdout.write("\n");
 	}
 }
 
-const runAce = async () => {
-	console.log("Run Ace");
-	$`${AcePath} server=ace@43434`;
-	await wait(10000);
-	$`${AcePath} client datafile=${DriverPath}`;
-	await waitForAceReady();
+const [serverUp, projectUp] = await Promise.all([
+	isPortListening(43434),
+	isPortListening(9090),
+]);
+
+if(!serverUp){
+	console.log("Run Ace Server");
+	$`${AcePath} server=ace@43434`.nothrow();;
+	console.log("Waiting for Ace Server to be ready");
+	await waitForPort(43434); 
+}else{
+	console.log("Ace Server already running");
+}
+
+if(!projectUp){
+	$`${AcePath} client datafile=${DriverPath}`.nothrow();;
+	console.log("Waiting for Ace Controller API to be ready");
+	await waitForPort(9090);
 	$`${AcePath} client culture=fr-LU loadui="/Src/Interface Homme Machine"`;
+
+	console.log("Unlocking the robot : Fake User");
 	await $`${AutoHotkeyPath} ${FakeUserPath}`;
+}else{
+	console.log("Ace Controller API already running");
 }
-
-
-if(!await isAceRunning())await runAce();
 
 process.exit(0);
