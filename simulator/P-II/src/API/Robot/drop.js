@@ -7,26 +7,26 @@ const MAX_SECURITY = true;
 
 export const Robot_drop = async (BASE)=>{
 	BASE.robot.actionDesc = `Robot drop`;
-
-	if(BASE.robot.conf.simulation){
-		if(BASE.robot.grabbedPill===null){
-			throw new AppError(ERR.PROC, "Nothing to drop");
+	try{
+		if(BASE.robot.conf.simulation){
+			if(BASE.robot.grabbedPill===null){
+				throw new AppError(ERR.PROC, "Nothing to drop");
+			}
 		}
-	}
-	if(MAX_SECURITY){
-		Memory_clean(BASE, BASE.robot.location2D)
-		await Camera_capture(BASE);
-		const targetedArea = Memory_get(BASE, BASE.robot.location2D);
-		const isTargetedAreaEmpty = targetedArea===undefined;
-		if(!isTargetedAreaEmpty){
-			BASE.robot.actionDescPop();
-			throw new AppError(ERR.DROP, "DropZone is occupied");
+		if(MAX_SECURITY){
+			Memory_clean(BASE, BASE.robot.location2D)
+			await Camera_capture(BASE);
+			const targetedArea = Memory_get(BASE, BASE.robot.location2D);
+			const isTargetedAreaEmpty = targetedArea===undefined;
+			if(!isTargetedAreaEmpty){
+				throw new AppError(ERR.DROP, "DropZone is occupied");
+			}
 		}
+
+		await Robot_release(BASE);
+		await Camera_capture(BASE, [true]);
+		return true;
+	}finally{
+		BASE.robot.actionDescPop();
 	}
-
-	await Robot_release(BASE);
-
-	await Camera_capture(BASE, [true]);
-	
-	return true;
 }

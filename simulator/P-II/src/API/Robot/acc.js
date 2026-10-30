@@ -1,8 +1,11 @@
 
-export const Robot_acc = async ({robot}, [value])=>{
-	robot.actionDesc = `Robot acceleration ${value}`;
-	await robot.setAcceleration(value);	
-	robot.actionDescPop();
-	return true;
+export const Robot_acc = async (BASE, [value])=>{
+	BASE.robot.actionDesc = `Robot acceleration ${value}`;
+	try{
+		await robot.setAcceleration(value);	
+		return true;
+	}finally{
+		BASE.robot.actionDescPop();                   // toujours, une seule fois
+	}
 }
 

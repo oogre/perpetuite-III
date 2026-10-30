@@ -8,39 +8,43 @@ import {AppError, ERR } from './../../tools/Errors.js' ;
 
 
 export const Exec_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])=>{
-	
-	if(depth==5){
-		Memory_unlock(BASE, [colorName]);
-	}
-	else if(depth>5){
-		throw new AppError(ERR.PROC, "findFreePillByColorName loop");
-	}
-	
-	const coloredPills = Memory_get(BASE, [colorName]);
-	const unlockColoredPills = coloredPills.filter(pill=>!pill.isLock);
-
-	if(unlockColoredPills.length>0){
-		const toolVec = new Vector2();
-		const robotLocation = BASE.robot.location2D;
-		const distToRobot = (pill)=>{
-			return toolVec.subVectors(pill.location, robotLocation).lengthSq();
+	BASE.robot.actionDesc = `Find Free Pill By ColorName`;
+	try{
+		if(depth==5){
+			Memory_unlock(BASE, [colorName]);
 		}
-		const pillsStortedByDistance = unlockColoredPills.toArray()
-			.sort((a, b)=> distToRobot(a) - distToRobot(b));
-		const id = Math.floor(Math.pow(Math.random(), 10) * pillsStortedByDistance.length);
-		const selectedPill = pillsStortedByDistance[id];
-
-		await Robot_go(BASE, selectedPill.location);
-
-		const below = await Exec_whatsBelow(BASE, selectedPill.color.name);
-		console.log(`Pointing ${below.key}`);
-		if(below == AT_DROPZONE.GOOD_COLOR) {
-			return selectedPill;
+		else if(depth>5){
+			throw new AppError(ERR.PROC, "findFreePillByColorName loop");
 		}
-		BASE.memory.delete(selectedPill);
 		
-		const move = getRandomOne(Walk);
-		await move(BASE, new Vector4(...(BASE.grid.getRandom().location), 0, 0));
+		const coloredPills = Memory_get(BASE, [colorName]);
+		const unlockColoredPills = coloredPills.filter(pill=>!pill.isLock);
+
+		if(unlockColoredPills.length>0){
+			const toolVec = new Vector2();
+			const robotLocation = BASE.robot.location2D;
+			const distToRobot = (pill)=>{
+				return toolVec.subVectors(pill.location, robotLocation).lengthSq();
+			}
+			const pillsStortedByDistance = unlockColoredPills.toArray()
+				.sort((a, b)=> distToRobot(a) - distToRobot(b));
+			const id = Math.floor(Math.pow(Math.random(), 10) * pillsStortedByDistance.length);
+			const selectedPill = pillsStortedByDistance[id];
+
+			await Robot_go(BASE, selectedPill.location);
+
+			const below = await Exec_whatsBelow(BASE, selectedPill.color.name);
+			console.log(`Pointing ${below.key}`);
+			if(below == AT_DROPZONE.GOOD_COLOR) {
+				return selectedPill;
+			}
+			BASE.memory.delete(selectedPill);
+			
+			const move = getRandomOne(Walk);
+			await move(BASE, new Vector4(...(BASE.grid.getRandom().location), 0, 0));
+		}
+		return await Exec_findFreePillByColorName(BASE, [colorName, depth+1]);
+	}finally{
+		BASE.robot.actionDescPop();
 	}
-	return await Exec_findFreePillByColorName(BASE, [colorName, depth+1])
 }

@@ -4,16 +4,21 @@ import {Camera_capture} from './../Camera';
 export const AT_DROPZONE = new Enum(['NO_GO', 'GOOD_COLOR', 'EMPTY', 'WRONG_COLOR']);
 
 export const Exec_whatsBelow = async(BASE, colorName)=>{
-	const justCapturedPills = await Camera_capture(BASE);
-	const pill = justCapturedPills.getByLocation(BASE.robot.location2D);
+	BASE.robot.actionDesc = `Exec whatsBelow`;
+	try{
+		const justCapturedPills = await Camera_capture(BASE);
+		const pill = justCapturedPills.getByLocation(BASE.robot.location2D);
 
-	if(pill === undefined){
-		return AT_DROPZONE.EMPTY;
-	}else if(BASE.forbidden.isIntersect(pill)){
-		return AT_DROPZONE.NO_GO;
-	}else if(pill.color.name !== colorName){
-		return AT_DROPZONE.WRONG_COLOR;
-	}else{
-		return AT_DROPZONE.GOOD_COLOR;			
+		if(pill === undefined){
+			return AT_DROPZONE.EMPTY;
+		}else if(BASE.forbidden.isIntersect(pill)){
+			return AT_DROPZONE.NO_GO;
+		}else if(pill.color.name !== colorName){
+			return AT_DROPZONE.WRONG_COLOR;
+		}else{
+			return AT_DROPZONE.GOOD_COLOR;			
+		}
+	}finally{
+		BASE.robot.actionDescPop();
 	}
 }

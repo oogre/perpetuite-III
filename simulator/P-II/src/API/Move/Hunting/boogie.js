@@ -1,4 +1,4 @@
-import {Robot_roll, Robot_go} from "./../../Robot";
+import {Robot_go} from "./../../Robot";
 import {lerp} from "./../../../tools/math.js";
 
 // Move boogie
