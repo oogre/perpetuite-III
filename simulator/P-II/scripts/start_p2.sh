@@ -4,6 +4,7 @@ ENV=/home/perpetuite/perpetuite-III/simulator/P-II/.env
 SD=/mnt/c/Windows/System32/shutdown.exe
 LOG=/home/perpetuite/p2.log
 BOOTS=/home/perpetuite/reboots.log
+STRIP='s/\x1B\[[0-9;?]*[ -\/]*[@-~]//g; s/\x1B\][^\x07]*\x07//g; s/\r//g'
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
@@ -11,8 +12,9 @@ cd /home/perpetuite/perpetuite-III/simulator/P-II || exit 1
 echo "=== $(date) : démarrage ===" >> /home/perpetuite/p2.log
 
 
-npm run start 2>&1 | tee -a /home/perpetuite/p2.log
+npm run start 2>&1 | tee >(sed -u -E "$STRIP" >> "$LOG")
 code=${PIPESTATUS[0]}
+sleep 0.3          # laisse sed finir d'écrire avant les messages suivants dans le log
 
 
 # AUTO_POWER du .env : absent ou différent de 0 => actif
