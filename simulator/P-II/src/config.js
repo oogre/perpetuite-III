@@ -46,6 +46,7 @@ const {
 	PILL_MIN_RADIUS,
 	PILL_MAX_RADIUS,
 	PILL_SAVE_PATH,
+	PILL_LOCKED_SAVE_PATH,
 	MEMORY_PILL_SIZE,
 	MEMORY_PILL_MIN_RADIUS,
 	MEMORY_PILL_MAX_RADIUS,
@@ -62,12 +63,6 @@ const {
 	GRID_DEBUG,
 	CAMERA_OFFSET_X,
 	CAMERA_OFFSET_Y,
-	CAMERA_CORRECTION_A,
-	CAMERA_CORRECTION_B,
-	CAMERA_CORRECTION_C,
-	CAMERA_CORRECTION_D,
-	CAMERA_CORRECTION_TX,
-	CAMERA_CORRECTION_TY,
 	CAMERA_PX_PER_MM,
 	CAMERA_HOST,
 	CAMERA_PORT,
@@ -89,8 +84,6 @@ const {
 	PROBE_POINTS_PATH,
 	Z_VALUES_PATH
 } = dotenv.config().parsed;
-
-
 
 export default {
 	flipAxis : new Vector4(parseFloat(FLIP_X), parseFloat(FLIP_Y), parseFloat(FLIP_Z), parseFloat(FLIP_W)),
@@ -183,7 +176,8 @@ export default {
 				style : ColorCli.black.bgBlue
 			}
 		],
-		pillSavePath : PILL_SAVE_PATH
+		pillSavePath : PILL_SAVE_PATH,
+		lockedPillSavePath : PILL_LOCKED_SAVE_PATH
 	},
 	forbidden : {
 		debug : parseInt(FORBIDDEN_DEBUG)==1,

@@ -5,6 +5,11 @@ import {PillModel} from "./../../Pills";
 import Area from "./../../Area";
 
 export const Memory_load = (BASE)=>{
+
+	if(!fs.existsSync(BASE.memory.conf.lockedPillSavePath)){
+		return true;
+	}
+
 	BASE.robot.actionDesc = `Memory load`;
 	const defaultPillVertex = new Array(8).fill(0).map((_, id, {length})=>{
 		const alpha = id * (Math.PI * 2 / (length - 1))
@@ -12,7 +17,7 @@ export const Memory_load = (BASE)=>{
 	});
 	
 	BASE.memory.addEach(
-		fs.readFileSync("./data/memoryStatus", "utf8")
+		fs.readFileSync(BASE.memory.conf.lockedPillSavePath, "utf8")
 		.split("\n")
 		.map(line => line.trim())
 		.filter( line => line !== "") 
