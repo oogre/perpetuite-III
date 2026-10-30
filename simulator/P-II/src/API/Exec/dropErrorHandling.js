@@ -1,7 +1,7 @@
 import {Robot_drop, Robot_go, Robot_grab} from "./../Robot";
 import {Exec_findFreeLocation} from "./findFreeLocation.js";
 import {Memory_get} from "./../Memory";
-
+import {Exec_move} from "./move.js";
 
 // HERE IS FINAL DEST
 // FIND FREE DEST
