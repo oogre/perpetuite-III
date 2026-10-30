@@ -27,11 +27,6 @@ if [ "$AUTO_POWER" = "0" ]; then
 fi
 
 
-if [ "$code" = "42" ]; then
-	echo "=== $(date) : arrêt d'urgence, extinction de Windows ===" >> /home/perpetuite/p2.log
-	/mnt/c/Windows/System32/shutdown.exe /s /f /t 0
-fi
-
 case "$code" in
 	42)                                   # arrêt d'urgence : extinction
 		echo "=== $(date) : E-STOP (42), extinction ===" >> "$LOG"
