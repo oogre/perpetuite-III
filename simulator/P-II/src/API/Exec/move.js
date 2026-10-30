@@ -68,10 +68,8 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 	try{
 		await Robot.Robot_drop(BASE);	
 	}catch(error){
-		if(error instanceof AppError && error.is(ERR.DROP)){
-			await Exec_dropErrorHandling(BASE);
-		}
-		throw error;
+		if(!(error instanceof AppError && error.is(ERR.DROP))) throw error;   // autre erreur : on la laisse passer
+		await Exec_dropErrorHandling(BASE);       // dépose la pill à sa place, en déplaçant celle qui gênait
 	}
 	Memory_lock(BASE, location);
 

@@ -19,6 +19,7 @@ export const Robot_drop = async (BASE)=>{
 		const targetedArea = Memory_get(BASE, BASE.robot.location2D);
 		const isTargetedAreaEmpty = targetedArea===undefined;
 		if(!isTargetedAreaEmpty){
+			BASE.robot.actionDescPop();
 			throw new AppError(ERR.DROP, "DropZone is occupied");
 		}
 	}
@@ -26,6 +27,6 @@ export const Robot_drop = async (BASE)=>{
 	await Robot_release(BASE);
 
 	await Camera_capture(BASE, [true]);
-	BASE.robot.actionDescPop();
+	
 	return true;
 }
