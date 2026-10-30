@@ -47,8 +47,8 @@ export const Move_B = async (BASE, [duration=0]=[])=>{
 			bag.check();
 		}
 	}finally{
-		await BASE.robot.stop().catch(error=>{ bag.failure ??= error; });
+		//await BASE.robot.stop().catch(error=>{ bag.failure ??= error; });
 	}
 	bag.check();
-	return await Robot_go(BASE, origin);
+	return await Robot_go(BASE, origin, {enableDamping:false, curve:false});
 }
