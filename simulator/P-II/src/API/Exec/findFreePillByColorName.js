@@ -40,8 +40,10 @@ export const Exec_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])
 			}
 			BASE.memory.delete(selectedPill);
 			
-			const move = getRandomOne(Walk);
-			await move(BASE, new Vector4(...(BASE.grid.getRandom().location), 0, 0));
+			if(Math.random() < 0.5){
+				const move = getRandomOne(Walk);
+				await move(BASE, new Vector4(...(BASE.grid.getRandom().location), 0, 0));
+			}
 		}
 		return await Exec_findFreePillByColorName(BASE, [colorName, depth+1]);
 	}finally{
