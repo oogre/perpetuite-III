@@ -92,16 +92,39 @@ robot.on("initilized", location => {
 });
 	
 
+const sansBloquer = async (nom, fn, ms = 3000)=>{
+	try{
+		await Promise.race([
+			Promise.resolve().then(fn),
+			new Promise(resolve => setTimeout(resolve, ms)),
+		]);
+	}catch(e){
+		console.log(`${nom} impossible : ${e?.code ?? ''} ${e?.message ?? e}`);
+	}
+};
 
 let handlingError = false;
 api.on('error', async (error)=>{ 
 	if(handlingError) return;                  // une erreur en cours de traitement : on ignore les suivantes
 	handlingError = true;
 	console.log(error?.code, error?.message);
-	Memory_save(api.BASE);
-	Memory_clear(api.BASE);
-	await Robot_gripper(api.BASE, [false]);
-	await Robot_HighPower(api.BASE, [false]);
+
+	// Quoi qu'il arrive, on sort au bout de 8 s au plus : start_p2.sh redémarre alors Windows.
+	setTimeout(()=>process.exit(1), 8000);
+
+	try{ 
+		Memory_save(api.BASE); 
+	}  catch(e){ 
+		console.log("Sauvegarde mémoire impossible :", e?.message); 
+	}
+	try{ 
+		Memory_clear(api.BASE); 
+	} catch(e){ 
+		console.log("Effacement mémoire impossible :", e?.message); 
+	}
+	await sansBloquer("Pince", ()=>Robot_gripper(api.BASE, [false]));
+	await sansBloquer("Puissance", ()=>Robot_HighPower(api.BASE, [false]));
+
 
 	if(error instanceof AppError && error.is(ERR.FORBIDDEN)){
 		console.log(`${error.message}`);
@@ -134,4 +157,4 @@ process.on('exit', ()=>camera.shutdownSync());
 process.on('SIGINT', ()=>process.exit(0));
 process.on('SIGTERM', ()=>process.exit(0));
 process.on('unhandledRejection', (error)=>api.fire('error', error));
-
+process.on('uncaughtException', (error)=>api.fire('error', error));
