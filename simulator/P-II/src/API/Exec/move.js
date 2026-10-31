@@ -23,9 +23,9 @@ import {AppError, ERR } from './../../tools/Errors.js' ;
 // 		GO XY
 // 		DROP
 export const Exec_move = async(BASE, pill, location, depth=0)=>{
+	const LOG = spacedLog(depth, ">");
 	BASE.robot.actionDesc = `${pill.color.name} > ${location.toString()}`;
 	try{
-		const LOG = spacedLog(depth, ">");
 
 		LOG(`PUT ${pill.color.style} FROM ${pill.location.style} TO ${location.style}`);
 		
