@@ -44,14 +44,15 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 			visiblePills.conf.radius.value*2
 		]);
 
-		// if(depth == 0){
-		// 	const goodColorId = pills.findIndex(({color:{name:colorName}})=>colorName==pill.color.name);
-		// 	if (goodColorId > -1) {
-		// 		const oldPill = pill;
-		// 		[pill] = pills.splice(goodColorId, 1);
-		// 		LOG(`REPLACE ${oldPill.color.style} @ ${oldPill.location.style} BY ${pill.color.style} @ ${pill.location.style}`);
-		// 	}
-		// }
+		if(depth == 0){
+			const goodColorId = pills.findIndex(({color:{name:colorName}})=>colorName==pill.color.name);
+			if (goodColorId > -1) {
+				const oldPill = pill;
+				[pill] = pills.splice(goodColorId, 1);
+				LOG(`REPLACE ${oldPill.color.style} @ ${oldPill.location.style} BY ${pill.color.style} @ ${pill.location.style}`);
+				return true;
+			}
+		}
 
 		// 	SOMTHING :
 		for(const pill of pills){
@@ -80,14 +81,14 @@ export const Exec_move = async(BASE, pill, location, depth=0)=>{
 		}
 		Memory_lock(BASE, location);
 
-		LOG(`DONE ${pill.color.style} @  ${location.style}`);
 		
+		return true;
+	}finally{
+		LOG(`DONE ${pill.color.style} @  ${location.style}`);
 		BASE.data.history.tasks.push({
 			color : pill.color.name,
 			location : location.toArray()
 		});
-		return true;
-	}finally{
 		BASE.robot.actionDescPop();                   // toujours, une seule fois
 	}
 }
