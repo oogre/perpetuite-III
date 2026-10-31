@@ -1,11 +1,10 @@
 import {Robot_go} from './../Robot';
 import {Memory_get, Memory_unlock} from './../Memory';
 import {Exec_whatsBelow, AT_DROPZONE} from './whatsBelow.js';
-import {getRandomOne} from './../../tools/helpers.js';
+import {getRandomOne, delay} from './../../tools/helpers.js';
 import * as Walk from './../Move/Walk';
 import { Vector2, Vector4 } from './../../tools/Vector.js';
 import {AppError, ERR } from './../../tools/Errors.js' ;
-
 
 export const Exec_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])=>{
 	BASE.robot.actionDesc = `Find Free Pill By ColorName`;
@@ -28,11 +27,12 @@ export const Exec_findFreePillByColorName = async(BASE, [colorName, depth=0]=[])
 			}
 			const pillsStortedByDistance = unlockColoredPills.toArray()
 				.sort((a, b)=> distToRobot(a) - distToRobot(b));
-			const id = Math.floor(Math.pow(Math.random(), 10) * pillsStortedByDistance.length);
+
+			const id = Math.floor(Math.pow(Math.random(), 3) * pillsStortedByDistance.length);
 			const selectedPill = pillsStortedByDistance[id];
 
 			await Robot_go(BASE, selectedPill.location);
-
+			await delay(500);
 			const below = await Exec_whatsBelow(BASE, selectedPill.color.name);
 			console.log(`Pointing ${below.key}`);
 			if(below == AT_DROPZONE.GOOD_COLOR) {
